@@ -22,11 +22,19 @@ public class Player_test : MonoBehaviour
     private const float MIN_TILT_ROTATION = 70.0f;
     private const float MAX_TILT_ROTATION = 290.0f;
 
+    private Camera _camera;
     private CharacterController _controller;
     private Transform _cameraTransform;
     private Vector3 _acceleration;
     private Vector3 _velocity;
+    private Vector3 _originalplayercenter;
 
+    [Header("Crouch Settings")]
+    [SerializeField]
+    private float standingHeight = 1.8f;
+
+    [SerializeField]
+    private float crouchingHeight = 1.50f;
 
     void Start()
     {
@@ -34,7 +42,7 @@ public class Player_test : MonoBehaviour
         _cameraTransform = GetComponentInChildren<Camera>().transform;
         _acceleration = Vector3.zero;
         _velocity = Vector3.zero;
-
+        _originalplayercenter = _controller.center;
         HideCursor();
     }
 
@@ -87,7 +95,16 @@ public class Player_test : MonoBehaviour
 
     private void CheckForCrouch()
     {
-
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            _controller.height = Mathf.Lerp(_controller.height, crouchingHeight, Time.deltaTime * 3);
+            _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
+        }
+        else
+        {
+            _controller.height = Mathf.Lerp(_controller.height, standingHeight, Time.deltaTime * 3);
+            _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
+        }
     }
 
             private void UpdateAcceleration()
