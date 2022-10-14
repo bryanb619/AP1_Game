@@ -102,6 +102,7 @@ public class Player_test : MonoBehaviour
         }
         else
         {
+            //ooga booga
             _controller.height = Mathf.Lerp(_controller.height, standingHeight, Time.deltaTime * 3);
             _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
         }
