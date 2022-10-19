@@ -25,7 +25,7 @@ public class StartMenu : MonoBehaviour
     // Game Load Button
     public void LoadGame()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("_Game");
         Debug.Log(DebugColor + "Game Loaded!" + closeColor);
 
     }

@@ -6,95 +6,145 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
 
-    [SerializeField] private GameObject _PauseMenu, _OptionsMenu;
+    // game paused bool
+    [HideInInspector]
+    public bool _Paused = false;
 
-    private bool _isPaused;
+    //  Pause Menu Canvas
+    [SerializeField]
+    public GameObject PauseCanvas, _pauseMenu, _OtptionsMenu;
 
-    // Start is called before the first frame update
-    void Start()
+    // Event Sy
+
+
+
+
+    private void Start()
     {
-        _PauseMenu.SetActive(false);
-        _OptionsMenu.SetActive(false);
-
-        _isPaused = false;
-        
-    }
-
-
-    private void Update()
-    {
-        DetectPlayerInput();
-    }
-
-    private void DetectPlayerInput()
-    {
-
-        
-        if(Input.GetKeyDown(KeyCode.Escape) && _isPaused)
-        {
-            Resume();
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape) && _isPaused == false)
-        {
-            Pause();    
-        }
-
-    /*
-        if(Input.GetButtonDown(KeyCode.Escape) && _isPaused) 
-        {
-            Resume();
-        }
-        else if (Input.GetButtonDown("Pause") && _isPaused == false)
-        {
-            Pause();
-        }
-    */
+        PauseCanvas.SetActive(true);
+        _pauseMenu.SetActive(false);
+        _OtptionsMenu.SetActive(false);
 
     }
 
+    // Update is called once per frame
+    void Update()
+    {
 
-    #region Pause Menu
+        KeyDetect();
+
+    }
+    
+    void FixedUpdate()
+    {
+        if (!_Paused)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        if (_Paused == true)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+    }
+
+    private void KeyDetect()
+    {
+        if (Input.GetButtonDown("Pause"))
+        {
+            if (_Paused)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
+
+        }
+    }
+
+    // method Resume
     public void Resume()
     {
-        Time.timeScale = 1f;
-        _isPaused = false;
-        _PauseMenu.SetActive(true);
-    }
 
+        _pauseMenu.SetActive(false);
+
+        Time.timeScale = 1f;
+
+        _Paused = false;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
+        //Cursor.lockState = CursorLockMode.Locked;
+
+
+
+    }
+    // method pause
     public void Pause()
     {
+
+
+        _pauseMenu.SetActive(true);
+
         Time.timeScale = 0f;
-        _isPaused = true;
-        _PauseMenu?.SetActive(false);
 
+        _Paused = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
-    public void OptionsMenu()
+    // buttons 
+
+    // Pause Menu
+    public void ResumeButton()
     {
-        _PauseMenu.SetActive(false);
-        _OptionsMenu.SetActive(true);
+
+        _pauseMenu.SetActive(false);
+
+        Time.timeScale = 1f;
+
+        _Paused = false;
+
     }
 
-    public void ExitToMenu()
+    // OPTIONS
+    public void OptionsButton()
     {
-        SceneManager.LoadScene("StartMenu");
+
+        _OtptionsMenu.SetActive(true);
+        _pauseMenu.SetActive(false);
     }
 
-    public void GameExit()
+
+    // EXIT Tom Main Menu
+    public void ExitButton()
+    {
+        //Application.Quit();
+        Debug.Log("Star Menu Loaded");
+        SceneManager.LoadScene("_StartMenu");
+    }
+
+
+    public void GameQuit()
     {
         Application.Quit();
     }
-    #endregion
 
+    // Options Menu
 
-    #region Options Menu
+    // BACK BUTTON
 
-    public void BackButton()
+    public void BakcButton()
     {
-        _OptionsMenu.SetActive(false);
-        _PauseMenu?.SetActive(true);
+        _pauseMenu.SetActive(true);
+        _OtptionsMenu.SetActive(false);
+
     }
-    #endregion
+
 
 
 }
