@@ -112,7 +112,7 @@ public class PlayerInteraction : MonoBehaviour
         
         _inventory.Add(item);
         _canvasManager.SetInventoryIcon(_inventory.Count - 1, item.GetIcon());
-        Pick_Up.Play();
+        //Pick_Up.Play();
 
     }
 

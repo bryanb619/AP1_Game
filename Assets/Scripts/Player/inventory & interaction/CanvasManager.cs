@@ -31,6 +31,8 @@ public class CanvasManager : MonoBehaviour
     {
         _interactionText.text = message;
         _interactionPanel.SetActive(true);
+
+
     }
 
 
@@ -89,7 +91,7 @@ public class CanvasManager : MonoBehaviour
         Inventory_Canvas.SetActive(true);
         Inventory_Active = true;
 
-        /* cursor settingd
+        /* cursor setting
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         */
