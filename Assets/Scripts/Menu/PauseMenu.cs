@@ -12,7 +12,7 @@ public class PauseMenu : MonoBehaviour
 
     //  Pause Menu Canvas
     [SerializeField]
-    public GameObject PauseCanvas, _pauseMenu, _OtptionsMenu;
+    public GameObject PauseCanvas, _pauseMenu, _OptionsMenu;
 
     // Event Sy
 
@@ -23,7 +23,7 @@ public class PauseMenu : MonoBehaviour
     {
         PauseCanvas.SetActive(true);
         _pauseMenu.SetActive(false);
-        _OtptionsMenu.SetActive(false);
+        _OptionsMenu.SetActive(false);
 
     }
 
@@ -115,7 +115,7 @@ public class PauseMenu : MonoBehaviour
     public void OptionsButton()
     {
 
-        _OtptionsMenu.SetActive(true);
+        _OptionsMenu.SetActive(true);
         _pauseMenu.SetActive(false);
     }
 
@@ -138,10 +138,10 @@ public class PauseMenu : MonoBehaviour
 
     // BACK BUTTON
 
-    public void BakcButton()
+    public void BackButton()
     {
         _pauseMenu.SetActive(true);
-        _OtptionsMenu.SetActive(false);
+        _OptionsMenu.SetActive(false);
 
     }
 
