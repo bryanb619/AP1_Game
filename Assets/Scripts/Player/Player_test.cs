@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player_test : MonoBehaviour
@@ -22,12 +23,16 @@ public class Player_test : MonoBehaviour
     private const float MIN_TILT_ROTATION = 70.0f;
     private const float MAX_TILT_ROTATION = 290.0f;
 
+    [SerializeField]
     private Camera _camera;
+    
     private CharacterController _controller;
     private Transform _cameraTransform;
     private Vector3 _acceleration;
     private Vector3 _velocity;
-    private Vector3 _originalplayercenter;
+    private Vector3 _cameraCrouching;
+    private Vector3 _cameraStanding;
+    private float _cameraInitialPosition;
 
     [Header("Crouch Settings")]
     [SerializeField]
@@ -42,9 +47,14 @@ public class Player_test : MonoBehaviour
         _cameraTransform = GetComponentInChildren<Camera>().transform;
         _acceleration = Vector3.zero;
         _velocity = Vector3.zero;
-        _originalplayercenter = _controller.center;
         HideCursor();
+        
+        _cameraCrouching = new Vector3(_camera.transform.position.x, _camera.transform.position.y, _camera.transform.position.z);
+        _cameraStanding = new Vector3(_camera.transform.position.x, _cameraInitialPosition, _camera.transform.position.z);
+    
     }
+
+    #region Mouse stuff
 
     private void HideCursor()
     {
@@ -58,11 +68,22 @@ public class Player_test : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
+    #endregion
+
     void Update()
     {
+        CheckForCrouch();
         UpdateRotation();
         UpdateTilt();
+        if(Input.GetKey(KeyCode.G))
+        {
+            _cameraInitialPosition = _camera.transform.position.y;
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _cameraCrouching, Time.deltaTime * 3);
+        }
+       
     }
+
+    #region Update stuff
 
     private void UpdateRotation()
     {
@@ -85,30 +106,35 @@ public class Player_test : MonoBehaviour
         _cameraTransform.localEulerAngles = cameraRotation;
     }
 
+    #endregion
+
+
     void FixedUpdate()
     {
         UpdateAcceleration();
         UpdateVelocity();
         UpdatePosition();
-        CheckForCrouch();
     }
+
+    #region Fixed Update Stuff
 
     private void CheckForCrouch()
     {
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetButton("Crouch"))
         {
-            _controller.height = Mathf.Lerp(_controller.height, crouchingHeight, Time.deltaTime * 3);
             _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
+            _controller.height = Mathf.Lerp(_controller.height, crouchingHeight, Time.deltaTime * 3);
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _cameraCrouching, Time.deltaTime * 3);
         }
         else
         {
-            //ooga booga
-            _controller.height = Mathf.Lerp(_controller.height, standingHeight, Time.deltaTime * 3);
             _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
+            _controller.height = Mathf.Lerp(_controller.height, standingHeight, Time.deltaTime * 3);
         }
     }
 
-            private void UpdateAcceleration()
+
+    private void UpdateAcceleration()
     {
         _acceleration.z = Input.GetAxis("Vertical");
         _acceleration.z *= (_acceleration.z > 0f) ? FORWARD_ACCELERATION : BACKWARD_ACCELERATION;
@@ -128,6 +154,7 @@ public class Player_test : MonoBehaviour
         _velocity.x = (_acceleration.x == 0f || _acceleration.x * _velocity.x < 0f) ?
             0f : Mathf.Clamp(_velocity.x, -MAX_STRAFE_VELOCITY, MAX_STRAFE_VELOCITY);
 
+        // Jump implementation (if needed)
        /* _velocity.y = (_acceleration.y == 0f) ?
             -0.1f : Mathf.Clamp(_velocity.y, -MAX_FALL_VELOCITY, MAX_JUMP_VELOCITY);
         */
@@ -139,4 +166,6 @@ public class Player_test : MonoBehaviour
 
         _controller.Move(transform.TransformVector(motion));
     }
+
+    #endregion
 }

@@ -21,7 +21,7 @@ public class PauseMenu : MonoBehaviour
     }
 
 
-    private void Update()
+    void Update()
     {
         DetectPlayerInput();
     }
@@ -34,7 +34,7 @@ public class PauseMenu : MonoBehaviour
         {
             Resume();
         }
-        else if(Input.GetKeyDown(KeyCode.Escape) && _isPaused == false)
+        else if(Input.GetKeyDown(KeyCode.Escape) && !_isPaused)
         {
             Pause();    
         }
@@ -87,7 +87,7 @@ public class PauseMenu : MonoBehaviour
     #endregion
 
 
-    #region Options Menu
+        #region Options Menu
 
     public void BackButton()
     {
