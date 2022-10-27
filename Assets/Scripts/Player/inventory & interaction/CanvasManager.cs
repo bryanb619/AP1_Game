@@ -52,7 +52,7 @@ public class CanvasManager : MonoBehaviour
         }
 
 
-        
+
     }
     private void LookForTAB_KeyCode()
     {
@@ -72,6 +72,9 @@ public class CanvasManager : MonoBehaviour
             }
         }
     }
+
+
+    // Verificar a necessidade de inventario
 
     public void Hide_Inventory()
     {
