@@ -14,11 +14,11 @@ using LibGameAI.FSMs;
 public class AIBehaviour : MonoBehaviour
 {
     // Minimum distance to small enemy
-    [SerializeField]
+    //[SerializeField]
     private float minDistanceToSmallEnemy = 9f;
 
     // Minimum distance to big enemy
-    [SerializeField]
+    //[SerializeField]
     private float minDistanceToBigEnemy = 11f;
 
     // Maximum speed
@@ -103,12 +103,7 @@ public class AIBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChaseSmallEnemy()
     {
-        // Get normalized direction towards small enemy
-        Vector3 direction =
-            (smallEnemy.transform.position - transform.position).normalized;
-
-        // Move towards small enemy
-        transform.Translate(direction * maxSpeed * Time.deltaTime, Space.World);
+        
     }
 
     // Runaway from the closest enemy

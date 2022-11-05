@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Player_test : MonoBehaviour
 {
+    public Player_ _PlayerControl;
+
     //Acceleration Variables
     private const float FORWARD_ACCELERATION = 10.0f;
     private const float BACKWARD_ACCELERATION = 10.0f;
@@ -154,6 +156,16 @@ public class Player_test : MonoBehaviour
         _velocity.x = (_acceleration.x == 0f || _acceleration.x * _velocity.x < 0f) ?
             0f : Mathf.Clamp(_velocity.x, -MAX_STRAFE_VELOCITY, MAX_STRAFE_VELOCITY);
 
+        if (_velocity.z <= 0f)
+        {
+            _PlayerControl.ChangeState(PlayerState.Idle);
+        }
+
+        else if(_velocity.z > 0f)
+        {
+            _PlayerControl.ChangeState(PlayerState.Moving);
+        }
+
         // Jump implementation (if needed)
        /* _velocity.y = (_acceleration.y == 0f) ?
             -0.1f : Mathf.Clamp(_velocity.y, -MAX_FALL_VELOCITY, MAX_JUMP_VELOCITY);
@@ -162,9 +174,16 @@ public class Player_test : MonoBehaviour
 
     private void UpdatePosition()
     {
+
         Vector3 motion = _velocity * Time.fixedDeltaTime;
 
         _controller.Move(transform.TransformVector(motion));
+
+        // Companion Update state
+
+        // update companion POS
+        //_CompanionBehaviour.StateUpdate();
+
     }
 
     #endregion
