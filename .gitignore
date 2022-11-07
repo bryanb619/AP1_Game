@@ -21,8 +21,17 @@
 [Aa]ssets/Plugins/Editor/JetBrains*
 
 #Game Plugins (FMOD, Hierarchy2 ...)
-[Aa]ssets/Plugins*
-[Aa]ssets/GameWorld*
+Plugins/
+# Heavy game files
+Game_World/
+
+.vscode/
+
+
+# Meta files excluded
+Assets/Plugins.meta
+Assets/Game_World.meta
+
 
 
 
