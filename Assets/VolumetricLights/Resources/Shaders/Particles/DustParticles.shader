@@ -1,4 +1,4 @@
-Shader "VolumetricLights/DustParticles"
+Shader "VolumetricLights/Resources/Shaders/Particles/DustParticles"
 {
     Properties
     {
