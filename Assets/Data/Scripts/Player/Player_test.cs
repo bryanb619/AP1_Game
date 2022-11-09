@@ -7,6 +7,8 @@ public class Player_test : MonoBehaviour
 {
     public Player_ _PlayerControl;
 
+    public bool IsMoving; 
+
     //Acceleration Variables
     private const float FORWARD_ACCELERATION = 10.0f;
     private const float BACKWARD_ACCELERATION = 10.0f;
@@ -45,6 +47,8 @@ public class Player_test : MonoBehaviour
 
     void Start()
     {
+
+        IsMoving = false;
         _controller = GetComponent<CharacterController>();
         _cameraTransform = GetComponentInChildren<Camera>().transform;
         _acceleration = Vector3.zero;
@@ -116,6 +120,10 @@ public class Player_test : MonoBehaviour
         UpdateAcceleration();
         UpdateVelocity();
         UpdatePosition();
+
+        PlayerMovingState();
+
+       
     }
 
     #region Fixed Update Stuff
@@ -156,15 +164,7 @@ public class Player_test : MonoBehaviour
         _velocity.x = (_acceleration.x == 0f || _acceleration.x * _velocity.x < 0f) ?
             0f : Mathf.Clamp(_velocity.x, -MAX_STRAFE_VELOCITY, MAX_STRAFE_VELOCITY);
 
-        if (_velocity.z <= 0f)
-        {
-            _PlayerControl.ChangeState(PlayerState.Idle);
-        }
-
-        else if(_velocity.z > 0f)
-        {
-            _PlayerControl.ChangeState(PlayerState.Moving);
-        }
+       
 
         // Jump implementation (if needed)
        /* _velocity.y = (_acceleration.y == 0f) ?
@@ -184,6 +184,22 @@ public class Player_test : MonoBehaviour
         // update companion POS
         //_CompanionBehaviour.StateUpdate();
 
+    }
+
+    private void PlayerMovingState()
+    {
+        if (_velocity.z <= 0f && _velocity.x <= 0f)
+        {
+            _PlayerControl.ChangeState(PlayerState.Idle);
+            Debug.Log("Player in idle state");
+        }
+
+        else if (_velocity.z > 0f || _velocity.x > 0f)
+        {
+            _PlayerControl.ChangeState(PlayerState.Moving);
+            Debug.Log("Player in moving state");
+        }
+        
     }
 
     #endregion
