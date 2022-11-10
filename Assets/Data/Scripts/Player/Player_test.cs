@@ -194,11 +194,13 @@ public class Player_test : MonoBehaviour
             Debug.Log("Player in idle state");
         }
 
-        else if (_velocity.z > 0f || _velocity.x > 0f)
+        else if ((_velocity.z > 0.1f || _velocity.z < -0.1f) || (_velocity.x > 0.1f || _velocity.x < -0.1f))
         {
             _PlayerControl.ChangeState(PlayerState.Moving);
             Debug.Log("Player in moving state");
         }
+
+
         
     }
 

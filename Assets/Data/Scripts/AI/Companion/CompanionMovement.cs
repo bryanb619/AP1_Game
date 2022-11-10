@@ -15,6 +15,12 @@ public class CompanionMovement : MonoBehaviour
     [SerializeField] private Companion _Companion;
 
 
+    [SerializeField] private Transform _PlayerFollow;
+
+
+    private Vector3 _Position;
+
+
     // editable variables
     [Header("configuration for iddle")]
     [Range(0f, 5)] private float _RotationSpeed = 1f;
@@ -87,12 +93,15 @@ public class CompanionMovement : MonoBehaviour
             _Agent.enabled = true;
             _Agent.Warp(transform.position);
             }
-            _MoveCoroutine = StartCoroutine(FollowPlayer());
+        //_MoveCoroutine = StartCoroutine(FollowPlayer());
+        FollowPlayer();
      }
 
      private void RotateAroundPlayer()
      {
         Debug.Log("Companion animation");
+
+        _Agent.speed = 0F;
         /*
         WaitForFixedUpdate Wait = new WaitForFixedUpdate();
         while (true)
@@ -102,11 +111,25 @@ public class CompanionMovement : MonoBehaviour
         }
         */
      }
-    private IEnumerator FollowPlayer()
+    private void FollowPlayer()
     {
 
+        _Agent.SetDestination(_PlayerFollow.position);
+        _Agent.speed = 8f;
+        /*
+        
+        
+        //Vector3 playerDestination = playerAgent.destination;
+          _Position = _PlayerFollow.position;
+        Vector3 positionOffset = _FollowRadius * new Vector3(
+            Mathf.Cos(2 * Mathf.PI * Random.value),
+            0,
+            Mathf.Sin(2 * Mathf.PI * Random.value)
+        ).normalized;
 
-        yield return null; // Wait for player's destination to be updated!
+        _Agent.SetDestination(_Position + positionOffset);
+        */
+        //yield return null; // Wait for player's destination to be updated!
         /*
         NavMeshAgent playerAgent = _Player.GetComponentInChildren<NavMeshAgent>();
         Vector3 playerDestination = playerAgent.destination;
