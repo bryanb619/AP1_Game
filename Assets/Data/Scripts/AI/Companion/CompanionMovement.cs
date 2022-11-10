@@ -110,14 +110,27 @@ public class CompanionMovement : MonoBehaviour
             yield return Wait;
         }
         */
-     }
+    }
     private void FollowPlayer()
     {
 
         _Agent.SetDestination(_PlayerFollow.position);
         _Agent.speed = 8f;
+
+
+        // Fazer companion seguir no FU , 
+
+        // ver distancia ate Follow Point
+        // Se distancia for superior a Y  (porque torna movimento mais natural e dinamico)
+        // usar navmesh (Set Destinatin)
+
+
+        // no idle manter distancia 
+
+        // No ataque tem que ir para Pos final 
+
+
         /*
-        
         
         //Vector3 playerDestination = playerAgent.destination;
           _Position = _PlayerFollow.position;
