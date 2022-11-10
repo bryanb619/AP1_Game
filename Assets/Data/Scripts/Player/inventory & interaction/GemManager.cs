@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeManager : MonoBehaviour
+[RequireComponent(typeof(MeshRenderer))]
+public class GemManager : MonoBehaviour
 {
     [SerializeField]
-    private Enum gemType = new Enum();
-
-    private Enum typeOfGem;
+    private Gems gemType = new Gems();
 
     private GameObject player;
 
@@ -28,8 +27,9 @@ public class CubeManager : MonoBehaviour
     void Update()
     {
         MoveTowardsPlayer();
+        CodedAnimations();
     }
-
+        
     private void MoveTowardsPlayer()
     {
         var step = speed * Time.deltaTime;
@@ -45,16 +45,22 @@ public class CubeManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    #region Gem type and functions
     void GemType()
     {
-        if (gemType == Enum.Damage)
-        {
-        }
-        if (gemType == Enum.Shield)
-        {
-        }
-        if (gemType == Enum.Mana)
-        {
+        switch(gemType)
+        { 
+            case Gems.Damage:
+                break;  
+
+            case Gems.Shield:
+                break;
+
+            case Gems.Mana:
+                break;
+            
+            default:
+                break;
         }
     }
     
@@ -73,16 +79,23 @@ public class CubeManager : MonoBehaviour
 
     }
 
+    #endregion
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, maxDistance);
     }
+
+    void CodedAnimations()
+    {
+
+    }
 }
 
-enum Enum
+public enum Gems
 {
     Damage,
     Shield,
     Mana
-};
+}
