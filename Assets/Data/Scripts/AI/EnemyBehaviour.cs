@@ -12,11 +12,12 @@ using LibGameAI.FSMs;
 using UnityEngine.AI;
 
 // The script that controls an agent using an FSM
+//[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
 
 
-    [SerializeField] private NavMeshAgent _Agent;
+    private NavMeshAgent _Agent;
     public float _Health;
 
     // References to enemies
@@ -42,6 +43,8 @@ public class EnemyBehaviour : MonoBehaviour
     private void Start()
     {
         _Health = 100f;
+
+        _Agent = GetComponent<NavMeshAgent>();
 
         // Create the states
         State onGuardState = new State("On Guard",
@@ -99,7 +102,7 @@ public class EnemyBehaviour : MonoBehaviour
         */
 
         // Create the state machine
-        stateMachine = new StateMachine(fightState);
+        stateMachine = new StateMachine(OnPatrolState);
     }
 
     // Request actions to the FSM and perform them
@@ -119,10 +122,10 @@ public class EnemyBehaviour : MonoBehaviour
     private void Patrol()
     {
 
-        /*
+        
         _Agent.autoBraking = false;
 
-        _Agent.speed = 1.5f;
+        _Agent.speed = 5f;
         // Returns if no points have been set up
         if (_PatrolPoints.Length == 0)
             return;
@@ -134,7 +137,7 @@ public class EnemyBehaviour : MonoBehaviour
         // cycling to the start if necessary.
         destPoint = (destPoint + 1) % _PatrolPoints.Length;
 
-        */
+        
     }
 
     // Runaway from the closest enemy
