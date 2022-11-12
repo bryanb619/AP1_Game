@@ -5,204 +5,341 @@ using UnityEngine;
 
 public class Player_test : MonoBehaviour
 {
-    public Player_ _PlayerControl;
+    #region Rayden Movement
+    /*
+    // Variables
 
-    public bool IsMoving; 
+    // player speed
+    [Header("Player Speed")]
+    [SerializeField] private float walkingSpeed = 5.0f;
 
-    //Acceleration Variables
-    private const float FORWARD_ACCELERATION = 10.0f;
-    private const float BACKWARD_ACCELERATION = 10.0f;
-    private const float STRAFE_ACCELERATION = 10.0f;
-    private const float GRAVITY_ACCELERATION = 10.0f;
+    // Player Sprint speed
+    [Header("Player Sprint Speed")]
+    [SerializeField] private float runningSpeed = 8.5f;
+    // Jump Speed
+    [Header("Player Jump Speed")]
+    [SerializeField] private float jumpSpeed = 6.0f;
+    // Graavity basics
+    [Header("Player Gravity")]
+    [SerializeField] private float gravity = 20.0f;
+    // Player camera
+    [Header("Player Camera")]
+    [SerializeField] private Camera playerCamera;
+    // Look Speed
+    [SerializeField] private float lookSpeed = 2.0f;
+    // Camera X limitation
+    [SerializeField] private float lookXLimit = 45.0f;
 
-    //Max Velocity Variables
-    private float MAX_FORWARD_VELOCITY = 4.0f;
-    private const float MAX_BACKWARD_VELOCITY = 2.0f;
-    private const float MAX_STRAFE_VELOCITY = 3.0f;
-    //private const float MAX_FALL_VELOCITY = 100.0f;
-    //private const float MAX_JUMP_VELOCITY = 200.0f;
+    // Character Controller
+    CharacterController characterController;
 
-    //Rotation Variables
-    private const float ROTATION_VELOCITY_FACTOR = 2.0f;
-    private const float MIN_TILT_ROTATION = 70.0f;
-    private const float MAX_TILT_ROTATION = 290.0f;
+    // Vector motion
+    Vector3 moveDirection = Vector3.zero;
+    // player rotation
+    float rotationX = 0;
 
-    [SerializeField]
-    private Camera _camera;
-    
-    private CharacterController _controller;
-    private Transform _cameraTransform;
-    private Vector3 _acceleration;
-    private Vector3 _velocity;
-    private Vector3 _cameraCrouching;
-    private Vector3 _cameraStanding;
-    private float _cameraInitialPosition;
-
-    [Header("Crouch Settings")]
-    [SerializeField]
-    private float standingHeight = 1.8f;
-
-    [SerializeField]
-    private float crouchingHeight = 1.50f;
+    // can player move
+    [HideInInspector]
+    public bool canMove = true;
 
     void Start()
     {
+        // Get Character controller
+        characterController = GetComponent<CharacterController>();
 
-        IsMoving = false;
-        _controller = GetComponent<CharacterController>();
-        _cameraTransform = GetComponentInChildren<Camera>().transform;
-        _acceleration = Vector3.zero;
-        _velocity = Vector3.zero;
+        // Lock and hide cursor
         HideCursor();
-        
-        _cameraCrouching = new Vector3(_camera.transform.position.x, _camera.transform.position.y, _camera.transform.position.z);
-        _cameraStanding = new Vector3(_camera.transform.position.x, _cameraInitialPosition, _camera.transform.position.z);
-    
     }
 
-    #region Mouse stuff
+    void Update()
+    {
+        // detect player motion
+        DetectMotion();
+
+    }
+
+    void DetectMotion()
+    {
+        // When grounded  are grounded, so recalculate move direction based on axes
+        Vector3 forward = transform.TransformDirection(Vector3.forward);
+        Vector3 right = transform.TransformDirection(Vector3.right);
+        // Left Shift to run
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
+        float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
+        float movementDirectionY = moveDirection.y;
+        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+
+
+        if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
+        {
+            moveDirection.y = jumpSpeed;
+        }
+        else
+        {
+            moveDirection.y = movementDirectionY;
+        }
+
+        // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
+        // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
+        // as an acceleration (ms^-2)
+        if (!characterController.isGrounded)
+        {
+            moveDirection.y -= gravity * Time.deltaTime;
+
+        }
+
+        // Move the controller
+        characterController.Move(moveDirection * Time.deltaTime);
+
+        // Player and Camera rotation
+        if (canMove)
+        {
+            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+        }
+    }
 
     private void HideCursor()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    private void ShowCursor()
-    {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
+    */
     #endregion
 
-    void Update()
+    #region New tryout movement
+
+    [Header("Movement"), SerializeField]
+    private float walkSpeed, dashSpeed, dashSpeedChangeFactor, groundDrag;
+    [SerializeField]
+    private float moveSpeed, maxSpeed;
+
+    [Header("Jumping"), SerializeField]
+    private float jumpForce, jumpCooldown, airMultiplier;
+    [SerializeField]
+    private KeyCode jumpKey = KeyCode.Space;
+
+    [Header("Ground Check"), SerializeField]
+    private float playerHeight;
+    [SerializeField]
+    private LayerMask whatIsGround;
+    
+    [SerializeField]
+    private Transform orientation;
+    private MovementState state;
+
+    [Header("Slope Handling")]
+    private float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    private bool exitingSlope;
+
+    private bool readyToJump, grounded;
+    private float horizontalInput, verticalInput;
+    Vector3 moveDirection;
+    Rigidbody rb;
+    public bool dashing;
+
+    private enum MovementState
     {
-        CheckForCrouch();
-        UpdateRotation();
-        UpdateTilt();
-        if(Input.GetKey(KeyCode.G))
-        {
-            _cameraInitialPosition = _camera.transform.position.y;
-            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _cameraCrouching, Time.deltaTime * 3);
-        }
-       
+        walking,
+        dashing,
+        air
     }
 
-    #region Update stuff
 
-    private void UpdateRotation()
+    private void Start()
     {
-        float rotation = Input.GetAxis("Mouse X") * ROTATION_VELOCITY_FACTOR;
-
-        transform.Rotate(0f, rotation, 0f);
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+        readyToJump = true;
     }
 
-    private void UpdateTilt()
+    private void Update()
     {
-        Vector3 cameraRotation = _cameraTransform.localEulerAngles;
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
-        cameraRotation.x -= Input.GetAxis("Mouse Y") * ROTATION_VELOCITY_FACTOR;
+        MyInput();
+        SpeedControl();
+        StateHandler();
 
-        if (cameraRotation.x < 180f)
-            cameraRotation.x = Mathf.Min(cameraRotation.x, MIN_TILT_ROTATION);
+        if (state == MovementState.walking)
+            rb.drag = groundDrag;
         else
-            cameraRotation.x = Mathf.Max(cameraRotation.x, MAX_TILT_ROTATION);
+            rb.drag = 0;
 
-        _cameraTransform.localEulerAngles = cameraRotation;
     }
 
-    #endregion
-
-
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        UpdateAcceleration();
-        UpdateVelocity();
-        UpdatePosition();
-
-        PlayerMovingState();
-
-       
+        MovePlayer();   
     }
 
-    #region Fixed Update Stuff
-
-    private void CheckForCrouch()
+    private float desiredMoveSpeed, lastDesiredMoveSpeed;
+    private MovementState lastState;
+    private bool keepMomentum;
+    private void StateHandler()
     {
-        if (Input.GetButton("Crouch"))
+        if (dashing)
         {
-            _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
-            _controller.height = Mathf.Lerp(_controller.height, crouchingHeight, Time.deltaTime * 3);
-            _camera.transform.position = Vector3.Lerp(_camera.transform.position, _cameraCrouching, Time.deltaTime * 3);
+            state = MovementState.dashing;
+            desiredMoveSpeed = dashSpeed;
+            speedChangeFactor = dashSpeedChangeFactor;
         }
+
+        else if (grounded)
+        {
+            state = MovementState.walking;
+            desiredMoveSpeed = walkSpeed;
+        }
+
         else
         {
-            _controller.center = Vector3.down * (standingHeight - _controller.height) / 2.0f;
-            _controller.height = Mathf.Lerp(_controller.height, standingHeight, Time.deltaTime * 3);
+            state = MovementState.air;
+
+            if (desiredMoveSpeed < maxSpeed)
+                desiredMoveSpeed = walkSpeed;
+            else
+                desiredMoveSpeed = maxSpeed;
         }
-    }
 
+        bool desiredMoveSpeedHasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
+        if(lastState == MovementState.dashing)   keepMomentum = true;
 
-    private void UpdateAcceleration()
-    {
-        _acceleration.z = Input.GetAxis("Vertical");
-        _acceleration.z *= (_acceleration.z > 0f) ? FORWARD_ACCELERATION : BACKWARD_ACCELERATION;
-
-        _acceleration.x = Input.GetAxis("Horizontal") * STRAFE_ACCELERATION;
-        
-        _acceleration.y = -GRAVITY_ACCELERATION;
-    }
-
-    private void UpdateVelocity()
-    {
-        _velocity += _acceleration * Time.fixedDeltaTime;
-
-        _velocity.z = (_acceleration.z == 0f || _acceleration.z * _velocity.z < 0f) ?
-            0f : Mathf.Clamp(_velocity.z, -MAX_BACKWARD_VELOCITY, MAX_FORWARD_VELOCITY);
-
-        _velocity.x = (_acceleration.x == 0f || _acceleration.x * _velocity.x < 0f) ?
-            0f : Mathf.Clamp(_velocity.x, -MAX_STRAFE_VELOCITY, MAX_STRAFE_VELOCITY);
-
-       
-
-        // Jump implementation (if needed)
-       /* _velocity.y = (_acceleration.y == 0f) ?
-            -0.1f : Mathf.Clamp(_velocity.y, -MAX_FALL_VELOCITY, MAX_JUMP_VELOCITY);
-        */
-    }
-
-    private void UpdatePosition()
-    {
-
-        Vector3 motion = _velocity * Time.fixedDeltaTime;
-
-        _controller.Move(transform.TransformVector(motion));
-
-        // Companion Update state
-
-        // update companion POS
-        //_CompanionBehaviour.StateUpdate();
-
-    }
-
-    private void PlayerMovingState()
-    {
-        if (_velocity.z <= 0f && _velocity.x <= 0f)
+        if (desiredMoveSpeedHasChanged)
         {
-            _PlayerControl.ChangeState(PlayerState.Idle);
-            Debug.Log("Player in idle state");
+            if(keepMomentum)
+            {
+                StopAllCoroutines();
+                StartCoroutine(SmoothlyLerpMoveSpeed());
+            }
+            else
+            {
+                StopAllCoroutines();
+                moveSpeed = desiredMoveSpeed;
+            }
         }
 
-        else if ((_velocity.z > 0.1f || _velocity.z < -0.1f) || (_velocity.x > 0.1f || _velocity.x < -0.1f))
-        {
-            _PlayerControl.ChangeState(PlayerState.Moving);
-            Debug.Log("Player in moving state");
-        }
-
-
-        
+        lastDesiredMoveSpeed = desiredMoveSpeed;
+        lastState = state;
     }
 
+    private float speedChangeFactor;
+
+    private IEnumerator SmoothlyLerpMoveSpeed()
+    {
+        float time = 0;
+        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+        float startValue = moveSpeed;
+
+        float boostFactor = speedChangeFactor;
+
+        while(time < difference)
+        {
+            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+
+            time += Time.deltaTime * boostFactor;
+
+            yield return null;
+        }
+
+        moveSpeed = desiredMoveSpeed;
+        speedChangeFactor = 1f;
+        keepMomentum = false;
+    }
+
+    private void MyInput()
+    {
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        {
+            readyToJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
+
+    private void MovePlayer()
+    {
+        if (state == MovementState.dashing) return;
+
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        if (OnSlope() && !exitingSlope)
+        {
+            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+
+            if (rb.velocity.y > 0)
+                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+        }
+
+
+        if(state == MovementState.walking)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        else
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        rb.useGravity = !OnSlope();
+    }
+
+    private void SpeedControl()
+    {
+        if(OnSlope() && !exitingSlope)
+        {
+            if (rb.velocity.magnitude > moveSpeed)
+                rb.velocity = rb.velocity.normalized * moveSpeed;
+        }
+
+
+
+        else
+        { 
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            if(flatVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+            }
+        }
+    }
+
+    private void Jump()
+    {
+        exitingSlope = true;
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);   
+    }
+
+    private void ResetJump()
+    {
+        readyToJump = true;
+        exitingSlope = false;
+    }
+
+    private bool OnSlope()
+    {
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+    
     #endregion
 }

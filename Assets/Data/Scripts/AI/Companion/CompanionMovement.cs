@@ -17,9 +17,9 @@ public class CompanionMovement : MonoBehaviour
 
     [SerializeField] private Transform _PlayerFollow;
 
-
     private Vector3 _Position;
 
+    public RaycastHit hit;
 
     // editable variables
     [Header("configuration for iddle")]
@@ -38,6 +38,17 @@ public class CompanionMovement : MonoBehaviour
 
         // calls change of state
         _Player.OnStateChange += HandleStateChange;
+    }
+
+    private void Update()
+    {
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            transform.LookAt(hit.point, Vector3.up);
+        }
+        
     }
 
     private void HandleStateChange(PlayerState OldState, PlayerState NewState)
@@ -146,7 +157,6 @@ public class CompanionMovement : MonoBehaviour
         */
         //_Companion.ChangeState(CompanionState.Idle);
     }
-
 
 
 }

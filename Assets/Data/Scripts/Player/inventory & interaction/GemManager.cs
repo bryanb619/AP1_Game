@@ -2,20 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-[RequireComponent(typeof(MeshRenderer))]
 public class GemManager : MonoBehaviour
 {
     [SerializeField]
     private Gems gemType = new Gems();
-
-    private GameObject player;
 
     [SerializeField]
     private float maxDistance = 3;
 
     [SerializeField]
     private int speed = 2;
+
+    private GameObject player;
+
+    [SerializeField, HideInInspector]
+    private MeshRenderer CubeRenderer;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +38,7 @@ public class GemManager : MonoBehaviour
         var step = speed * Time.deltaTime;
         if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
         {
-            transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime);
+            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
         }
     }
 
@@ -89,6 +92,7 @@ public class GemManager : MonoBehaviour
 
     void CodedAnimations()
     {
+        gameObject.transform.Rotate(0, 1, 0);
 
     }
 }

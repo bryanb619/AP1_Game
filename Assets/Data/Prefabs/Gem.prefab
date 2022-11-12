@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 680847071157996186}
   - component: {fileID: 680847071157996185}
-  - component: {fileID: 630375798663884269}
   - component: {fileID: 4806903162340540944}
   m_Layer: 0
   m_Name: Gem
@@ -48,48 +47,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.2759358, y: 1.2759358, z: 1.2759358}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &630375798663884269
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 680847071157996187}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 417f60ef22dc30a42bd9c30e75f2f537, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &4806903162340540944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,7 +62,7 @@ MonoBehaviour:
   gemType: 0
   maxDistance: 3
   speed: 2
-  oof: {fileID: 630375798663884269}
+  CubeRenderer: {fileID: 6807215719515059969}
 --- !u!1 &6371524222306957076
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,7 +116,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 417f60ef22dc30a42bd9c30e75f2f537, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
