@@ -10,6 +10,9 @@ public class Dashing : MonoBehaviour
     private Rigidbody rb;
     private Player_test pm;
 
+    [SerializeField]
+    private Animator Cam_anim;
+
     [Header("Dashing"), SerializeField]
     private float dashForce, dashUpwardForce, dashDuration;
 
@@ -31,9 +34,12 @@ public class Dashing : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(dashKey))
+        {
+            Cam_anim.SetTrigger("dashed");
             Dash();
+        }
 
-        if(dashCdTimer > 0)
+        if (dashCdTimer > 0)
             dashCdTimer -= Time.deltaTime;
     }
 
@@ -59,7 +65,7 @@ public class Dashing : MonoBehaviour
             rb.useGravity = false;
 
         delayedForceToApply = forceToApply;
-        Invoke(nameof(DelayedDashForce), 0.025f);   
+        Invoke(nameof(DelayedDashForce), 0.025f);
 
         Invoke(nameof(ResetDash), dashDuration);
     }
