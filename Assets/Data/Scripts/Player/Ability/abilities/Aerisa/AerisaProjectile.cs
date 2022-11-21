@@ -7,7 +7,7 @@ public class AerisaProjectile : MonoBehaviour
 
     public void OnTriggerEnter(Collider hitInfo)
     {
-        AIBehaviour enemy = hitInfo.GetComponent<AIBehaviour>();
+        EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         if (enemy != null)
         {
             //enemy.TakeDamage(Bdamage);

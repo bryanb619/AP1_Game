@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class CompanionMovement : MonoBehaviour
 {
 
@@ -15,11 +15,13 @@ public class CompanionMovement : MonoBehaviour
     [SerializeField] private Companion _Companion;
 
 
-    [SerializeField] private Transform _PlayerFollow;
+    [SerializeField] private Transform _Target;
+
+    private bool IsIdle; 
+
 
     private Vector3 _Position;
 
-    public RaycastHit hit;
 
     // editable variables
     [Header("configuration for iddle")]
@@ -42,13 +44,33 @@ public class CompanionMovement : MonoBehaviour
 
     private void Update()
     {
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-
-        if (Physics.Raycast(ray, out hit))
+        // Idle call 
+        if(IsIdle)
         {
-            transform.LookAt(hit.point, Vector3.up);
+            PosUpdate();
         }
-        
+
+        // move update
+
+
+        // Fazer companion seguir no FU , 
+
+        // ver distancia ate Follow Point
+
+        if (_Agent.remainingDistance <= 0.5f)
+        {
+            //_Agent.SetDestination(_PlayerFollow.position);
+        }
+
+
+        // Se distancia for superior a Y  (porque torna movimento mais natural e dinamico)
+        // usar navmesh (Set Destinatin)
+
+
+        // no idle manter distancia 
+
+        // No ataque tem que ir para Pos final 
+
     }
 
     private void HandleStateChange(PlayerState OldState, PlayerState NewState)
@@ -85,8 +107,9 @@ public class CompanionMovement : MonoBehaviour
                 {
                     StopCoroutine(_MoveCoroutine);
                 }
-                _Agent.enabled = false;
-                RotateAroundPlayer();
+                //_Agent.enabled = false;
+                //
+                Idle();
                 break;
         }
     }
@@ -108,11 +131,21 @@ public class CompanionMovement : MonoBehaviour
         FollowPlayer();
      }
 
-     private void RotateAroundPlayer()
+     private IEnumerator Idle()
      {
-        Debug.Log("Companion animation");
+        IsIdle = true;
 
-        _Agent.speed = 0F;
+        Debug.Log("Companion animation");
+        _Agent.SetDestination(transform.position);
+
+
+        //_Agent.speed = 0F;
+        /*
+        if(_Agent.remainingDistance > 0.5f)
+        {
+            _Agent.speed = 3f;
+            _Agent.SetDestination(_PlayerFollow.position);
+        }
         /*
         WaitForFixedUpdate Wait = new WaitForFixedUpdate();
         while (true)
@@ -121,17 +154,24 @@ public class CompanionMovement : MonoBehaviour
             yield return Wait;
         }
         */
+        yield return null;
     }
-    private void FollowPlayer()
+
+
+    private IEnumerator FollowPlayer()
     {
 
-        _Agent.SetDestination(_PlayerFollow.position);
+       
+
+        _Agent.SetDestination(_Target.position);
         _Agent.speed = 8f;
 
 
         // Fazer companion seguir no FU , 
 
         // ver distancia ate Follow Point
+
+
         // Se distancia for superior a Y  (porque torna movimento mais natural e dinamico)
         // usar navmesh (Set Destinatin)
 
@@ -169,7 +209,21 @@ public class CompanionMovement : MonoBehaviour
         yield return new WaitUntil(() => _Agent.remainingDistance <= _Agent.stoppingDistance);
         */
         //_Companion.ChangeState(CompanionState.Idle);
+        yield return null; // wait for agent's destination
+
     }
+
+    private void PosUpdate()
+    {
+        _Agent.speed = 1F;
+
+        if (_Agent.remainingDistance <= 2f)
+        {
+            _Agent.SetDestination(_Target.position);
+        }
+            
+    }
+
 
 
 }

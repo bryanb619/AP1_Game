@@ -171,6 +171,9 @@ public class Player_test : MonoBehaviour
         else
             rb.drag = 0;
 
+
+
+
     }
 
     private void FixedUpdate()
