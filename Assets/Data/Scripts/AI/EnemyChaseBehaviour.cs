@@ -15,7 +15,7 @@ using UnityEngine.Animations;
 
 // The script that controls an agent using an FSM
 //[RequireComponent(typeof(NavMeshAgent))]
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyChaseBehaviour : MonoBehaviour
 {
 
 
@@ -117,8 +117,7 @@ public class EnemyBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-       // FOVRoutine();
-
+      
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
@@ -135,15 +134,27 @@ public class EnemyBehaviour : MonoBehaviour
         transform.LookAt(playerTarget);
 
         _Agent.speed = 4f;
-        _Agent.SetDestination(Target.position);
+        
 
-
-        if(_Agent.remainingDistance <= 5f)
+        if(_Agent.remainingDistance <= 2.4f)
         {
             _Agent.speed = 0f;
+            //_Agent.SetDestination(transform.position);
+            Atack();
+
+        }
+        else
+        {
+            _Agent.speed = 4f;
+            _Agent.SetDestination(Target.position);
         }
 
+
         //print("ATTACK");
+    }
+    private void Atack()
+    {
+        print("ATTACK");
     }
 
 
