@@ -1,16 +1,9 @@
-﻿/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Author: Nuno Fachada
- * */
-
-using System;
+﻿using System;
 using UnityEngine;
 //using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-//using System.Collections;
+using System.Collections;
 //using UnityEngine.Animations;
 
 // The script that controls an agent using an FSM
@@ -20,38 +13,56 @@ public class CompanionBehaviour : MonoBehaviour
     public Transform[] Pos;
     //float dist;
 
+    [SerializeField]private GameObject _EPI; // Enemy presence Image
+
     [SerializeField]private NavMeshAgent _Companion;
+    [SerializeField] private Transform _Target;
 
-    private bool PlayerIsMoving;
+    public bool PlayerIsMoving;
+    private bool _StartFollow;
 
-
-    // References to enemies
-    //private GameObject PlayerObject;
-
-    // Patrol Points
+    //private Player_test _Player;
 
 
     // Reference to the state machine
     private StateMachine stateMachine;
 
+    private bool EnemyIS;
+    public bool canSee => EnemyIS;
+    [Range(10, 150)]
+    public float radius;
+    [Range(50, 360)]
+    public float angle;
+
+    public LayerMask targetMask;
+    public LayerMask obstructionMask;
+    [SerializeField] private Transform FOV;
+    public Transform EEFOV => FOV; // Enemy Editor FOV
 
     // Create the FSM
     private void Start()
     {
-
         _Companion = GetComponent<NavMeshAgent>();
-       
+        //_Player = FindObjectOfType<Player_test>();
+        PlayerIsMoving = false;
+
+        // EPI
+
+        StartCoroutine(FOVRoutine());
+
+
+
 
         // Create the states
-        State IdleState = new State("On Guard",
-            () => Debug.Log("Enter On Guard state"),
+        LibGameAI.FSMs.State IdleState = new State("On Idle",
+            () => Debug.Log("Idle state"),
             Idle,
-            () => Debug.Log("Leave On Guard state"));
+            () => Debug.Log("Left On Guard state"));
 
-        State FollowState = new State("Fight",
-            () => Debug.Log("Enter Fight state"),
+        State FollowState = new State("Follow",
+            () => Debug.Log("Follow state"),
             Follow,
-            () => Debug.Log("Leave Fight state"));
+            () => Debug.Log("Left Follow state"));
 
 
 
@@ -60,14 +71,14 @@ public class CompanionBehaviour : MonoBehaviour
         // Idle
         IdleState.AddTransition(
             new Transition(
-                () => PlayerIsMoving == true, 
+                () => _StartFollow == true, 
                 () => Debug.Log("Player found!"),
                 FollowState));
 
         // Follow
         FollowState.AddTransition(
            new Transition(
-               () => PlayerIsMoving == false,
+               () => _StartFollow == false,
                () => Debug.Log("Player found!"),
                IdleState));
         
@@ -79,9 +90,15 @@ public class CompanionBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        // FOVRoutine();
+        //Distance();
+        //_Player.InMotion();
 
-        Distance();
+        CheckMoveBool();
+        CheckEnemy();
+
+
+
+
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
@@ -97,6 +114,7 @@ public class CompanionBehaviour : MonoBehaviour
 
             if (dist <= 0.1f)
             {
+                
 
             }
             else
@@ -105,28 +123,111 @@ public class CompanionBehaviour : MonoBehaviour
             }
         }
     }
+    
+    private void CheckMoveBool()
+    {
+        
+        //Debug.Log(PlayerIsMoving);
+
+
+        if (PlayerIsMoving == true)
+        {
+            _StartFollow = true;
+        }
+        else
+        {
+            _StartFollow = false;
+        }
+
+    }
+    private void CheckEnemy()
+    {
+
+        if(EnemyIS)
+        {
+            _EPI.SetActive(true);
+        }
+        else
+        {
+            _EPI.SetActive(false);
+        }
+    }
+
+
 
     // Chase the small enemy
     private void Idle()
     {
-        
+
         // player is not moving (agent stop)
 
-        
+        //print("doing nothing now");
+        _Companion.speed = 2F;
 
         // follow only camera movement
 
+        if(_Companion.remainingDistance <= 3f)
+        {
+            CameraUpdatePos();
+        }
+
 
        
+    }
+
+    private void CameraUpdatePos()
+    {
+        //
+        _Companion.SetDestination(_Target.position);
+
     }
 
     private void Follow()
     {
 
         // follow player and camera movement
+        _Companion.speed = 8F;
+       // print("follow!!");
+        _Companion.SetDestination(_Target.position);
 
 
+    }
 
+
+    private IEnumerator FOVRoutine()
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.2f);
+
+        while (true)
+        {
+            yield return wait;
+            FieldOfViewCheck();
+        }
+    }
+
+    private void FieldOfViewCheck()
+    {
+        Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
+
+        if (rangeChecks.Length != 0)
+        {
+            Transform target = rangeChecks[0].transform;
+            Vector3 directionToTarget = (target.position - FOV.position).normalized;
+
+            if (Vector3.Angle(FOV.forward, directionToTarget) < angle / 2)
+            {
+                float distanceToTarget = Vector3.Distance(FOV.position, target.position);
+
+                if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                    EnemyIS = true;
+                else
+                    EnemyIS = false;
+            }
+            else
+                EnemyIS = false;
+        }
+        else if (EnemyIS)
+            EnemyIS = false;
     }
 
 }

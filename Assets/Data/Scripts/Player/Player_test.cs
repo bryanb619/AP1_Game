@@ -143,6 +143,23 @@ public class Player_test : MonoBehaviour
     Rigidbody rb;
     public bool dashing;
 
+    private bool PlayerOnMove;
+    public bool _PlayerOnMove => PlayerOnMove;
+    private CompanionBehaviour _CompanionMovement;
+
+    private float speed;
+
+    // player health
+    private const int _MaxHealth = 100;
+
+    private int _currentHealth;
+    public int CurretHealth => _currentHealth;
+
+    [Header("Health bar")]
+    public HealthBar _healthBar;
+    [HideInInspector]
+    public bool HealthSetAtMax;
+
     private enum MovementState
     {
         walking,
@@ -153,9 +170,15 @@ public class Player_test : MonoBehaviour
 
     private void Start()
     {
+
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
+
+        _CompanionMovement = FindObjectOfType<CompanionBehaviour>();
+        HealthSetAtMax = true;
+        _currentHealth = 100;
     }
 
     private void Update()
@@ -165,6 +188,10 @@ public class Player_test : MonoBehaviour
         MyInput();
         SpeedControl();
         StateHandler();
+        CheatCheck();
+
+        //InMotion();
+
 
         if (state == MovementState.walking)
             rb.drag = groundDrag;
@@ -175,10 +202,22 @@ public class Player_test : MonoBehaviour
 
 
     }
+    /*
+    public bool InMotion()
+    {
+        return !Mathf.Approximately(rb.velocity.magnitude, 0f);
+    }
+    */
+
 
     private void FixedUpdate()
     {
-        MovePlayer();   
+        MovePlayer();
+        PlayerSpeed();
+
+       
+
+        
     }
 
     private float desiredMoveSpeed, lastDesiredMoveSpeed;
@@ -228,9 +267,13 @@ public class Player_test : MonoBehaviour
 
         lastDesiredMoveSpeed = desiredMoveSpeed;
         lastState = state;
+
+        
+
     }
 
     private float speedChangeFactor;
+    private Vector3 lastPosition;
 
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
@@ -259,6 +302,7 @@ public class Player_test : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
+       
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
@@ -343,6 +387,82 @@ public class Player_test : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
-    
+
+
+
+    private void PlayerSpeed()
+    {
+        Debug.Log(speed);
+        speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        lastPosition = transform.position;
+
+        if(speed >= 5f)
+        {
+            //Debug.Log("true");
+            //PlayerOnMove = true;
+            //_CompanionMovement.PlayerInput(PlayerOnMove);
+
+            _CompanionMovement.PlayerIsMoving = true;
+
+        }
+        else
+        {
+            //PlayerOnMove = false;
+            // _CompanionMovement.PlayerInput(PlayerOnMove);
+            _CompanionMovement.PlayerIsMoving = false;
+        }
+
+        
+    }
+    public void TakeDamage(int damage)
+    {
+        HealthSetAtMax = false;
+        Debug.Log("Player Health: " + _currentHealth);
+        _currentHealth -= damage;
+
+        _healthBar.SetHealth(_currentHealth);
+
+        if (_currentHealth <= 0)
+        {
+            Debug.Log("DEAD");
+            //SceneManager.LoadScene("Restart");
+            //RestarMenu.SetActive(true);
+
+            //Time.timeScale = 0f;
+        }
+    }
+
+    public void GiveHealth(int _health)
+    {
+        // Debug.Log("+ 15 health");
+        _currentHealth += _health;
+
+        Debug.Log("Player health is: " + _currentHealth);
+
+        _healthBar.SetHealth(_currentHealth);
+
+        if (_currentHealth >= _MaxHealth)
+        {
+            HealthSetAtMax = true;
+            // how to variables equal?
+            _currentHealth = 100;
+            _healthBar.SetHealth(_currentHealth);
+            Debug.Log("Player health: " + _currentHealth);
+
+        }
+    }
+
+    private void CheatCheck()
+    {
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            TakeDamage(20);
+        }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            GiveHealth(20);
+        }
+    }
+
     #endregion
 }

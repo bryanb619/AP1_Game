@@ -49,10 +49,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool canSeePlayer;
     public bool canSee => canSeePlayer;
 
+
+    // Attack settings
+
+    private Player_test _Player;
+
+    private float AttackRate = 2f;
+    private float nextAttack = 0f;
+
     // Get references to enemies
     private void Awake()
     {
         PlayerObject = GameObject.Find("Player");
+        
     }
 
     // Create the FSM
@@ -61,6 +70,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Health = 100f;
 
         _Agent = GetComponent<NavMeshAgent>();
+        _Player = FindObjectOfType<Player_test>();
 
         StartCoroutine(FOVRoutine());
 
@@ -84,31 +94,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 () => canSeePlayer == true, 
                 () => Debug.Log("Player found!"),
                 ChaseState));
-        /*
-        onGuardState.AddTransition(
-            new Transition(
-                () =>
-                    (bigEnemy.transform.position - transform.position).magnitude
-                    < minDistanceToBigEnemy,
-                () => Debug.Log("I just saw a big enemy!"),
-                runAwayState));
-        fightState.AddTransition(
-            new Transition(
-                () => URandom.value < 0.001f ||
-                    (bigEnemy.transform.position - transform.position).magnitude
-                        < minDistanceToBigEnemy,
-                () => Debug.Log("Losing a fight!"),
-                runAwayState));
-        runAwayState.AddTransition(
-            new Transition(
-                () => (smallEnemy.transform.position - transform.position).magnitude
-                        > minDistanceToSmallEnemy
-                    &&
-                    (bigEnemy.transform.position - transform.position).magnitude
-                        > minDistanceToBigEnemy,
-                () => Debug.Log("I barely escaped!"),
-                onGuardState));
-        */
 
         // Create the state machine
         stateMachine = new StateMachine(onGuardState);
@@ -134,19 +119,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Agent.SetDestination(Target.position);
 
 
-       if(_Agent.remainingDistance == 2f)
+       if(_Agent.remainingDistance <= 2f)
        {
-            Atack();
+            Attack();
        }
 
 
 
         //print("ATTACK");
     }
-    private void Atack()
+    private void Attack()
     {
-        print("ATTACK");
-       // _Agent.speed = 0f;
+
+        if (Time.time > nextAttack)
+        {
+            nextAttack = Time.time + AttackRate;
+            _Player.TakeDamage(20);
+
+        }
     }
 
 
@@ -226,6 +216,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // call for AI event
         //DieEvent.Invoke();
 
-        Debug.Log("Enemy died");
+       // Debug.Log("Enemy died");
     }
 }
