@@ -20,10 +20,10 @@ public class CompanionBehaviour : MonoBehaviour
     public Transform[] Pos;
 
     private NavMeshAgent _Companion;
-    private float _Health;
+
 
     // References to enemies
-    private GameObject PlayerObject;
+    //private GameObject PlayerObject;
 
     // Patrol Points
 
@@ -39,7 +39,6 @@ public class CompanionBehaviour : MonoBehaviour
         _Companion = GetComponent<NavMeshAgent>();
        
 
-
         // Create the states
         State IdleState = new State("On Guard",
             () => Debug.Log("Enter On Guard state"),
@@ -54,7 +53,7 @@ public class CompanionBehaviour : MonoBehaviour
 
 
         // Add the transitions
-
+        /*
         // Idle
         IdleState.AddTransition(
             new Transition(
@@ -69,7 +68,7 @@ public class CompanionBehaviour : MonoBehaviour
                () => Debug.Log("Player found!"),
                IdleState));
         
-
+        */
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
     }
@@ -84,12 +83,6 @@ public class CompanionBehaviour : MonoBehaviour
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
-        /*
-        if (canSeePlayer == true)
-        {
-            //print("CAN SEE PLAYER IS: " + canSeePlayer);
-        }
-        */
     }
 
 
@@ -97,7 +90,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
         for (int i = 0; i < Pos.Length; i++)
         {
-            var dist = Vector3.Distance(transform.position, cubes[i].transform.position);
+            var dist = Vector3.Distance(transform.position, Pos[i].transform.position);
 
             if (dist <= 0.1f)
             {

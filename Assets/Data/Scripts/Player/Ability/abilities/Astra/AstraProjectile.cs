@@ -22,6 +22,14 @@ public class AstraProjectile : MonoBehaviour
             Debug.Log("HIT");
 
         }
+        EnemyChaseBehaviour Chaseenemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(20);
+            DestroyBullet();
+            Debug.Log("HIT");
+
+        }
 
         //Instantiate(impactEffect, transform.position, transform.rotation);
     }
