@@ -18,8 +18,11 @@ using UnityEngine.AI;
 public class CompanionBehaviour : MonoBehaviour
 {
     public Transform[] Pos;
+    //float dist;
 
-    private NavMeshAgent _Companion;
+    [SerializeField]private NavMeshAgent _Companion;
+
+    private bool PlayerIsMoving;
 
 
     // References to enemies
@@ -53,22 +56,22 @@ public class CompanionBehaviour : MonoBehaviour
 
 
         // Add the transitions
-        /*
+        
         // Idle
         IdleState.AddTransition(
             new Transition(
-                () => canSeePlayer == true, 
+                () => PlayerIsMoving == true, 
                 () => Debug.Log("Player found!"),
                 FollowState));
 
         // Follow
         FollowState.AddTransition(
            new Transition(
-               () => canSeePlayer == true,
+               () => PlayerIsMoving == false,
                () => Debug.Log("Player found!"),
                IdleState));
         
-        */
+        
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
     }
@@ -107,7 +110,11 @@ public class CompanionBehaviour : MonoBehaviour
     private void Idle()
     {
         
+        // player is not moving (agent stop)
 
+        
+
+        // follow only camera movement
 
 
        
@@ -116,7 +123,7 @@ public class CompanionBehaviour : MonoBehaviour
     private void Follow()
     {
 
-
+        // follow player and camera movement
 
 
 

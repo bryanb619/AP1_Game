@@ -91,8 +91,8 @@ public class EnemyBehaviour : MonoBehaviour
         
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true, 
-                () => Debug.Log("Player found!"),
+                () => canSeePlayer == true || _Health < 99, 
+                () => Debug.Log(""),
                 ChaseState));
         /*
         onGuardState.AddTransition(
