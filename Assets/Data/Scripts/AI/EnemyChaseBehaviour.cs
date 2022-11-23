@@ -7,7 +7,7 @@
 
 using System;
 using UnityEngine;
-using URandom = UnityEngine.Random;
+//using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
 using System.Collections;
@@ -121,10 +121,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
-        if (canSeePlayer == true)
-        {
-            //print("CAN SEE PLAYER IS: " + canSeePlayer);
-        }
+  
     }
 
 
@@ -134,20 +131,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
         transform.LookAt(playerTarget);
 
         _Agent.speed = 4f;
-        
+        _Agent.SetDestination(Target.position);
 
-        if(_Agent.remainingDistance <= 2.4f)
-        {
-            _Agent.speed = 0f;
-            //_Agent.SetDestination(transform.position);
+
+       if(_Agent.remainingDistance == 2f)
+       {
             Atack();
+       }
 
-        }
-        else
-        {
-            _Agent.speed = 4f;
-            _Agent.SetDestination(Target.position);
-        }
 
 
         //print("ATTACK");
@@ -155,6 +146,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void Atack()
     {
         print("ATTACK");
+       // _Agent.speed = 0f;
     }
 
 

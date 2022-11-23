@@ -12,6 +12,7 @@ using LibGameAI.FSMs;
 using UnityEngine.AI;
 using System.Collections;
 using UnityEngine.Animations;
+using System.Runtime.CompilerServices;
 
 // The script that controls an agent using an FSM
 //[RequireComponent(typeof(NavMeshAgent))]
@@ -49,6 +50,14 @@ public class EnemyBehaviour : MonoBehaviour
     private bool canSeePlayer;
     public bool canSee => canSeePlayer;
 
+    [SerializeField]
+    private Transform _shootPos;
+
+    [SerializeField] private GameObject bullet;
+
+    private float fireRate = 2f;
+    private float nextFire = 0f;
+
     // Get references to enemies
     private void Awake()
     {
@@ -58,11 +67,12 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        _Health = 100f;
 
         _Agent = GetComponent<NavMeshAgent>();
-
         StartCoroutine(FOVRoutine());
+
+        canSeePlayer = false;
+        _Health = 100f;
 
         // Create the states
         State onGuardState = new State("On Guard",
@@ -122,10 +132,12 @@ public class EnemyBehaviour : MonoBehaviour
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
+        /*
         if (canSeePlayer == true)
         {
             //print("CAN SEE PLAYER IS: " + canSeePlayer);
         }
+        */
     }
 
 
@@ -137,8 +149,20 @@ public class EnemyBehaviour : MonoBehaviour
         _Agent.speed = 4f;
         _Agent.SetDestination(Target.position);
 
+        // shoot
+        if (_Agent.remainingDistance <= 10f && canSee == true)
+        {
+            if (Time.time > nextFire)
+            {
+                nextFire = Time.time + fireRate;
+                Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+            }
 
-        if(_Agent.remainingDistance <= 5f)
+        }
+
+
+
+        if (_Agent.remainingDistance <= 5f)
         {
             _Agent.speed = 0f;
         }
