@@ -13,13 +13,17 @@ using UnityEngine.AI;
 using System.Collections;
 using UnityEngine.Animations;
 using System.Runtime.CompilerServices;
+using static UnityEngine.GraphicsBuffer;
 
 // The script that controls an agent using an FSM
 //[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
 
+    private Color originalColor;
+    public int damageBoost = 0;
 
+    GemManager gemManager;
     private NavMeshAgent _Agent;
     private float _Health;
 
@@ -53,7 +57,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField]
     private Transform _shootPos;
 
-    [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject bullet, gemPrefab;
 
     private float fireRate = 2f;
     private float nextFire = 0f;
@@ -67,7 +71,6 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-
         _Agent = GetComponent<NavMeshAgent>();
         StartCoroutine(FOVRoutine());
 
@@ -132,6 +135,11 @@ public class EnemyBehaviour : MonoBehaviour
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
+
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            Die();
+        }
         /*
         if (canSeePlayer == true)
         {
@@ -231,8 +239,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        _Health -= _damage;
-        Debug.Log("enemy shot");
+        _Health -= (_damage + damageBoost);
+        StartCoroutine(HitFlash());
+        Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
         if (_Health <= 0)
         {
             Die();
@@ -241,6 +250,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
+        
+        Instantiate(gemPrefab, transform.position, Quaternion.identity);
         //Instantiate(transform.position, Quaternion.identity);
         Destroy(gameObject);
 
@@ -248,5 +259,13 @@ public class EnemyBehaviour : MonoBehaviour
         //DieEvent.Invoke();
 
         Debug.Log("Enemy died");
+    }
+
+    IEnumerator HitFlash()
+    {
+        originalColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        GetComponent<Renderer>().material.color = Color.gray;
     }
 }
