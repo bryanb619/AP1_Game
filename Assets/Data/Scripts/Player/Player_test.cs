@@ -160,6 +160,8 @@ public class Player_test : MonoBehaviour
     [HideInInspector]
     public bool HealthSetAtMax;
 
+    public int shield = 0;
+
     private enum MovementState
     {
         walking,
@@ -405,10 +407,6 @@ public class Player_test : MonoBehaviour
             _CompanionMovement.PlayerIsMoving = true;
 
         }
-        else if(speed >= 10f)
-        {
-            Debug.Log("");
-        }
         else
         {
             //PlayerOnMove = false;
@@ -421,10 +419,10 @@ public class Player_test : MonoBehaviour
     public void TakeDamage(int damage)
     {
         HealthSetAtMax = false;
-        //Debug.Log("Player Health: " + _currentHealth);
-        _currentHealth -= damage;
+        _currentHealth -= (damage - shield);
 
         _healthBar.SetHealth(_currentHealth);
+        Debug.Log("Player Health: " + _currentHealth);
 
         if (_currentHealth <= 0)
         {

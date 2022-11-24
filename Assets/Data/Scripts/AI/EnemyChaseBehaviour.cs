@@ -17,7 +17,8 @@ using UnityEngine.Animations;
 //[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
-
+    public int damage = 20;
+    public int damageBoost = 0;
 
     private NavMeshAgent _Agent;
     private float _Health;
@@ -134,7 +135,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (Time.time > nextAttack)
         {
             nextAttack = Time.time + AttackRate;
-            _Player.TakeDamage(20);
+            _Player.TakeDamage(damage);
 
         }
     }
@@ -200,7 +201,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        _Health -= _damage;
+        _Health -= _damage + damageBoost;
         Debug.Log("enemy shot");
         if (_Health <= 0)
         {
