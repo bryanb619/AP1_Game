@@ -17,8 +17,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField]private NavMeshAgent _Companion;
     [SerializeField] private Transform _Target;
-
-    public bool PlayerIsMoving;
+    [HideInInspector] public bool PlayerIsMoving;
     private bool _StartFollow;
 
     //private Player_test _Player;
