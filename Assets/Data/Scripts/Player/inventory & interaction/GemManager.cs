@@ -11,6 +11,8 @@ public class GemManager : MonoBehaviour
     private EnemyBehaviour enemy;
     public EnemyChaseBehaviour enemyChase;
 
+    private WaitForSeconds waitFor10Seconds = new(10f);
+
     [SerializeField]
     private Gems gemType = new();
 
@@ -128,7 +130,7 @@ public class GemManager : MonoBehaviour
         enemy.damageBoost = 30;
         enemyChase.damageBoost = 30;
 
-        yield return new WaitForSeconds(10f);
+        yield return waitFor10Seconds;
 
         enemy.damageBoost = 0;
         enemyChase.damageBoost = 0;
@@ -138,7 +140,7 @@ public class GemManager : MonoBehaviour
     {
         playerScript.shield = 19;
 
-        yield return new WaitForSeconds(10f);
+        yield return waitFor10Seconds;
 
         playerScript.shield = 0;
     }
@@ -146,7 +148,7 @@ public class GemManager : MonoBehaviour
     IEnumerator ManaGem()
     {
         Debug.Log("You do nothing for now");
-        yield return new WaitForSeconds(10f);
+        yield return waitFor10Seconds;
         Debug.Log("You still do nothing");
     }
 
