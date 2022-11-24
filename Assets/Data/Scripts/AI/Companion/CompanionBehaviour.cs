@@ -18,6 +18,7 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField]private NavMeshAgent _Companion;
     [SerializeField] private Transform _Target;
     [HideInInspector] public bool PlayerIsMoving;
+    [HideInInspector] public bool PlayerIsDashing;
     private bool _StartFollow;
 
     //private Player_test _Player;
@@ -170,6 +171,11 @@ public class CompanionBehaviour : MonoBehaviour
             CameraUpdatePos();
         }
 
+        else if(_Companion.remainingDistance >= 8F)
+        {
+            KetChup();
+        }
+
 
        
     }
@@ -189,6 +195,18 @@ public class CompanionBehaviour : MonoBehaviour
        // print("follow!!");
         _Companion.SetDestination(_Target.position);
 
+        if (_Companion.remainingDistance >= 8F)
+        {
+            KetChup();
+        }
+    }
+
+
+    private void KetChup()
+    {
+        _Companion.acceleration = 12;
+        _Companion.speed = 14F;
+        _Companion.SetDestination(_Target.position);
 
     }
 
