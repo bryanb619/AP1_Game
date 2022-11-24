@@ -394,7 +394,7 @@ public class Player_test : MonoBehaviour
 
     private void PlayerSpeed()
     {
-        Debug.Log(speed);
+        //Debug.Log(speed);
         speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
         lastPosition = transform.position;
 
@@ -407,12 +407,18 @@ public class Player_test : MonoBehaviour
             _CompanionMovement.PlayerIsMoving = true;
 
         }
+        else if (speed >= 12)
+        {
+
+            _CompanionMovement.PlayerIsMoving = true;
+        }
         else
         {
             //PlayerOnMove = false;
             // _CompanionMovement.PlayerInput(PlayerOnMove);
             _CompanionMovement.PlayerIsMoving = false;
         }
+
 
         
     }
