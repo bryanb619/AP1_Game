@@ -94,7 +94,7 @@ public class EnemyBehaviour : MonoBehaviour
                 () => canSeePlayer == true || _Health < 99, 
                 () => Debug.Log(""),
                 ChaseState));
-        /*
+        /* //
         onGuardState.AddTransition(
             new Transition(
                 () =>
@@ -148,6 +148,10 @@ public class EnemyBehaviour : MonoBehaviour
 
         _Agent.speed = 4f;
         _Agent.SetDestination(Target.position);
+        
+        // ADD Last known POS!
+
+
 
         // shoot
         if (_Agent.remainingDistance <= 10f && canSee == true)

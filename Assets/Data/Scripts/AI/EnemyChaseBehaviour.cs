@@ -119,7 +119,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Agent.SetDestination(Target.position);
 
 
-       if(_Agent.remainingDistance <= 2f)
+       if(_Agent.remainingDistance <= 2.1f)
        {
             Attack();
        }
