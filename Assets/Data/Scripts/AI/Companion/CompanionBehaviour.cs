@@ -13,7 +13,8 @@ public class CompanionBehaviour : MonoBehaviour
     public Transform[] Pos;
     //float dist;
 
-    [SerializeField]private GameObject _EPI; // Enemy presence Image
+    //[SerializeField]private GameObject _EPI; // Enemy presence Image
+    private mini _MiniMapCollor;
 
     [SerializeField]private NavMeshAgent _Companion;
     [SerializeField] private Transform _Target;
@@ -43,6 +44,9 @@ public class CompanionBehaviour : MonoBehaviour
     private void Start()
     {
         _Companion = GetComponent<NavMeshAgent>();
+        //_EPI = GameObject.Find("Minimap Border");
+        _MiniMapCollor = FindObjectOfType<mini>();
+
         //_Player = FindObjectOfType<Player_test>();
         PlayerIsMoving = false;
 
@@ -54,15 +58,15 @@ public class CompanionBehaviour : MonoBehaviour
 
 
         // Create the states
-        LibGameAI.FSMs.State IdleState = new State("On Idle",
+        LibGameAI.FSMs.State IdleState = new State("",
             () => Debug.Log("Idle state"),
             Idle,
-            () => Debug.Log("Left On Guard state"));
+            () => Debug.Log(""));
 
-        State FollowState = new State("Follow",
-            () => Debug.Log("Follow state"),
+        State FollowState = new State("",
+            () => Debug.Log(""),
             Follow,
-            () => Debug.Log("Left Follow state"));
+            () => Debug.Log(""));
 
 
 
@@ -72,14 +76,14 @@ public class CompanionBehaviour : MonoBehaviour
         IdleState.AddTransition(
             new Transition(
                 () => _StartFollow == true, 
-                () => Debug.Log("Player found!"),
+                () => Debug.Log(""),
                 FollowState));
 
         // Follow
         FollowState.AddTransition(
            new Transition(
                () => _StartFollow == false,
-               () => Debug.Log("Player found!"),
+               () => Debug.Log(""),
                IdleState));
         
         
@@ -95,9 +99,6 @@ public class CompanionBehaviour : MonoBehaviour
 
         CheckMoveBool();
         CheckEnemy();
-
-
-
 
 
         Action actions = stateMachine.Update();
@@ -145,11 +146,13 @@ public class CompanionBehaviour : MonoBehaviour
 
         if(EnemyIS)
         {
-            _EPI.SetActive(true);
+            //_EPI.SetActive(true);
+            _MiniMapCollor.SetCollorRed();
         }
         else
         {
-            _EPI.SetActive(false);
+            //_EPI.SetActive(false);
+            _MiniMapCollor.SetCollorDefault();
         }
     }
 
