@@ -35,6 +35,7 @@ public class Dashing : MonoBehaviour
     {
         if (Input.GetKeyDown(dashKey))
         {
+            Cam_anim.SetTrigger("dashed");
             Dash();
         }
 
@@ -45,11 +46,7 @@ public class Dashing : MonoBehaviour
     private void Dash()
     {
         if (dashCdTimer > 0) return;
-        else
-        {
-            dashCdTimer = dashCd;
-            Cam_anim.SetTrigger("dashed");
-        }
+        else dashCdTimer = dashCd;
 
         pm.dashing = true;
 

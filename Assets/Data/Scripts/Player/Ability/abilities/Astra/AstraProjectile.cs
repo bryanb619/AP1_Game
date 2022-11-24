@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class AstraProjectile : MonoBehaviour
 {
-    private float bSpeed = 20f;
-    public int bDamage = 20;
+    private float Bspeed = 20f;
+    //private int Bdamage = 20;
     [SerializeField] private Rigidbody rb;
 
     // Start is called before the first frame update
     private void Start()
     {
-        rb.velocity = transform.forward * bSpeed;
+        rb.velocity = transform.forward * Bspeed;
     }
 
     public void OnTriggerEnter(Collider hitInfo)
@@ -17,7 +17,7 @@ public class AstraProjectile : MonoBehaviour
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         if (enemy != null)
         {
-            enemy.TakeDamage(bDamage);
+            enemy.TakeDamage(20);
             DestroyBullet();
             Debug.Log("HIT");
 
@@ -25,7 +25,7 @@ public class AstraProjectile : MonoBehaviour
         EnemyChaseBehaviour Chaseenemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
         if (enemy != null)
         {
-            enemy.TakeDamage(bDamage);
+            enemy.TakeDamage(20);
             DestroyBullet();
             Debug.Log("HIT");
 
