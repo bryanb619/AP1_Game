@@ -6,8 +6,10 @@ using UnityEngine.UIElements;
 
 public class GemManager : MonoBehaviour
 {
+    AstraProjectile astraProjectile;
+
     [SerializeField]
-    private Gems gemType = new Gems();
+    private Gems gemType = new();
 
     [SerializeField]
     private float maxDistance = 3;
@@ -15,7 +17,12 @@ public class GemManager : MonoBehaviour
     [SerializeField]
     private int speed = 2;
 
+    [SerializeField]
+    private Material damage, shield, mana;
+
     private GameObject player;
+    private int shieldBoost;
+    private int gemNumber;
 
     [SerializeField, HideInInspector]
     private MeshRenderer CubeRenderer;
@@ -24,6 +31,12 @@ public class GemManager : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("Player");
+    }
+
+    private void Awake()
+    {
+        gemNumber = UnityEngine.Random.Range(1, 4);
+        GemNumber(gemNumber);
     }
 
     // Update is called once per frame
@@ -45,41 +58,93 @@ public class GemManager : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
+            GemCatch();
             Destroy(gameObject);
     }
 
     #region Gem type and functions
-    void GemType()
+    public void GemNumber(int i)
     {
-        switch(gemType)
-        { 
+        switch (i)
+        {
+            case 1:
+                gemType = Gems.Damage;
+                GetComponentInChildren<MeshRenderer>().material = damage;
+                break;
+
+            case 2:
+                gemType = Gems.Shield;
+                GetComponentInChildren<MeshRenderer>().material = shield;
+                break;
+
+            case 3:
+                gemType = Gems.Mana;
+                GetComponentInChildren<MeshRenderer>().material = mana;
+                break;
+
+            default:
+                print("Error Selecting the Gem Type");
+                break;
+        }
+
+        Debug.Log("Number: " + gemNumber + "Type: " + gemType);
+    }
+    
+    public void GemCatch()
+    {
+        switch (gemType)
+        {
             case Gems.Damage:
-                break;  
+                StopCoroutine(ShieldGem());
+                StopCoroutine(ManaGem());
+                StartCoroutine(DamageGem());
+                break;
 
             case Gems.Shield:
+                StopCoroutine(ManaGem());
+                StopCoroutine(DamageGem());
+                StartCoroutine(ShieldGem());
                 break;
 
             case Gems.Mana:
+                StopCoroutine(DamageGem());
+                StopCoroutine(ShieldGem());
+                StartCoroutine(ManaGem());
                 break;
-            
+
             default:
                 break;
         }
     }
-    
-    void DamageGem()
-    {
 
+
+    IEnumerator DamageGem()
+    {
+        Debug.Log("Damage Boost Activated");
+        //astraProjectile.bDamage = 50;
+
+        yield return new WaitForSeconds(2f);
+
+        //astraProjectile.bDamage = 20;
+        Debug.Log("Damage Boost Deactivated");
     }
 
-    void ShieldGem()
+    IEnumerator ShieldGem()
     {
+        Debug.Log("Shield Boost Activated");
+        shieldBoost = 5;
 
+        yield return new WaitForSeconds(2f);
+
+        shieldBoost = 20;
+        Debug.Log("Shield Boost Deactivated");
     }
 
-    void ManaGem()
+    IEnumerator ManaGem()
     {
-
+        Debug.Log("You do nothing for now");
+        yield return new WaitForSeconds(2f);
+        Debug.Log("You still do nothing");
     }
 
     #endregion

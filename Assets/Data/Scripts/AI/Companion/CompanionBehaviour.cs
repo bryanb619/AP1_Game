@@ -96,7 +96,7 @@ public class CompanionBehaviour : MonoBehaviour
         CheckMoveBool();
         CheckEnemy();
 
-
+        LookAtPlayerAim();
 
 
 
@@ -228,6 +228,17 @@ public class CompanionBehaviour : MonoBehaviour
         }
         else if (EnemyIS)
             EnemyIS = false;
+    }
+
+    private void LookAtPlayerAim()
+    {
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit, 15))
+        {
+            Vector3 hitPosition = hit.point;
+            transform.LookAt(hitPosition);
+        }
     }
 
 }

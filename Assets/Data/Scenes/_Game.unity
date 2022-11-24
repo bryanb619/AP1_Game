@@ -135,14 +135,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7706567151166401844, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7706567151166401844, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7706567151166401844, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 157.509
       objectReference: {fileID: 0}
@@ -191,21 +183,9 @@ PrefabInstance:
       value: Camera Holder
       objectReference: {fileID: 0}
     - target: {fileID: 7706567151295317224, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
-      propertyPath: sensX
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 7706567151295317224, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
-      propertyPath: sensY
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 7706567151295317224, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
       propertyPath: orientation
       value: 
       objectReference: {fileID: 1624498289}
-    - target: {fileID: 7706567151295317231, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
-      propertyPath: m_RenderPostProcessing
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
 --- !u!4 &25010299 stripped
@@ -364,6 +344,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 31425527}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &70934283 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2358717911625157120, guid: 3795310d6f67e0e4388016d07c0b5e16, type: 3}
+  m_PrefabInstance: {fileID: 2358717912781244293}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &94925832
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,6 +1082,7 @@ MonoBehaviour:
   FOV: {fileID: 130577085}
   _shootPos: {fileID: 0}
   bullet: {fileID: 0}
+  gemPrefab: {fileID: 0}
 --- !u!23 &368884501
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2136,6 +2122,7 @@ MonoBehaviour:
   FOV: {fileID: 1822971585}
   _shootPos: {fileID: 1261196520}
   bullet: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
+  gemPrefab: {fileID: 1319023809}
 --- !u!195 &806539403
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2398,6 +2385,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1264128156040621205, guid: 98569d3689a44bc4eaf2d1b2766235f2, type: 3}
   m_PrefabInstance: {fileID: 565923494}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &872942569 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 990022993149712522, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
+  m_PrefabInstance: {fileID: 25010298}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &901410419
 GameObject:
   m_ObjectHideFlags: 0
@@ -2462,7 +2454,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 680847071157996186, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -82.39
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 680847071157996186, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2470,7 +2462,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 680847071157996186, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.71
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 680847071157996186, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2528,6 +2520,10 @@ PrefabInstance:
       propertyPath: child
       value: 
       objectReference: {fileID: 935393889}
+    - target: {fileID: 4806903162340540944, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
+      propertyPath: speed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4806903162340540944, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
       propertyPath: gemType
       value: 2
@@ -3177,6 +3173,11 @@ Transform:
   m_Father: {fileID: 806539401}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1319023809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
+  m_PrefabInstance: {fileID: 903568925}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1338560019
 GameObject:
   m_ObjectHideFlags: 0
@@ -3745,6 +3746,7 @@ MonoBehaviour:
   FOV: {fileID: 329136789}
   _shootPos: {fileID: 0}
   bullet: {fileID: 0}
+  gemPrefab: {fileID: 0}
 --- !u!23 &1460139982
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3975,37 +3977,11 @@ Transform:
   m_Father: {fileID: 2028071808}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1571431878
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1571431879}
-  m_Layer: 0
-  m_Name: FollowPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1571431879
+--- !u!4 &1571431879 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 1571431879, guid: 9e88e8f7ceda9bf4490ff98f3079096f, type: 3}
+  m_PrefabInstance: {fileID: 25010298}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1571431878}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.871, y: 0.058, z: 1.224}
-  m_LocalScale: {x: 1, y: 1.6999999, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 25010299}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1580322872
 GameObject:
   m_ObjectHideFlags: 0
@@ -4296,9 +4272,29 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1986035650766781540, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
+      propertyPath: dashCd
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986035650766781540, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
+      propertyPath: Cam_anim
+      value: 
+      objectReference: {fileID: 872942569}
+    - target: {fileID: 1986035650766781540, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
+      propertyPath: dashForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986035650766781540, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
       propertyPath: playerCam
       value: 
       objectReference: {fileID: 25010299}
+    - target: {fileID: 1986035650766781540, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
+      propertyPath: dashDuration
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1986035650766781540, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
+      propertyPath: useCameraFoward
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1986035650766781541, guid: 7aa5d5862e6cb73428508b3c71d07ce9, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -4371,7 +4367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb39b3bb13a0f8439ec7cc6b060ceda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 1070865129}
+  firePoint: {fileID: 70934283}
   bulletPrefab: {fileID: 2646837571204449996, guid: 358a9e9a785ebb846abde0cf67b9bb47, type: 3}
 --- !u!4 &1666249004 stripped
 Transform:

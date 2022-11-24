@@ -155,6 +155,8 @@ public class Player_test : MonoBehaviour
     private int _currentHealth;
     public int CurretHealth => _currentHealth;
 
+    private int damageTaken = 20;
+
     [Header("Health bar")]
     public HealthBar _healthBar;
     [HideInInspector]
@@ -392,7 +394,6 @@ public class Player_test : MonoBehaviour
 
     private void PlayerSpeed()
     {
-        Debug.Log(speed);
         speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
         lastPosition = transform.position;
 
@@ -456,7 +457,7 @@ public class Player_test : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.C))
         {
-            TakeDamage(20);
+            TakeDamage(damageTaken);
         }
         if (Input.GetKeyDown(KeyCode.V))
         {

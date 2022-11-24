@@ -19,7 +19,7 @@ using System.Runtime.CompilerServices;
 public class EnemyBehaviour : MonoBehaviour
 {
 
-
+    GemManager gemManager;
     private NavMeshAgent _Agent;
     private float _Health;
 
@@ -53,7 +53,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField]
     private Transform _shootPos;
 
-    [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject bullet, gemPrefab;
 
     private float fireRate = 2f;
     private float nextFire = 0f;
@@ -67,7 +67,6 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-
         _Agent = GetComponent<NavMeshAgent>();
         StartCoroutine(FOVRoutine());
 
@@ -132,6 +131,11 @@ public class EnemyBehaviour : MonoBehaviour
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
+
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            Die();
+        }
         /*
         if (canSeePlayer == true)
         {
@@ -241,6 +245,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
+        Instantiate(gemPrefab, transform.position, Quaternion.identity);
         //Instantiate(transform.position, Quaternion.identity);
         Destroy(gameObject);
 
