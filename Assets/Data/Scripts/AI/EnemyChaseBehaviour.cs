@@ -17,11 +17,13 @@ using UnityEngine.Animations;
 //[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
+
+    private Color originalColor;
     public int damage = 20;
     public int damageBoost = 0;
 
     private NavMeshAgent _Agent;
-    private float _Health;
+    private int _Health;
 
     // References to enemies
     private GameObject PlayerObject;
@@ -58,6 +60,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float AttackRate = 2f;
     private float nextAttack = 0f;
 
+
+
+
     // Get references to enemies
     private void Awake()
     {
@@ -68,7 +73,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        _Health = 100f;
+        _Health = 100;
 
         _Agent = GetComponent<NavMeshAgent>();
         _Player = FindObjectOfType<Player_test>();
@@ -76,15 +81,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
         StartCoroutine(FOVRoutine());
 
         // Create the states
-        State onGuardState = new State("On Guard",
+        State onGuardState = new State("",
             () => Debug.Log("Enter On Guard state"),
             null,
-            () => Debug.Log("Leave On Guard state"));
+            () => Debug.Log(""));
 
-        State ChaseState = new State("Fight",
+        State ChaseState = new State("",
             () => Debug.Log("Enter Fight state"),
             ChasePlayer,
-            () => Debug.Log("Leave Fight state"));
+            () => Debug.Log(""));
 
 
 
@@ -201,12 +206,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        _Health -= _damage + damageBoost;
-        Debug.Log("enemy shot");
+       
+
         if (_Health <= 0)
         {
             Die();
         }
+        if (_Health > 0)
+        {
+            StartCoroutine(HitFlash());
+        }
+
+        _Health -= _damage + damageBoost;
+        Debug.Log("enemy shot" + _Health);
     }
 
     private void Die()
@@ -218,5 +230,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //DieEvent.Invoke();
 
        // Debug.Log("Enemy died");
+    }
+
+
+    IEnumerator HitFlash()
+    {
+        originalColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        GetComponent<Renderer>().material.color = Color.gray;
     }
 }

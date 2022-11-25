@@ -9,12 +9,24 @@ public class Tester : MonoBehaviour
 
     [SerializeField] private GameObject GameTestLight;
 
+    private EnemyBehaviour Enemy1;
+    private EnemyChaseBehaviour Enemy2;
+
+    public bool KillEnemy; 
+
+
 
 
     private void Start()
     {
+        KillEnemy = false;
         TimeBoost = false;
         LightActive = false;
+
+        Enemy1 = FindObjectOfType<EnemyBehaviour>();
+        Enemy2 = FindObjectOfType<EnemyChaseBehaviour>();
+
+
     }
 
     // Start is called before the first frame update
@@ -22,6 +34,7 @@ public class Tester : MonoBehaviour
     void Update()
     {
         CheckBools();
+        KillAll();
     }
 
 
@@ -65,6 +78,16 @@ public class Tester : MonoBehaviour
     private void DisabletestLight()
     {
         GameTestLight.SetActive(false);
+    }
+
+    private void KillAll()
+    {
+        if (Input.GetKeyDown(KeyCode.T) || KillEnemy == true)
+        {
+            //Die();
+            Enemy1.TakeDamage(100);
+            Enemy2.TakeDamage(100); 
+        }
     }
 
 

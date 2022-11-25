@@ -134,12 +134,6 @@ public class EnemyBehaviour : MonoBehaviour
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
-
-
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            Die();
-        }
         /*
         if (canSeePlayer == true)
         {
@@ -243,13 +237,21 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        _Health -= (_damage + damageBoost);
-        StartCoroutine(HitFlash());
-        Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
         if (_Health <= 0)
         {
             Die();
         }
+
+        
+
+        if (_Health > 0)
+        {
+            StartCoroutine(HitFlash());
+        }
+        _Health -= (_damage + damageBoost);
+        // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
+
+
     }
 
     private void Die()
@@ -272,4 +274,5 @@ public class EnemyBehaviour : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         GetComponent<Renderer>().material.color = Color.gray;
     }
+
 }
