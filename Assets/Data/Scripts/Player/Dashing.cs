@@ -33,9 +33,21 @@ public class Dashing : MonoBehaviour
 
     private void Update()
     {
+        /*
         if (Input.GetKeyDown(dashKey))
         {
-            Cam_anim.SetTrigger("dashed");
+            //Cam_anim.SetTrigger("dashed");
+            Dash();
+        }
+        */
+        DashInput();
+    }
+
+    private void DashInput()
+    {
+        if (Input.GetButtonDown("Dash"))
+        {
+            //Cam_anim.SetTrigger("dashed");
             Dash();
         }
 
