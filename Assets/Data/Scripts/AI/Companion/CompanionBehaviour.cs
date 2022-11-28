@@ -174,7 +174,7 @@ public class CompanionBehaviour : MonoBehaviour
             CameraUpdatePos();
         }
 
-        else if(_Companion.remainingDistance >= 8F)
+        else if(_Companion.remainingDistance >= 6F)
         {
             KetChup();
         }
@@ -198,7 +198,7 @@ public class CompanionBehaviour : MonoBehaviour
        // print("follow!!");
         _Companion.SetDestination(_Target.position);
 
-        if (_Companion.remainingDistance >= 8F)
+        if (_Companion.remainingDistance >= 6F)
         {
             KetChup();
         }
@@ -208,7 +208,7 @@ public class CompanionBehaviour : MonoBehaviour
     private void KetChup()
     {
         _Companion.acceleration = 12;
-        _Companion.speed = 14F;
+        _Companion.speed = 13F;
         _Companion.SetDestination(_Target.position);
 
     }
