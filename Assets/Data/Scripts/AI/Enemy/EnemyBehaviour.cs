@@ -30,14 +30,18 @@ public class EnemyBehaviour : MonoBehaviour
     // References to enemies
     private GameObject PlayerObject;
 
+    [SerializeField] private Transform Target;
+    public Transform playerTarget => Target;
+
+    private float minDist = 7f;
+
+
     // Patrol Points
 
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
 
-    [SerializeField] private Transform Target;
-    public Transform playerTarget => Target;
-
+   
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -89,14 +93,33 @@ public class EnemyBehaviour : MonoBehaviour
             () => Debug.Log("Leave Fight state"));
 
 
+        State PatrolState = new State("no visual",
+            () => Debug.Log("Enter Fight state"),
+            Patrol,
+            () => Debug.Log("Leave Fight state"));
+
+
 
         // Add the transitions
-        
+
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true || _Health < 99, 
+                () => canSeePlayer == true, 
                 () => Debug.Log(""),
                 ChaseState));
+
+        ChaseState.AddTransition(
+            new Transition(
+                () => canSeePlayer == false,
+                () => Debug.Log(""),
+                PatrolState));
+
+
+        PatrolState.AddTransition(
+           new Transition(
+               () => canSeePlayer == true,
+               () => Debug.Log(""),
+               ChaseState));
         /* //
         onGuardState.AddTransition(
             new Transition(
@@ -130,20 +153,23 @@ public class EnemyBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-       // FOVRoutine();
+        MinimalCheck(); // Tester
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
-        /*
-        if (canSeePlayer == true)
+       
+    }
+
+    private void MinimalCheck()
+    {
+        if((playerTarget.transform.position - transform.position).magnitude < minDist)
         {
-            //print("CAN SEE PLAYER IS: " + canSeePlayer);
+            transform.LookAt(playerTarget.position);
         }
-        */
     }
 
 
-    // Chase the small enemy
+    // Chase 
     private void ChasePlayer()
     {
         transform.LookAt(playerTarget);
@@ -179,11 +205,21 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Patrol()
     {
-        /*
-        
         _Agent.autoBraking = false;
+        _Agent.stoppingDistance = 0f;
 
-        _Agent.speed = 5f;
+        if (!_Agent.pathPending && _Agent.remainingDistance < 0.5f)
+        {
+            GotoNetPoint();
+        }
+
+    }
+
+
+    private void GotoNetPoint()
+    {
+        
+        _Agent.speed = 3f;
         // Returns if no points have been set up
         if (_PatrolPoints.Length == 0)
             return;
@@ -194,9 +230,9 @@ public class EnemyBehaviour : MonoBehaviour
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
         destPoint = (destPoint + 1) % _PatrolPoints.Length;
-
-        */
     }
+
+    #region Field of view Routine
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);
@@ -231,19 +267,23 @@ public class EnemyBehaviour : MonoBehaviour
         }
         else if (canSeePlayer)
             canSeePlayer = false;
-    }
 
+       
+
+    }
+    #endregion
 
 
     public void TakeDamage(int _damage)
     {
+        transform.LookAt(playerTarget.position);
+
         if (_Health <= 0)
         {
             Die();
         }
 
         
-
         if (_Health > 0)
         {
             StartCoroutine(HitFlash());

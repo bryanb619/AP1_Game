@@ -36,6 +36,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField] private Transform Target;
     public Transform playerTarget => Target;
 
+    private float minDist = 7f;
+
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -91,15 +93,32 @@ public class EnemyChaseBehaviour : MonoBehaviour
             ChasePlayer,
             () => Debug.Log(""));
 
+        State PatrolState = new State("no visual",
+            () => Debug.Log("Enter Fight state"),
+            Patrol,
+            () => Debug.Log("Leave Fight state"));
+
 
 
         // Add the transitions
-        
+
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true || _Health < 99f, 
+                () => canSeePlayer == true , 
                 () => Debug.Log("Player found!"),
                 ChaseState));
+
+        ChaseState.AddTransition(
+           new Transition(
+               () => canSeePlayer == false,
+               () => Debug.Log(""),
+               PatrolState));
+
+        PatrolState.AddTransition(
+           new Transition(
+               () => canSeePlayer == true,
+               () => Debug.Log(""),
+               ChaseState));
 
         // Create the state machine
         stateMachine = new StateMachine(onGuardState);
@@ -108,11 +127,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-      
+        MinimalCheck();
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
   
+    }
+
+    private void MinimalCheck()
+    {
+        if ((playerTarget.transform.position - transform.position).magnitude < minDist)
+        {
+            transform.LookAt(playerTarget.position);
+        }
     }
 
 
@@ -121,7 +148,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         transform.LookAt(playerTarget);
 
-        _Agent.speed = 4f;
+        _Agent.speed = 5f;
+        _Agent.acceleration = 13f;
         _Agent.SetDestination(Target.position);
 
 
@@ -148,8 +176,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Patrol()
     {
-        /*
-        
+
+
+        _Agent.autoBraking = false;
+        _Agent.stoppingDistance = 0f;
+
+        if (!_Agent.pathPending && _Agent.remainingDistance < 0.5f)
+            GotoNetPoint();
+    }
+
+    private void GotoNetPoint()
+    {
         _Agent.autoBraking = false;
 
         _Agent.speed = 5f;
@@ -163,9 +200,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
         destPoint = (destPoint + 1) % _PatrolPoints.Length;
-
-        */
     }
+
+    #region Field of view Routine
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);
@@ -202,11 +239,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
             canSeePlayer = false;
     }
 
-
+    #endregion
 
     public void TakeDamage(int _damage)
     {
-       
+        transform.LookAt(playerTarget.position);
 
         if (_Health <= 0)
         {

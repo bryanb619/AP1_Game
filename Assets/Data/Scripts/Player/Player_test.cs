@@ -147,6 +147,8 @@ public class Player_test : MonoBehaviour
     public bool _PlayerOnMove => PlayerOnMove;
     private CompanionBehaviour _CompanionMovement;
 
+    private RestartMenu restartMenu;
+
     private float speed;
 
     // player health
@@ -179,6 +181,7 @@ public class Player_test : MonoBehaviour
         readyToJump = true;
 
         _CompanionMovement = FindObjectOfType<CompanionBehaviour>();
+        restartMenu = FindObjectOfType<RestartMenu>();
         HealthSetAtMax = true;
         _currentHealth = 100;
     }
@@ -433,6 +436,7 @@ public class Player_test : MonoBehaviour
         if (_currentHealth <= 0)
         {
             Debug.Log("DEAD");
+            restartMenu.LoadRestart();
             //SceneManager.LoadScene("Restart");
             //RestarMenu.SetActive(true);
 
