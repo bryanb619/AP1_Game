@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 23800000, guid: 56a8e62157f505a45bf9a795aca9bfa5, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: f3900ae436dd6244587cf19871315bcf, type: 2}
 --- !u!4 &70934283 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2358717911625157120, guid: 3795310d6f67e0e4388016d07c0b5e16, type: 3}
@@ -735,7 +735,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &416433890
 Transform:
   m_ObjectHideFlags: 0
@@ -1095,7 +1095,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1507830600}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &496382024
 GameObject:
@@ -1595,7 +1595,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &638456777
 Transform:
   m_ObjectHideFlags: 0
@@ -3167,7 +3167,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1507830600}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &1007603331
 SphereCollider:
@@ -3180,7 +3180,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 20.403978
+  m_Radius: 16.13884
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1007603332
 MonoBehaviour:
@@ -4394,8 +4394,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 483184652}
   - {fileID: 1007603330}
+  - {fileID: 483184652}
   m_Father: {fileID: 2028071808}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: -196.935, z: 0}
@@ -4504,7 +4504,7 @@ MonoBehaviour:
   minDist: 7
   minDist2: 6
   minAttackDist: 2
-  radius: 25
+  radius: 28.5
   angle: 160
   targetMask:
     serializedVersion: 2
@@ -4515,8 +4515,8 @@ MonoBehaviour:
   FOV: {fileID: 483184652}
   damage: 20
   damageBoost: 0
-  HideSensitivity: -0.306
-  UpdateFrequency: 0.6
+  HideSensitivity: -0.3
+  UpdateFrequency: 0.676
   HidableLayers:
     serializedVersion: 2
     m_Bits: 64

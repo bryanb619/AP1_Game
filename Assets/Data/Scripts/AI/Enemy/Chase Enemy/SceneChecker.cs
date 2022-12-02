@@ -5,8 +5,8 @@ using UnityEngine;
 public class SceneChecker : MonoBehaviour
 {
 
-    [SerializeField] private SphereCollider Collider;
-    public SphereCollider collider => Collider;
+    public SphereCollider Collider;
+
 
     public float FieldOfView = 360f;
     public LayerMask LineOfSightLayers;
@@ -18,7 +18,7 @@ public class SceneChecker : MonoBehaviour
 
     private Coroutine CheckForLineOfSightCoroutine;
 
-    private EnemyChaseBehaviour[] enemyChase;
+    //private EnemyChaseBehaviour[] enemyChase;
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class SceneChecker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        enemyChase = FindObjectsOfType<EnemyChaseBehaviour>();
+        //enemyChase = FindObjectsOfType<EnemyChaseBehaviour>();
 
         if (!CheckLineOfSight(other.transform))
         {

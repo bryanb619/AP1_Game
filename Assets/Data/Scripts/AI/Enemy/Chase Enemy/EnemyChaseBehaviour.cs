@@ -124,7 +124,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
-        LineOfSightChecker.OnGainSight += HandleGainSight;
+        //LineOfSightChecker.OnGainSight += HandleGainSight;
         //LineOfSightChecker.OnLoseSight += HandleLoseSight;
 
 
@@ -205,7 +205,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => Debug.Log(""),
                ChaseState));
 
-        
+        /*
         ChaseState.AddTransition(
            new Transition(
                () => canSeePlayer == false && InCombat == false,
@@ -217,7 +217,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => canSeePlayer == true && InCombat == false,
                () => Debug.Log(""),
                ChaseState));
-        
+        */
 
         // Create the state machine
         stateMachine = new StateMachine(onGuardState);
@@ -279,6 +279,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         MovementCoroutine = StartCoroutine(Hide(Target));
     }
 
+    /*
     private void HandleLoseSight(Transform Target)
     {
 
@@ -286,9 +287,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             StopCoroutine(MovementCoroutine);
         }
-        playerTarget = null;
+        playerTarget = Target;
 
     }
+    */
 
 
     // Chase the small enemy
@@ -372,9 +374,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
        
 
 
-
-
-
     }
     #region hide Routine
 
@@ -388,7 +387,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 Colliders[i] = null;
             }
 
-            int hits = Physics.OverlapSphereNonAlloc(_Agent.transform.position, LineOfSightChecker.collider.radius, Colliders, HidableLayers);
+            int hits = Physics.OverlapSphereNonAlloc(_Agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
 
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
