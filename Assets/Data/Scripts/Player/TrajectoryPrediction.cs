@@ -61,17 +61,6 @@ public class TrajectoryPrediction : MonoBehaviour
                 break;
             }
         }
-
-/*        var lowestTimeValueX = MaxTimeX() / resolution;
-        var lowestTimeValueZ = MaxTimeZ() / resolution;
-        var lowestTimeValue = lowestTimeValueX > lowestTimeValueZ ? lowestTimeValueZ : lowestTimeValueX;
-
-        for (int i = 0; i < lineArray.Length; i++)
-        {
-            var t = lowestTimeValue * i;
-            lineArray[i] = CalculateLinePoint(t);
-        }*/
-
         return lineArray.ToArray();
     }
 

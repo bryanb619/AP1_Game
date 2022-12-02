@@ -24,6 +24,8 @@ public class EnemyBehaviour : MonoBehaviour
     public int damageBoost = 0;
 
     GemManager gemManager;
+    
+    [SerializeField] private bool gemSpawnOnDeath;
     private NavMeshAgent _Agent;
     private float _Health;
 
@@ -187,6 +189,7 @@ public class EnemyBehaviour : MonoBehaviour
             if (Time.time > nextFire)
             {
                 nextFire = Time.time + fireRate;
+                
                 Instantiate(bullet, _shootPos.position, _shootPos.rotation);
             }
 
@@ -297,8 +300,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
-        
-        Instantiate(gemPrefab, transform.position, Quaternion.identity);
+        if(gemSpawnOnDeath)
+            Instantiate(gemPrefab, transform.position, Quaternion.identity);
         //Instantiate(transform.position, Quaternion.identity);
         Destroy(gameObject);
 

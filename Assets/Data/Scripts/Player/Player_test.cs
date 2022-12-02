@@ -114,9 +114,7 @@ public class Player_test : MonoBehaviour
     #region New tryout movement
 
     [Header("Movement"), SerializeField]
-    private float walkSpeed, dashSpeed, dashSpeedChangeFactor, groundDrag;
-    [SerializeField]
-    private float moveSpeed, maxSpeed;
+    internal float walkSpeed, dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
 
     [Header("Jumping"), SerializeField]
     private float jumpForce, jumpCooldown, airMultiplier;
@@ -154,7 +152,7 @@ public class Player_test : MonoBehaviour
     // player health
     private const int _MaxHealth = 100;
 
-    private int _currentHealth;
+    internal int _currentHealth;
     public int CurretHealth => _currentHealth;
 
     [Header("Health bar")]
