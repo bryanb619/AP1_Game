@@ -12,7 +12,7 @@ public class PauseMenu : MonoBehaviour
 
     //  Pause Menu Canvas
     [SerializeField]
-    public GameObject PauseCanvas, _pauseMenu, _OptionsMenu;
+    public GameObject PauseCanvas, _pauseMenu, _OptionsMenu, GamePlay;
 
     // Event Sy
 
@@ -21,9 +21,12 @@ public class PauseMenu : MonoBehaviour
 
     private void Start()
     {
+        GamePlay = GameObject.Find("--- GamePlay ---");
+
         PauseCanvas.SetActive(true);
         _pauseMenu.SetActive(false);
         _OptionsMenu.SetActive(false);
+        //GamePlay.SetActive(true);
 
     }
 
@@ -71,15 +74,14 @@ public class PauseMenu : MonoBehaviour
     {
 
         _pauseMenu.SetActive(false);
+        GamePlay.SetActive(true);
 
         Time.timeScale = 1f;
 
         _Paused = false;
 
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.None;
-        //Cursor.lockState = CursorLockMode.Locked;
-
+        Cursor.lockState = CursorLockMode.Locked;
 
 
     }
@@ -89,12 +91,14 @@ public class PauseMenu : MonoBehaviour
 
 
         _pauseMenu.SetActive(true);
+        GamePlay.SetActive(false);
 
         Time.timeScale = 0f;
 
         _Paused = true;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+       
     }
 
     // buttons 
@@ -102,12 +106,7 @@ public class PauseMenu : MonoBehaviour
     // Pause Menu
     public void ResumeButton()
     {
-
-        _pauseMenu.SetActive(false);
-
-        Time.timeScale = 1f;
-
-        _Paused = false;
+        Resume();
 
     }
 

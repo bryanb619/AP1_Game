@@ -154,7 +154,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Update()
     {
         MinimalCheck(); // Tester
-
+       
         Action actions = stateMachine.Update();
         actions?.Invoke();
        
@@ -276,7 +276,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        transform.LookAt(playerTarget.position);
+        
 
         if (_Health <= 0)
         {
@@ -286,6 +286,7 @@ public class EnemyBehaviour : MonoBehaviour
         
         if (_Health > 0)
         {
+            transform.LookAt(playerTarget.position);
             StartCoroutine(HitFlash());
         }
         _Health -= (_damage + damageBoost);

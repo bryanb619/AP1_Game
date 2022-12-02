@@ -21,7 +21,7 @@ public class FOVCEB : Editor
         if (fov.canSee)
         {
             Handles.color = Color.red;
-            Handles.DrawLine(fov.EEFOV.position, fov.playerTarget.transform.position);
+            Handles.DrawLine(fov.EEFOV.position, fov.PlayerTarget.transform.position);
         }
     }
 
