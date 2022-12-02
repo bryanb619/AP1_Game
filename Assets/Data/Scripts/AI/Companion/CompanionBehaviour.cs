@@ -97,6 +97,7 @@ public class CompanionBehaviour : MonoBehaviour
         //Distance();
         //_Player.InMotion();
 
+        LookAtUpdate();
         CheckMoveBool();
         CheckEnemy();
 
@@ -174,13 +175,29 @@ public class CompanionBehaviour : MonoBehaviour
             CameraUpdatePos();
         }
 
-        else if(_Companion.remainingDistance >= 8F)
+        else if(_Companion.remainingDistance >= 6F)
         {
             KetChup();
         }
 
 
        
+    }
+
+    private void LookAtUpdate()
+    {
+        RaycastHit HitInfo;
+        Ray RayCast;
+
+        RayCast = Camera.main.ViewportPointToRay(new Vector3(0.5f,0.5f,0.5f));
+            if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out HitInfo, 100.0f))
+            {
+                transform.LookAt(HitInfo.point);
+            }
+            else
+            {
+                transform.LookAt(transform.forward);
+            }
     }
 
     private void CameraUpdatePos()
@@ -198,7 +215,7 @@ public class CompanionBehaviour : MonoBehaviour
        // print("follow!!");
         _Companion.SetDestination(_Target.position);
 
-        if (_Companion.remainingDistance >= 8F)
+        if (_Companion.remainingDistance >= 6F)
         {
             KetChup();
         }
@@ -208,7 +225,7 @@ public class CompanionBehaviour : MonoBehaviour
     private void KetChup()
     {
         _Companion.acceleration = 12;
-        _Companion.speed = 14F;
+        _Companion.speed = 13F;
         _Companion.SetDestination(_Target.position);
 
     }

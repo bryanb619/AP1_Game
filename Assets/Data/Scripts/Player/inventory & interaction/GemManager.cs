@@ -8,7 +8,7 @@ public class GemManager : MonoBehaviour
 {
     [Header ("Script References")]
     public Player_test playerScript;
-    private EnemyBehaviour enemy;
+    public EnemyBehaviour enemy;
     public EnemyChaseBehaviour enemyChase;
 
     private WaitForSeconds waitFor10Seconds = new(10f);
@@ -20,10 +20,10 @@ public class GemManager : MonoBehaviour
     private float maxDistance = 3;
 
     [SerializeField]
-    private int speed = 2;
+    private int gemSpeed = 2;
 
     [SerializeField]
-    private Material damage, shield, mana;
+    private Material damage, shield, speed, health;
 
     private GameObject player;
     private int gemNumber;
@@ -42,8 +42,19 @@ public class GemManager : MonoBehaviour
 
     private void Awake()
     {
-        gemNumber = UnityEngine.Random.Range(1, 4);
-        GemNumber(gemNumber);
+        if (gemType == Gems.Damage)
+            GemNumber(1);
+        else if (gemType == Gems.Shield)
+            GemNumber(2);
+        else if (gemType == Gems.Speed)
+            GemNumber(3);
+        else if (gemType == Gems.Health)
+            GemNumber(4);
+        else
+        {
+            gemNumber = UnityEngine.Random.Range(1, 4);
+            GemNumber(gemNumber);
+        }
     }
 
     // Update is called once per frame
@@ -55,7 +66,7 @@ public class GemManager : MonoBehaviour
         
     private void MoveTowardsPlayer()
     {
-        var step = speed * Time.deltaTime;
+        var step = gemSpeed * Time.deltaTime;
         if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
         {
             transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
@@ -85,8 +96,13 @@ public class GemManager : MonoBehaviour
                 break;
 
             case 3:
-                gemType = Gems.Mana;
-                GetComponentInChildren<MeshRenderer>().material = mana;
+                gemType = Gems.Speed;
+                GetComponentInChildren<MeshRenderer>().material = speed;
+                break;
+
+            case 4:
+                gemType = Gems.Health;
+                GetComponentInChildren<MeshRenderer>().material = health;
                 break;
 
             default:
@@ -102,21 +118,31 @@ public class GemManager : MonoBehaviour
         switch (gemType)
         {
             case Gems.Damage:
+                StopCoroutine(HealthGem());
                 StopCoroutine(ShieldGem());
-                StopCoroutine(ManaGem());
+                StopCoroutine(SpeedGem());
                 StartCoroutine(DamageGem());
                 break;
 
             case Gems.Shield:
-                StopCoroutine(ManaGem());
                 StopCoroutine(DamageGem());
+                StopCoroutine(HealthGem());
+                StopCoroutine(SpeedGem());
                 StartCoroutine(ShieldGem());
                 break;
 
-            case Gems.Mana:
+            case Gems.Speed:
                 StopCoroutine(DamageGem());
                 StopCoroutine(ShieldGem());
-                StartCoroutine(ManaGem());
+                StopCoroutine(HealthGem());
+                StartCoroutine(SpeedGem());
+                break;
+
+            case Gems.Health:
+                StopCoroutine(DamageGem());
+                StopCoroutine(ShieldGem());
+                StopCoroutine(SpeedGem());
+                StartCoroutine(HealthGem());
                 break;
 
             default:
@@ -138,18 +164,31 @@ public class GemManager : MonoBehaviour
 
     IEnumerator ShieldGem()
     {
-        playerScript.shield = 19;
+        playerScript.shield = 10;
 
         yield return waitFor10Seconds;
 
         playerScript.shield = 0;
     }
 
-    IEnumerator ManaGem()
+    IEnumerator SpeedGem()
     {
-        Debug.Log("You do nothing for now");
+        playerScript.walkSpeed += 10;
+        playerScript.dashSpeed += 10;
+        playerScript.maxSpeed += 10;
+        
         yield return waitFor10Seconds;
-        Debug.Log("You still do nothing");
+
+        playerScript.walkSpeed -= 10;
+        playerScript.dashSpeed -= 10;
+        playerScript.maxSpeed -= 10;
+    }
+
+    IEnumerator HealthGem()
+    {
+        playerScript.GiveHealth(10);
+
+        yield return null;
     }
 
     #endregion
@@ -170,6 +209,7 @@ public class GemManager : MonoBehaviour
 public enum Gems
 {
     Damage,
+    Health,
     Shield,
-    Mana
+    Speed
 }

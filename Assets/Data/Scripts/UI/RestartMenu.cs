@@ -17,9 +17,16 @@ public class RestartMenu : MonoBehaviour
         SceneManager.LoadScene("RestartScene");
     }
 
+
+    // buttons
     public void RetartButton()
     {
         SceneManager.LoadScene("_Game");
+    }
+
+    public void MainMenuButton()
+    {
+        SceneManager.LoadScene("_StartMenu");
     }
 
 
