@@ -62,12 +62,13 @@ MonoBehaviour:
   playerScript: {fileID: 0}
   enemy: {fileID: 0}
   enemyChase: {fileID: 0}
-  gemType: 0
+  gemType: 2
   maxDistance: 7
-  speed: 1
+  gemSpeed: 2
   damage: {fileID: 2100000, guid: 417f60ef22dc30a42bd9c30e75f2f537, type: 2}
   shield: {fileID: 2100000, guid: 8d1a6788bbda5be469715906864b6a9a, type: 2}
-  mana: {fileID: 2100000, guid: fe7aff683a80fef4385895a47bd5d344, type: 2}
+  speed: {fileID: 2100000, guid: fe7aff683a80fef4385895a47bd5d344, type: 2}
+  health: {fileID: 2100000, guid: 4e7c0f610945a7e4c909a1aa54e2f56b, type: 2}
   CubeRenderer: {fileID: 6807215719515059969}
 --- !u!1 &6371524222306957076
 GameObject:
@@ -122,7 +123,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 417f60ef22dc30a42bd9c30e75f2f537, type: 2}
+  - {fileID: 2100000, guid: 8d1a6788bbda5be469715906864b6a9a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
