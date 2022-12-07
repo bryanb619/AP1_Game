@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -141,6 +140,8 @@ public class Player_test : MonoBehaviour
     Rigidbody rb;
     public bool dashing;
 
+    [HideInInspector] public bool CanMove; 
+
     private bool PlayerOnMove;
     public bool _PlayerOnMove => PlayerOnMove;
     private CompanionBehaviour _CompanionMovement;
@@ -172,7 +173,9 @@ public class Player_test : MonoBehaviour
 
     private void Start()
     {
+        this.enabled = true;
 
+        CanMove = true;
 
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
@@ -302,18 +305,27 @@ public class Player_test : MonoBehaviour
 
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-
-       
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if(CanMove == true)
         {
-            readyToJump = false;
+          
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
 
-            Jump();
 
-            Invoke(nameof(ResetJump), jumpCooldown);
+            if (Input.GetKey(jumpKey) && readyToJump && grounded)
+            {
+                readyToJump = false;
+
+                Jump();
+
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
         }
+        else if(CanMove == false)
+        {
+          
+        }
+        
     }
 
     private void MovePlayer()
@@ -346,8 +358,6 @@ public class Player_test : MonoBehaviour
             if (rb.velocity.magnitude > moveSpeed)
                 rb.velocity = rb.velocity.normalized * moveSpeed;
         }
-
-
 
         else
         { 

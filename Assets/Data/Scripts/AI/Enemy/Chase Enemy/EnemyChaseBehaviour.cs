@@ -11,6 +11,8 @@ using UnityEngine;
 //using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using UnityEngine.Animations;
+using JetBrains.Annotations;
 //using UnityEngine.Animations;
 
 /// <summary>
@@ -20,8 +22,17 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
+
+    //Gem spawn
+    [Header("Gem Spawn")]
+    [SerializeField] private bool gemSpawnOnDeath = true;
+    [SerializeField] private GameObject gemPrefab;
+
+
     // Reference to the state machine
     private StateMachine stateMachine;
+
+    //private MeleeAttack AIAttack;
 
     private NavMeshAgent _Agent;
     private float _Health;
@@ -42,11 +53,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     [Header("AI Attack Settings")]
-    [Range(0, 10)] [SerializeField] private float minDist = 7f;
+    //[Range(0, 10)] 
+    [SerializeField] private float minDist = 7f;
 
-    [Range(0, 10)][SerializeField] private float minDist2 = 6f;
+    [Range(0, 15)][SerializeField] private float minDistInCover = 12f;
 
-    [SerializeField] private float minAttackDist = 2f; 
+    [SerializeField] private float minAttackDist = 3f; 
 
 
     [Range(10, 150)]
@@ -82,13 +94,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [Range(-1, 1)]
     [Tooltip("Lower is a better hiding spot")]
     public float HideSensitivity = 0;
-    [Range(0.01f, 1f)]
-    public float UpdateFrequency = 0.25f;
+    [Range(0.01f, 1f)] private float UpdateFrequency = 0.25f;
 
-    public LayerMask HidableLayers;
+    [SerializeField] private LayerMask HidableLayers;
 
     [Range(0, 5f)]
-    public float MinObstacleHeight = 1.25f;
+    private float MinObstacleHeight = 1.50f;
 
     public SceneChecker LineOfSightChecker;
 
@@ -98,7 +109,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool InCoverState;
 
 
-    [Range(0,10)] [SerializeField] private float healthInCreasePerFrame = 2f;
+    [Range(0,10)] [SerializeField] private float healthInCreasePerFrame;
 
     private float maxHealth = 100f;
 
@@ -120,8 +131,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         PlayerObject = GameObject.Find("Player");
         _Player = FindObjectOfType<Player_test>();
-      
 
+        //AIAttack = GetComponentInChildren<MeleeAttack>();
+    
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
         //LineOfSightChecker.OnGainSight += HandleGainSight;
@@ -205,6 +217,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => Debug.Log(""),
                ChaseState));
 
+        PatrolState.AddTransition(
+           new Transition(
+               () => canSeePlayer == true,
+               () => Debug.Log(""),
+               ChaseState));
+
         /*
         ChaseState.AddTransition(
            new Transition(
@@ -220,7 +238,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         */
 
         // Create the state machine
-        stateMachine = new StateMachine(onGuardState);
+        //stateMachine = new StateMachine(onGuardState);
+        stateMachine = new StateMachine(PatrolState);
     }
     #endregion
 
@@ -253,7 +272,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     private void HealthCheck()
     {
-        if(_Health <= 50) 
+        if(_Health <= 50 )//&& _Health > 10) 
         {
             InCoverState = true;
             //HandleGainSight(PlayerTarget); 
@@ -300,33 +319,39 @@ public class EnemyChaseBehaviour : MonoBehaviour
         InCombat = true;
 
         _Agent.speed = 5f;
-        _Agent.acceleration = 13f;
+        _Agent.acceleration = 11f;
         _Agent.SetDestination(playerTarget.position);
 
         Attack();
-
-        
-
 
         //print("ATTACK");
     }
     private void Attack()
     {
-        if ((playerTarget.transform.position - transform.position).magnitude < minAttackDist && curSpeed <= 2.5f)
+        if(_Agent.remainingDistance <= 3)
         {
+            _Agent.stoppingDistance= 2.7f;
 
-            if (Time.time > nextAttack)
+            if ((playerTarget.transform.position - transform.position).magnitude < minAttackDist && curSpeed <= 2.5f)
             {
-                nextAttack = Time.time + AttackRate;
-                IsAttacking = true;
-                _Player.TakeDamage(damage);
+                transform.LookAt(playerTarget.position);
 
-            }
-            else
-            {
-                IsAttacking = false;
+                if (Time.time > nextAttack)
+                {
+                    //transform.LookAt(playerTarget);
+
+                    nextAttack = Time.time + AttackRate;
+                    _Player.TakeDamage(damage);
+                }
+                else
+                {
+                    IsAttacking = false;
+                }
+
             }
         }
+       
+        
         
     }
 
@@ -338,14 +363,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Agent.stoppingDistance = 0f;
 
         if (!_Agent.pathPending && _Agent.remainingDistance < 0.5f)
+        {
             GotoNetPoint();
+        }
+            
     }
 
     private void GotoNetPoint()
     {
         _Agent.autoBraking = false;
 
-        _Agent.speed = 5f;
+        _Agent.speed = 1.4f;
         // Returns if no points have been set up
         if (_PatrolPoints.Length == 0)
             return;
@@ -361,17 +389,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Cover()
     {
+        _Agent.speed = 5f;
         HandleGainSight(PlayerTarget);
 
-        Attack();
-
-        if (curSpeed <= 0.5 && IsAttacking == false)
+        if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
         {
             _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, maxHealth);
-            Debug.Log("Chase health: " + _Health);
+            //Debug.Log("Chase health: " + _Health);
         }
+        Attack();
 
-       
+
+
 
 
     }
@@ -392,7 +421,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
             {
-                if (Vector3.Distance(Colliders[i].transform.position, Target.position) < minDist2 || Colliders[i].bounds.size.y < MinObstacleHeight)
+                if (Vector3.Distance(Colliders[i].transform.position, Target.position) < minDistInCover || Colliders[i].bounds.size.y < MinObstacleHeight)
                 {
                     Colliders[i] = null;
                     hitReduction++;
@@ -518,11 +547,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             StartCoroutine(HitFlash());
         }
-
-        
-
         _Health -= _damage + damageBoost;
-        Debug.Log("enemy shot" + _Health);
+        //Debug.Log("enemy shot" + _Health);
     }
 
     IEnumerator HitFlash()
@@ -535,6 +561,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Die()
     {
+
+        if (gemSpawnOnDeath)
+            Instantiate(gemPrefab, transform.position, Quaternion.identity);
+
+
         //Instantiate(transform.position, Quaternion.identity);
         Destroy(gameObject);
 
