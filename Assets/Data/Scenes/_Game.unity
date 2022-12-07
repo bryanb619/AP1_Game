@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: d2cf93e43c63e8f4cb51a1a6812531d8, type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 2797e97f055b6eb4194430518a31f9c4, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 02a876a4e4fbc4448a5674785c6bb093, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -354,7 +354,7 @@ MonoBehaviour:
   _PatrolPoints: []
   playerTarget: {fileID: 0}
   minDist: 7
-  minDist2: 6
+  minDistInCover: 12
   minAttackDist: 2
   radius: 10
   angle: 140
@@ -368,11 +368,9 @@ MonoBehaviour:
   damage: 20
   damageBoost: 0
   HideSensitivity: 0
-  UpdateFrequency: 0.25
   HidableLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinObstacleHeight: 1.25
   LineOfSightChecker: {fileID: 0}
   healthInCreasePerFrame: 2
 --- !u!23 &31425532
@@ -527,7 +525,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (4)
@@ -801,7 +799,7 @@ MonoBehaviour:
   _PatrolPoints: []
   playerTarget: {fileID: 0}
   minDist: 7
-  minDist2: 6
+  minDistInCover: 12
   minAttackDist: 2
   radius: 10
   angle: 140
@@ -815,11 +813,9 @@ MonoBehaviour:
   damage: 20
   damageBoost: 0
   HideSensitivity: 0
-  UpdateFrequency: 0.25
   HidableLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinObstacleHeight: 1.25
   LineOfSightChecker: {fileID: 0}
   healthInCreasePerFrame: 2
 --- !u!23 &103469392
@@ -938,7 +934,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (3)
@@ -1082,7 +1078,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.6981132, g: 0, b: 0, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1
   m_Range: 20
   m_SpotAngle: 60.19277
   m_InnerSpotAngle: 33.663525
@@ -1094,7 +1090,7 @@ Light:
     m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -1457,7 +1453,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageBoost: 0
   gemSpawnOnDeath: 0
-  Target: {fileID: 1666249004}
+  PlayerTarget: {fileID: 0}
   _PatrolPoints: []
   radius: 10
   angle: 140
@@ -1471,6 +1467,11 @@ MonoBehaviour:
   _shootPos: {fileID: 0}
   bullet: {fileID: 0}
   gemPrefab: {fileID: 0}
+  HideSensitivity: 0
+  HidableLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  LineOfSightChecker: {fileID: 0}
 --- !u!23 &368884501
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1798,15 +1799,15 @@ PrefabInstance:
     - target: {fileID: -7465109666676694265, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -6561502476604434961, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -5434344262046804802, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -4645075885282658931, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -1814,7 +1815,7 @@ PrefabInstance:
     - target: {fileID: -4628302791972393431, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -4379421836722874555, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -1838,7 +1839,7 @@ PrefabInstance:
     - target: {fileID: 8687425159450455576, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
 --- !u!1 &472834389
@@ -1969,7 +1970,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (6)
@@ -2662,7 +2663,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 2c4914b4ac25a4a4c814fb5c89f71c0c, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 2c4914b4ac25a4a4c814fb5c89f71c0c, type: 3}
       propertyPath: m_Name
       value: gate
@@ -2725,7 +2726,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageBoost: 20
   gemSpawnOnDeath: 0
-  Target: {fileID: 1666249004}
+  PlayerTarget: {fileID: 0}
   _PatrolPoints: []
   radius: 10
   angle: 140
@@ -2739,6 +2740,11 @@ MonoBehaviour:
   _shootPos: {fileID: 1261196520}
   bullet: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
   gemPrefab: {fileID: 1319023809}
+  HideSensitivity: 0
+  HidableLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  LineOfSightChecker: {fileID: 0}
 --- !u!195 &806539403
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3457,6 +3463,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 3197122657302864896, guid: 54d0035915ce59543becf00ebfedf9dc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
+    - target: {fileID: 5106151056568815342, guid: 54d0035915ce59543becf00ebfedf9dc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
+    - target: {fileID: 5283848872798913944, guid: 54d0035915ce59543becf00ebfedf9dc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 6454426080274394324, guid: 54d0035915ce59543becf00ebfedf9dc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -3469,6 +3487,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 8500194702667151844, guid: 54d0035915ce59543becf00ebfedf9dc, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d0035915ce59543becf00ebfedf9dc, type: 3}
 --- !u!1 &1137794324 stripped
@@ -3567,7 +3589,7 @@ PrefabInstance:
     - target: {fileID: -6067185528594298527, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -5742926517106001164, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.52562284
@@ -3595,15 +3617,15 @@ PrefabInstance:
     - target: {fileID: 1170970068873931921, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 2929640277652407947, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 5901893356585517859, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
 --- !u!1 &1142138513
@@ -4026,7 +4048,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.6981132, g: 0, b: 0, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1
   m_Range: 20
   m_SpotAngle: 60.19277
   m_InnerSpotAngle: 33.663525
@@ -4038,7 +4060,7 @@ Light:
     m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -4147,7 +4169,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (7)
@@ -4293,7 +4315,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (1)
@@ -4396,19 +4418,19 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 98503c2a080b41d4a91299fa80004f4f, type: 2}
+      objectReference: {fileID: 2100000, guid: 89f95b265d0426345a94e94767a87054, type: 2}
     - target: {fileID: -7511558181221131132, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -7511558181221131132, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
       propertyPath: m_Materials.Array.data[3]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: -7511558181221131132, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
       propertyPath: m_Materials.Array.data[4]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
       propertyPath: m_Name
       value: colums
@@ -4877,7 +4899,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.6981132, g: 0, b: 0, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1
   m_Range: 20
   m_SpotAngle: 60.19277
   m_InnerSpotAngle: 33.663525
@@ -4889,7 +4911,7 @@ Light:
     m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -5050,7 +5072,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageBoost: 0
   gemSpawnOnDeath: 0
-  Target: {fileID: 1666249004}
+  PlayerTarget: {fileID: 0}
   _PatrolPoints: []
   radius: 10
   angle: 140
@@ -5064,6 +5086,11 @@ MonoBehaviour:
   _shootPos: {fileID: 0}
   bullet: {fileID: 0}
   gemPrefab: {fileID: 0}
+  HideSensitivity: 0
+  HidableLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  LineOfSightChecker: {fileID: 0}
 --- !u!23 &1460139982
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5333,7 +5360,7 @@ MonoBehaviour:
   _PatrolPoints: []
   playerTarget: {fileID: 0}
   minDist: 7
-  minDist2: 6
+  minDistInCover: 12
   minAttackDist: 2
   radius: 10
   angle: 140
@@ -5347,11 +5374,9 @@ MonoBehaviour:
   damage: 20
   damageBoost: 0
   HideSensitivity: 0
-  UpdateFrequency: 0.25
   HidableLayers:
     serializedVersion: 2
     m_Bits: 0
-  MinObstacleHeight: 1.25
   LineOfSightChecker: {fileID: 0}
   healthInCreasePerFrame: 2
 --- !u!4 &1512460372 stripped
@@ -5463,7 +5488,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 0.6981132, g: 0, b: 0, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1
   m_Range: 20
   m_SpotAngle: 60.19277
   m_InnerSpotAngle: 33.663525
@@ -5475,7 +5500,7 @@ Light:
     m_Strength: 1
     m_Bias: 0.05
     m_NormalBias: 0.4
-    m_NearPlane: 0.2
+    m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -5579,7 +5604,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (9)
@@ -5963,7 +5988,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3
@@ -6080,6 +6105,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 718193921643153591, guid: 38d791bec4929ab4c944552083d40a47, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 38d791bec4929ab4c944552083d40a47, type: 3}
       propertyPath: m_Name
       value: walls
@@ -6568,7 +6597,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 383e1121316d44f449f83895a7f1b14d, type: 2}
+      objectReference: {fileID: 2100000, guid: cd88185398a6b174f9384798affac47d, type: 2}
     - target: {fileID: 919132149155446097, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
       propertyPath: m_Name
       value: rock_3 (2)
