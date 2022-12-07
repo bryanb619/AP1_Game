@@ -20,6 +20,11 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
+    //Gem spawn
+    [Header("Gem Spawn")]
+    [SerializeField] private bool gemSpawnOnDeath = true;
+    [SerializeField] private GameObject gemPrefab;
+
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -535,6 +540,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Die()
     {
+        if (gemSpawnOnDeath)
+            Instantiate(gemPrefab, transform.position, Quaternion.identity);
         //Instantiate(transform.position, Quaternion.identity);
         Destroy(gameObject);
 
