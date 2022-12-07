@@ -20,7 +20,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Start()
     {
-        _cameraTransform = GetComponentInChildren<Camera>().transform;
+        _cameraTransform = FindObjectOfType<Camera>().transform;
         _currentInteractive = null;
         _playerHasRequirements = false;
         _inventory = new List<Interactive>();

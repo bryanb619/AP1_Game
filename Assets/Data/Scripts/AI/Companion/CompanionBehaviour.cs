@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 //using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using System.Collections;
+
 //using UnityEngine.Animations;
 
 // The script that controls an agent using an FSM
@@ -40,6 +41,12 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
+    //private MeshRenderer mesh;
+    private Material material;
+
+    private Color Newcolor;
+    public float aFloat;
+
     // Create the FSM
     private void Start()
     {
@@ -47,8 +54,13 @@ public class CompanionBehaviour : MonoBehaviour
         //_EPI = GameObject.Find("Minimap Border");
         _MiniMapCollor = FindObjectOfType<mini>();
 
+        //mesh = gameObject.GetComponent<MeshRenderer>();
+        material= GetComponent<Material>(); 
+
         //_Player = FindObjectOfType<Player_test>();
         PlayerIsMoving = false;
+
+
 
         // EPI
 
@@ -58,7 +70,7 @@ public class CompanionBehaviour : MonoBehaviour
 
 
         // Create the states
-        LibGameAI.FSMs.State IdleState = new State("",
+        State IdleState = new State("",
             () => Debug.Log("Idle state"),
             Idle,
             () => Debug.Log(""));
@@ -266,5 +278,13 @@ public class CompanionBehaviour : MonoBehaviour
         else if (EnemyIS)
             EnemyIS = false;
     }
+
+    public void Setlow()
+    {
+
+        
+    } 
+
+    
 
 }
