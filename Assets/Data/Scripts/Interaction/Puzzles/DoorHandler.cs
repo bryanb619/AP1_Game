@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class DoorHandler : MonoBehaviour
 {
+
     //private GameObject door;
 
     private float speed = 1.5f;
@@ -18,11 +19,11 @@ public class DoorHandler : MonoBehaviour
 
     private void Start()
     {
-        Door = GetComponentInChildren<GameObject>();
-        EndPos = GetComponentInChildren<GameObject>();
+        //Door = GetComponentInChildren<GameObject>();
+        //EndPos = GetComponentInChildren<GameObject>();
 
         PlayerScript = FindObjectOfType<Player_test>();
-        PlayerIsActive = true;
+        //PlayerIsActive = true;
 
         //gameManager = FindObjectOfType<GameManager>();
 
@@ -43,12 +44,12 @@ public class DoorHandler : MonoBehaviour
         {
             Door.transform.position = EndPos.transform.position;
             PlayerIsActive = true;
-
+            /*
             if (PlayerIsActive == true)
             {
                 ActivatePlayer();
             }
-
+            */
         }
     }
 
@@ -57,7 +58,7 @@ public class DoorHandler : MonoBehaviour
 
         //gameManager.PlayerMovement = false;
         Door.transform.Translate(Vector3.up * speed * Time.deltaTime);
-        HandleDoor();   
+        //HandleDoor();   
 
 
     }
@@ -76,9 +77,9 @@ public class DoorHandler : MonoBehaviour
 
     private void ActivatePlayer()
     {
-        PlayerScript.CanMove = true; 
+        //PlayerScript.CanMove = true; 
         //gameManager.PlayerMovement = true;
-        print("1st step");
+       // print("1st step");
 
         
 

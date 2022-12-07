@@ -7,13 +7,10 @@
 
 using System;
 using UnityEngine;
-using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
 using System.Collections;
-using UnityEngine.Animations;
-using System.Runtime.CompilerServices;
-using static UnityEngine.GraphicsBuffer;
+
 
 // The script that controls an agent using an FSM
 //[RequireComponent(typeof(NavMeshAgent))]
@@ -24,7 +21,7 @@ public class EnemyBehaviour : MonoBehaviour
     public int damageBoost = 0;
 
     GemManager gemManager;
-    
+
     [SerializeField] private bool gemSpawnOnDeath;
     private NavMeshAgent _Agent;
     private float _Health;
@@ -32,10 +29,18 @@ public class EnemyBehaviour : MonoBehaviour
     // References to enemies
     private GameObject PlayerObject;
 
-    [SerializeField] private Transform Target;
-    public Transform playerTarget => Target;
+    [SerializeField] private Transform PlayerTarget;
+    public Transform playerTarget => PlayerTarget;
 
     private float minDist = 7f;
+
+    private float curSpeed;
+    private Vector3 previousPos;
+
+    private bool InDanger;
+
+    private float AttackRequiredDistance = 8f;
+
 
 
     // Patrol Points
@@ -43,7 +48,7 @@ public class EnemyBehaviour : MonoBehaviour
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
 
-   
+
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -68,10 +73,34 @@ public class EnemyBehaviour : MonoBehaviour
     private float fireRate = 2f;
     private float nextFire = 0f;
 
+
+
+    // hide code
+    [Header("Hide config")]
+    private Collider[] Colliders = new Collider[10];
+
+    [Range(-1, 1)]
+    public float HideSensitivity = 0;
+    [Range(0.01f, 1f)] private float UpdateFrequency = 0.65f;
+
+    [SerializeField] private LayerMask HidableLayers;
+
+    [Range(0, 5f)]
+    private float MinObstacleHeight = 0f;
+
+    public SceneChecker LineOfSightChecker;
+
+    private Coroutine MovementCoroutine;
+
+
+
     // Get references to enemies
     private void Awake()
     {
         PlayerObject = GameObject.Find("Player");
+
+        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+
     }
 
     // Create the FSM
@@ -106,7 +135,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true, 
+                () => canSeePlayer == true,
                 () => Debug.Log(""),
                 ChaseState));
 
@@ -149,25 +178,42 @@ public class EnemyBehaviour : MonoBehaviour
         */
 
         // Create the state machine
-        stateMachine = new StateMachine(onGuardState);
+        stateMachine = new StateMachine(PatrolState);
     }
 
     // Request actions to the FSM and perform them
     private void Update()
     {
         MinimalCheck(); // Tester
-       
+
         Action actions = stateMachine.Update();
         actions?.Invoke();
-       
+
+        Vector3 curMove = transform.position - previousPos;
+        curSpeed = curMove.magnitude / Time.deltaTime;
+        previousPos = transform.position;
+
     }
 
     private void MinimalCheck()
     {
-        if((playerTarget.transform.position - transform.position).magnitude < minDist)
+        if ((playerTarget.transform.position - transform.position).magnitude < minDist)
         {
             transform.LookAt(playerTarget.position);
         }
+    }
+
+
+    private void HandleGainSight(Transform Target)
+    {
+
+        if (MovementCoroutine != null)
+        {
+            StopCoroutine(MovementCoroutine);
+        }
+        PlayerTarget = Target;
+
+        MovementCoroutine = StartCoroutine(Hide(Target));
     }
 
 
@@ -177,33 +223,149 @@ public class EnemyBehaviour : MonoBehaviour
         transform.LookAt(playerTarget);
 
         _Agent.speed = 4f;
-        _Agent.SetDestination(Target.position);
-        
-        // ADD Last known POS!
+        _Agent.SetDestination(PlayerTarget.position);
 
+        // ADD Last known POS
+        //
+        // !
 
-
-        // shoot
-        if (_Agent.remainingDistance <= 10f && canSee == true)
+        if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
         {
-            if (Time.time > nextFire)
-            {
-                nextFire = Time.time + fireRate;
-                
-                Instantiate(bullet, _shootPos.position, _shootPos.rotation);
-            }
+            _Agent.speed = 0;
+            Attack();
+        }
 
+        if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
+        {
+
+            GetDistance();
         }
 
 
-
-        if (_Agent.remainingDistance <= 5f)
-        {
-            _Agent.speed = 0f;
-        }
 
         //print("ATTACK");
     }
+
+    private void Attack()
+    {
+
+        transform.LookAt(playerTarget);
+
+        if (Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+
+            Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+        }
+    }
+    
+
+    private void GetDistance()
+    {
+        _Agent.speed = 5f;
+        
+
+        if (curSpeed <= 1 && canSee)
+        {
+
+            Attack();
+            //Debug.Log("Chase health: " + _Health);
+        }
+
+        HandleGainSight(PlayerTarget);
+
+
+
+    }
+    #region hide Routine
+
+    private IEnumerator Hide(Transform Target)
+    {
+        WaitForSeconds Wait = new WaitForSeconds(UpdateFrequency);
+        while (true)
+        {
+            for (int i = 0; i < Colliders.Length; i++)
+            {
+                Colliders[i] = null;
+            }
+
+            int hits = Physics.OverlapSphereNonAlloc(_Agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
+
+            int hitReduction = 0;
+            for (int i = 0; i < hits; i++)
+            {
+                if (Vector3.Distance(Colliders[i].transform.position, Target.position) < AttackRequiredDistance || Colliders[i].bounds.size.y < MinObstacleHeight)
+                {
+                    Colliders[i] = null;
+                    hitReduction++;
+                }
+            }
+            hits -= hitReduction;
+
+            System.Array.Sort(Colliders, ColliderArraySortComparer);
+
+            for (int i = 0; i < hits; i++)
+            {
+                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, _Agent.areaMask))
+                {
+                    if (!NavMesh.FindClosestEdge(hit.position, out hit, _Agent.areaMask))
+                    {
+                        Debug.LogError($"Unable to find edge close to {hit.position}");
+                    }
+
+                    if (Vector3.Dot(hit.normal, (Target.position - hit.position).normalized) < HideSensitivity)
+                    {
+                        _Agent.SetDestination(hit.position);
+                        break;
+                    }
+                    else
+                    {
+                        // Since the previous spot wasn't facing "away" enough from teh target, we'll try on the other side of the object
+                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, _Agent.areaMask))
+                        {
+                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, _Agent.areaMask))
+                            {
+                                Debug.LogError($"Unable to find edge close to {hit2.position} (second attempt)");
+                            }
+
+                            if (Vector3.Dot(hit2.normal, (Target.position - hit2.position).normalized) < HideSensitivity)
+                            {
+                                _Agent.SetDestination(hit2.position);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Unable to find NavMesh near object {Colliders[i].name} at {Colliders[i].transform.position}");
+                }
+            }
+            yield return Wait;
+        }
+    }
+
+    public int ColliderArraySortComparer(Collider A, Collider B)
+    {
+        if (A == null && B != null)
+        {
+            return 1;
+        }
+        else if (A != null && B == null)
+        {
+            return -1;
+        }
+        else if (A == null && B == null)
+        {
+            return 0;
+        }
+        else
+        {
+            return Vector3.Distance(_Agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(_Agent.transform.position, B.transform.position));
+        }
+    }
+
+    #endregion 
 
 
     private void Patrol()
