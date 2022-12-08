@@ -81,7 +81,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     [Range(-1, 1)]
     public float HideSensitivity = 0;
-    [Range(0.01f, 1f)] private float UpdateFrequency = 0.65f;
+    [Range(0.01f, 1f)][SerializeField] private float UpdateFrequency = 0.65f;
 
     [SerializeField] private LayerMask HidableLayers;
 
