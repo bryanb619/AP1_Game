@@ -8,12 +8,9 @@
 using System;
 using System.Collections;
 using UnityEngine;
-//using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using UnityEngine.Animations;
-using JetBrains.Annotations;
-//using UnityEngine.Animations;
+
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -123,6 +120,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private bool InCombat; 
 
+    // test code 
+
+  
 
 
     
@@ -246,6 +246,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
+
+       // var lookPos = position - transform.position;
+        //lookPos.y = 0;
+
+
         MinimalCheck();
         HealthCheck();  
         Action actions = stateMachine.Update();

@@ -441,7 +441,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        
+       
+
+
 
         if (_Health <= 0)
         {
