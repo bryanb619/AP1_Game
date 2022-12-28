@@ -52,7 +52,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         _currentInteractive = null;
 
-        //_canvasManager.HideInteractionPanel();
+        _canvasManager.HideInteractionPanel();
     }
 
     private void SetCurrentInteractive(Interactive interactive)

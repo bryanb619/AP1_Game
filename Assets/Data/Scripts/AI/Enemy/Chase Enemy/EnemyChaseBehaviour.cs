@@ -8,9 +8,12 @@
 using System;
 using System.Collections;
 using UnityEngine;
+//using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-
+using UnityEngine.Animations;
+using JetBrains.Annotations;
+//using UnityEngine.Animations;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -91,12 +94,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [Range(-1, 1)]
     [Tooltip("Lower is a better hiding spot")]
     public float HideSensitivity = 0;
-    [Range(0.01f, 1f)] [SerializeField ] private float UpdateFrequency = 0.25f;
+    [Range(0.01f, 1f)] private float UpdateFrequency = 0.25f;
 
     [SerializeField] private LayerMask HidableLayers;
 
-    
-    private float MinObstacleHeight = 0.5f;
+    [Range(0, 5f)]
+    private float MinObstacleHeight = 1.50f;
 
     public SceneChecker LineOfSightChecker;
 
@@ -120,9 +123,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private bool InCombat; 
 
-    // test code 
-
-  
 
 
     
@@ -246,11 +246,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-
-       // var lookPos = position - transform.position;
-        //lookPos.y = 0;
-
-
         MinimalCheck();
         HealthCheck();  
         Action actions = stateMachine.Update();
@@ -294,8 +289,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void HandleGainSight(Transform Target)
     {
 
-        _Agent.radius = 1f; 
-
         if (MovementCoroutine != null)
         {
             StopCoroutine(MovementCoroutine);
@@ -325,11 +318,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         transform.LookAt(playerTarget);
         InCombat = true;
 
-        //_Agent.
-
         _Agent.speed = 5f;
         _Agent.acceleration = 11f;
-
         _Agent.SetDestination(playerTarget.position);
 
         Attack();
@@ -566,7 +556,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         originalColor = GetComponent<Renderer>().material.color;
         GetComponent<Renderer>().material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
-        GetComponent<Renderer>().material.color = Color.magenta;
+        GetComponent<Renderer>().material.color = Color.gray;
     }
 
     private void Die()

@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class DoorHandler : MonoBehaviour
 {
-
     //private GameObject door;
 
     private float speed = 1.5f;
@@ -12,18 +11,18 @@ public class DoorHandler : MonoBehaviour
 
     [SerializeField] private GameObject EndPos;
 
-    //[SerializeField]private Player_test PlayerScript;
+    [SerializeField]private Player_test PlayerScript;
 
-   // private bool PlayerIsActive;
+    private bool PlayerIsActive;
 
 
     private void Start()
     {
-        //Door = GetComponentInChildren<GameObject>();
-        //EndPos = GetComponentInChildren<GameObject>();
+        Door = GetComponentInChildren<GameObject>();
+        EndPos = GetComponentInChildren<GameObject>();
 
-        //PlayerScript = FindObjectOfType<Player_test>();
-        //PlayerIsActive = true;
+        PlayerScript = FindObjectOfType<Player_test>();
+        PlayerIsActive = true;
 
         //gameManager = FindObjectOfType<GameManager>();
 
@@ -43,13 +42,13 @@ public class DoorHandler : MonoBehaviour
         if ((EndPos.transform.position - Door.transform.position).magnitude < minDist)
         {
             Door.transform.position = EndPos.transform.position;
-            //PlayerIsActive = true;
-            /*
+            PlayerIsActive = true;
+
             if (PlayerIsActive == true)
             {
                 ActivatePlayer();
             }
-            */
+
         }
     }
 
@@ -58,12 +57,11 @@ public class DoorHandler : MonoBehaviour
 
         //gameManager.PlayerMovement = false;
         Door.transform.Translate(Vector3.up * speed * Time.deltaTime);
-        //HandleDoor();   
+        HandleDoor();   
 
 
     }
 
-    /*
     private void HandleDoor()
     {
         PlayerIsActive = false;
@@ -78,14 +76,13 @@ public class DoorHandler : MonoBehaviour
 
     private void ActivatePlayer()
     {
-        //PlayerScript.CanMove = true; 
+        PlayerScript.CanMove = true; 
         //gameManager.PlayerMovement = true;
-       // print("1st step");
+        print("1st step");
 
         
 
     }
-    */
 
 
 }
