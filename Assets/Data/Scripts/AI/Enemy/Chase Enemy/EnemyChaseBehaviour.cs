@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
@@ -91,7 +92,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField] private LayerMask HidableLayers;
 
 
-    private float MinObstacleHeight = 0.7f;
+    private float MinObstacleHeight = 0.5f;
 
     public SceneChecker LineOfSightChecker;
 
@@ -122,6 +123,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float retreatDist = 2f; 
 
     private PredictionModel pathPrediction;
+
+    private Transform aiTransform;
+
+
+    // new cover code
+    // The speed at which the AI character moves
+    public float moveSpeed = 5f;
+
+    // The distance at which the AI character starts fleeing from the player
+    public float fleeDistance = 15f;
+
+    // The current cover position the AI character is using
+    private Transform currentCoverPosition;
+
 
 
     #endregion
@@ -246,6 +261,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         */
 
         #endregion
+
+        aiTransform = transform;
 
         stateMachine = new StateMachine(PatrolState);
         _Agent = GetComponent<NavMeshAgent>();
@@ -515,7 +532,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Agent.stoppingDistance = 1f;
         _Agent.radius = 1f;
 
-        //HandleGainSight(PlayerTarget);
+        HandleGainSight(PlayerTarget);
+       // GetCover();
 
         if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
         {
@@ -526,8 +544,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         
     }
-   
 
+   
+   
+    
     private void HandleGainSight(Transform Target)
     {
 
@@ -537,11 +557,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             StopCoroutine(MovementCoroutine);
         }
-        //playerTarget = Target;
+        playerTarget = Target;
 
         MovementCoroutine = StartCoroutine(Hide(Target));
     }
-
+    
 
     #endregion
 
@@ -549,6 +569,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region AI Health 
     public void TakeDamage(int _damage)
     {
+        print(_Health);
         
 
         if (_Health <= 0)
@@ -587,7 +608,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     #region Coroutines
     #region Cover Routine
-
+    
     private IEnumerator Hide(Transform Target)
     {
         WaitForSeconds Wait = new WaitForSeconds(UpdateFrequency);
@@ -603,7 +624,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
             {
-                if (Vector3.Distance(Colliders[i].transform.position, Target.position) < minDistInCover || Colliders[i].bounds.size.y < MinObstacleHeight)
+                if (Vector3.Distance(Colliders[i].transform.position, Target.position) < minDistInCover) //|| Colliders[i].bounds.size.y < MinObstacleHeight)
                 {
                     Colliders[i] = null;
                     hitReduction++;
@@ -673,10 +694,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
             return Vector3.Distance(_Agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(_Agent.transform.position, B.transform.position));
         }
     }
-
-    #endregion 
+    
+    #endregion
 
     #region Field of view Routine
+
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);
@@ -714,7 +736,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
 
 
-
+    
     #endregion
     
 

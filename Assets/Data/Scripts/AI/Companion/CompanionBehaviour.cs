@@ -111,8 +111,6 @@ public class CompanionBehaviour : MonoBehaviour
         CheckEnemy();
         
 
-
-
         Action actions = stateMachine.Update();
         actions?.Invoke();
 

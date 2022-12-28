@@ -18,7 +18,6 @@ public class SceneChecker : MonoBehaviour
 
     private Coroutine CheckForLineOfSightCoroutine;
 
-    //private EnemyChaseBehaviour[] enemyChase;
 
     private void Awake()
     {
