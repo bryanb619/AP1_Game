@@ -1,3 +1,4 @@
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
 public class PlayerCam : MonoBehaviour
@@ -17,13 +18,19 @@ public class PlayerCam : MonoBehaviour
     private CompanionBehaviour AI_Companion;
 
 
+    private bool inView;
+    public bool InView => inView;   
+
+
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        AI_Companion= FindObjectOfType<CompanionBehaviour>();   
+        AI_Companion= FindObjectOfType<CompanionBehaviour>();
+
+        inView = false;
     }
 
     private void Update()
@@ -57,17 +64,35 @@ public class PlayerCam : MonoBehaviour
         {
             if (hit.collider.tag == "Companion")
             {
+                inView= true;
+
                 //print("in sight");
-                AI_Companion.Setlow();
+                
             }
+           
+            
+        }
+        else
+        {
+            inView= false;
         }
 
+        CompanionAlphaSet();
         
 
 
+    }
 
-        // ray, hit and max lenght
-        
-        
+    private void CompanionAlphaSet()
+    {
+        if (inView == true)
+        {
+            AI_Companion.Setlow();
+        }
+        else if(inView == false) 
+        {
+            AI_Companion.SetHigh();
+        }
+
     }
 }

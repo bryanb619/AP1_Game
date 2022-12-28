@@ -8,10 +8,10 @@ using UnityEngine.AI;
 //using UnityEngine.Animations;
 
 // The script that controls an agent using an FSM
-//[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class CompanionBehaviour : MonoBehaviour
 {
-    public Transform[] Pos;
+    //public Transform[] Pos;
     //float dist;
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
@@ -42,7 +42,7 @@ public class CompanionBehaviour : MonoBehaviour
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
     //private MeshRenderer mesh;
-    private Material material;
+    //[SerializeField]private MeshRenderer companionMesh; 
 
     private Color Newcolor;
     public float aFloat;
@@ -50,14 +50,11 @@ public class CompanionBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        _Companion = GetComponent<NavMeshAgent>();
+        //_Companion = GetComponent<NavMeshAgent>();
         //_EPI = GameObject.Find("Minimap Border");
         _MiniMapCollor = FindObjectOfType<mini>();
 
-        //mesh = gameObject.GetComponent<MeshRenderer>();
-        material= GetComponent<Material>(); 
-
-        //_Player = FindObjectOfType<Player_test>();
+    
         PlayerIsMoving = false;
 
 
@@ -66,7 +63,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         StartCoroutine(FOVRoutine());
 
-
+        
 
 
         // Create the states
@@ -112,6 +109,8 @@ public class CompanionBehaviour : MonoBehaviour
         LookAtUpdate();
         CheckMoveBool();
         CheckEnemy();
+        
+
 
 
         Action actions = stateMachine.Update();
@@ -120,6 +119,9 @@ public class CompanionBehaviour : MonoBehaviour
     }
 
 
+    
+
+    /*
     private void Distance()
     {
         for (int i = 0; i < Pos.Length; i++)
@@ -137,6 +139,7 @@ public class CompanionBehaviour : MonoBehaviour
             }
         }
     }
+    */
     
     private void CheckMoveBool()
     {
@@ -227,9 +230,15 @@ public class CompanionBehaviour : MonoBehaviour
        // print("follow!!");
         _Companion.SetDestination(_Target.position);
 
-        if (_Companion.remainingDistance >= 6F)
+        if (_Companion.remainingDistance >= 5F)
         {
             KetChup();
+        }
+        if(_Companion.remainingDistance >= 8)
+        {
+
+            transform.position = _Target.transform.position;
+            
         }
     }
 
@@ -241,7 +250,6 @@ public class CompanionBehaviour : MonoBehaviour
         _Companion.SetDestination(_Target.position);
 
     }
-
 
     private IEnumerator FOVRoutine()
     {
@@ -279,12 +287,23 @@ public class CompanionBehaviour : MonoBehaviour
             EnemyIS = false;
     }
 
+
+
     public void Setlow()
     {
 
-        
-    } 
+        print("Set low");
+        //companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
 
-    
+    }
+
+    public void SetHigh()
+    {
+        //print("set high"); 
+        //companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
+
+    }
+
+
 
 }

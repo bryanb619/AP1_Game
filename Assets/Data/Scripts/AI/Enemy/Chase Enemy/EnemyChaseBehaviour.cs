@@ -1,19 +1,10 @@
-﻿/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * 
- * */
+﻿/*  */
 
 using System;
 using System.Collections;
 using UnityEngine;
-//using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using UnityEngine.Animations;
-using JetBrains.Annotations;
-//using UnityEngine.Animations;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -22,7 +13,7 @@ using JetBrains.Annotations;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
-
+    #region Variables
     //Gem spawn
     [Header("Gem Spawn")]
     [SerializeField] private bool gemSpawnOnDeath = true;
@@ -35,6 +26,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     //private MeleeAttack AIAttack;
 
     private NavMeshAgent _Agent;
+    private NavMeshPath path;
     private float _Health;
 
     // References to player
@@ -58,7 +50,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [Range(0, 15)][SerializeField] private float minDistInCover = 12f;
 
-    [SerializeField] private float minAttackDist = 3f; 
+    [SerializeField] private float minAttackDist = 3f;
 
 
     [Range(10, 150)]
@@ -94,50 +86,58 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [Range(-1, 1)]
     [Tooltip("Lower is a better hiding spot")]
     public float HideSensitivity = 0;
-    [Range(0.01f, 1f)] private float UpdateFrequency = 0.25f;
+    [Range(0.01f, 1f)][SerializeField] private float UpdateFrequency = 0.25f;
 
     [SerializeField] private LayerMask HidableLayers;
 
-    [Range(0, 5f)]
-    private float MinObstacleHeight = 1.50f;
+
+    private float MinObstacleHeight = 0.7f;
 
     public SceneChecker LineOfSightChecker;
 
     private Coroutine MovementCoroutine;
 
 
-    private bool InCoverState;
+    [Range(0, 10)][SerializeField] private float healthInCreasePerFrame;
 
-
-    [Range(0,10)] [SerializeField] private float healthInCreasePerFrame;
-
-    private float maxHealth = 100f;
+    //private const float MAXHEALTH = 100f;
 
     private Vector3 previousPos;
 
     private float curSpeed;
 
+   
 
+    // state condition bools
+    private bool InCoverState;
+    private bool _returnPatrol;
+    private bool _inSearch;
+
+    // sub state condition bools
     private bool IsAttacking;
-    private bool InAttackRange;
-
-    private bool InCombat; 
-
+    private bool _underAttack;
+    bool _inAttackRange;
 
 
-    
+    private float retreatDist = 2f; 
+
+    private PredictionModel pathPrediction;
+
+
+    #endregion
+    // test code 
+
+
+
+
+
     // Get references to enemies
     private void Awake()
     {
         PlayerObject = GameObject.Find("Player");
         _Player = FindObjectOfType<Player_test>();
 
-        //AIAttack = GetComponentInChildren<MeleeAttack>();
-    
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
-
-        //LineOfSightChecker.OnGainSight += HandleGainSight;
-        //LineOfSightChecker.OnLoseSight += HandleLoseSight;
 
 
     }
@@ -154,54 +154,44 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(FOVRoutine());
-
-        _Health = 100;
-
-        _Agent = GetComponent<NavMeshAgent>();
-
-        
-
-        InCombat = false; 
-
-        //playerTarget = FindObjectOfType<>(PlayerTarget);
-        
-
-       // LineOfSightChecker.OnGainSight += HandleGainSight;
-        //
-
-        
-
+ 
+        #region  States 
         // Non Combat states
         State onGuardState = new State("",
             () => Debug.Log("Enter On Guard state"),
             null,
             () => Debug.Log(""));
 
-        State PatrolState = new State("no visual",
-            () => Debug.Log("Enter Fight state"),
+        State PatrolState = new State("Patroling",
+            () => Debug.Log(""),
             Patrol,
-            () => Debug.Log("Leave Fight state"));
+            () => Debug.Log(""));
 
         // Combat states
 
         State ChaseState = new State("",
-            () => Debug.Log("Enter Fight state"),
+            () => Debug.Log("Fighting"),
             ChasePlayer,
             () => Debug.Log(""));
+
+        State SearchState = new State("Searching",
+           () => Debug.Log(""),
+           Search,
+           () => Debug.Log(""));
+
 
         State FindCover = new State("Help",
             () => Debug.Log(""),
             Cover,
-            () => Debug.Log("")); ;
+            () => Debug.Log(""));
 
-        
+        #endregion
 
+        #region Trasintion of states
         // Add the transitions
-
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true, 
+                () => canSeePlayer == true,
                 () => Debug.Log("Player found!"),
                 ChaseState));
 
@@ -210,6 +200,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => InCoverState == true,
                () => Debug.Log(""),
                FindCover));
+
+        ChaseState.AddTransition(
+           new Transition(
+               () => _inSearch == true,
+               () => Debug.Log(""),
+               SearchState));
+
+        SearchState.AddTransition(
+           new Transition(
+               () => _inSearch == false,
+               () => Debug.Log(""),
+               ChaseState));
+
+        SearchState.AddTransition(
+           new Transition(
+               () => _returnPatrol == true,
+               () => Debug.Log(""),
+               PatrolState));
 
         FindCover.AddTransition(
            new Transition(
@@ -237,66 +245,84 @@ public class EnemyChaseBehaviour : MonoBehaviour
                ChaseState));
         */
 
-        // Create the state machine
-        //stateMachine = new StateMachine(onGuardState);
+        #endregion
+
         stateMachine = new StateMachine(PatrolState);
+        _Agent = GetComponent<NavMeshAgent>();
+        path = new NavMeshPath();
+        pathPrediction = new PredictionModel();
+
+        StartCoroutine(FOVRoutine());
+
+        _Health = 100;
+
+        
     }
     #endregion
 
     // Request actions to the FSM and perform them
     private void Update()
     {
+
+     
+
         MinimalCheck();
-        HealthCheck();  
+        HealthCheck();
+        AISpeed();
+        SearchCS();
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
 
-        Vector3 curMove = transform.position - previousPos;
-        curSpeed= curMove.magnitude / Time.deltaTime;
-        previousPos = transform.position;
+
 
     }
+
+
+    #region Condition checked in update
 
     private void MinimalCheck()
     {
         if ((playerTarget.transform.position - transform.position).magnitude < minDist)
         {
-            transform.LookAt(playerTarget.position);
-            InAttackRange = true;
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            _inAttackRange = true;
         }
         else
         {
-            InAttackRange = false;
+            _inAttackRange = false;
         }
     }
     private void HealthCheck()
     {
-        if(_Health <= 50 )//&& _Health > 10) 
+        if (_Health <= 50)//&& _Health > 10) 
         {
             InCoverState = true;
             //HandleGainSight(PlayerTarget); 
         }
-        
-        else if( _Health >= 75) 
+
+        else if (_Health >= 75)
         {
             InCoverState = false;
         }
-        
+
 
     }
 
-    private void HandleGainSight(Transform Target)
+    private void AISpeed()
     {
-
-        if (MovementCoroutine != null)
-        {
-            StopCoroutine(MovementCoroutine);
-        }
-        playerTarget = Target;
-
-        MovementCoroutine = StartCoroutine(Hide(Target));
+        Vector3 curMove = transform.position - previousPos;
+        curSpeed = curMove.magnitude / Time.deltaTime;
+        previousPos = transform.position;
     }
+
+    private void SearchCS()
+    {
+        
+    }
+    #endregion
+
+
 
     /*
     private void HandleLoseSight(Transform Target)
@@ -311,54 +337,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     */
 
-
-    // Chase the small enemy
-    private void ChasePlayer()
-    {
-        transform.LookAt(playerTarget);
-        InCombat = true;
-
-        _Agent.speed = 5f;
-        _Agent.acceleration = 11f;
-        _Agent.SetDestination(playerTarget.position);
-
-        Attack();
-
-        //print("ATTACK");
-    }
-    private void Attack()
-    {
-        if(_Agent.remainingDistance <= 3)
-        {
-            _Agent.stoppingDistance= 2.7f;
-
-            if ((playerTarget.transform.position - transform.position).magnitude < minAttackDist && curSpeed <= 2.5f)
-            {
-                transform.LookAt(playerTarget.position);
-
-                if (Time.time > nextAttack)
-                {
-                    //transform.LookAt(playerTarget);
-
-                    nextAttack = Time.time + AttackRate;
-                    _Player.TakeDamage(damage);
-                }
-                else
-                {
-                    IsAttacking = false;
-                }
-
-            }
-        }
-       
-        
-        
-    }
-
+    #region AI Actions
 
     private void Patrol()
     {
-
+        _returnPatrol = false;
         _Agent.autoBraking = false;
         _Agent.stoppingDistance = 0f;
 
@@ -366,7 +349,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             GotoNetPoint();
         }
-            
+
     }
 
     private void GotoNetPoint()
@@ -386,25 +369,224 @@ public class EnemyChaseBehaviour : MonoBehaviour
         destPoint = (destPoint + 1) % _PatrolPoints.Length;
     }
 
-
-    private void Cover()
+    // Chase the small enemy
+    private void ChasePlayer()
     {
-        _Agent.speed = 5f;
-        HandleGainSight(PlayerTarget);
-
-        if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
+        if(_underAttack == true) 
         {
-            _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, maxHealth);
-            //Debug.Log("Chase health: " + _Health);
+           // QuickCover();
         }
-        Attack();
 
+        if(_underAttack == false)
+        {
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
+            _Agent.speed = 5f;
+            _Agent.acceleration = 11f;
+
+            _Agent.SetDestination(playerTarget.position);
+
+            Attack();
+
+            if (canSeePlayer == false)
+            {
+                _inSearch = true;
+            }
+        }
+        
+
+        //print("ATTACK");
+    }
+    private void Attack()
+    {
+        if (_Agent.remainingDistance <= 3)
+        {
+            _Agent.stoppingDistance = 2.7f;
+
+            if (_inAttackRange == true)
+            {
+
+                if (Time.time > nextAttack)
+                {
+                    //transform.LookAt(playerTarget);
+
+                    nextAttack = Time.time + AttackRate;
+                    //_Player.TakeDamage(damage);
+                }
+                else
+                {
+                    IsAttacking = false;
+                }
+
+            }
+        }
 
 
 
     }
-    #region hide Routine
+    private void QuickCover()
+    {
+        Vector3 retreatPoint = transform.position - transform.forward * retreatDist;
+        _Agent.SetDestination(retreatPoint);
+
+        // Make the character move towards the destination
+        _Agent.isStopped = false;
+
+        
+       
+
+
+    }
+    
+
+    private void Search()
+    {
+        
+
+        if (_Agent.remainingDistance <= _Agent.stoppingDistance)
+        {
+
+            if(canSeePlayer)
+            {
+                _inSearch= false;
+            }
+
+            
+            // Get the player's last position (their destination)
+            Vector3 lastPosition = _Agent.destination;
+
+
+            // * play animation ( Move FOV HEAD in Y rotation) and initiate again patrol state
+
+            //Debug.Log("Player's last position: " + lastPosition);
+
+            //GetPath();
+            PathPredict();
+             
+
+
+
+        }
+        
+    }
+
+    private void PathPredict()
+    {
+        //print("predicting");
+        // Predict the target's path using the prediction model
+        Vector3[] predictedPath = pathPrediction.PredictPath(PlayerObject);
+
+        // Set the AI agent's destination to be the predicted position of the target at a certain point in the future
+        _Agent.destination = predictedPath[predictedPath.Length - 1];
+    }
+
+    private void GetPath()
+    {
+        //print(" GetPath");
+        // Assume that target is a GameObject with a Transform component
+        //NavMeshAgent agent = GetComponent<NavMeshAgent>();
+
+        _Agent.destination = playerTarget.transform.position;
+        NavMeshPath path = new NavMeshPath();
+        _Agent.CalculatePath(playerTarget.transform.position, path);
+       
+
+        if (path.status == NavMeshPathStatus.PathComplete)
+        {
+            // Use the path to guide the AI's movement
+            print("i see you again");
+        }
+        else
+        {
+            
+            // Modify the target position or find a new target
+        }
+
+    }
+
+
+
+    private void Cover()
+    {
+        const float MAXHEALTH = 100f;
+
+
+        _Agent.speed = 5f;
+        _Agent.stoppingDistance = 1f;
+        _Agent.radius = 1f;
+
+        //HandleGainSight(PlayerTarget);
+
+        if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
+        {
+            _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, MAXHEALTH);
+            //Debug.Log("Chase health: " + _Health);
+        }
+        Attack();
+
+        
+    }
+   
+
+    private void HandleGainSight(Transform Target)
+    {
+
+        _Agent.radius = 1f;
+
+        if (MovementCoroutine != null)
+        {
+            StopCoroutine(MovementCoroutine);
+        }
+        //playerTarget = Target;
+
+        MovementCoroutine = StartCoroutine(Hide(Target));
+    }
+
+
+    #endregion
+
+
+    #region AI Health 
+    public void TakeDamage(int _damage)
+    {
+        
+
+        if (_Health <= 0)
+        {
+            Die();
+        }
+        if (_Health > 0)
+        {
+            //_underAttack= true;
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            StartCoroutine(HitFlash());
+        }
+        _Health -= _damage + damageBoost;
+        //Debug.Log("enemy shot" + _Health);
+    }
+
+    
+
+    private void Die()
+    {
+
+        if (gemSpawnOnDeath)
+            Instantiate(gemPrefab, transform.position, Quaternion.identity);
+
+
+        //Instantiate(transform.position, Quaternion.identity);
+        Destroy(gameObject);
+
+        // call for AI event
+        //DieEvent.Invoke();
+
+       // Debug.Log("Enemy died");
+    }
+    #endregion
+
+
+    #region Coroutines
+    #region Cover Routine
 
     private IEnumerator Hide(Transform Target)
     {
@@ -531,50 +713,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
             canSeePlayer = false;
     }
 
-    #endregion
-    //Hide routine code
-    
-    
-    public void TakeDamage(int _damage)
-    {
-        transform.LookAt(playerTarget.position);
 
-        if (_Health <= 0)
-        {
-            Die();
-        }
-        if (_Health > 0)
-        {
-            StartCoroutine(HitFlash());
-        }
-        _Health -= _damage + damageBoost;
-        //Debug.Log("enemy shot" + _Health);
-    }
+
+    #endregion
+    
 
     IEnumerator HitFlash()
     {
         originalColor = GetComponent<Renderer>().material.color;
         GetComponent<Renderer>().material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
-        GetComponent<Renderer>().material.color = Color.gray;
+        GetComponent<Renderer>().material.color = Color.magenta;
     }
 
-    private void Die()
-    {
+    #endregion
 
-        if (gemSpawnOnDeath)
-            Instantiate(gemPrefab, transform.position, Quaternion.identity);
-
-
-        //Instantiate(transform.position, Quaternion.identity);
-        Destroy(gameObject);
-
-        // call for AI event
-        //DieEvent.Invoke();
-
-       // Debug.Log("Enemy died");
-    }
-
-
-   
 }

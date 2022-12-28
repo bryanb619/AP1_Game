@@ -160,7 +160,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b3122ad2711b8614d92a63f85b9a3dd0, type: 2}
+  - {fileID: 2100000, guid: 946f4e2524e8c814c98c95b7dee70882, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -194,10 +194,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca2b815135b19214a830900b8691cdcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gemSpawnOnDeath: 1
+  gemPrefab: {fileID: 0}
   _PatrolPoints: []
   playerTarget: {fileID: 0}
   minDist: 7
-  minDist2: 10
+  minDistInCover: 12
   minAttackDist: 2
   radius: 20
   angle: 160
@@ -215,7 +217,6 @@ MonoBehaviour:
   HidableLayers:
     serializedVersion: 2
     m_Bits: 64
-  MinObstacleHeight: 1.25
   LineOfSightChecker: {fileID: 295683184826658432}
   healthInCreasePerFrame: 1.4
 --- !u!195 &295683185109554351
