@@ -557,7 +557,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             StopCoroutine(MovementCoroutine);
         }
-        playerTarget = Target;
+        //playerTarget = Target;
 
         MovementCoroutine = StartCoroutine(Hide(Target));
     }
