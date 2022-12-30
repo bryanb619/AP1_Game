@@ -545,9 +545,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
     }
 
-   
-   
-    
     private void HandleGainSight(Transform Target)
     {
 
