@@ -570,7 +570,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     public void TakeDamage(int _damage)
     {
         print(_Health);
-        
+        QuickCover();
 
         if (_Health <= 0)
         {

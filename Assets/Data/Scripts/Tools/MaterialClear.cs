@@ -1,19 +1,15 @@
+#region Script used to deactivate collider meshes used for cover  
+#endregion
 using UnityEngine;
 
 public class MaterialClear : MonoBehaviour
 {
-    private MeshRenderer[] meshes; 
-
     // Start is called before the first frame update
     void Start()
     {
-        meshes = GetComponentsInChildren<MeshRenderer>();
+        MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
 
-       //meshes.enabled = false;
-        // 
-        //meshes
-    }
-
-    
-    
+        foreach (MeshRenderer currentRender in renderers)
+            currentRender.enabled = false;
+    }  
 }
