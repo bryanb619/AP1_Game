@@ -266,7 +266,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         stateMachine = new StateMachine(PatrolState);
         _Agent = GetComponent<NavMeshAgent>();
-        path = new NavMeshPath();
+        //path = new NavMeshPath();
+
         pathPrediction = new PredictionModel();
 
         StartCoroutine(FOVRoutine());
