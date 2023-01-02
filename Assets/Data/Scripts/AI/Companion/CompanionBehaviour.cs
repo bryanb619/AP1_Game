@@ -17,10 +17,11 @@ public class CompanionBehaviour : MonoBehaviour
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     private mini _MiniMapCollor;
 
-    [SerializeField]private NavMeshAgent _Companion;
-    [SerializeField] private Transform _Target;
-    [HideInInspector] public bool PlayerIsMoving;
-    [HideInInspector] public bool PlayerIsDashing;
+    [SerializeField]private NavMeshAgent Companion;
+    [SerializeField] private Transform Target;
+    public Transform playerTarget => Target;
+    [HideInInspector] public bool _playerIsMoving;
+    [HideInInspector] public bool _PlayerIsDashing;
     private bool _StartFollow;
 
     //private Player_test _Player;
@@ -42,7 +43,7 @@ public class CompanionBehaviour : MonoBehaviour
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
     //private MeshRenderer mesh;
-    //[SerializeField]private MeshRenderer companionMesh; 
+    [SerializeField] private MeshRenderer companionMesh; 
 
     private Color Newcolor;
     public float aFloat;
@@ -50,12 +51,12 @@ public class CompanionBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        //_Companion = GetComponent<NavMeshAgent>();
+        
         //_EPI = GameObject.Find("Minimap Border");
         _MiniMapCollor = FindObjectOfType<mini>();
 
-    
-        PlayerIsMoving = false;
+
+        _playerIsMoving = false;
 
 
 
@@ -115,10 +116,6 @@ public class CompanionBehaviour : MonoBehaviour
         actions?.Invoke();
 
     }
-
-
-    
-
     /*
     private void Distance()
     {
@@ -145,7 +142,7 @@ public class CompanionBehaviour : MonoBehaviour
         //Debug.Log(PlayerIsMoving);
 
 
-        if (PlayerIsMoving == true)
+        if (_playerIsMoving == true)
         {
             _StartFollow = true;
         }
@@ -179,16 +176,16 @@ public class CompanionBehaviour : MonoBehaviour
         // player is not moving (agent stop)
 
         //print("doing nothing now");
-        _Companion.speed = 2F;
+        Companion.speed = 2F;
 
         // follow only camera movement
 
-        if(_Companion.remainingDistance <= 3f)
+        if(Companion.remainingDistance <= 3f)
         {
             CameraUpdatePos();
         }
 
-        else if(_Companion.remainingDistance >= 6F)
+        else if(Companion.remainingDistance >= 6F)
         {
             KetChup();
         }
@@ -216,7 +213,7 @@ public class CompanionBehaviour : MonoBehaviour
     private void CameraUpdatePos()
     {
         //
-        _Companion.SetDestination(_Target.position);
+        Companion.SetDestination(Target.position);
 
     }
 
@@ -224,18 +221,18 @@ public class CompanionBehaviour : MonoBehaviour
     {
 
         // follow player and camera movement
-        _Companion.speed = 8F;
+        Companion.speed = 8F;
        // print("follow!!");
-        _Companion.SetDestination(_Target.position);
+        Companion.SetDestination(Target.position);
 
-        if (_Companion.remainingDistance >= 5F)
+        if (Companion.remainingDistance >= 5F)
         {
             KetChup();
         }
-        if(_Companion.remainingDistance >= 8)
+        if(Companion.remainingDistance >= 8)
         {
 
-            transform.position = _Target.transform.position;
+            transform.position = Target.transform.position;
             
         }
     }
@@ -243,9 +240,9 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void KetChup()
     {
-        _Companion.acceleration = 12;
-        _Companion.speed = 13F;
-        _Companion.SetDestination(_Target.position);
+        Companion.acceleration = 12;
+        Companion.speed = 13F;
+        Companion.SetDestination(Target.position);
 
     }
 
@@ -291,14 +288,14 @@ public class CompanionBehaviour : MonoBehaviour
     {
 
         print("Set low");
-        //companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
+        companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
 
     }
 
     public void SetHigh()
     {
         //print("set high"); 
-        //companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
+        companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
 
     }
 

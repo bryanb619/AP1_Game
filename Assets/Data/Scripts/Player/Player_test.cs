@@ -415,19 +415,19 @@ public class Player_test : MonoBehaviour
             //PlayerOnMove = true;
             //_CompanionMovement.PlayerInput(PlayerOnMove);
 
-            _CompanionMovement.PlayerIsMoving = true;
+            _CompanionMovement._playerIsMoving = true;
 
         }
         else if (speed >= 12)
         {
 
-            _CompanionMovement.PlayerIsMoving = true;
+            _CompanionMovement._playerIsMoving = true;
         }
         else
         {
             //PlayerOnMove = false;
             // _CompanionMovement.PlayerInput(PlayerOnMove);
-            _CompanionMovement.PlayerIsMoving = false;
+            _CompanionMovement._playerIsMoving = false;
         }
 
 
