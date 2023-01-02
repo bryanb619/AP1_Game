@@ -1,4 +1,4 @@
-#region Script used to deactivate collider meshes used for cover  
+#region Script used to deactivate collider meshes used for cover and other purposes  
 #endregion
 using UnityEngine;
 

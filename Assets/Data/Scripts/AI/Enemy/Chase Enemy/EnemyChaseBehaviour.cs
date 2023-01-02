@@ -449,10 +449,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Make the character move towards the destination
         _Agent.isStopped = false;
 
-        
-       
-
-
     }
     
 
@@ -567,7 +563,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     public void TakeDamage(int _damage)
     {
         print(_Health);
-        QuickCover();
+        
 
         if (_Health <= 0)
         {
@@ -577,7 +573,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             //_underAttack= true;
             transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            QuickCover();
             StartCoroutine(HitFlash());
+            
         }
         _Health -= _damage + damageBoost;
         //Debug.Log("enemy shot" + _Health);
