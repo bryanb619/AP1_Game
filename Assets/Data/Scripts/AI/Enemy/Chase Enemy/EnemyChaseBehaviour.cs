@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -389,6 +390,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
+
+        //WarnOtherAi();
+
         if(_underAttack == true) 
         {
            // QuickCover();
@@ -410,10 +414,28 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 _inSearch = true;
             }
         }
+
+
         
 
         //print("ATTACK");
     }
+
+    private void WarnOtherAi()
+    {
+        float detectRadius = 10.0f;
+        Collider[] colliders = Physics.OverlapSphere(transform.position, detectRadius);
+        foreach (Collider collider in colliders)
+        {
+            // check if the GameObject attached to the collider is an enemy of the same type
+            if (collider.CompareTag("Enemy") && collider.GetComponent<EnemyChaseBehaviour>() != null)
+            {
+                
+            }
+        }
+
+    }
+
     private void Attack()
     {
         if (_Agent.remainingDistance <= 3)

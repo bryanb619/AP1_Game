@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-//using URandom = UnityEngine.Random;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
 
@@ -11,27 +10,34 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CompanionBehaviour : MonoBehaviour
 {
-    //public Transform[] Pos;
-    //float dist;
+
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     private mini _MiniMapCollor;
 
-    [SerializeField]private NavMeshAgent Companion;
+    [SerializeField] private NavMeshAgent Companion;
     [SerializeField] private Transform Target;
     public Transform playerTarget => Target;
+
     [HideInInspector] public bool _playerIsMoving;
-    [HideInInspector] public bool _PlayerIsDashing;
+
     private bool _StartFollow;
 
     //private Player_test _Player;
+    [Header("Mesh Configuration")]
+    [SerializeField] private MeshRenderer CompanionMesh;
+    [SerializeField] Material normal;
+    [SerializeField] Material AlphaLow;
 
+    [SerializeField] private Transform AlphaPoint;
 
+    private float minDist = 0.4f;
     // Reference to the state machine
     private StateMachine stateMachine;
 
-    private bool EnemyIS;
-    public bool canSee => EnemyIS;
+    private bool _enemyIS;
+    public bool canSee => _enemyIS;
+
     [Range(10, 150)]
     public float radius;
     [Range(50, 360)]
@@ -42,31 +48,23 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
-    //private MeshRenderer mesh;
-    [SerializeField] private MeshRenderer companionMesh; 
 
-    private Color Newcolor;
-    public float aFloat;
+
 
     // Create the FSM
     private void Start()
     {
-        
-        //_EPI = GameObject.Find("Minimap Border");
+
+
+        StartCoroutine(FOVRoutine());
+        CompanionMesh = GetComponent<MeshRenderer>();
         _MiniMapCollor = FindObjectOfType<mini>();
 
 
         _playerIsMoving = false;
 
 
-
-        // EPI
-
-        StartCoroutine(FOVRoutine());
-
-        
-
-
+      
         // Create the states
         State IdleState = new State("",
             () => Debug.Log("Idle state"),
@@ -78,14 +76,15 @@ public class CompanionBehaviour : MonoBehaviour
             Follow,
             () => Debug.Log(""));
 
-
+      
 
         // Add the transitions
-        
+
+      
         // Idle
         IdleState.AddTransition(
             new Transition(
-                () => _StartFollow == true, 
+                () => _StartFollow == true,
                 () => Debug.Log(""),
                 FollowState));
 
@@ -95,8 +94,8 @@ public class CompanionBehaviour : MonoBehaviour
                () => _StartFollow == false,
                () => Debug.Log(""),
                IdleState));
-        
-        
+       
+
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
     }
@@ -104,42 +103,36 @@ public class CompanionBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        //Distance();
-        //_Player.InMotion();
+
 
         LookAtUpdate();
         CheckMoveBool();
         CheckEnemy();
-        
+        AlphaUpdate();
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
     }
-    /*
-    private void Distance()
+
+    private void LookAtUpdate()
     {
-        for (int i = 0; i < Pos.Length; i++)
+        RaycastHit HitInfo;
+        Ray RayCast;
+
+        RayCast = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out HitInfo, 100.0f))
         {
-            var dist = Vector3.Distance(transform.position, Pos[i].transform.position);
-
-            if (dist <= 0.1f)
-            {
-                
-
-            }
-            else
-            {
-
-            }
+            transform.LookAt(HitInfo.point);
+        }
+        else
+        {
+            transform.LookAt(transform.forward);
         }
     }
-    */
-    
+
     private void CheckMoveBool()
     {
-        
-        //Debug.Log(PlayerIsMoving);
 
 
         if (_playerIsMoving == true)
@@ -150,23 +143,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             _StartFollow = false;
         }
-
     }
-    private void CheckEnemy()
-    {
-
-        if(EnemyIS)
-        {
-            //_EPI.SetActive(true);
-            _MiniMapCollor.SetCollorRed();
-        }
-        else
-        {
-            //_EPI.SetActive(false);
-            _MiniMapCollor.SetCollorDefault();
-        }
-    }
-
 
 
     // Chase the small enemy
@@ -180,36 +157,19 @@ public class CompanionBehaviour : MonoBehaviour
 
         // follow only camera movement
 
-        if(Companion.remainingDistance <= 3f)
+        if (Companion.remainingDistance <= 3f)
         {
             CameraUpdatePos();
         }
 
-        else if(Companion.remainingDistance >= 6F)
+        else if (Companion.remainingDistance >= 6F)
         {
             KetChup();
         }
 
 
-       
+
     }
-
-    private void LookAtUpdate()
-    {
-        RaycastHit HitInfo;
-        Ray RayCast;
-
-        RayCast = Camera.main.ViewportPointToRay(new Vector3(0.5f,0.5f,0.5f));
-            if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out HitInfo, 100.0f))
-            {
-                transform.LookAt(HitInfo.point);
-            }
-            else
-            {
-                transform.LookAt(transform.forward);
-            }
-    }
-
     private void CameraUpdatePos()
     {
         //
@@ -217,23 +177,26 @@ public class CompanionBehaviour : MonoBehaviour
 
     }
 
+
+
+
     private void Follow()
     {
 
         // follow player and camera movement
         Companion.speed = 8F;
-       // print("follow!!");
+        // print("follow!!");
         Companion.SetDestination(Target.position);
 
         if (Companion.remainingDistance >= 5F)
         {
             KetChup();
         }
-        if(Companion.remainingDistance >= 8)
+        if (Companion.remainingDistance >= 8)
         {
 
             transform.position = Target.transform.position;
-            
+
         }
     }
 
@@ -245,6 +208,7 @@ public class CompanionBehaviour : MonoBehaviour
         Companion.SetDestination(Target.position);
 
     }
+  
 
     private IEnumerator FOVRoutine()
     {
@@ -271,34 +235,61 @@ public class CompanionBehaviour : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(FOV.position, target.position);
 
                 if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
-                    EnemyIS = true;
+                    _enemyIS = true;
                 else
-                    EnemyIS = false;
+                    _enemyIS = false;
             }
             else
-                EnemyIS = false;
+                _enemyIS = false;
         }
-        else if (EnemyIS)
-            EnemyIS = false;
+        else if (_enemyIS)
+            _enemyIS = false;
     }
 
 
 
-    public void Setlow()
+
+    private void AlphaUpdate()
+    {
+        if ((AlphaPoint.transform.position - transform.position).magnitude < minDist)
+        {
+            Setlow();
+
+        }
+        else
+        {
+            SetHigh();
+        }
+    }
+
+    private void CheckEnemy()
     {
 
-        print("Set low");
-        companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 0.3f);
-
+        if (_enemyIS)
+        {
+            //_EPI.SetActive(true);
+            _MiniMapCollor.SetCollorRed();
+        }
+        else
+        {
+            //_EPI.SetActive(false);
+            _MiniMapCollor.SetCollorDefault();
+        }
     }
 
-    public void SetHigh()
+    private void Setlow()
     {
-        //print("set high"); 
-        companionMesh.GetComponent<MeshRenderer>().material.color = new Color(1f, 1f, 1f, 1f);
+        // change to transparent material version
+        CompanionMesh.material = AlphaLow;
 
     }
 
+    private void SetHigh()
+    {
+        // change to normal material
+        CompanionMesh.material = normal;
+    }
+ 
 
 
 }

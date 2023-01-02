@@ -15,12 +15,11 @@ public class PlayerCam : MonoBehaviour
 
     public float range = 10f;
 
-    private CompanionBehaviour AI_Companion;
-
 
     private bool inView;
-    public bool InView => inView;   
+    public bool InView => inView;
 
+    [SerializeField] private bool CanRotateCamera = true; 
 
 
     private void Start()
@@ -28,29 +27,31 @@ public class PlayerCam : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        AI_Companion= FindObjectOfType<CompanionBehaviour>();
+       
 
         inView = false;
     }
 
     private void Update()
     {
-        // mouse input
-        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
-        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+        // remove if statement in the near future
+        if(CanRotateCamera)
+        { // mouse input
+            float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+            float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
-        yRotation += mouseX;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            yRotation += mouseX;
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
-
-        GetCompanion();
+            transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+            orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+        }
 
 
     }
 
+    /* UNUSED CODE TRASH
     private void GetCompanion()
     {
         Vector3 direction = Vector3.forward;
@@ -95,4 +96,5 @@ public class PlayerCam : MonoBehaviour
         }
 
     }
+    */
 }
