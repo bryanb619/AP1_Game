@@ -7,13 +7,13 @@ public class FOVEEB : Editor
     private void OnSceneGUI()
     {
         EnemyBehaviour fov = (EnemyBehaviour)target;
-        Handles.color = Color.grey;
+        Handles.color = Color.red;
         Handles.DrawWireArc(fov.EEFOV.position, Vector3.up, Vector3.forward, 360, fov.radius);
 
         Vector3 viewAngle01 = DirectionFromAngle(fov.EEFOV.transform.eulerAngles.y, -fov.angle / 2);
         Vector3 viewAngle02 = DirectionFromAngle(fov.EEFOV.eulerAngles.y, fov.angle / 2);
 
-        Handles.color = Color.green;
+        Handles.color = Color.yellow;
         Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle01 * fov.radius);
         Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle02 * fov.radius);
 
