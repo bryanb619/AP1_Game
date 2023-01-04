@@ -35,7 +35,7 @@ public class EnemyBullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider hitInfo)
     {
-        Player_test _player = hitInfo.GetComponent<Player_test>();
+        PlayerMovement _player = hitInfo.GetComponent<PlayerMovement>();
         
         if(_player != null)
         {

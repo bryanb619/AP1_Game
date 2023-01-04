@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]private Player_test PlayerScript;
+    [SerializeField]private PlayerMovement PlayerScript;
     private GameObject Player; 
 
     [HideInInspector] public bool PlayerMovement;
@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
-        PlayerScript = FindObjectOfType<Player_test>();
+        PlayerScript = FindObjectOfType<PlayerMovement>();
         PlayerMovement = true;
 
 
@@ -67,7 +67,7 @@ private void Awake ()
 
 private void Start()
 {
-    player.GetComponent<Player_test>().enabled = true;
+    player.GetComponent<PlayerMovement>().enabled = true;
     UpdateGameState(GameState.None);
 }
 
@@ -93,7 +93,7 @@ public void UpdateGameState(GameState newstate)
 private void DoorScene()
 {
 
-    player.GetComponent<Player_test>().enabled = false; 
+    player.GetComponent<PlayerMovement>().enabled = false; 
 }
 
 

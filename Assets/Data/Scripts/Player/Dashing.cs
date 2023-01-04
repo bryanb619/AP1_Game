@@ -8,7 +8,7 @@ public class Dashing : MonoBehaviour
     [Header("References"), SerializeField]
     private Transform orientation, playerCam;
     private Rigidbody rb;
-    private Player_test pm;
+    private PlayerMovement pm;
 
     [SerializeField]
     private Animator Cam_anim;
@@ -28,7 +28,7 @@ public class Dashing : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        pm = GetComponent<Player_test>();
+        pm = GetComponent<PlayerMovement>();
     }
 
     private void Update()

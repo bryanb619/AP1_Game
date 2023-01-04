@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public class MeleeAttack : MonoBehaviour
 {
-    private Player_test player;
+    private PlayerMovement player;
     private EnemyChaseBehaviour AI_Head; 
 
     private SphereCollider collider;
