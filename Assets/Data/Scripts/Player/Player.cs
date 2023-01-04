@@ -33,7 +33,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float crouchingHeight = 1.25f;
 
-    private bool isCrouching = false;
+    private bool _isCrouching;
+    public bool IsCrouching => _isCrouching;
 
     private Vector3 _acceleration;
     private Vector3 _velocity;
@@ -48,6 +49,7 @@ public class Player : MonoBehaviour
 
     private int _currentHealth;
     public int CurretHealth => _currentHealth;
+
 
     //[Header("Health bar")]
    // public HealthBar _healthBar;
@@ -137,14 +139,15 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            isCrouching = true;
+            _isCrouching = true;
+
         }
         else
         {
-            isCrouching = false;
+            _isCrouching = false;
         }
 
-        if (isCrouching == true)
+        if (_isCrouching == true)
         {
             _controller.height = crouchingHeight;
         }

@@ -54,12 +54,12 @@ public class CompanionBehaviour : MonoBehaviour
 
 
 
-
     // Create the FSM
     private void Start()
     {
 
-
+        
+        
         StartCoroutine(FOVRoutine());
         CompanionMesh = GetComponent<MeshRenderer>();
         _MiniMapCollor = FindObjectOfType<mini>();
@@ -113,6 +113,8 @@ public class CompanionBehaviour : MonoBehaviour
         CheckMoveBool();
         CheckEnemy();
         AlphaUpdate();
+
+        
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
@@ -252,17 +254,18 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void AlphaUpdate()
     {
+        /*
         float maxDistance = 5.0f; 
 
         float distance = Vector3.Distance(transform.position, AlphaPoint.position);
         lerpProgres = Mathf.Clamp01(distance / maxDistance);
-        CompanionMesh.material.Lerp(normal, AlphaLow, lerpProgres);
-
+        CompanionMesh.material.Lerp(normal, AlphaLow, transitionSpeed);
+        */
         if ((AlphaPoint.transform.position - transform.position).magnitude < minDist)
         {
             Setlow();
-            
 
+           
         }
         else
         {
