@@ -434,8 +434,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             
             // check if the GameObject attached to the collider is an enemy of the same type
             if (collider.CompareTag("Enemy") && collider.GetComponent<EnemyChaseBehaviour>() != null)
-            {
-                
+            { 
                
             }
         }

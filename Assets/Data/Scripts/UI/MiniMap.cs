@@ -1,23 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MiniMap : MonoBehaviour
 {
-    [SerializeField] private Transform _Player;
-
-    private void Start()
-    {
-        
-    }
+    // Player camaera
+    [SerializeField] private Transform Target;
 
     private void LateUpdate()
     {
-        Vector3 newPos = _Player.position;
+        Vector3 newPos = Target.position;
         newPos.y = transform.position.y;
 
         transform.position = newPos;
 
-        transform.rotation = Quaternion.Euler(90f, _Player.eulerAngles.y, 0f);
+        transform.rotation = Quaternion.Euler(90f, Target.eulerAngles.y, 0f);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using System.Net.Http.Headers;
 
 //using UnityEngine.Animations;
 
@@ -26,8 +27,7 @@ public class CompanionBehaviour : MonoBehaviour
     //private Player_test _Player;
     [Header("Mesh Configuration")]
     [SerializeField] private MeshRenderer CompanionMesh;
-    [SerializeField] Material normal;
-    [SerializeField] Material AlphaLow;
+    [SerializeField] Material normal, AlphaLow;
 
     [SerializeField] private Transform AlphaPoint;
 
@@ -47,6 +47,10 @@ public class CompanionBehaviour : MonoBehaviour
     public LayerMask obstructionMask;
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
+
+    private float lerpProgres = 0f; 
+
+    private float transitionSpeed = 1.0f;
 
 
 
@@ -184,7 +188,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
 
         // follow player and camera movement
-        Companion.speed = 8F;
+        Companion.speed = 10F;
         // print("follow!!");
         Companion.SetDestination(Target.position);
 
@@ -192,7 +196,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             KetChup();
         }
-        if (Companion.remainingDistance >= 8)
+        else if (Companion.remainingDistance >= 8f)
         {
 
             transform.position = Target.transform.position;
@@ -246,14 +250,18 @@ public class CompanionBehaviour : MonoBehaviour
             _enemyIS = false;
     }
 
-
-
-
     private void AlphaUpdate()
     {
+        float maxDistance = 5.0f; 
+
+        float distance = Vector3.Distance(transform.position, AlphaPoint.position);
+        lerpProgres = Mathf.Clamp01(distance / maxDistance);
+        CompanionMesh.material.Lerp(normal, AlphaLow, lerpProgres);
+
         if ((AlphaPoint.transform.position - transform.position).magnitude < minDist)
         {
             Setlow();
+            
 
         }
         else
