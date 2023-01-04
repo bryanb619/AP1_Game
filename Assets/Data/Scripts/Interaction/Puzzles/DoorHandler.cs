@@ -12,7 +12,7 @@ public class DoorHandler : MonoBehaviour
 
     [SerializeField] private GameObject EndPos;
 
-    //[SerializeField]private Player_test PlayerScript;
+    //[SerializeField]private PlayerMovement PlayerScript;
 
    // private bool PlayerIsActive;
 
@@ -22,7 +22,7 @@ public class DoorHandler : MonoBehaviour
         //Door = GetComponentInChildren<GameObject>();
         //EndPos = GetComponentInChildren<GameObject>();
 
-        //PlayerScript = FindObjectOfType<Player_test>();
+        //PlayerScript = FindObjectOfType<PlayerMovement>();
         //PlayerIsActive = true;
 
         //gameManager = FindObjectOfType<GameManager>();

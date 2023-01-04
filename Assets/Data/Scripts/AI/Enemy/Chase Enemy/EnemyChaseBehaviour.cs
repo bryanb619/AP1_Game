@@ -33,7 +33,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // References to player
     private GameObject PlayerObject;
-    private Player_test _Player;
+    private PlayerMovement _Player;
 
 
     // Patrol Points
@@ -151,7 +151,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void Awake()
     {
         PlayerObject = GameObject.Find("Player");
-        _Player = FindObjectOfType<Player_test>();
+        _Player = FindObjectOfType<PlayerMovement>();
 
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 

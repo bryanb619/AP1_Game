@@ -37,7 +37,7 @@ public class EnemyBehaviour : MonoBehaviour
     private float curSpeed;
     private Vector3 previousPos;
 
-    private bool InDanger;
+    private bool InDanger, gloryKillCheck;
 
     private float AttackRequiredDistance = 8f;
 
@@ -184,15 +184,30 @@ public class EnemyBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        MinimalCheck(); // Tester
+        if (gloryKillCheck)
+            GloryKill();
+        else
+        {
+            MinimalCheck(); // Tester
 
-        Action actions = stateMachine.Update();
-        actions?.Invoke();
+            Action actions = stateMachine.Update();
+            actions?.Invoke();
 
-        Vector3 curMove = transform.position - previousPos;
-        curSpeed = curMove.magnitude / Time.deltaTime;
-        previousPos = transform.position;
+            Vector3 curMove = transform.position - previousPos;
+            curSpeed = curMove.magnitude / Time.deltaTime;
+            previousPos = transform.position;
+        }
+    }
 
+    private void GloryKill()
+    {
+        _Agent.isStopped = true;
+    }
+
+    private void HealthCheck()
+    {
+        if (_Health < 20.1f)
+            gloryKillCheck = true;
     }
 
     private void MinimalCheck()

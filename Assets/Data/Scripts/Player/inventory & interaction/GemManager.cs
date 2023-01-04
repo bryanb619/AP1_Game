@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 public class GemManager : MonoBehaviour
 {
     [Header ("Script References")]
-    public Player_test playerScript;
+    public PlayerMovement playerScript;
     public EnemyBehaviour enemy;
     public EnemyChaseBehaviour enemyChase;
 
@@ -38,7 +38,7 @@ public class GemManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerScript = FindObjectOfType<Player_test>();
+        playerScript = FindObjectOfType<PlayerMovement>();
         enemy = FindObjectOfType<EnemyBehaviour>();
         enemyChase = FindObjectOfType<EnemyChaseBehaviour>();
         player = GameObject.Find("Player");

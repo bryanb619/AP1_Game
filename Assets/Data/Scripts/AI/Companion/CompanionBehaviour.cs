@@ -23,7 +23,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private bool _StartFollow;
 
-    //private Player_test _Player;
+    //private PlayerMovement _Player;
     [Header("Mesh Configuration")]
     [SerializeField] private MeshRenderer CompanionMesh;
     [SerializeField] Material normal;
