@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -25,15 +27,15 @@ public class EnemyBullet : MonoBehaviour
     {
         startTime += Time.deltaTime;
 
-        if(startTime >= 10f)
+        if(startTime >= 15f)
         {
             Destroy(gameObject);
         }
     }
 
-    private void OnTriggerEnter(Collider hitInfo)
+    void OnTriggerEnter(Collider hitInfo)
     {
-        PlayerMovement _player = hitInfo.GetComponent<PlayerMovement>();
+        PlayerMovement _player = hitInfo.gameObject.GetComponent<PlayerMovement>();
         
         if(_player != null)
         {

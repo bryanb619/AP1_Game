@@ -5,61 +5,63 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement"), SerializeField]
-    internal float walkSpeed, dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
+                     internal float walkSpeed, dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
 
     [Header("Jumping"), SerializeField]
-    private float jumpForce, jumpCooldown, airMultiplier;
-    [SerializeField]
-    private KeyCode jumpKey = KeyCode.Space;
+                     private float jumpForce, jumpCooldown, airMultiplier;
+    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
+
+    [Header("Crouching")]
+    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+                     private float crouchModifier = 4;
+                     private bool crouching = false;
 
     [Header("Ground Check"), SerializeField]
-    private float playerHeight;
-    [SerializeField]
-    private LayerMask whatIsGround;
+                     private float playerHeight;
+    [SerializeField] private LayerMask whatIsGround;
     
-    [SerializeField]
-    private Transform orientation;
-    private MovementState state;
+    [SerializeField] private Transform orientation;
+                     private MovementState state;
 
 
     [Header("Slope Handling")]
-    private float maxSlopeAngle;
-    private RaycastHit slopeHit;
-    private bool exitingSlope;
+                     private float maxSlopeAngle;
+                     private RaycastHit slopeHit;
+                     private bool exitingSlope;
 
-    private bool readyToJump, grounded;
-    private float horizontalInput, verticalInput;
-    Vector3 moveDirection;
-    Rigidbody rb;
-    public bool dashing;
+                     private bool readyToJump, grounded;
+                     private float horizontalInput, verticalInput;
+                     Vector3 moveDirection;
+                     Rigidbody rb;
+                     public bool dashing;
 
-    [HideInInspector] public bool CanMove; 
+    [HideInInspector]public bool CanMove; 
 
-    private bool PlayerOnMove;
-    public bool _PlayerOnMove => PlayerOnMove;
-    private CompanionBehaviour _CompanionMovement;
-    private EnemyBehaviour enemyHealth;
-
-    private RestartMenu restartMenu;
-
-    private float speed;
-
-    // player health
-    private const int _MaxHealth = 100;
-
-    internal int _currentHealth;
-    public int CurretHealth => _currentHealth;
+                     private bool PlayerOnMove;
+                     public bool _PlayerOnMove => PlayerOnMove;
+                     private CompanionBehaviour _CompanionMovement;
+                     private EnemyBehaviour enemyHealth;
+                     
+                     private RestartMenu restartMenu;
+                     
+                     private float speed;
+                     
+                     // player health
+                     private const int _MaxHealth = 100;
+                     
+                     internal int _currentHealth;
+                     public int CurretHealth => _currentHealth;
 
     [Header("Health bar")]
-    public HealthBar _healthBar;
+                     public HealthBar _healthBar;
     [HideInInspector]
-    public bool HealthSetAtMax;
+                     public bool HealthSetAtMax;
 
     [Header("Dash Explosion"), SerializeField]
-    private float explosionForce = 100f;
+                     private float explosionForce = 1000f;
     [SerializeField] private int explosionDamage = 200;
     
-    public int shield = 0;
+                     public int shield = 0;
 
     private enum MovementState
     {
@@ -139,6 +141,12 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = walkSpeed;
         }
 
+        else if (crouching)
+        {
+            state = MovementState.crouching;
+            desiredMoveSpeed = walkSpeed - crouchModifier;
+        }
+
         else
         {
             state = MovementState.air;
@@ -207,13 +215,22 @@ public class PlayerMovement : MonoBehaviour
             verticalInput = Input.GetAxisRaw("Vertical");
 
 
-            if (Input.GetKey(jumpKey) && readyToJump && grounded)
+            if (Input.GetKey(jumpKey) && readyToJump && grounded && !crouching)
             {
                 readyToJump = false;
 
                 Jump();
 
                 Invoke(nameof(ResetJump), jumpCooldown);
+            }
+
+            if (Input.GetKeyDown(crouchKey) && grounded)
+            {
+                crouching = true;
+            }
+            else if (Input.GetKeyUp(crouchKey))
+            {
+                crouching = false;
             }
         }
         else if(CanMove == false)
@@ -242,6 +259,11 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         else
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        if(state == MovementState.crouching)
+            rb.AddForce(moveDirection.normalized * (moveSpeed - crouchModifier) * 10f, ForceMode.Force);
+        else
+            rb.AddForce(moveDirection.normalized * (moveSpeed - crouchModifier) * 10f * airMultiplier, ForceMode.Force);
 
         rb.useGravity = !OnSlope();
     }
@@ -300,16 +322,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerSpeed()
     {
-        //Debug.Log(speed);
         speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
         lastPosition = transform.position;
 
         if(speed >= 5f)
         {
-            //Debug.Log("true");
-            //PlayerOnMove = true;
-            //_CompanionMovement.PlayerInput(PlayerOnMove);
-
             _CompanionMovement._playerIsMoving = true;
 
         }
@@ -320,8 +337,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            //PlayerOnMove = false;
-            // _CompanionMovement.PlayerInput(PlayerOnMove);
             _CompanionMovement._playerIsMoving = false;
         }
     }
@@ -337,7 +352,7 @@ public class PlayerMovement : MonoBehaviour
             float pushDistance = pushDirection.magnitude;
             pushDirection.Normalize();
 
-            rb.AddForce(pushDirection * explosionForce / pushDistance, ForceMode.Impulse);
+            rb.AddExplosionForce(15f, new Vector3(transform.position.x, transform.position.y, pushDirection.z), 5f, 3f);
 
             other.gameObject.transform.position += pushDirection * (explosionForce / pushDistance) * Time.deltaTime;
 
