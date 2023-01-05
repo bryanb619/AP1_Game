@@ -15,7 +15,7 @@ public class CompanionBehaviour : MonoBehaviour
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     private mini _MiniMapCollor;
 
-    [SerializeField] private NavMeshAgent Companion;
+    [SerializeField] internal NavMeshAgent Companion;
     [SerializeField] private Transform Target;
     public Transform playerTarget => Target;
 

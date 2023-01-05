@@ -445,7 +445,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-       
+_Health -= (_damage + damageBoost);
 
         if (_Health <= 0)
         {
@@ -462,7 +462,6 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
 
-        _Health -= (_damage + damageBoost);
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
     }
 
