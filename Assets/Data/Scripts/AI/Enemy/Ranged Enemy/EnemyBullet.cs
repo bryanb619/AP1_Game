@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -27,7 +25,7 @@ public class EnemyBullet : MonoBehaviour
     {
         startTime += Time.deltaTime;
 
-        if(startTime >= 15f)
+        if(startTime >= 10f)
         {
             Destroy(gameObject);
         }

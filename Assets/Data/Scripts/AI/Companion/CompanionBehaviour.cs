@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using System.Net.Http.Headers;
 
 //using UnityEngine.Animations;
 

@@ -499,7 +499,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     //transform.LookAt(playerTarget);
 
                     nextAttack = Time.time + AttackRate;
-                    //_Player.TakeDamage(damage);
+                    _Player.TakeDamage(damage);
                     _canAttack = false;
                 }
                 else
