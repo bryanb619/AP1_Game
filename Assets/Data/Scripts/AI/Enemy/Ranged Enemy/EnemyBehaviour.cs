@@ -456,9 +456,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-       
 
-
+        _Health -= (_damage + damageBoost);
 
         if (_Health <= 0)
         {
@@ -471,7 +470,6 @@ public class EnemyBehaviour : MonoBehaviour
             transform.LookAt(playerTarget.position);
             StartCoroutine(HitFlash());
         }
-        _Health -= (_damage + damageBoost);
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
 
 
