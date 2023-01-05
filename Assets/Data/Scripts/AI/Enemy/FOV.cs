@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class FOV : EnemyBrain
+public class FOV : MonoBehaviour
 {
     private bool canSeePlayer;
     public bool CanSee => canSeePlayer;
