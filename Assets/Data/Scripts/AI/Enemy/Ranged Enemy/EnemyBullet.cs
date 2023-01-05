@@ -38,9 +38,10 @@ public class EnemyBullet : MonoBehaviour
         if(_player != null)
         {
             _player.TakeDamage(damage);
+            Destroy(gameObject);
         }
         
-        Destroy(gameObject);
+        
 
     }
 
