@@ -5,8 +5,6 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -108,12 +106,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private float curSpeed;
 
-   
+
 
     // state condition bools
     private bool InCoverState;
     private bool _returnPatrol;
     private bool _inSearch;
+    private bool _canGloryKill; 
 
     // sub state condition bools
     private bool IsAttacking;
@@ -128,6 +127,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private Transform aiTransform;
 
 
+    [SerializeField] private SpawnArea patrolZone;
+    public SpawnArea PatrolZone { get => patrolZone; set => patrolZone = value; }
+
     // new cover code
     // The speed at which the AI character moves
     public float moveSpeed = 5f;
@@ -139,11 +141,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private Transform currentCoverPosition;
 
 
-    public float aiPointRadius; 
+    public float aiPointRadius;
     #endregion
     // test code 
 
-
+    private Vector3 dest = Vector3.zero;
 
 
 
@@ -201,6 +203,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
             Cover,
             () => Debug.Log(""));
 
+        State GloryKillState = new State("Glory Kill State",
+            () => Debug.Log("Entered glory kill state"),
+            GloryKill,
+            () => Debug.Log("Left Glory Kill State"));
+
         #endregion
 
         #region Trasintion of states
@@ -223,6 +230,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => Debug.Log(""),
                SearchState));
 
+        ChaseState.AddTransition(
+            new Transition(
+                () => _canGloryKill == true,
+                () => Debug.Log(""),
+                GloryKillState));
+
         SearchState.AddTransition(
            new Transition(
                () => _inSearch == false,
@@ -240,6 +253,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => InCoverState == false,
                () => Debug.Log(""),
                ChaseState));
+
+        FindCover.AddTransition(
+          new Transition(
+              () => _canGloryKill == true,
+              () => Debug.Log(""),
+              ChaseState));
 
         PatrolState.AddTransition(
            new Transition(
@@ -304,16 +323,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void MinimalCheck()
     {
-        if ((playerTarget.transform.position - transform.position).magnitude < minDist)
+        if(_canGloryKill == false)
         {
-            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-            _inAttackRange = true;
+            if ((playerTarget.transform.position - transform.position).magnitude < minDist)
+            {
+                transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+                _inAttackRange = true;
+            }
+            else
+            {
+                _inAttackRange = false;
+            }
         }
-        else
-        {
-            _inAttackRange = false;
-        }
+        
     }
+
     private void HealthCheck()
     {
         if (_Health <= 50)//&& _Health > 10) 
@@ -398,7 +422,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         if (_underAttack == true) 
         {
-           // QuickCover();
+            RandomMovement();
         }
 
         if(_underAttack == false)
@@ -422,6 +446,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
 
         //print("ATTACK");
+    }
+
+    private void RandomMovement()
+    {
+        
+        if (Agent.remainingDistance >= 0.1f) return;
+
+        do
+        {
+            float rotationValue = UnityEngine.Random.Range(0, 359);
+            float rangeValue = UnityEngine.Random.Range(2f, 5f);
+            //this.transform.localEulerAngles = this.transform.localEulerAngles.y(rotationValue);
+            Vector3 direction = gameObject.transform.forward.normalized;
+            dest = transform.position + direction * rangeValue;
+        } while (!PatrolZone.InArea(dest));
+
+
+        Agent.SetDestination(dest);
     }
 
     private void WarnOtherAi()
@@ -457,7 +499,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     //transform.LookAt(playerTarget);
 
                     nextAttack = Time.time + AttackRate;
-                    //_Player.TakeDamage(damage);
+                    _Player.TakeDamage(damage);
                     _canAttack = false;
                 }
                 else
@@ -590,7 +632,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         MovementCoroutine = StartCoroutine(Hide(Target));
     }
-    
+
+    private void GloryKill()
+    {
+        Agent.radius = 1f;
+        Agent.isStopped = true;
+    }
+
 
     #endregion
 
@@ -607,6 +655,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         if (_Health > 0)
         {
+            if (_Health <= 20)
+            {
+                _canGloryKill = true;
+            }
             //_underAttack= true;
             transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             QuickCover();

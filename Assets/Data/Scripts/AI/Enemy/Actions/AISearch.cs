@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AISearch : MonoBehaviour
+public class AISearch : EnemyBrain
 {
     private NavMeshAgent agent;
     private EnemyBrain brain;

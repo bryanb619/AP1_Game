@@ -22,6 +22,7 @@ public class AstraProjectile : MonoBehaviour
     {
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
+        PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
 
         if (enemy != null)
         {
@@ -36,6 +37,10 @@ public class AstraProjectile : MonoBehaviour
             DestroyBullet();
             Debug.Log("HIT");
 
+        }
+        else if(player != null) 
+        {
+            DestroyBullet();
         }
 
         //Instantiate(impactEffect, transform.position, transform.rotation);

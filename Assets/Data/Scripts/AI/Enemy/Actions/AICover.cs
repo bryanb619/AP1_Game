@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AICover : MonoBehaviour
+public class AICover : EnemyBrain
 {// The Transform of the player
     public Transform playerTransform;
 

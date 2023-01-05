@@ -9,7 +9,7 @@ public class Tester : MonoBehaviour
 
     [SerializeField] private GameObject GameTestLight;
 
-    //[SerializeField] private EnemyBehaviour Enemy1;
+    [SerializeField] private EnemyBehaviour Enemy1;
     [SerializeField] private EnemyChaseBehaviour Enemy2;
 
     public bool KillEnemy; 
@@ -85,13 +85,13 @@ public class Tester : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T) || KillEnemy == true)
         {
             //Die();
-            //Enemy1.TakeDamage(100);
+            Enemy1.TakeDamage(100);
             Enemy2.TakeDamage(100); 
         }
         if (Input.GetKeyDown(KeyCode.Y)) //|| KillEnemy == true)
         {
             //Die();
-            //Enemy1.TakeDamage(25);
+            Enemy1.TakeDamage(25);
             Enemy2.TakeDamage(25);
         }
     }
