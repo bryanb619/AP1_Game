@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIChase : MonoBehaviour
+
+public class AIChase : EnemyBrain
 {
     [SerializeField] private NavMeshAgent agent;
     private EnemyBrain brain;

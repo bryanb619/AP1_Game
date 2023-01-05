@@ -37,10 +37,9 @@ public class EnemyBehaviour : MonoBehaviour
     private float curSpeed;
     private Vector3 previousPos;
 
-    private bool InDanger, gloryKillCheck;
+    private bool InDanger;
 
     private float AttackRequiredDistance = 8f;
-
 
 
     // Patrol Points
@@ -94,6 +93,8 @@ public class EnemyBehaviour : MonoBehaviour
 
 
 
+    private bool _canGloryKill; 
+
     // Get references to enemies
     private void Awake()
     {
@@ -129,8 +130,13 @@ public class EnemyBehaviour : MonoBehaviour
             Patrol,
             () => Debug.Log("Leave Fight state"));
 
+        State GloryKillState = new State("Glory Kill State",
+            () => Debug.Log("Entered glory kill state"),
+            GloryKill,
+            () => Debug.Log("Left Glory Kill State"));
 
 
+    
         // Add the transitions
 
         onGuardState.AddTransition(
@@ -145,37 +151,20 @@ public class EnemyBehaviour : MonoBehaviour
                 () => Debug.Log(""),
                 PatrolState));
 
+        ChaseState.AddTransition(
+            new Transition(
+                () => _canGloryKill == true,
+                () => Debug.Log(""),
+                GloryKillState));   
 
         PatrolState.AddTransition(
            new Transition(
                () => canSeePlayer == true,
                () => Debug.Log(""),
                ChaseState));
-        /* //
-        onGuardState.AddTransition(
-            new Transition(
-                () =>
-                    (bigEnemy.transform.position - transform.position).magnitude
-                    < minDistanceToBigEnemy,
-                () => Debug.Log("I just saw a big enemy!"),
-                runAwayState));
-        fightState.AddTransition(
-            new Transition(
-                () => URandom.value < 0.001f ||
-                    (bigEnemy.transform.position - transform.position).magnitude
-                        < minDistanceToBigEnemy,
-                () => Debug.Log("Losing a fight!"),
-                runAwayState));
-        runAwayState.AddTransition(
-            new Transition(
-                () => (smallEnemy.transform.position - transform.position).magnitude
-                        > minDistanceToSmallEnemy
-                    &&
-                    (bigEnemy.transform.position - transform.position).magnitude
-                        > minDistanceToBigEnemy,
-                () => Debug.Log("I barely escaped!"),
-                onGuardState));
-        */
+
+        
+       
 
         // Create the state machine
         stateMachine = new StateMachine(PatrolState);
@@ -184,41 +173,33 @@ public class EnemyBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        if (gloryKillCheck)
-            GloryKill();
-        else
-        {
-            MinimalCheck(); // Tester
+        MinimalCheck(); // Tester
 
-            Action actions = stateMachine.Update();
-            actions?.Invoke();
+        Action actions = stateMachine.Update();
+        actions?.Invoke();
 
-            Vector3 curMove = transform.position - previousPos;
-            curSpeed = curMove.magnitude / Time.deltaTime;
-            previousPos = transform.position;
-        }
+        Vector3 curMove = transform.position - previousPos;
+        curSpeed = curMove.magnitude / Time.deltaTime;
+        previousPos = transform.position;
+
     }
 
-    private void GloryKill()
-    {
-        _Agent.isStopped = true;
-    }
-
-    private void HealthCheck()
-    {
-        if (_Health < 20.1f)
-            gloryKillCheck = true;
-    }
+    
+    
 
     private void MinimalCheck()
     {
-        if ((playerTarget.transform.position - transform.position).magnitude < minDist)
+        if (_canGloryKill == false)
         {
-            transform.LookAt(playerTarget.position);
+            if ((playerTarget.transform.position - transform.position).magnitude < minDist)
+            {
+                transform.LookAt(playerTarget.position);
+            }
         }
+       
     }
 
-
+    #region AI ACTIONS
     private void HandleGainSight(Transform Target)
     {
 
@@ -412,6 +393,14 @@ public class EnemyBehaviour : MonoBehaviour
         destPoint = (destPoint + 1) % _PatrolPoints.Length;
     }
 
+    private void GloryKill()
+    {
+        _Agent.radius = 1f;
+        _Agent.isStopped = true;
+    }
+
+    #endregion
+
     #region Field of view Routine
     private IEnumerator FOVRoutine()
     {
@@ -458,23 +447,23 @@ public class EnemyBehaviour : MonoBehaviour
     {
        
 
-
-
         if (_Health <= 0)
         {
             Die();
         }
-
-        
+   
         if (_Health > 0)
         {
             transform.LookAt(playerTarget.position);
             StartCoroutine(HitFlash());
+            if(_Health <= 20)
+            {
+                _canGloryKill= true;
+            }
         }
+
         _Health -= (_damage + damageBoost);
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
-
-
     }
 
     private void Die()

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIPatrol : MonoBehaviour
+public class AIPatrol : EnemyBrain
 {
     private NavMeshAgent _Agent;
     private EnemyBrain brain;

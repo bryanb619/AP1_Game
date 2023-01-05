@@ -198,7 +198,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             KetChup();
         }
-        else if (Companion.remainingDistance >= 8f)
+        else if (Companion.remainingDistance >= 7f)
         {
 
             transform.position = Target.transform.position;
@@ -210,7 +210,7 @@ public class CompanionBehaviour : MonoBehaviour
     private void KetChup()
     {
         Companion.acceleration = 12;
-        Companion.speed = 13F;
+        Companion.speed = 15F;
         Companion.SetDestination(Target.position);
 
     }

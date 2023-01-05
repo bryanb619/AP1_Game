@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class FOV : MonoBehaviour
+public class FOV : EnemyBrain
 {
-    private bool _canSeePlayer;
-    public bool CanSee => _canSeePlayer;
+    private bool canSeePlayer;
+    public bool CanSee => canSeePlayer;
 
     [Header("Target for debug only")]
     [SerializeField]private Transform target; 
@@ -23,8 +23,6 @@ public class FOV : MonoBehaviour
     [SerializeField] private Transform fov;
     public Transform pfovPoS => fov; // Enemy Editor FOV
 
-    private bool canSeePlayer;
-    public bool canSee => canSeePlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -58,15 +56,15 @@ public class FOV : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(fov.position, target.position);
 
                 if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, obstructionMask))
-                    _canSeePlayer = true;
+                    canSeePlayer = true;
                 else
-                    _canSeePlayer = false;
+                    canSeePlayer = false;
             }
             else
-                _canSeePlayer = false;
+                canSeePlayer = false;
         }
-        else if (_canSeePlayer)
-            _canSeePlayer = false;
+        else if (canSeePlayer)
+            canSeePlayer = false;
     }
 
     #endregion
