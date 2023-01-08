@@ -109,6 +109,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     // state condition bools
+    private bool _engage; 
     private bool InCoverState;
     private bool _returnPatrol;
     private bool _inSearch;
@@ -127,8 +128,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private Transform aiTransform;
 
 
-    [SerializeField] private SpawnArea patrolZone;
-    public SpawnArea PatrolZone { get => patrolZone; set => patrolZone = value; }
+    
 
     // new cover code
     // The speed at which the AI character moves
@@ -147,6 +147,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private Vector3 dest = Vector3.zero;
 
+    [Range(0, 20)]
+    [SerializeField]
+    float AIradius = 20f;
+
+    public string Enemy;
 
 
     // Get references to enemies
@@ -262,23 +267,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         PatrolState.AddTransition(
            new Transition(
-               () => canSeePlayer == true,
+               () => canSeePlayer == true || _engage == true,
                () => Debug.Log(""),
                ChaseState));
 
-        /*
-        ChaseState.AddTransition(
-           new Transition(
-               () => canSeePlayer == false && InCombat == false,
-               () => Debug.Log(""),
-               PatrolState));
-
-        PatrolState.AddTransition(
-           new Transition(
-               () => canSeePlayer == true && InCombat == false,
-               () => Debug.Log(""),
-               ChaseState));
-        */
 
         #endregion
 
@@ -288,7 +280,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         //path = new NavMeshPath();
 
-        pathPrediction = new PredictionModel();
+        pathPrediction = gameObject.AddComponent<PredictionModel>();
 
         StartCoroutine(FOVRoutine());
 
@@ -307,6 +299,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         MinimalCheck();
         HealthCheck();
+        //GetOtherAI();
         AISpeed();
         SearchCS();
 
@@ -353,6 +346,34 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     }
+
+    /*
+    private void GetOtherAI()
+    {
+        if(canSeePlayer)
+        {
+            AIAlert otherScript;
+
+            // Find all GameObjects within the radius
+            Collider[] colliders = Physics.OverlapSphere(transform.position, AIradius);
+
+            // Iterate through the colliders
+            foreach (Collider collider in colliders)
+            {
+                // Check if the GameObject has the script we're looking for
+                if (collider.gameObject.tag == "Enemy")
+                {
+                    otherScript = GetComponent<AIAlert>();
+                    // The GameObject has the script we're looking for
+                    // Debug.Log(collider.gameObject.name + " has the script " + scriptName);
+                    otherScript.GetPlayer(playerTarget);
+                }
+            }
+        }
+        
+
+    }
+    */
 
     private void AISpeed()
     {
@@ -418,11 +439,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void ChasePlayer()
     {
         
-        //WarnOtherAi();
+        
 
         if (_underAttack == true) 
         {
-            RandomMovement();
+            
         }
 
         if(_underAttack == false)
@@ -448,23 +469,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //print("ATTACK");
     }
 
-    private void RandomMovement()
-    {
-        
-        if (Agent.remainingDistance >= 0.1f) return;
-
-        do
-        {
-            float rotationValue = UnityEngine.Random.Range(0, 359);
-            float rangeValue = UnityEngine.Random.Range(2f, 5f);
-            //this.transform.localEulerAngles = this.transform.localEulerAngles.y(rotationValue);
-            Vector3 direction = gameObject.transform.forward.normalized;
-            dest = transform.position + direction * rangeValue;
-        } while (!PatrolZone.InArea(dest));
-
-
-        Agent.SetDestination(dest);
-    }
+    
 
     private void WarnOtherAi()
     {
@@ -480,6 +485,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
                
             }
         }
+
+    }
+
+    private void RandomPatrol()
+    {
 
     }
 
@@ -516,8 +526,25 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     public void GetPlayer()
     {
-
+        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
     }
+
+
+    void OnPlayerWarning(Vector3 Target)
+    {
+        // The player has been detected within the warning radius!
+        // Do something to react to this, such as chasing the player or going into alert mode.
+        GetPlayer();
+        
+    }
+    /*
+    private void OnDrawGizmos()
+    {
+
+        Gizmos.DrawWireSphere(transform.position,
+        AIradius);
+    }
+    */
 
     private void QuickCover()
     {

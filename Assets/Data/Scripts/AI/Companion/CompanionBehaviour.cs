@@ -193,11 +193,11 @@ public class CompanionBehaviour : MonoBehaviour
         // print("follow!!");
         Companion.SetDestination(Target.position);
 
-        if (Companion.remainingDistance >= 5F)
+        if (Companion.remainingDistance >= 4F)
         {
             KetChup();
         }
-        else if (Companion.remainingDistance >= 7f)
+        else if (Companion.remainingDistance >= 6f)
         {
 
             transform.position = Target.transform.position;

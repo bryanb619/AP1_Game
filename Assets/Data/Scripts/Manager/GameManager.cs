@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    /*
     [SerializeField]private PlayerMovement PlayerScript;
     private GameObject Player; 
 
@@ -42,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-
+    */
 }
 
 

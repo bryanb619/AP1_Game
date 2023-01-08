@@ -58,8 +58,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Dash Explosion"), SerializeField]
     private float explosionForce = 100f;
     [SerializeField] private int explosionDamage = 200;
-    
+
+    public GameObject vignette;
+
     public int shield = 0;
+
+    void Awake()
+    {
+        
+        GameStateManager.Instance.OnGameStateChanged += OnGameStateChanged;
+    }
 
     private enum MovementState
     {
@@ -84,6 +92,9 @@ public class PlayerMovement : MonoBehaviour
         restartMenu = FindObjectOfType<RestartMenu>();
         HealthSetAtMax = true;
         _currentHealth = 100;
+
+
+        
     }
 
     private void Update()
@@ -344,6 +355,15 @@ public class PlayerMovement : MonoBehaviour
             //explosion damage
             enemyHealth.TakeDamage(explosionDamage);
         }
+    }
+    void OnDestroy()
+    {
+        GameStateManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GameState newGameState)
+    {
+        enabled = newGameState == GameState.Gameplay;
     }
 
     #region Cheats

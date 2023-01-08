@@ -15,7 +15,10 @@ public class PauseMenu : MonoBehaviour
     // Event Sy
 
 
-
+    private void Awake()
+    {
+        //GameStateManager.Instance.OnGameStateChanged += On
+    }
 
     private void Start()
     {
@@ -55,6 +58,14 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetButtonDown("Pause"))
         {
+            GameState currentGameState = GameStateManager.Instance.CurrentGameState;
+            GameState newGameState = currentGameState == GameState.Gameplay
+                ? GameState.Paused
+                : GameState.Gameplay;
+
+            GameStateManager.Instance.SetState(newGameState);
+
+            /*
             if (_Paused)
             {
                 Resume();
@@ -63,7 +74,7 @@ public class PauseMenu : MonoBehaviour
             {
                 Pause();
             }
-
+            */
         }
     }
 
@@ -141,7 +152,12 @@ public class PauseMenu : MonoBehaviour
         _OptionsMenu.SetActive(false);
 
     }
-
-
-
+    private void OnGameStateChanged(GameState newGameState)
+    {
+        
+    }
 }
+
+
+
+
