@@ -33,6 +33,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private GameObject PlayerObject;
     private PlayerMovement _Player;
 
+    private WarningSystemAI Warning;
+
 
     // Patrol Points
 
@@ -50,7 +52,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [Range(0, 15)][SerializeField] private float minDistInCover = 12f;
 
-    [SerializeField] private float minAttackDist = 3f;
 
 
     [Range(10, 150)]
@@ -90,8 +91,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [SerializeField] private LayerMask HidableLayers;
 
-
-    private float MinObstacleHeight = 0.5f;
 
     public SceneChecker LineOfSightChecker;
 
@@ -161,6 +160,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Player = FindObjectOfType<PlayerMovement>();
 
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+        Warning = GetComponent<WarningSystemAI>();
 
 
     }
@@ -302,6 +302,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //GetOtherAI();
         AISpeed();
         SearchCS();
+        
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
@@ -347,34 +348,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     }
 
-    /*
-    private void GetOtherAI()
-    {
-        if(canSeePlayer)
-        {
-            AIAlert otherScript;
-
-            // Find all GameObjects within the radius
-            Collider[] colliders = Physics.OverlapSphere(transform.position, AIradius);
-
-            // Iterate through the colliders
-            foreach (Collider collider in colliders)
-            {
-                // Check if the GameObject has the script we're looking for
-                if (collider.gameObject.tag == "Enemy")
-                {
-                    otherScript = GetComponent<AIAlert>();
-                    // The GameObject has the script we're looking for
-                    // Debug.Log(collider.gameObject.name + " has the script " + scriptName);
-                    otherScript.GetPlayer(playerTarget);
-                }
-            }
-        }
-        
-
-    }
-    */
-
+  
     private void AISpeed()
     {
         Vector3 curMove = transform.position - previousPos;
@@ -438,13 +412,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
-        
-        
 
-        if (_underAttack == true) 
-        {
-            
-        }
+
+        
+        
 
         if(_underAttack == false)
         {
@@ -470,23 +441,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
 
     
-
-    private void WarnOtherAi()
-    {
-        float detectRadius = 10.0f;
-
-        Collider[] colliders = Physics.OverlapSphere(transform.position, detectRadius);
-        foreach (Collider collider in colliders)
-        {
-            
-            // check if the GameObject attached to the collider is an enemy of the same type
-            if (collider.CompareTag("Enemy") && collider.GetComponent<EnemyChaseBehaviour>() != null)
-            { 
-               
-            }
-        }
-
-    }
 
     private void RandomPatrol()
     {

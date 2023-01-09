@@ -199,6 +199,19 @@ public class EnemyBehaviour : MonoBehaviour
        
     }
 
+    void OnPlayerWarning(Vector3 Target)
+    {
+        // The player has been detected within the warning radius!
+        // Do something to react to this, such as chasing the player or going into alert mode.
+        GetPlayer();
+
+    }
+
+    public void GetPlayer()
+    {
+        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+    }
+
     #region AI ACTIONS
     private void HandleGainSight(Transform Target)
     {
@@ -216,7 +229,7 @@ public class EnemyBehaviour : MonoBehaviour
     // Chase 
     private void ChasePlayer()
     {
-        transform.LookAt(playerTarget);
+        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
         _Agent.speed = 4f;
         _Agent.SetDestination(PlayerTarget.position);
@@ -245,7 +258,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Attack()
     {
 
-        transform.LookAt(playerTarget);
+        //transform.LookAt(playerTarget);
 
         if (Time.time > nextFire)
         {

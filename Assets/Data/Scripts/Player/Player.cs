@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -13,7 +11,7 @@ public class Player : MonoBehaviour
     private const float JUMP_ACCELERATION = 410.0f;
     private const float GRAVITY_ACCELERATION = 25.0f;
 
-    private float MAX_FORWARD_VELOCITY = 4.0f; // 3
+    
     private const float MAX_BACKWARD_VELOCITY = 3.0f; //2
     private const float MAX_STRAFE_VELOCITY = 3.0f; //2
     private const float MAX_FALL_VELOCITY = 50.0f;
