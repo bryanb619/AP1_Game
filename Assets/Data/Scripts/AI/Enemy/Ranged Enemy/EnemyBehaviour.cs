@@ -275,8 +275,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void GetDistance()
     {
-        _Agent.speed = 5f;
-        _Agent.acceleration = 12;
+        Agent.speed = 5f;
+        Agent.acceleration = 12;
         
 
         if (curSpeed <= 1 && canSee)
@@ -487,11 +487,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(gemSpawnOnDeath)
             Instantiate(gemPrefab, transform.position, Quaternion.identity);
-        //Instantiate(transform.position, Quaternion.identity);
         Destroy(gameObject);
-
-        // call for AI event
-        //DieEvent.Invoke();
 
         Debug.Log("Enemy died");
     }
