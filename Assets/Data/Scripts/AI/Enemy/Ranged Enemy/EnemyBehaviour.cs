@@ -193,7 +193,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if ((playerTarget.transform.position - transform.position).magnitude < minDist)
             {
-                transform.LookAt(playerTarget.position);
+                transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             }
         }
        
@@ -229,19 +229,23 @@ public class EnemyBehaviour : MonoBehaviour
     // Chase 
     private void ChasePlayer()
     {
-        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        transform.LookAt(playerTarget.position);
 
         _Agent.speed = 4f;
         _Agent.SetDestination(PlayerTarget.position);
 
-        // ADD Last known POS
-        //
-        // !
 
         if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
         {
             _Agent.speed = 0;
             Attack();
+
+            // se estiver atacando por x tempo
+
+
+            // mudar posição 
+
         }
 
         if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
@@ -272,6 +276,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void GetDistance()
     {
         _Agent.speed = 5f;
+        _Agent.acceleration = 12;
         
 
         if (curSpeed <= 1 && canSee)

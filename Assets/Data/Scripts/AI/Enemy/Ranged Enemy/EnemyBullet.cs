@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,6 +6,8 @@ public class EnemyBullet : MonoBehaviour
     public float speed = 20f;
     public int damage = 10;
     public Rigidbody rb;
+
+    
 
 
     private float startTime;
@@ -42,9 +42,11 @@ public class EnemyBullet : MonoBehaviour
             _player.TakeDamage(damage);
             Destroy(gameObject);
         }
-        
-        
+    }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(this.gameObject);
     }
 
 

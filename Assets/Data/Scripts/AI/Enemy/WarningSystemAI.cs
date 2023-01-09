@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class WarningSystemAI : MonoBehaviour
 {
+    [Header("Warning AI zone Gizmo")]
+    [SerializeField] 
+    private bool _activateGizmo = true; 
+
     // Set this to the layer that the player is on
     [SerializeField] private LayerMask targetLayer;
 
@@ -96,8 +100,12 @@ public class WarningSystemAI : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position,
-        AIradius);
+        if(_activateGizmo)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position,
+            AIradius);
+        }
+      
     }
 }
