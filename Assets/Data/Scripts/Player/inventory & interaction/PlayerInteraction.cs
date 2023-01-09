@@ -52,7 +52,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         _currentInteractive = null;
 
-        //_canvasManager.HideInteractionPanel();
+        _canvasManager.HideInteractionPanel();
     }
 
     private void SetCurrentInteractive(Interactive interactive)
@@ -83,7 +83,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void CheckForPlayerInteraction()
     {
-        if (Input.GetMouseButtonDown(0) && _currentInteractive != null && _playerHasRequirements)
+        // interact key is F
+        if (Input.GetButtonDown("Interact") && _currentInteractive != null && _playerHasRequirements)
         {
             if (_currentInteractive.GetInteractiveType() == Interactive.InteractiveType._PICKABLE)
                 PickCurrentInteractive();
@@ -110,19 +111,19 @@ public class PlayerInteraction : MonoBehaviour
     private void AddToInventory(Interactive item)
     {
         
-        _inventory.Add(item);
-        _canvasManager.SetInventoryIcon(_inventory.Count - 1, item.GetIcon());
+        //_inventory.Add(item);
+        //_canvasManager.SetInventoryIcon(_inventory.Count - 1, item.GetIcon());
         //Pick_Up.Play();
 
     }
 
     private void RemoveFromInventory(Interactive item)
     {
-        _inventory.Remove(item);
-        _canvasManager.ClearInventoryIcons();
+        //_inventory.Remove(item);
+        //_canvasManager.ClearInventoryIcons();
 
-        for (int i = 0; i < _inventory.Count; ++i)
-            _canvasManager.SetInventoryIcon(i, _inventory[i].GetIcon());
+        //for (int i = 0; i < _inventory.Count; ++i)
+            //_canvasManager.SetInventoryIcon(i, _inventory[i].GetIcon());
 
     }
 
