@@ -10,7 +10,7 @@ public class Astra : Ability
 
     public AstraShoot AstraShoot;
 
-    public Player _player;
+    public PlayerMovement _player;
 
     public override void Activate(GameObject parent)
     {
@@ -19,7 +19,7 @@ public class Astra : Ability
         // INSTANTIATE
         AstraShoot = FindObjectOfType<AstraShoot>();
 
-        _player = FindObjectOfType<Player>();
+        _player = FindObjectOfType<PlayerMovement>();
 
         AstraShoot.Shoot();
         //_player.TakeDamage(7);
@@ -30,6 +30,6 @@ public class Astra : Ability
     public override void BeginCooldown(GameObject parent)
     {
         AstraShoot = FindObjectOfType<AstraShoot>();
-        _player = FindObjectOfType<Player>();
+        _player = FindObjectOfType<PlayerMovement>();
     }
 }

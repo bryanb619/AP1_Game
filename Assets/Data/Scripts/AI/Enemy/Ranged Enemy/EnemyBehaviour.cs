@@ -23,8 +23,8 @@ public class EnemyBehaviour : MonoBehaviour
     GemManager gemManager;
 
     [SerializeField] private bool gemSpawnOnDeath;
-    private NavMeshAgent _Agent;
-    private float _Health;
+    internal NavMeshAgent Agent;
+    private float health;
 
     // References to enemies
     private GameObject PlayerObject;
@@ -107,11 +107,11 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        _Agent = GetComponent<NavMeshAgent>();
+        Agent = GetComponent<NavMeshAgent>();
         StartCoroutine(FOVRoutine());
 
         canSeePlayer = false;
-        _Health = 100f;
+        health = 100f;
 
         // Create the states
         State onGuardState = new State("On Guard",
@@ -232,13 +232,13 @@ public class EnemyBehaviour : MonoBehaviour
         //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
         transform.LookAt(playerTarget.position);
 
-        _Agent.speed = 4f;
-        _Agent.SetDestination(PlayerTarget.position);
+        Agent.speed = 4f;
+        Agent.SetDestination(PlayerTarget.position);
 
 
         if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
         {
-            _Agent.speed = 0;
+            Agent.speed = 0;
             Attack();
 
             // se estiver atacando por x tempo
@@ -303,7 +303,7 @@ public class EnemyBehaviour : MonoBehaviour
                 Colliders[i] = null;
             }
 
-            int hits = Physics.OverlapSphereNonAlloc(_Agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
+            int hits = Physics.OverlapSphereNonAlloc(Agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
 
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
@@ -320,31 +320,31 @@ public class EnemyBehaviour : MonoBehaviour
 
             for (int i = 0; i < hits; i++)
             {
-                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, _Agent.areaMask))
+                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, Agent.areaMask))
                 {
-                    if (!NavMesh.FindClosestEdge(hit.position, out hit, _Agent.areaMask))
+                    if (!NavMesh.FindClosestEdge(hit.position, out hit, Agent.areaMask))
                     {
                         Debug.LogError($"Unable to find edge close to {hit.position}");
                     }
 
                     if (Vector3.Dot(hit.normal, (Target.position - hit.position).normalized) < HideSensitivity)
                     {
-                        _Agent.SetDestination(hit.position);
+                        Agent.SetDestination(hit.position);
                         break;
                     }
                     else
                     {
                         // Since the previous spot wasn't facing "away" enough from teh target, we'll try on the other side of the object
-                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, _Agent.areaMask))
+                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, Agent.areaMask))
                         {
-                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, _Agent.areaMask))
+                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, Agent.areaMask))
                             {
                                 Debug.LogError($"Unable to find edge close to {hit2.position} (second attempt)");
                             }
 
                             if (Vector3.Dot(hit2.normal, (Target.position - hit2.position).normalized) < HideSensitivity)
                             {
-                                _Agent.SetDestination(hit2.position);
+                                Agent.SetDestination(hit2.position);
                                 break;
                             }
                         }
@@ -375,7 +375,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
         else
         {
-            return Vector3.Distance(_Agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(_Agent.transform.position, B.transform.position));
+            return Vector3.Distance(Agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(Agent.transform.position, B.transform.position));
         }
     }
 
@@ -384,10 +384,10 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Patrol()
     {
-        _Agent.autoBraking = false;
-        _Agent.stoppingDistance = 0f;
+        Agent.autoBraking = false;
+        Agent.stoppingDistance = 0f;
 
-        if (!_Agent.pathPending && _Agent.remainingDistance < 0.5f)
+        if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
         {
             GotoNetPoint();
         }
@@ -398,13 +398,13 @@ public class EnemyBehaviour : MonoBehaviour
     private void GotoNetPoint()
     {
         
-        _Agent.speed = 3f;
+        Agent.speed = 3f;
         // Returns if no points have been set up
         if (_PatrolPoints.Length == 0)
             return;
 
         // Set the agent to go to the currently selected destination.
-        _Agent.destination = _PatrolPoints[destPoint].position;
+        Agent.destination = _PatrolPoints[destPoint].position;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
@@ -413,8 +413,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void GloryKill()
     {
-        _Agent.radius = 1f;
-        _Agent.isStopped = true;
+        Agent.radius = 1f;
+        Agent.isStopped = true;
     }
 
     #endregion
@@ -463,18 +463,18 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        _Health -= (_damage + damageBoost);
+        health -= (_damage + damageBoost);
 
-        if (_Health <= 0)
+        if (health <= 0)
         {
             Die();
         }
    
-        if (_Health > 0)
+        if (health > 0)
         {
             transform.LookAt(playerTarget.position);
             StartCoroutine(HitFlash());
-            if(_Health <= 20)
+            if(health <= 20)
             {
                 _canGloryKill= true;
             }

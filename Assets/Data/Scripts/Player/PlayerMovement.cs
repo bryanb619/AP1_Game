@@ -1,13 +1,16 @@
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement"), SerializeField]
-                     internal float walkSpeed, dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
+                     internal float walkSpeed;
+    [SerializeField] internal float dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
 
     [Header("Jumping"), SerializeField]
-                     private float jumpForce, jumpCooldown, airMultiplier;
+                     private float jumpForce; 
+    [SerializeField] private float jumpCooldown, airMultiplier;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
 
     [Header("Crouching")]
@@ -57,11 +60,10 @@ public class PlayerMovement : MonoBehaviour
                      public bool HealthSetAtMax;
 
     [Header("Dash Explosion"), SerializeField]
-                     private float explosionForce = 1000f;
-    [SerializeField] private int explosionDamage = 200;
-    
+                     private float explosionForce = 10f;
+    [SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
-
+    
     private enum MovementState
     {
         walking,
@@ -96,24 +98,13 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
         CheatCheck();
 
-        //InMotion();
 
 
         if (state == MovementState.walking || state == MovementState.crouching)
             rb.drag = groundDrag;
         else
             rb.drag = 0;
-
-
-
-
     }
-    /*
-    public bool InMotion()
-    {
-        return !Mathf.Approximately(rb.velocity.magnitude, 0f);
-    }
-    */
 
 
     private void FixedUpdate()
@@ -344,21 +335,28 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.tag == "Enemy" && state == MovementState.dashing)
         {
-            enemyHealth = other.gameObject.GetComponent<EnemyBehaviour>();
+            Rigidbody enemyRB = other.gameObject.GetComponent<Rigidbody>();
+            Debug.Log("Dash damage");
 
+            enemyHealth = other.gameObject.GetComponent<EnemyBehaviour>();
+            
             //direction and distance of the push
             Vector3 pushDirection = other.transform.position - transform.position;
             float pushDistance = pushDirection.magnitude;
+            pushDirection.y = 0;
             pushDirection.Normalize();
 
-            rb.AddExplosionForce(15f, new Vector3(transform.position.x, transform.position.y, pushDirection.z), 5f, 3f);
+            Debug.Log("Push Direction: " + pushDirection);
+            rb.AddForce(-pushDirection * explosionForce, ForceMode.Impulse);
+            enemyRB.AddForce(pushDirection * explosionForce * 0.05f, ForceMode.Impulse);
 
-            other.gameObject.transform.position += pushDirection * (explosionForce / pushDistance) * Time.deltaTime;
+            //other.gameObject.transform.position += pushDirection * (explosionForce / pushDistance) * Time.deltaTime;
 
             //explosion damage
-            enemyHealth.TakeDamage(explosionDamage);
+            enemyHealth.TakeDamage((int)explosionDamage);
         }
     }
+
 
     #region Cheats
     public void TakeDamage(int damage)
