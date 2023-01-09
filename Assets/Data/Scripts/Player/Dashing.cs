@@ -14,16 +14,21 @@ public class Dashing : MonoBehaviour
     private Animator Cam_anim;
 
     [Header("Dashing"), SerializeField]
-    private float dashForce, dashUpwardForce, dashDuration;
+    private float dashForce;
+    [SerializeField]
+    private float dashUpwardForce, dashDuration;
 
     [Header("Cooldown"), SerializeField]
-    private float dashCd, dashCdTimer;
+    private float dashCd;
+    private float dashCdTimer;
 
     [Header("Input"), SerializeField]
     private KeyCode dashKey = KeyCode.LeftShift;
 
     [Header("Settings"), SerializeField]
-    private bool useCameraFoward = true, allowAllDirections = true, disableGravity = false, resetVel = true;
+    private bool useCameraFoward = true; 
+    [SerializeField]
+    private bool allowAllDirections = true, disableGravity = false, resetVel = true;
 
     private void Start()
     {

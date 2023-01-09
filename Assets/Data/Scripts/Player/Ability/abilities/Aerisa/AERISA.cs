@@ -7,7 +7,7 @@ public class AERISA : Ability
     private Animator _animAstra;
 
     public AerisaShoot AerisaShoot;
-    private Player _player;
+    private PlayerMovement _player;
 
     public override void Activate(GameObject parent)
     {
@@ -15,7 +15,7 @@ public class AERISA : Ability
 
         AerisaShoot = FindObjectOfType<AerisaShoot>();
 
-        _player = FindObjectOfType<Player>();
+        _player = FindObjectOfType<PlayerMovement>();
         // INSTANTIATE
         AerisaShoot.Shoot();
 
@@ -27,7 +27,7 @@ public class AERISA : Ability
     public override void BeginCooldown(GameObject parent)
     {
         AerisaShoot = FindObjectOfType<AerisaShoot>();
-        _player = FindObjectOfType<Player>();
+        _player = FindObjectOfType<PlayerMovement>();
 
         Debug.Log("AERISA cooldown");
     }

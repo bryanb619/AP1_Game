@@ -6,7 +6,7 @@ public class Azura : Ability
     [SerializeField]
     private Animator _animAzura;
 
-    public Player _playerScript;
+    public PlayerMovement _playerScript;
 
     private AzuraEffect _effect;
     public int _health = 20;
@@ -23,7 +23,7 @@ public class Azura : Ability
 
         // POWER CODE
 
-        _playerScript = FindObjectOfType<Player>();
+        _playerScript = FindObjectOfType<PlayerMovement>();
         _effect = FindObjectOfType<AzuraEffect>();
 
 
@@ -47,7 +47,7 @@ public class Azura : Ability
 
     public override void BeginCooldown(GameObject parent)
     {
-        _playerScript = FindObjectOfType<Player>();
+        _playerScript = FindObjectOfType<PlayerMovement>();
 
         Debug.Log("Azura cooldown");
     }
