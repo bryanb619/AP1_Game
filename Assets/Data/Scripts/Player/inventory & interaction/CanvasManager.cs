@@ -17,7 +17,7 @@ public class CanvasManager : MonoBehaviour
     private void Update()
     {
         // look for tab to activate/deactivate inventory
-        LookForTAB_KeyCode();
+        //LookForTAB_KeyCode();
 
     }
 

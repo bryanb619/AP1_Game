@@ -1,8 +1,11 @@
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Interactive : MonoBehaviour
 {
-    public enum InteractiveType { _PICKABLE, _INTERACT_ONCE, _INTERACT_MULTI, _INDIRECT, _TextInteract };
+    public enum InteractiveType { _PICKABLE, _INTERACT_ONCE, _INTERACT_MULTI, _INDIRECT, _TextInteract, _GEM_CLEAN };
+
+    [SerializeField] private GameObject DEACTIVATE, ACTIVATE; 
 
     [SerializeField] private bool               _isActive;
     [SerializeField] private InteractiveType    _type;
@@ -13,6 +16,15 @@ public class Interactive : MonoBehaviour
     [SerializeField] private string[]           _interactionTexts;
     [SerializeField] private Interactive[]      _interactionChain;
 
+    [Range(10,30)][SerializeField] private float radius = 20f;
+    [SerializeField] private bool _canShowGizmo = true;
+    [SerializeField] private LayerMask AILayer; 
+    private bool _canSearch;
+    private bool _isGemClean; 
+
+
+    
+
 
     private Animator    _animator;
     private int         _curInteractionTextId;
@@ -21,6 +33,11 @@ public class Interactive : MonoBehaviour
     {
         _animator               = GetComponent<Animator>();
         _curInteractionTextId   = 0;
+    }
+    private void Update()
+    {
+        if (_canSearch) { GetAI(); }
+        
     }
 
     public bool IsActive()
@@ -61,6 +78,20 @@ public class Interactive : MonoBehaviour
             _animator.SetTrigger("Activate");
     }
 
+    private void GetAI()
+    {
+        // Check if the player is within the warning radius (Target layer optional)
+        Collider[] aiHits = Physics.OverlapSphere(transform.position, radius, AILayer);
+    
+        if (aiHits.Length <= 0)
+        {
+
+            print("interaction works");
+            ActivateFunctions();
+
+        }
+    }
+
     public void Interact()
     {
         if (_isActive)
@@ -81,6 +112,18 @@ public class Interactive : MonoBehaviour
 
             else if(_type == InteractiveType._TextInteract)
             {
+
+            }
+            else if(_type == InteractiveType._GEM_CLEAN) 
+            {
+                
+                // Single interaction
+                //GetComponent<Collider>().enabled = false;
+                _canSearch = true; 
+
+                
+
+
 
             }
 
@@ -106,4 +149,29 @@ public class Interactive : MonoBehaviour
                 _interactionChain[i].Interact();
         }
     }
+
+    private void ActivateFunctions()
+    {
+        // game object deactivate
+        DEACTIVATE.SetActive(false);
+
+        // game object activate
+        ACTIVATE.SetActive(true);
+
+        Destroy(this.gameObject); 
+
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        if(_canShowGizmo)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(transform.position,
+            radius);
+        }
+      
+    }
+    
 }

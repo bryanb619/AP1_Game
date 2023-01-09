@@ -7,7 +7,7 @@ public class AstraProjectile : MonoBehaviour
     private int EnemyDamage = 20;
     public int enemyDamage => EnemyDamage;
 
-    private int EnemyChaseDamage = 20; // before 80
+    private int EnemyChaseDamage = 50; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
     [SerializeField] private Rigidbody rb;

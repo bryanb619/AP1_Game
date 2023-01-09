@@ -120,6 +120,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool IsAttacking;
     private bool _underAttack;
     bool _inAttackRange;
+    private bool _initiateStartTimer; 
 
 
     private float retreatDist = 2f; 
@@ -303,6 +304,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         HealthCheck();
         //GetOtherAI();
         AISpeed();
+
+        SearchTimer(); 
         
 
         Action actions = stateMachine.Update();
@@ -348,7 +351,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     }
+    private void SearchTimer()
+    {
+        if(_initiateStartTimer == true)
+        {
+            float Timer = 0; 
 
+            Timer += Time.deltaTime;
+
+            if(Timer >= 10f)
+            {
+                _inSearch = true;
+                Timer = 0; 
+            }
+
+        }
+
+    }
   
     private void AISpeed()
     {
@@ -421,8 +440,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         if (canSeePlayer == false)
         {
+            // timer 
+            _initiateStartTimer = true;
+
+            // se chegar a isso 
 
             //_inSearch = true;
+        }
+        else
+        {
+            _initiateStartTimer = false;
         }
 
 
@@ -430,7 +457,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //print("ATTACK");
     }
 
-   
+
     private void Attack()
     {
         transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
@@ -484,9 +511,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
             //_inSearch = true; 
 
         }
-        */
-       
         
+       
+        */
     }
     /*
     private void OnDrawGizmos()
