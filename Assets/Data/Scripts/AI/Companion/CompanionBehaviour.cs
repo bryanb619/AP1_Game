@@ -47,11 +47,6 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
-    private float lerpProgres = 0f; 
-
-    private float transitionSpeed = 1.0f;
-
-
 
     // Create the FSM
     private void Start()

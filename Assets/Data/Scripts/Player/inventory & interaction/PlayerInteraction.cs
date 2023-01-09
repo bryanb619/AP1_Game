@@ -8,7 +8,7 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField] private CanvasManager _canvasManager;
 
-    private Transform _cameraTransform;
+    [SerializeField]private Transform _cameraTransform;
     private Interactive _currentInteractive;
     private bool _playerHasRequirements;
     private List<Interactive> _inventory;
@@ -20,7 +20,7 @@ public class PlayerInteraction : MonoBehaviour
 
     void Start()
     {
-        _cameraTransform = FindObjectOfType<Camera>().transform;
+       // _cameraTransform = FindObjectOfType<Camera>().transform;
         _currentInteractive = null;
         _playerHasRequirements = false;
         _inventory = new List<Interactive>();
@@ -126,15 +126,6 @@ public class PlayerInteraction : MonoBehaviour
 
     }
 
-    private void RemoveFromInventory2(Interactive item)
-    {
-        _inventory.Remove(item);
-        _canvasManager.ClearInventoryIcons();
-
-        RemoveFromInventory(_inventory[5]);
-
-    }
-
     private bool IsInInventory(Interactive item)
     {
         return _inventory.Contains(item);
@@ -154,11 +145,5 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         _currentInteractive.Interact();
-    }
-
-    private void DoNotAdd()
-    {
-        
-        
     }
 }

@@ -14,13 +14,13 @@ public class FOVCEB : Editor
         Vector3 viewAngle01 = DirectionFromAngle(fov.EEFOV.transform.eulerAngles.y, -fov.angle / 2);
         Vector3 viewAngle02 = DirectionFromAngle(fov.EEFOV.eulerAngles.y, fov.angle / 2);
 
-        Handles.color = Color.yellow;
+        Handles.color = Color.green;
         Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle01 * fov.radius);
         Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle02 * fov.radius);
 
         if (fov.canSee)
         {
-            Handles.color = Color.red;
+            Handles.color = Color.cyan;
             Handles.DrawLine(fov.EEFOV.position, fov.PlayerTarget.transform.position);
         }
     }

@@ -193,10 +193,23 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if ((playerTarget.transform.position - transform.position).magnitude < minDist)
             {
-                transform.LookAt(playerTarget.position);
+                transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             }
         }
        
+    }
+
+    void OnPlayerWarning(Vector3 Target)
+    {
+        // The player has been detected within the warning radius!
+        // Do something to react to this, such as chasing the player or going into alert mode.
+        GetPlayer();
+
+    }
+
+    public void GetPlayer()
+    {
+        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
     }
 
     #region AI ACTIONS
@@ -216,19 +229,23 @@ public class EnemyBehaviour : MonoBehaviour
     // Chase 
     private void ChasePlayer()
     {
-        transform.LookAt(playerTarget);
+        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        transform.LookAt(playerTarget.position);
 
         Agent.speed = 4f;
         Agent.SetDestination(PlayerTarget.position);
 
-        // ADD Last known POS
-        //
-        // !
 
         if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
         {
             Agent.speed = 0;
             Attack();
+
+            // se estiver atacando por x tempo
+
+
+            // mudar posição 
+
         }
 
         if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
@@ -245,7 +262,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Attack()
     {
 
-        transform.LookAt(playerTarget);
+        //transform.LookAt(playerTarget);
 
         if (Time.time > nextFire)
         {
@@ -258,7 +275,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void GetDistance()
     {
-        Agent.speed = 5f;
+        _Agent.speed = 5f;
+        _Agent.acceleration = 12;
         
 
         if (curSpeed <= 1 && canSee)

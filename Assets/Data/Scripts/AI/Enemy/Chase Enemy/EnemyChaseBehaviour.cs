@@ -5,6 +5,8 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using Unity.VisualScripting;
+using State = LibGameAI.FSMs.State;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -21,7 +23,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     // Reference to the state machine
-    private StateMachine stateMachine;
+    private LibGameAI.FSMs.StateMachine stateMachine;
 
     //private MeleeAttack AIAttack;
 
@@ -32,6 +34,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // References to player
     private GameObject PlayerObject;
     private PlayerMovement _Player;
+
+    private WarningSystemAI Warning;
 
 
     // Patrol Points
@@ -50,7 +54,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [Range(0, 15)][SerializeField] private float minDistInCover = 12f;
 
-    [SerializeField] private float minAttackDist = 3f;
 
 
     [Range(10, 150)]
@@ -91,8 +94,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField] private LayerMask HidableLayers;
 
 
-    private float MinObstacleHeight = 0.5f;
-
     public SceneChecker LineOfSightChecker;
 
     private Coroutine MovementCoroutine;
@@ -119,6 +120,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool IsAttacking;
     private bool _underAttack;
     bool _inAttackRange;
+    private bool _initiateStartTimer; 
 
 
     private float retreatDist = 2f; 
@@ -151,7 +153,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField]
     float AIradius = 20f;
 
-    public string Enemy;
+  
 
 
     // Get references to enemies
@@ -161,6 +163,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Player = FindObjectOfType<PlayerMovement>();
 
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+        Warning = GetComponent<WarningSystemAI>();
 
 
     }
@@ -202,7 +205,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
            Search,
            () => Debug.Log(""));
 
-
         State FindCover = new State("Help",
             () => Debug.Log(""),
             Cover,
@@ -222,7 +224,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 () => canSeePlayer == true,
                 () => Debug.Log("Player found!"),
                 ChaseState));
-
+       
         ChaseState.AddTransition(
            new Transition(
                () => InCoverState == true,
@@ -243,7 +245,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         SearchState.AddTransition(
            new Transition(
-               () => _inSearch == false,
+               () => _inSearch == false || canSeePlayer == true,
                () => Debug.Log(""),
                ChaseState));
 
@@ -276,7 +278,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         aiTransform = transform;
 
-        stateMachine = new StateMachine(PatrolState);
+        stateMachine = new LibGameAI.FSMs.StateMachine(PatrolState);
+
         Agent = GetComponent<NavMeshAgent>();
         //path = new NavMeshPath();
 
@@ -287,7 +290,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Health = 100;
         _canAttack = true;
 
-        
+
     }
     #endregion
 
@@ -301,7 +304,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         HealthCheck();
         //GetOtherAI();
         AISpeed();
-        SearchCS();
+
+        SearchTimer(); 
+        
 
         Action actions = stateMachine.Update();
         actions?.Invoke();
@@ -346,35 +351,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     }
-
-    /*
-    private void GetOtherAI()
+    private void SearchTimer()
     {
-        if(canSeePlayer)
+        if(_initiateStartTimer == true)
         {
-            AIAlert otherScript;
+            float Timer = 0; 
 
-            // Find all GameObjects within the radius
-            Collider[] colliders = Physics.OverlapSphere(transform.position, AIradius);
+            Timer += Time.deltaTime;
 
-            // Iterate through the colliders
-            foreach (Collider collider in colliders)
+            if(Timer >= 10f)
             {
-                // Check if the GameObject has the script we're looking for
-                if (collider.gameObject.tag == "Enemy")
-                {
-                    otherScript = GetComponent<AIAlert>();
-                    // The GameObject has the script we're looking for
-                    // Debug.Log(collider.gameObject.name + " has the script " + scriptName);
-                    otherScript.GetPlayer(playerTarget);
-                }
+                _inSearch = true;
+                Timer = 0; 
             }
+
         }
-        
 
     }
-    */
-
+  
     private void AISpeed()
     {
         Vector3 curMove = transform.position - previousPos;
@@ -382,12 +376,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         previousPos = transform.position;
     }
 
-    private void SearchCS()
-    {
-        
-    }
-    #endregion
-
+ 
+        #endregion
+    
 
 
     /*
@@ -438,63 +429,38 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
-        
-        
+        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-        if (_underAttack == true) 
+        Agent.speed = 5f;
+        Agent.acceleration = 11f;
+
+        Agent.SetDestination(playerTarget.position);
+
+        Attack();
+
+        if (canSeePlayer == false)
         {
-            
+            // timer 
+            _initiateStartTimer = true;
+
+            // se chegar a isso 
+
+            //_inSearch = true;
+        }
+        else
+        {
+            _initiateStartTimer = false;
         }
 
-        if(_underAttack == false)
-        {
-            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-            Agent.speed = 5f;
-            Agent.acceleration = 11f;
-
-            Agent.SetDestination(playerTarget.position);
-
-            Attack();
-
-            if (canSeePlayer == false)
-            {
-                _inSearch = true;
-            }
-        }
-
-
-        
 
         //print("ATTACK");
     }
 
-    
-
-    private void WarnOtherAi()
-    {
-        float detectRadius = 10.0f;
-
-        Collider[] colliders = Physics.OverlapSphere(transform.position, detectRadius);
-        foreach (Collider collider in colliders)
-        {
-            
-            // check if the GameObject attached to the collider is an enemy of the same type
-            if (collider.CompareTag("Enemy") && collider.GetComponent<EnemyChaseBehaviour>() != null)
-            { 
-               
-            }
-        }
-
-    }
-
-    private void RandomPatrol()
-    {
-
-    }
 
     private void Attack()
     {
+        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
         if (Agent.remainingDistance <= 3)
         {
             Agent.stoppingDistance = 2.7f;
@@ -527,6 +493,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     public void GetPlayer()
     {
         transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+
     }
 
 
@@ -534,8 +501,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         // The player has been detected within the warning radius!
         // Do something to react to this, such as chasing the player or going into alert mode.
+        //GetPlayer();
+
         GetPlayer();
+
+        /*
+        if(canSeePlayer == false)
+        {
+            //_inSearch = true; 
+
+        }
         
+       
+        */
     }
     /*
     private void OnDrawGizmos()
@@ -556,17 +534,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     }
     
-
     private void Search()
     {
-        
 
+        
         if (Agent.remainingDistance <= Agent.stoppingDistance)
         {
 
             if(canSeePlayer)
             {
-                _inSearch= false;
+                _inSearch = false;
             }
 
             
@@ -582,8 +559,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             PathPredict();
              
 
-
-
         }
         
     }
@@ -598,12 +573,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Agent.destination = predictedPath[predictedPath.Length - 1];
     }
 
+    /*
     private void GetPath()
     {
-        //print(" GetPath");
-        // Assume that target is a GameObject with a Transform component
-        //NavMeshAgent agent = GetComponent<NavMeshAgent>();
-
+        
         Agent.destination = playerTarget.transform.position;
         NavMeshPath path = new NavMeshPath();
         Agent.CalculatePath(playerTarget.transform.position, path);
@@ -621,7 +594,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
 
     }
-
+    */
 
 
     private void Cover()
@@ -684,7 +657,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             if (_Health <= 20)
             {
-                _canGloryKill = true;
+                //_canGloryKill = true;
             }
             //_underAttack= true;
             transform.LookAt(new Vector3(0, playerTarget.position.y, 0));

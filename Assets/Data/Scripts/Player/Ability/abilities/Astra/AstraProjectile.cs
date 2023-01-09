@@ -7,7 +7,7 @@ public class AstraProjectile : MonoBehaviour
     private int EnemyDamage = 20;
     public int enemyDamage => EnemyDamage;
 
-    private int EnemyChaseDamage = 20; // before 80
+    private int EnemyChaseDamage = 50; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
     [SerializeField] private Rigidbody rb;
@@ -18,7 +18,7 @@ public class AstraProjectile : MonoBehaviour
         rb.velocity = transform.forward * _speed;
     }
 
-    public void OnTriggerEnter(Collider hitInfo)
+    private void OnTriggerEnter(Collider hitInfo)
     {
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
@@ -44,6 +44,11 @@ public class AstraProjectile : MonoBehaviour
         }
 
         //Instantiate(impactEffect, transform.position, transform.rotation);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(this.gameObject);
     }
 
 
