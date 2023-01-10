@@ -48,20 +48,6 @@ public class Ability_Holder : MonoBehaviour
         FindAbilityStateInput(); //
     }
 
-    /*
-    public void SetIcon(Sprite s)
-    {
-        icon.sprite = s;
-    }
-
-    
-    public void ShowUICooldown()
-    {
-        transform.DOComplete();
-        coolDownImage.fillAmount = 0;
-        coolDownImage.DOFillAmount(1, cooldownTime).SetEase(Ease.Linear).OnComplete(() => transform.DOPunchScale(Vector3.one / 10, .2f, 10, 1));
-    }
-    */
     private void FindAbilityStateInput()
     {
         switch (state)
@@ -131,12 +117,5 @@ public class Ability_Holder : MonoBehaviour
         ActiveSprite.SetActive(false);
         CooldownSprite.SetActive(true);
     }
-    /*
-    public void ShowCoolDown(float cooldown)
-    {
-        transform.DOComplete();
-        coolDownImage.fillAmount = 0;
-        coolDownImage.DOFillAmount(1, cooldown).SetEase(Ease.Linear).OnComplete(() => transform.DOPunchScale(Vector3.one / 10, .2f, 10, 1));
-    }
-    */
+   
 }

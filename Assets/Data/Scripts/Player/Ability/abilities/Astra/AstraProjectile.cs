@@ -10,6 +10,8 @@ public class AstraProjectile : MonoBehaviour
     private int EnemyChaseDamage = 50; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
+   
+
     [SerializeField] private Rigidbody rb;
 
     // Start is called before the first frame update
@@ -33,10 +35,10 @@ public class AstraProjectile : MonoBehaviour
         }
         else if (ChaseEnemy != null)
         {
-            ChaseEnemy.TakeDamage(enemyChaseDamage);
+            ChaseEnemy.TakeDamage(enemyChaseDamage, WeaponType.Ice);
             DestroyBullet();
             Debug.Log("HIT");
-
+            
         }
         else if(player != null) 
         {

@@ -86,13 +86,13 @@ public class Tester : MonoBehaviour
         {
             //Die();
             Enemy1.TakeDamage(100);
-            Enemy2.TakeDamage(100); 
+            //Enemy2.TakeDamage(100); 
         }
         if (Input.GetKeyDown(KeyCode.Y)) //|| KillEnemy == true)
         {
             //Die();
             Enemy1.TakeDamage(25);
-            Enemy2.TakeDamage(25);
+            //Enemy2.TakeDamage(25);
         }
     }
 

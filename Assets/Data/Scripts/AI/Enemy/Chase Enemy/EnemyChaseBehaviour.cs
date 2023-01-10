@@ -120,6 +120,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool IsAttacking;
     private bool _underAttack;
     bool _inAttackRange;
+    private bool _canMove; 
     private bool _initiateStartTimer; 
 
 
@@ -153,7 +154,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField]
     float AIradius = 20f;
 
-  
+    
 
 
     // Get references to enemies
@@ -289,6 +290,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         _Health = 100;
         _canAttack = true;
+        _canMove = true;    
 
 
     }
@@ -398,16 +400,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Patrol()
     {
-        _returnPatrol = false;
-        Agent.autoBraking = false;
-        Agent.stoppingDistance = 0.2f;
-        Agent.speed = 1f;
-        Agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
-
-        if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
+        if(_canMove)
         {
-            GotoNetPoint();
+            _returnPatrol = false;
+            Agent.autoBraking = false;
+            Agent.stoppingDistance = 0.2f;
+            Agent.speed = 1f;
+            Agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+
+            if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
+            {
+                GotoNetPoint();
+            }
         }
+        
 
     }
 
@@ -429,28 +435,32 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
-        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-
-        Agent.speed = 5f;
-        Agent.acceleration = 11f;
-
-        Agent.SetDestination(playerTarget.position);
-
-        Attack();
-
-        if (canSeePlayer == false)
+        if(_canMove)
         {
-            // timer 
-            _initiateStartTimer = true;
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-            // se chegar a isso 
+            Agent.speed = 5f;
+            Agent.acceleration = 11f;
 
-            //_inSearch = true;
+            Agent.SetDestination(playerTarget.position);
+
+            Attack();
+
+            if (canSeePlayer == false)
+            {
+                // timer 
+                _initiateStartTimer = true;
+
+                // se chegar a isso 
+
+                //_inSearch = true;
+            }
+            else
+            {
+                _initiateStartTimer = false;
+            }
         }
-        else
-        {
-            _initiateStartTimer = false;
-        }
+        
 
 
 
@@ -460,31 +470,35 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Attack()
     {
-        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-        if (Agent.remainingDistance <= 3)
+        if (_canMove)
         {
-            Agent.stoppingDistance = 2.7f;
-
-            if (_inAttackRange == true)
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            if (Agent.remainingDistance <= 3)
             {
+                Agent.stoppingDistance = 2.7f;
 
-                if (Time.time > nextAttack)
+                if (_inAttackRange == true)
                 {
 
-                    print("player attacked");
-                    //transform.LookAt(playerTarget);
+                    if (Time.time > nextAttack)
+                    {
 
-                    nextAttack = Time.time + AttackRate;
-                    _Player.TakeDamage(damage);
-                    _canAttack = false;
-                }
-                else
-                {
-                    IsAttacking = false;
-                }
+                        print("player attacked");
+                        //transform.LookAt(playerTarget);
 
+                        nextAttack = Time.time + AttackRate;
+                        _Player.TakeDamage(damage);
+                        _canAttack = false;
+                    }
+                    else
+                    {
+                        IsAttacking = false;
+                    }
+
+                }
             }
         }
+       
        
 
 
@@ -492,7 +506,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     public void GetPlayer()
     {
-        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        if (_canMove)
+        {
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        }
+        
 
     }
 
@@ -599,22 +617,26 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Cover()
     {
-        const float MAXHEALTH = 100f;
-
-
-        Agent.speed = 5f;
-        Agent.stoppingDistance = 1f;
-        Agent.radius = 1f;
-
-        HandleGainSight(PlayerTarget);
-       // GetCover();
-
-        if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
+        if (_canMove) 
         {
-            _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, MAXHEALTH);
-            //Debug.Log("Chase health: " + _Health);
+            const float MAXHEALTH = 100f;
+
+
+            Agent.speed = 5f;
+            Agent.stoppingDistance = 1f;
+            Agent.radius = 1f;
+
+            HandleGainSight(PlayerTarget);
+            // GetCover();
+
+            if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
+            {
+                _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, MAXHEALTH);
+                //Debug.Log("Chase health: " + _Health);
+            }
+            Attack();
         }
-        Attack();
+        
 
         
     }
@@ -644,16 +666,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     #region AI Health 
-    public void TakeDamage(int _damage)
+    public void TakeDamage(int _damage, WeaponType MyEnum)
     {
         print(_Health);
-        
+        _Health -= _damage + damageBoost;
+
 
         if (_Health <= 0)
         {
             Die();
         }
-        if (_Health > 0)
+
+        if (_Health > 0 && MyEnum == WeaponType.Normal)
         {
             if (_Health <= 20)
             {
@@ -665,7 +689,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
             StartCoroutine(HitFlash());
             
         }
-        _Health -= _damage + damageBoost;
+        else if(_Health > 0 && MyEnum == WeaponType.Ice)
+        {
+            // STOP FOR 
+            StartCoroutine(STFS(5F));
+        }
+        
         //Debug.Log("enemy shot" + _Health);
     }
 
@@ -819,18 +848,37 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
 
 
-    
+
     #endregion
-    
+
+    #region IEnumeratos associated with damage on AI
+    private IEnumerator STFS(float value)
+    {
+
+        _canMove= false;
+
+        GetComponent<Renderer>().material.color = Color.white;
+        yield return new WaitForSeconds(value);
+
+        originalColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = Color.black;
+        _canMove = true;
+    }
+
+    private IEnumerator DamageOverTime(float damagePerSecond)
+    {
+
+        yield return new WaitForSeconds(damagePerSecond);
+    }
 
     IEnumerator HitFlash()
     {
         originalColor = GetComponent<Renderer>().material.color;
         GetComponent<Renderer>().material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
-        GetComponent<Renderer>().material.color = Color.magenta;
+        originalColor = GetComponent<Renderer>().material.color;
     }
-
+    #endregion
     #endregion
 
 }
