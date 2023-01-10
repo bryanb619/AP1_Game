@@ -3,8 +3,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Astra : Ability
 {
-    [SerializeField]
-    private Animator _animAstra;
 
     //public AIBehaviour _enemyScript;
 

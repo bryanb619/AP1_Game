@@ -1,9 +1,11 @@
 #region Abilities types 
 public enum WeaponType
 {
+    Normal,
     Ice,
     Fire,
-    Normal
+    Thunder,
+    None
 
 }
 #endregion

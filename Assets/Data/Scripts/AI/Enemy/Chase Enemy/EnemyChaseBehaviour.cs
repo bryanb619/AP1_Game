@@ -37,6 +37,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private WarningSystemAI Warning;
 
+    private PredictionModel pathPrediction;
+
 
     // Patrol Points
 
@@ -124,9 +126,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool _initiateStartTimer; 
 
 
-    private float retreatDist = 2f; 
+    private float retreatDist = 2f;
 
-    private PredictionModel pathPrediction;
+    // fire damage variables
+    private float damagePerSecondFire = 2f;
+    private float durationOfFireDamage = 10f;
+
+
 
     private Transform aiTransform;
 
@@ -666,7 +672,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     #region AI Health 
-    public void TakeDamage(int _damage, WeaponType MyEnum)
+    public void TakeDamage(int _damage, WeaponType _Type)
     {
         print(_Health);
         _Health -= _damage + damageBoost;
@@ -676,24 +682,32 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             Die();
         }
-
-        if (_Health > 0 && MyEnum == WeaponType.Normal)
+        if(_Health > 0) 
         {
-            if (_Health <= 20)
+            if (_Type == WeaponType.Normal)
             {
-                //_canGloryKill = true;
+                //if (_Health <= 20)
+                //{
+                    //_canGloryKill = true;
+                //}
+                _Health -= _damage + damageBoost;
+                GetPlayer();
+                //QuickCover();
+                StartCoroutine(HitFlash());
+
             }
-            //_underAttack= true;
-            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-            QuickCover();
-            StartCoroutine(HitFlash());
-            
+            else if (_Type == WeaponType.Ice)
+            {
+                // STOP FOR 
+                StartCoroutine(STFS(5F));
+
+            }
+            else if (_Type == WeaponType.Fire)
+            {
+                StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
+            }
         }
-        else if(_Health > 0 && MyEnum == WeaponType.Ice)
-        {
-            // STOP FOR 
-            StartCoroutine(STFS(5F));
-        }
+        
         
         //Debug.Log("enemy shot" + _Health);
     }
@@ -865,10 +879,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _canMove = true;
     }
 
-    private IEnumerator DamageOverTime(float damagePerSecond)
+    private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
     {
+        float elapsedTime = 0f; 
+        while  (elapsedTime < durationOfFireDamage)
+        {
+            _Health -= damagePerSecond;
+            StartCoroutine(HitFlash());
+            yield return new WaitForSeconds(2.5f);
+            elapsedTime += 2.5f; 
+            
+        }
 
-        yield return new WaitForSeconds(damagePerSecond);
     }
 
     IEnumerator HitFlash()

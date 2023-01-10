@@ -1,16 +1,16 @@
 using UnityEngine;
 
-public class AstraProjectile : MonoBehaviour
+public class NormalProjectile : MonoBehaviour
 {
     private float _speed = 20f;
 
-    private int EnemyDamage = 20;
+    private int EnemyDamage = 2;
     public int enemyDamage => EnemyDamage;
 
-    private int EnemyChaseDamage = 50; // before 80
+    private int EnemyChaseDamage = 2; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
-   
+
 
     [SerializeField] private Rigidbody rb;
 
@@ -20,7 +20,7 @@ public class AstraProjectile : MonoBehaviour
         rb.velocity = transform.forward * _speed;
     }
 
-    
+
 
     private void OnTriggerEnter(Collider hitInfo)
     {
@@ -37,12 +37,12 @@ public class AstraProjectile : MonoBehaviour
         }
         else if (ChaseEnemy != null)
         {
-            ChaseEnemy.TakeDamage(enemyChaseDamage, WeaponType. Fire);
+            ChaseEnemy.TakeDamage(enemyChaseDamage, WeaponType.Normal);
             DestroyBullet();
             Debug.Log("HIT");
-            
+
         }
-        else if(player != null) 
+        else if (player != null)
         {
             DestroyBullet();
         }
@@ -60,5 +60,4 @@ public class AstraProjectile : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
 }

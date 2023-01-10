@@ -91,7 +91,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     private Coroutine MovementCoroutine;
 
-
+    // fire damage variables
+    private float damagePerSecondFire = 2f;
+    private float durationOfFireDamage = 10f; 
 
     private bool _canGloryKill; 
 
