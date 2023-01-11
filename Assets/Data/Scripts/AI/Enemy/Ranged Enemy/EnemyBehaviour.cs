@@ -95,7 +95,11 @@ public class EnemyBehaviour : MonoBehaviour
     private float damagePerSecondFire = 2f;
     private float durationOfFireDamage = 10f; 
 
-    private bool _canGloryKill; 
+    private bool _canGloryKill;
+
+    private Enum _Type;
+
+    private bool _canMove;
 
     // Get references to enemies
     private void Awake()
@@ -174,7 +178,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        StartCoroutine(FOVRoutine());
+        
     }
 
     // Request actions to the FSM and perform them
@@ -468,7 +472,7 @@ public class EnemyBehaviour : MonoBehaviour
     #endregion
 
 
-    public void TakeDamage(int _damage)
+    public void TakeDamage(int _damage, WeaponType _Type)
     {
         health -= (_damage + damageBoost);
 
@@ -476,14 +480,36 @@ public class EnemyBehaviour : MonoBehaviour
         {
             Die();
         }
-   
+
         if (health > 0)
         {
-            transform.LookAt(playerTarget.position);
-            StartCoroutine(HitFlash());
-            if(health <= 20)
+            // ALERT AI OF player presence
+            WarningSystemAI warn;
+            warn = GetComponent<WarningSystemAI>();
+            warn.canAlertAI = true;
+
+            if (_Type == WeaponType.Normal)
             {
-                _canGloryKill= true;
+                //if (_Health <= 20)
+                //{
+                //_canGloryKill = true;
+                //}
+                health -= _damage + damageBoost;
+                GetPlayer();
+                //QuickCover();
+                StartCoroutine(HitFlash());
+
+            }
+            else if (_Type == WeaponType.Ice)
+            {
+
+                // STOP FOR 5 seconds
+                StartCoroutine(STFS(5F));
+
+            }
+            else if (_Type == WeaponType.Fire)
+            {
+                StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
             }
         }
 
@@ -499,6 +525,8 @@ public class EnemyBehaviour : MonoBehaviour
         Debug.Log("Enemy died");
     }
 
+
+    #region Combat IEnumerators
     IEnumerator HitFlash()
     {
         originalColor = GetComponent<Renderer>().material.color;
@@ -506,5 +534,33 @@ public class EnemyBehaviour : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         GetComponent<Renderer>().material.color = Color.gray;
     }
+
+    private IEnumerator STFS(float value)
+    {
+
+        _canMove = false;
+
+        GetComponent<Renderer>().material.color = Color.white;
+        yield return new WaitForSeconds(value);
+
+        originalColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = Color.black;
+        _canMove = true;
+    }
+
+    private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < durationOfFireDamage)
+        {
+            health -= damagePerSecond;
+            StartCoroutine(HitFlash());
+            yield return new WaitForSeconds(2.5f);
+            elapsedTime += 2.5f;
+
+        }
+
+    }
+    #endregion
 
 }
