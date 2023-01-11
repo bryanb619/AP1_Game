@@ -30,7 +30,7 @@ public class ThunderProjectile : MonoBehaviour
 
         if (enemy != null)
         {
-            enemy.TakeDamage(enemyDamage);
+            enemy.TakeDamage(enemyDamage, WeaponType.Thunder);
             DestroyBullet();
             //Debug.Log("HIT");
 

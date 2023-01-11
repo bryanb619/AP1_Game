@@ -178,7 +178,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        StartCoroutine(FOVRoutine());
     }
 
     // Request actions to the FSM and perform them
@@ -220,7 +220,11 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void GetPlayer()
     {
-        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        if(_canMove)
+        {
+            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        }
+        
     }
 
     #region AI ACTIONS
@@ -240,30 +244,34 @@ public class EnemyBehaviour : MonoBehaviour
     // Chase 
     private void ChasePlayer()
     {
-        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-        transform.LookAt(playerTarget.position);
-
-        Agent.speed = 4f;
-        Agent.SetDestination(PlayerTarget.position);
-
-
-        if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
+        if(_canMove)
         {
-            Agent.speed = 0;
-            Attack();
+            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            transform.LookAt(playerTarget.position);
 
-            // se estiver atacando por x tempo
+            Agent.speed = 4f;
+            Agent.SetDestination(PlayerTarget.position);
 
 
-            // mudar posição 
+            if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
+            {
+                Agent.speed = 0;
+                Attack();
 
+                // se estiver atacando por x tempo
+
+
+                // mudar posição 
+
+            }
+
+            if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
+            {
+
+                GetDistance();
+            }
         }
-
-        if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
-        {
-
-            GetDistance();
-        }
+        
 
 
 
@@ -395,13 +403,17 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Patrol()
     {
-        Agent.autoBraking = false;
-        Agent.stoppingDistance = 0f;
-
-        if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
+        if(_canMove)
         {
-            GotoNetPoint();
+            Agent.autoBraking = false;
+            Agent.stoppingDistance = 0f;
+
+            if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
+            {
+                GotoNetPoint();
+            }
         }
+        
 
     }
 

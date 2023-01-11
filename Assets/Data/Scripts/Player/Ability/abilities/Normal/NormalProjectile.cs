@@ -30,7 +30,7 @@ public class NormalProjectile : MonoBehaviour
 
         if (enemy != null)
         {
-            enemy.TakeDamage(enemyDamage);
+            enemy.TakeDamage(enemyDamage, WeaponType.Normal);
             DestroyBullet();
             //Debug.Log("HIT");
 

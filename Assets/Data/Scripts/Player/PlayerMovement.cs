@@ -65,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
     
+
     private enum MovementState
     {
         walking,
@@ -354,7 +355,7 @@ public class PlayerMovement : MonoBehaviour
             //other.gameObject.transform.position += pushDirection * (explosionForce / pushDistance) * Time.deltaTime;
 
             //explosion damage
-            enemyHealth.TakeDamage((int)explosionDamage);
+            enemyHealth.TakeDamage((int)explosionDamage, WeaponType.Dash);
         }
     }
 
