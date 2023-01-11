@@ -63,15 +63,13 @@ public class NormalProjectile : MonoBehaviour
         {
             DestroyBullet();
         }
+        else if(hitInfo.gameObject.CompareTag("Wall") || hitInfo.gameObject.CompareTag("Default"))
+        {
+            DestroyBullet();
+        }
 
         //Instantiate(impactEffect, transform.position, transform.rotation);
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Destroy(gameObject);
-    }
-
 
     private void DestroyBullet()
     {

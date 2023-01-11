@@ -116,6 +116,8 @@ public class EnemyBehaviour : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
         //StartCoroutine(FOVRoutine());
 
+        _canMove = true;
+
         canSeePlayer = false;
         health = 100f;
 
@@ -178,14 +180,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        StartCoroutine(FOVRoutine());
+        
     }
 
     // Request actions to the FSM and perform them
     private void Update()
     {
         MinimalCheck(); // Tester
-
+        StartCoroutine(FOVRoutine());
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
@@ -499,6 +501,7 @@ public class EnemyBehaviour : MonoBehaviour
             WarningSystemAI warn;
             warn = GetComponent<WarningSystemAI>();
             warn.canAlertAI = true;
+            GetPlayer();
 
             if (_Type == WeaponType.Normal)
             {

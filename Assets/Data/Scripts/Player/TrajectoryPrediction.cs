@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TrajectoryPrediction : MonoBehaviour
-{
+{/*
     [Header("Line renderer veriables")]
     public LineRenderer line;
     [Range(2, 100)]
@@ -135,4 +135,5 @@ public class TrajectoryPrediction : MonoBehaviour
     {
         this.velocity = velocity;
     }
+    */
 }

@@ -22,7 +22,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Start()
     {
-        GamePlay = GameObject.Find("--- GamePlay ---");
+        //GamePlay = GameObject.Find("--- GamePlay ---");
 
         PauseCanvas.SetActive(true);
         _pauseMenu.SetActive(false);
