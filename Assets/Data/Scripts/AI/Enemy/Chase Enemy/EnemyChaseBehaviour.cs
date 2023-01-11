@@ -149,7 +149,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // The current cover position the AI character is using
     private Transform currentCoverPosition;
 
-    private bool _canFov; 
     public float aiPointRadius;
     #endregion
     // test code 
@@ -292,17 +291,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         pathPrediction = gameObject.AddComponent<PredictionModel>();
 
-        StartCoroutine(FOVRoutine());
+        //StartCoroutine(FOVRoutine());
         //InvokeRepeating("Reapet Fov", 0.5f, 1f);
 
         _Health = 100;
         _canAttack = true;
         _canMove = true;
-        _canFov = true; 
 
 
     }
     #endregion
+
+    private void FixedUpdate()
+    {
+        CanFOV();
+    }
 
     // Request actions to the FSM and perform them
     private void Update()
@@ -313,7 +316,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         MinimalCheck();
         HealthCheck();
         //GetOtherAI();
-        CanFOV();
+        
         AISpeed();
         SearchTimer(); 
         
@@ -324,6 +327,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
 
+    }
+    private void CanFOV()
+    {
+        StartCoroutine(FOVRoutine());
     }
 
 
@@ -378,13 +385,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
 
     }
-    private void CanFOV()
-    {
-        if (_canFov)
-        {
-            StartCoroutine(FOVRoutine());
-        }
-    }
+    
   
     private void AISpeed()
     {
@@ -396,20 +397,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
  
         #endregion
     
-
-
-    /*
-    private void HandleLoseSight(Transform Target)
-    {
-
-        if (MovementCoroutine != null)
-        {
-            StopCoroutine(MovementCoroutine);
-        }
-        playerTarget = Target;
-
-    }
-    */
 
     #region AI Actions
 

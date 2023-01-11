@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovement : MonoBehaviour
@@ -370,8 +371,8 @@ public class PlayerMovement : MonoBehaviour
         if (_currentHealth <= 0)
         {
             Debug.Log("DEAD");
-            restartMenu.LoadRestart();
-            //SceneManager.LoadScene("Restart");
+            //restartMenu.LoadRestart();
+            SceneManager.LoadScene("RestartScene");
             //RestarMenu.SetActive(true);
 
             //Time.timeScale = 0f;
