@@ -110,7 +110,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Start()
     {
         Agent = GetComponent<NavMeshAgent>();
-        StartCoroutine(FOVRoutine());
+        //StartCoroutine(FOVRoutine());
 
         canSeePlayer = false;
         health = 100f;
@@ -170,6 +170,11 @@ public class EnemyBehaviour : MonoBehaviour
 
         // Create the state machine
         stateMachine = new StateMachine(PatrolState);
+    }
+
+    private void FixedUpdate()
+    {
+        StartCoroutine(FOVRoutine());
     }
 
     // Request actions to the FSM and perform them
