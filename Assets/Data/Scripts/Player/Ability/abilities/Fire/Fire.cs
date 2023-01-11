@@ -3,14 +3,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Akarya/abilities/Fire")]
 public class Fire : Ability
 {
-    private Shooter shoot;
+    private ShooterFire shoot;
 
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
 
         // INSTANTIATE
-        shoot = FindObjectOfType<Shooter>();
+        shoot = FindObjectOfType<ShooterFire>();
 
 
 
@@ -22,7 +22,7 @@ public class Fire : Ability
 
     public override void BeginCooldown(GameObject parent)
     {
-        shoot = FindObjectOfType<Shooter>();
+        shoot = FindObjectOfType<ShooterFire>();
       
     }
 

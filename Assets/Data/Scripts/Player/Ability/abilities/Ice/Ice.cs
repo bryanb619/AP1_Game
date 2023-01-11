@@ -3,14 +3,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Akarya/abilities/Ice")]
 public class Ice : Ability
 {
-    private Shooter shoot;
+    private ShooterIce shoot;
 
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
 
         // INSTANTIATE
-        shoot = FindObjectOfType<Shooter>();
+        shoot = FindObjectOfType<ShooterIce>();
 
 
 
@@ -22,7 +22,7 @@ public class Ice : Ability
 
     public override void BeginCooldown(GameObject parent)
     {
-        shoot = FindObjectOfType<Shooter>();
+        shoot = FindObjectOfType<ShooterIce>();
       
     }
 

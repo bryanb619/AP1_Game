@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AerisaShoot : MonoBehaviour
+public class ShooterThunder : MonoBehaviour
 {
     public Transform firePoint;
     public GameObject bulletPrefab;

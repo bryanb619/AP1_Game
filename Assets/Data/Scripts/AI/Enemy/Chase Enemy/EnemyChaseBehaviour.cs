@@ -698,7 +698,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             }
             else if (_Type == WeaponType.Ice)
             {
-                // STOP FOR 
+                // STOP FOR 5 seconds
                 StartCoroutine(STFS(5F));
 
             }

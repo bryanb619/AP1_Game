@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AstraShoot : MonoBehaviour
+public class ShooterFire : MonoBehaviour
 {
     public Transform firePoint;
     public GameObject bulletPrefab;
