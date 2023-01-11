@@ -913,7 +913,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         originalColor = GetComponent<Renderer>().material.color;
         GetComponent<Renderer>().material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
-        originalColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = originalColor;
     }
     #endregion
     #endregion

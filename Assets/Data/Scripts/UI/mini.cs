@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +8,7 @@ public class mini : MonoBehaviour
     private void Start()
     {
         borderImage = GetComponent<Image>();
-        borderImage.color = Color.white;
+        borderImage.color = Color.yellow;
     }
     public void SetCollorRed()
     {    
@@ -19,6 +17,6 @@ public class mini : MonoBehaviour
 
     public void SetCollorDefault()
     {
-        borderImage.color = Color.white;
+        borderImage.color = Color.yellow;
     }
 }
