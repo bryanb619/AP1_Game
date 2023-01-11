@@ -558,11 +558,11 @@ public class EnemyBehaviour : MonoBehaviour
 
         _canMove = false;
 
-        GetComponent<Renderer>().material.color = Color.white;
+        originalColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = new Color(0.6933962f, 0.9245283f, 0.871814f); ;
         yield return new WaitForSeconds(value);
 
-        originalColor = GetComponent<Renderer>().material.color;
-        GetComponent<Renderer>().material.color = Color.black;
+        GetComponent<Renderer>().material.color = originalColor;
         _canMove = true;
     }
 
