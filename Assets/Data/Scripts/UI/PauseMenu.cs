@@ -17,7 +17,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Awake()
     {
-        //GameStateManager.Instance.OnGameStateChanged += On
+        
     }
 
     private void Start()
@@ -58,14 +58,7 @@ public class PauseMenu : MonoBehaviour
     {
         if (Input.GetButtonDown("Pause"))
         {
-            GameState currentGameState = GameStateManager.Instance.CurrentGameState;
-            GameState newGameState = currentGameState == GameState.Gameplay
-                ? GameState.Paused
-                : GameState.Gameplay;
-
-            GameStateManager.Instance.SetState(newGameState);
-
-            /*
+            
             if (_Paused)
             {
                 Resume();
@@ -74,7 +67,7 @@ public class PauseMenu : MonoBehaviour
             {
                 Pause();
             }
-            */
+            
         }
     }
 
@@ -85,7 +78,7 @@ public class PauseMenu : MonoBehaviour
         _pauseMenu.SetActive(false);
         GamePlay.SetActive(true);
 
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
 
         _Paused = false;
 
@@ -102,7 +95,7 @@ public class PauseMenu : MonoBehaviour
         _pauseMenu.SetActive(true);
         GamePlay.SetActive(false);
 
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
 
         _Paused = true;
         Cursor.visible = true;
@@ -151,10 +144,6 @@ public class PauseMenu : MonoBehaviour
         _pauseMenu.SetActive(true);
         _OptionsMenu.SetActive(false);
 
-    }
-    private void OnGameStateChanged(GameState newGameState)
-    {
-        
     }
 }
 
