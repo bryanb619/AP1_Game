@@ -30,7 +30,7 @@ public class IceProjectile : MonoBehaviour
 
         if (enemy != null)
         {
-            enemy.TakeDamage(enemyDamage);
+            enemy.TakeDamage(enemyDamage, WeaponType.Ice);
             DestroyBullet();
             //Debug.Log("HIT");
 

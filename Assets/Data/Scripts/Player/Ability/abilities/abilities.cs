@@ -5,6 +5,7 @@ public enum WeaponType
     Ice,
     Fire,
     Thunder,
+    Dash, 
     None
 
 }

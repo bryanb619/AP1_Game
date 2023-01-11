@@ -32,7 +32,7 @@ public class FireProjectile : MonoBehaviour
 
         if (enemy != null)
         {
-            enemy.TakeDamage(enemyDamage);
+            enemy.TakeDamage(enemyDamage, WeaponType.Fire);
             DestroyBullet();
             //Debug.Log("HIT");
 

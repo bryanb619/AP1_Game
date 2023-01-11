@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovement : MonoBehaviour
@@ -63,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
     
+
     private enum MovementState
     {
         walking,
@@ -350,7 +352,7 @@ public class PlayerMovement : MonoBehaviour
             enemyRB.AddForce(pushDirection * explosionForce * 0.05f, ForceMode.Impulse);
 
             //explosion damage
-            enemyHealth.TakeDamage((int)explosionDamage);
+            enemyHealth.TakeDamage((int)explosionDamage, WeaponType.Dash);
         }
     }
 
@@ -367,8 +369,8 @@ public class PlayerMovement : MonoBehaviour
         if (_currentHealth <= 0)
         {
             Debug.Log("DEAD");
-            restartMenu.LoadRestart();
-            //SceneManager.LoadScene("Restart");
+            //restartMenu.LoadRestart();
+            SceneManager.LoadScene("RestartScene");
             //RestarMenu.SetActive(true);
 
             //Time.timeScale = 0f;
