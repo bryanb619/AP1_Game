@@ -1,3 +1,4 @@
+using FMODUnity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ public class FireProjectile : MonoBehaviour
     private int EnemyChaseDamage = 10; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
-
+    float timer = 0f;
 
     [SerializeField] private Rigidbody rb;
 
@@ -20,6 +21,24 @@ public class FireProjectile : MonoBehaviour
     private void Start()
     {
         rb.velocity = transform.forward * _speed;
+        RuntimeManager.PlayOneShot("event:/Spells/FIRESPELL3D", transform.position);
+
+        
+    }
+    private void Update()
+    {
+        GetTimer();
+
+    }
+
+    private void GetTimer()
+    {
+        timer += Time.deltaTime;
+        if (timer >= 6f)
+        {
+            DestroyBullet();
+
+        }
     }
 
 

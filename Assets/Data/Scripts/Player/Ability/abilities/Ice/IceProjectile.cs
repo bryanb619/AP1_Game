@@ -1,4 +1,5 @@
 using UnityEngine;
+using FMODUnity; 
 
 public class IceProjectile : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class IceProjectile : MonoBehaviour
     private int EnemyChaseDamage = 0; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
-
+    float timer = 0f;
 
     [SerializeField] private Rigidbody rb;
 
@@ -18,6 +19,23 @@ public class IceProjectile : MonoBehaviour
     private void Start()
     {
         rb.velocity = transform.forward * _speed;
+        RuntimeManager.PlayOneShot("event:/Spells/ICESPELL3D", transform.position);
+        
+    }
+    private void Update()
+    {
+        GetTimer();
+
+    }
+
+    private void GetTimer()
+    {
+        timer += Time.deltaTime;
+        if (timer >= 6f)
+        {
+            DestroyBullet();
+
+        }
     }
 
 

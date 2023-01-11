@@ -1,3 +1,4 @@
+using FMODUnity;
 using UnityEngine;
 
 public class ThunderProjectile : MonoBehaviour
@@ -10,7 +11,7 @@ public class ThunderProjectile : MonoBehaviour
     private int EnemyChaseDamage = 40; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
-
+    float timer = 0f;
 
     [SerializeField] private Rigidbody rb;
 
@@ -18,6 +19,24 @@ public class ThunderProjectile : MonoBehaviour
     private void Start()
     {
         rb.velocity = transform.forward * _speed;
+        RuntimeManager.PlayOneShot("event:/Spells/THUNDERSPELL3D", transform.position);
+
+     
+    }
+    private void Update()
+    {
+        GetTimer();
+
+    }
+
+    private void GetTimer()
+    {
+        timer += Time.deltaTime;
+        if (timer >= 6f)
+        {
+            DestroyBullet();
+
+        }
     }
 
 

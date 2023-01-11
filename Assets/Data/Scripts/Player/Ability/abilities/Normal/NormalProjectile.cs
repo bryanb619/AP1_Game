@@ -1,3 +1,4 @@
+using FMODUnity;
 using UnityEngine;
 
 public class NormalProjectile : MonoBehaviour
@@ -10,7 +11,7 @@ public class NormalProjectile : MonoBehaviour
     private int EnemyChaseDamage = 2; // before 80
     public int enemyChaseDamage => EnemyChaseDamage;
 
-
+    float timer = 0f;
 
     [SerializeField] private Rigidbody rb;
 
@@ -18,8 +19,24 @@ public class NormalProjectile : MonoBehaviour
     private void Start()
     {
         rb.velocity = transform.forward * _speed;
+        RuntimeManager.PlayOneShot("event:/Spells/NORMALSPELL3D", transform.position);
     }
 
+    private void Update()
+    {
+        GetTimer();
+
+    }
+
+    private void GetTimer()
+    {
+        timer += Time.deltaTime;
+        if (timer >= 6f)
+        {
+            DestroyBullet();
+
+        }
+    }
 
 
     private void OnTriggerEnter(Collider hitInfo)
@@ -58,6 +75,6 @@ public class NormalProjectile : MonoBehaviour
 
     private void DestroyBullet()
     {
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
 }
