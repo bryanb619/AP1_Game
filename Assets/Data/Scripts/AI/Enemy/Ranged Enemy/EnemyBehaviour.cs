@@ -523,6 +523,12 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
             }
+            else if (_Type == WeaponType.Dash)
+            {
+                health -= _damage + damageBoost;
+
+                StartCoroutine(HitFlash());
+            }
         }
 
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");

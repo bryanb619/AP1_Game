@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Experimental.GraphView.GraphView;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerMovement : MonoBehaviour
@@ -58,18 +59,25 @@ public class PlayerMovement : MonoBehaviour
     [Header("Health bar")]
                      public HealthBar _healthBar;
     [HideInInspector]public bool HealthSetAtMax;
+    [SerializeField] private int regenAmount;
+    [SerializeField] private float regenTimer;
+    [SerializeField] private bool regenOn;
+    [SerializeField] private LayerMask aiLayer;
 
     [Header("Dash Explosion"), SerializeField]
                      private float explosionForce = 10f;
     [SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
-    
+
+
+
 
     private enum MovementState
     {
         walking,
         dashing,
-        crouching,
+        //for possible future implementation, but needs bugfixing
+        //crouching,
         air
     }
 
@@ -98,10 +106,9 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
         StateHandler();
         CheatCheck();
+        EnemiesAround();
 
-
-
-        if (state == MovementState.walking || state == MovementState.crouching)
+        if (state == MovementState.walking /*|| state == MovementState.crouching*/)
             rb.drag = groundDrag;
         else
             rb.drag = 0;
@@ -110,6 +117,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (regenOn == true)
+        {
+            Invoke("Regen", regenTimer);
+        }
+
         MovePlayer();
         PlayerSpeed();     
     }
@@ -132,11 +144,11 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = walkSpeed;
         }
 
-        else if (crouching)
+        /*else if (crouching)
         {
             state = MovementState.crouching;
             desiredMoveSpeed = walkSpeed - crouchModifier;
-        }
+        }*/
 
         else
         {
@@ -197,6 +209,7 @@ public class PlayerMovement : MonoBehaviour
         keepMomentum = false;
     }
 
+
     private void MyInput()
     {
         if(CanMove == true)
@@ -251,11 +264,12 @@ public class PlayerMovement : MonoBehaviour
         else
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
+        /*
         if(state == MovementState.crouching)
             rb.AddForce(moveDirection.normalized * (moveSpeed - crouchModifier) * 10f, ForceMode.Force);
         else
             rb.AddForce(moveDirection.normalized * (moveSpeed - crouchModifier) * 10f * airMultiplier, ForceMode.Force);
-
+        */
         rb.useGravity = !OnSlope();
     }
 
@@ -356,10 +370,22 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void Regen()
+    {
+        if ((_currentHealth < _MaxHealth))
+        {
+            GiveHealth(1);
+            if (_currentHealth > _MaxHealth)
+            {
+                _currentHealth = _MaxHealth;
+            }
+        }
+    }
 
-    #region Cheats
     public void TakeDamage(int damage)
     {
+        CancelInvoke("Regen");
+        regenOn = false;
         HealthSetAtMax = false;
         _currentHealth -= (damage - shield);
 
@@ -377,6 +403,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void EnemiesAround()
+    {
+        Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
+        // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
+        if (aiHits.Length == 0)
+        {
+            Debug.Log("Invoked Regen");
+            Invoke("Regen", regenTimer);
+        }
+    }
+
+    #region Cheats
     public void GiveHealth(int _health)
     {
         // Debug.Log("+ 15 health");

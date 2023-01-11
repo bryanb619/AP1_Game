@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class SceneTransition : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-
+    [SerializeField] private Interactive interactive;
     private int levelToLoad;
 
     internal void FadeToLevel(int levelIndex)
@@ -12,9 +12,8 @@ public class SceneTransition : MonoBehaviour
         animator.SetTrigger("FadeIn");
     }
 
-    private void OnFadeComplete(int levelIndex)
+    private void OnFadeComplete()
     {
-        Debug.Log("Entered and index is: " + levelIndex);
-        SceneManager.LoadScene(levelIndex, LoadSceneMode.Single);
+        SceneManager.LoadScene(interactive.levelChosen, LoadSceneMode.Single);
     }
 }

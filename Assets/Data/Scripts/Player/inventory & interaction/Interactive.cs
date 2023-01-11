@@ -6,7 +6,7 @@ public class Interactive : MonoBehaviour
     public enum InteractiveType { _PICKABLE, _INTERACT_ONCE, _INTERACT_MULTI, _INDIRECT, _TextInteract, _GEM_CLEAN, _SceneChange };
 
     [SerializeField] private GameObject         DEACTIVATE, ACTIVATE;
-    [SerializeField] private int                levelChosen;
+    [SerializeField] internal int                levelChosen;
     [SerializeField] private bool               _isActive;
     [SerializeField] private InteractiveType    _type;
     [SerializeField] private Sprite             _icon;

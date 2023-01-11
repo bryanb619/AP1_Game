@@ -708,6 +708,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
             }
+            else if (_Type == WeaponType.Dash)
+            {
+                _Health -= _damage + damageBoost;
+
+                StartCoroutine(HitFlash());
+            }
         }
         
         
