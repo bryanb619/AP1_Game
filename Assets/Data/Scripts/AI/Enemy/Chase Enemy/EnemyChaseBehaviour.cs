@@ -684,6 +684,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         if(_Health > 0) 
         {
+            // ALERT AI OF player presence
+            WarningSystemAI warn;
+            warn = GetComponent<WarningSystemAI>();
+            warn.canAlertAI = true;
+
             if (_Type == WeaponType.Normal)
             {
                 //if (_Health <= 20)
@@ -698,6 +703,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             }
             else if (_Type == WeaponType.Ice)
             {
+                
                 // STOP FOR 5 seconds
                 StartCoroutine(STFS(5F));
 

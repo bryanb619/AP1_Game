@@ -103,7 +103,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
 
 
-        LookAtUpdate();
+        //LookAtUpdate();
         CheckMoveBool();
         CheckEnemy();
         AlphaUpdate();

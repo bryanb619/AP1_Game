@@ -52,7 +52,7 @@ public class NormalProjectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        DestroyBullet();
+        Destroy(gameObject);
     }
 
 

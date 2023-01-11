@@ -15,14 +15,12 @@ public class WarningSystemAI : MonoBehaviour
     // Set this to the radius in which the AI game objects should be warned
     [Range(0, 30)][SerializeField] private float AIradius = 20.0f;
 
-    private float radius = 1.5f;
-
     private EnemyChaseBehaviour enemy;
     private EnemyBehaviour enemy2;
     
     private EnemyType type;
 
-    private bool canAlertAI;
+    internal bool canAlertAI;
 
     private void Start()
     {
