@@ -77,6 +77,7 @@ public class Dashing : MonoBehaviour
             rb.useGravity = false;
 
         delayedForceToApply = forceToApply;
+        
         Invoke(nameof(DelayedDashForce), 0.025f);
 
         Invoke(nameof(ResetDash), dashDuration);

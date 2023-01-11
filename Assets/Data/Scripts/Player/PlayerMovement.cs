@@ -56,8 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Health bar")]
                      public HealthBar _healthBar;
-    [HideInInspector]
-                     public bool HealthSetAtMax;
+    [HideInInspector]public bool HealthSetAtMax;
 
     [Header("Dash Explosion"), SerializeField]
                      private float explosionForce = 10f;
@@ -349,8 +348,6 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("Push Direction: " + pushDirection);
             rb.AddForce(-pushDirection * explosionForce, ForceMode.Impulse);
             enemyRB.AddForce(pushDirection * explosionForce * 0.05f, ForceMode.Impulse);
-
-            //other.gameObject.transform.position += pushDirection * (explosionForce / pushDistance) * Time.deltaTime;
 
             //explosion damage
             enemyHealth.TakeDamage((int)explosionDamage);

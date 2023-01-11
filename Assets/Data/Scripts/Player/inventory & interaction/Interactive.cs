@@ -1,11 +1,12 @@
+using UnityEditor.SearchService;
 using UnityEngine;
 
 public class Interactive : MonoBehaviour
 {
-    public enum InteractiveType { _PICKABLE, _INTERACT_ONCE, _INTERACT_MULTI, _INDIRECT, _TextInteract, _GEM_CLEAN };
+    public enum InteractiveType { _PICKABLE, _INTERACT_ONCE, _INTERACT_MULTI, _INDIRECT, _TextInteract, _GEM_CLEAN, _SceneChange };
 
-    [SerializeField] private GameObject DEACTIVATE, ACTIVATE; 
-
+    [SerializeField] private GameObject         DEACTIVATE, ACTIVATE;
+    [SerializeField] private int                levelChosen;
     [SerializeField] private bool               _isActive;
     [SerializeField] private InteractiveType    _type;
     [SerializeField] private Sprite             _icon;
@@ -122,7 +123,10 @@ public class Interactive : MonoBehaviour
 
                 
             }
-
+            else if (_type == InteractiveType._SceneChange)
+            {
+                gameObject.GetComponentInParent<SceneTransition>().FadeToLevel(levelChosen);
+            }
             ProcessActivationChain();
             ProcessInteractionChain();
         }
