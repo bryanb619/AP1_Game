@@ -63,7 +63,7 @@ public class NormalProjectile : MonoBehaviour
         {
             DestroyBullet();
         }
-        else if(hitInfo.gameObject.CompareTag("Wall") || hitInfo.gameObject.CompareTag("Default"))
+        else if(hitInfo.tag == "Wall" || hitInfo.tag == "Default")
         {
             DestroyBullet();
         }
@@ -71,8 +71,16 @@ public class NormalProjectile : MonoBehaviour
         //Instantiate(impactEffect, transform.position, transform.rotation);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Default" || collision.gameObject.tag == "Wall")
+        {
+            DestroyBullet();
+        }
+    }
+
     private void DestroyBullet()
     {
-        Destroy(this.gameObject);
+        Destroy(this.gameObject);   
     }
 }
