@@ -1,13 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class OptionMenu : MonoBehaviour
 {
-    [SerializeField] private AudioMixer audio;
+    //[SerializeField] private Audio audio ;
     [SerializeField] private Dropdown resDropdown;
     Resolution[] resolutions;
 
@@ -45,7 +43,7 @@ public class OptionMenu : MonoBehaviour
 
     public void SetVolume(float volume)
     {
-        audio.SetFloat("Master", volume);
+        //audio.SetFloat("Master", volume);
     }
 
     public void SetQuality(int index)

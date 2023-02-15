@@ -1,8 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -69,8 +68,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
 
-
-
+    private bool _gamePlay;
 
     private enum MovementState
     {
@@ -79,6 +77,36 @@ public class PlayerMovement : MonoBehaviour
         //for possible future implementation, but needs bugfixing
         //crouching,
         air
+    }
+
+
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
 
@@ -212,35 +240,39 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        if(CanMove == true)
+        if(_gamePlay)
         {
-          
-            horizontalInput = Input.GetAxisRaw("Horizontal");
-            verticalInput = Input.GetAxisRaw("Vertical");
-
-
-            if (Input.GetKey(jumpKey) && readyToJump && grounded && !crouching)
+            if (CanMove == true)
             {
-                readyToJump = false;
 
-                Jump();
+                horizontalInput = Input.GetAxisRaw("Horizontal");
+                verticalInput = Input.GetAxisRaw("Vertical");
 
-                Invoke(nameof(ResetJump), jumpCooldown);
+
+                if (Input.GetKey(jumpKey) && readyToJump && grounded && !crouching)
+                {
+                    readyToJump = false;
+
+                    Jump();
+
+                    Invoke(nameof(ResetJump), jumpCooldown);
+                }
+
+                if (Input.GetKeyDown(crouchKey) && grounded)
+                {
+                    crouching = true;
+                }
+                else if (Input.GetKeyUp(crouchKey))
+                {
+                    crouching = false;
+                }
             }
+            else if (CanMove == false)
+            {
 
-            if (Input.GetKeyDown(crouchKey) && grounded)
-            {
-                crouching = true;
-            }
-            else if (Input.GetKeyUp(crouchKey))
-            {
-                crouching = false;
             }
         }
-        else if(CanMove == false)
-        {
-          
-        }
+        
         
     }
 
@@ -409,7 +441,7 @@ public class PlayerMovement : MonoBehaviour
         // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
         if (aiHits.Length == 0)
         {
-            Debug.Log("Invoked Regen");
+            //Debug.Log("Invoked Regen");
             Invoke("Regen", regenTimer);
         }
     }

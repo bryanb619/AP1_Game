@@ -19,6 +19,8 @@ public class Ability_Holder : MonoBehaviour
 
     [SerializeField] private GameObject ActiveSprite, CooldownSprite;
 
+    private bool _isPaused; 
+
     // types of ability condition
     private enum Ability_State
     {
@@ -37,6 +39,13 @@ public class Ability_Holder : MonoBehaviour
     [SerializeField]
     private KeyCode key;
 
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    
+
     private void Start()
     {
         PowerReady();
@@ -48,61 +57,89 @@ public class Ability_Holder : MonoBehaviour
         FindAbilityStateInput(); //
     }
 
-    private void FindAbilityStateInput()
+    private void GameManager_OnGameStateChanged(GameState state)
     {
         switch (state)
         {
-            // ready state
-            case Ability_State.ready:
-                if (Input.GetKeyDown(key))
+            case GameState.Paused:
                 {
-                    // change name
-                    abilityNEW.Activate(gameObject);
-                    activeTime = abilityNEW.activeTime;
-                    state = Ability_State.active;
-
-                    PowerReady();
-                    //Debug.Log("Active: " + activeTime);
+                    _isPaused = true;
+                    break;
                 }
-                break;
-
-            // activate state
-            case Ability_State.active:
-
-                if (activeTime > 0)
+                
+            case GameState.Gameplay:
                 {
-                    activeTime -= Time.deltaTime;
+                    _isPaused = false;
+                    break;
                 }
-                else
-                {
-                    // call ability cooldown
-                    abilityNEW.BeginCooldown(gameObject);
-                    state = Ability_State.cooldown;
-                    cooldownTime = abilityNEW.cooldownTime;
-
-                    PowerDisabled();
-                    //Debug.Log("Cooldown: " + cooldownTime);
-                }
-
-                break;
-
-            case Ability_State.cooldown:
-
-                if (cooldownTime > 0)
-                {
-                    cooldownTime -= Time.deltaTime;
-                    PowerDisabled();
-                }
-                    
-                else
-                {
-                    state = Ability_State.ready;
-                    //cooldownTime = abilityNEW.cooldownTime;
-
-                    PowerReady();
-                }
-                break;
+            default: {break;}
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void FindAbilityStateInput()
+    {
+        if(!_isPaused) 
+        {
+            switch (state)
+            {
+                // ready state
+                case Ability_State.ready:
+                    if (Input.GetKeyDown(key))
+                    {
+                        // change name
+                        abilityNEW.Activate(gameObject);
+                        activeTime = abilityNEW.activeTime;
+                        state = Ability_State.active;
+
+                        PowerReady();
+                        //Debug.Log("Active: " + activeTime);
+                    }
+                    break;
+
+                // activate state
+                case Ability_State.active:
+
+                    if (activeTime > 0)
+                    {
+                        activeTime -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        // call ability cooldown
+                        abilityNEW.BeginCooldown(gameObject);
+                        state = Ability_State.cooldown;
+                        cooldownTime = abilityNEW.cooldownTime;
+
+                        PowerDisabled();
+                        //Debug.Log("Cooldown: " + cooldownTime);
+                    }
+
+                    break;
+
+                case Ability_State.cooldown:
+
+                    if (cooldownTime > 0)
+                    {
+                        cooldownTime -= Time.deltaTime;
+                        PowerDisabled();
+                    }
+
+                    else
+                    {
+                        state = Ability_State.ready;
+                        //cooldownTime = abilityNEW.cooldownTime;
+
+                        PowerReady();
+                    }
+                    break;
+            }
+        }
+        
     }
 
 

@@ -3,18 +3,26 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Akarya/abilities/Fire")]
 public class Fire : Ability
 {
-    private ShooterFire shoot;
+    private Shooter shoot;
+
+
 
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
 
         // INSTANTIATE
-        shoot = FindObjectOfType<ShooterFire>();
+
+        if(shoot != null) 
+        {
+            shoot = FindObjectOfType<Shooter>();
+            shoot.Shoot();
+        }
+        
 
 
 
-        shoot.Shoot();
+        
         //_player.TakeDamage(7);
 
         // POWER CODE
@@ -22,7 +30,7 @@ public class Fire : Ability
 
     public override void BeginCooldown(GameObject parent)
     {
-        shoot = FindObjectOfType<ShooterFire>();
+        shoot = FindObjectOfType<Shooter>();
       
     }
 

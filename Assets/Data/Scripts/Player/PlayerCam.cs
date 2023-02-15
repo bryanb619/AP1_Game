@@ -1,8 +1,8 @@
-using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 
 public class PlayerCam : MonoBehaviour
 {
+
     [SerializeField]
     private float sensX, sensY;
 
@@ -19,36 +19,70 @@ public class PlayerCam : MonoBehaviour
     private bool inView;
     public bool InView => inView;
 
-    [SerializeField] private bool CanRotateCamera = true; 
+    [SerializeField] private bool CanRotateCamera = true;
+
+    private bool _gamePlay; 
 
 
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-       
 
         inView = false;
     }
 
     private void Update()
     {
-        // remove if statement in the near future
-        if(CanRotateCamera)
-        { // mouse input
-            float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
-            float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+        RotateCamera(); 
+    }
 
-            yRotation += mouseX;
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+    private void RotateCamera()
+    {
+        if(_gamePlay) 
+        {
+            // remove if statement in the near future
+            if (CanRotateCamera)
+            { // mouse input
+                float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+                float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
-            transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-            orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+                yRotation += mouseX;
+                xRotation -= mouseY;
+                xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+                transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+                orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+            }
         }
-
-
+       
+       
+    }
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
     /* UNUSED CODE TRASH

@@ -12,7 +12,9 @@ public class Tester : MonoBehaviour
     [SerializeField] private EnemyBehaviour Enemy1;
     [SerializeField] private EnemyChaseBehaviour Enemy2;
 
-    public bool KillEnemy; 
+    public bool KillEnemy;
+
+    private bool _show; 
 
 
 
@@ -35,6 +37,25 @@ public class Tester : MonoBehaviour
     {
         CheckBools();
         KillAll();
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            
+            if(!_show)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                _show = true;
+            }
+            else if(_show) 
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = false;
+
+                _show = false;
+            }
+            
+        }
     }
 
 

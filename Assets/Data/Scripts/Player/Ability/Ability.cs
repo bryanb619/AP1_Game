@@ -18,5 +18,5 @@ public class Ability : ScriptableObject
     public virtual void BeginCooldown(GameObject parent)
     { }
 
-    //public virtual void ActiveAstraSoot() {}
+  
 }

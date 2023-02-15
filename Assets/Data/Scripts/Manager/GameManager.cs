@@ -1,110 +1,119 @@
+using FMODUnity;
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 public class GameManager : MonoBehaviour
 {
-    /*
-    [SerializeField]private PlayerMovement PlayerScript;
-    private GameObject Player; 
+    //private
+    [SerializeField]
+    private StudioEventEmitter[] studioEventEmitters;
 
-    [HideInInspector] public bool PlayerMovement;
+    private bool _audioState; 
+
+    // Testing New Game Manager
+    public static GameManager Instance;
+
+    //[HideInInspector]
+    public GameState State;
+
+
+    public static event Action<GameState> OnGameStateChanged;
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("Player");
-        PlayerScript = FindObjectOfType<PlayerMovement>();
-        PlayerMovement = true;
-
-
+        UpdateGameState(GameState.Gameplay);
     }
-
-
-    private void Update()
+    public void UpdateGameState(GameState newstate)
     {
+        State = newstate;
 
-        UpdatePlayer();
+        switch (newstate)
+        {
+            case GameState.Gameplay:
+                {
+                    // set cursor settings to play mode
+                    Cursor.visible = false; 
+                    Cursor.lockState = CursorLockMode.Confined;
+
+                    Time.timeScale = 1f;
+                    _audioState= true;
+                    break; 
+                }
+            case GameState.Paused:
+                {
+
+                    // set cursor to pause mode
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+
+                    _audioState = false;
+                    Time.timeScale = 0f;
+                    break;
+                }
+            default: 
+                {
+                    print("Invalid/State not added to Game Manager"); 
+                    throw new ArgumentOutOfRangeException(nameof(newstate), newstate, null);
+                }
+
+
+        }
+
+        //AudioState();
+        OnGameStateChanged?.Invoke(newstate);
         
     }
 
-
-    private void UpdatePlayer()
+    private void HandleNewState()
     {
         
-        if(PlayerMovement)
-        {
-            PlayerScript.CanMove = true; 
-            Player.SetActive(true);
-        }
-        else
-        {
-            PlayerScript.CanMove= false;
-        }
-
 
 
     }
 
+    public void ExitToMainMenu()
+    {
+        SceneManager.LoadScene("_StartMenu");
+    }
+
+
+    public void AudioState()
+    {
+        foreach (var emitter in studioEventEmitters)
+        {
+            var instance = emitter.EventInstance;
+            instance.setPaused(_audioState);
+        }
+    }
+
+
+    /*
+    public void Pause(bool state)
+    {
+        foreach (var emitter in studioEventEmitters)
+        {
+            var instance = emitter.EventInstance;
+            instance.setPaused(state);
+        }
+    }
     */
-}
 
-
-
-/* Testing New Game Manager
-public static GameManager Instance;
-
-public GameState State;
-
-private GameObject player;
-
-
-public static event Action<GameState> OnGameStateChanged;
-
-
-private void Awake ()
-{
-    Instance= this;
-
-
-}
-
-private void Start()
-{
-    player.GetComponent<PlayerMovement>().enabled = true;
-    UpdateGameState(GameState.None);
-}
-
-public void UpdateGameState(GameState newstate)
-{
-    State = newstate;
-
-    switch(newstate)
+    /*
+    public void ExitGame()
     {
-        case GameState.DoorCutscene:
-            DoorScene();
-            break;
-
-        default:
-            break;  
-
+        Application.Quit();
     }
+    */
 
-    OnGameStateChanged?.Invoke(newstate);
-}
-
-
-private void DoorScene()
-{
-
-    player.GetComponent<PlayerMovement>().enabled = false; 
-}
-
-
-public enum GameState
-{
-    None,
-    DoorCutscene
 
 }
-*/
 
 
 

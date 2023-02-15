@@ -8,9 +8,13 @@ public class Normal : Ability
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
-
-        // INSTANTIATE
         shoot = FindObjectOfType<Shooter>();
+        // INSTANTIATE
+        if (shoot != null)
+        {
+            
+            shoot.Shoot();
+        }
 
 
 

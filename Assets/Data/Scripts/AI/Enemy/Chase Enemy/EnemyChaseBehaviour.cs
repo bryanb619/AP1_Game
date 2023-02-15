@@ -137,7 +137,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private Transform aiTransform;
 
 
-    
+    //private PauseMenu _pause;
+
+    private bool _gamePlay; 
 
     // new cover code
     // The speed at which the AI character moves
@@ -171,7 +173,36 @@ public class EnemyChaseBehaviour : MonoBehaviour
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
         Warning = GetComponent<WarningSystemAI>();
 
+        //_pause= FindObjectOfType<PauseMenu>();
 
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+
+    }
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+        
+        switch(state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break; 
+                }
+            case GameState.Paused: 
+                {
+                    _gamePlay = false;
+                    break; 
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
     #region Void Start 
 
@@ -299,43 +330,70 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _canMove = true;
 
 
+        
+
+
     }
     #endregion
 
-    private void FixedUpdate()
-    {
-        CanFOV();
-    }
 
+
+
+    #region Update
     // Request actions to the FSM and perform them
     private void Update()
     {
-
-     
-
-        MinimalCheck();
-        HealthCheck();
-        //GetOtherAI();
-        
-        AISpeed();
-        SearchTimer(); 
-        
-
-        Action actions = stateMachine.Update();
-        actions?.Invoke();
-
-
-
-
+        UpdateFunctions(); 
     }
-    private void CanFOV()
+
+
+    private void UpdateFunctions()
     {
-        StartCoroutine(FOVRoutine());
+
+        if (_gamePlay == true)
+        {
+            ResumeAgent(); 
+
+            CanFOV();
+            MinimalCheck();
+            HealthCheck();
+
+            AISpeed();
+            SearchTimer();
+
+
+            Action actions = stateMachine.Update();
+            actions?.Invoke();
+        }
+        else if(_gamePlay == false)  
+        {
+            PauseAgent();
+        }
     }
+
+    private void ResumeAgent()
+    {
+        Agent.Resume();
+    }
+
+    private void PauseAgent()
+    {
+        Agent.speed = 0f; 
+        Agent.Stop(); 
+    }
+
+
+
+    #endregion
 
 
     #region Condition checked in update
 
+
+    private void CanFOV()
+    {
+        StartCoroutine(FOVRoutine());
+    }
     private void MinimalCheck()
     {
         if(_canGloryKill == false)

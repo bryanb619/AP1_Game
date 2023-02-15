@@ -1,33 +1,26 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
-{
-
+{ 
+    private GameManager     _manager; 
+ 
     // game paused bool
-    [HideInInspector]
-    public bool _Paused = false;
+    private bool            _Paused;
 
     //  Pause Menu Canvas
     [SerializeField]
-    public GameObject PauseCanvas, _pauseMenu, _OptionsMenu, GamePlay;
+    private GameObject      PauseCanvas, _pauseMenu, _OptionsMenu;
 
-    // Event Sy
-
-
-    private void Awake()
-    {
-        
-    }
 
     private void Start()
     {
-        //GamePlay = GameObject.Find("--- GamePlay ---");
+        _manager = FindObjectOfType<GameManager>();
+
 
         PauseCanvas.SetActive(true);
         _pauseMenu.SetActive(false);
         _OptionsMenu.SetActive(false);
-        //GamePlay.SetActive(true);
+       
 
     }
 
@@ -39,21 +32,6 @@ public class PauseMenu : MonoBehaviour
 
     }
     
-    void FixedUpdate()
-    {
-        if (!_Paused)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Confined;
-        }
-        if (_Paused == true)
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-
-    }
-
     private void KeyDetect()
     {
         if (Input.GetButtonDown("Pause"))
@@ -72,47 +50,36 @@ public class PauseMenu : MonoBehaviour
     }
 
     // method Resume
-    public void Resume()
+    private void Resume()
     {
-
+    
         _pauseMenu.SetActive(false);
-        GamePlay.SetActive(true);
-
-        //Time.timeScale = 1f;
-
         _Paused = false;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
+        _manager.UpdateGameState(GameState.Gameplay); 
 
     }
     // method pause
-    public void Pause()
+    private void Pause()
     {
-
-
         _pauseMenu.SetActive(true);
-        GamePlay.SetActive(false);
-
-        //Time.timeScale = 0f;
-
         _Paused = true;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-       
+
+        _manager.UpdateGameState(GameState.Paused);
     }
 
-    // buttons 
+   
 
     // Pause Menu
+
+    // Resume button
     public void ResumeButton()
     {
         Resume();
 
     }
 
-    // OPTIONS
+    // OPTIONS Button
     public void OptionsButton()
     {
 
@@ -121,15 +88,13 @@ public class PauseMenu : MonoBehaviour
     }
 
 
-    // EXIT Tom Main Menu
+    // EXIT Tom Main Menu Button
     public void ExitButton()
     {
-        //Application.Quit();
-        Debug.Log("Star Menu Loaded");
-        SceneManager.LoadScene("_StartMenu");
+        _manager.ExitToMainMenu();
     }
 
-
+    // Quit Game Button
     public void GameQuit()
     {
         Application.Quit();
@@ -145,6 +110,8 @@ public class PauseMenu : MonoBehaviour
         _OptionsMenu.SetActive(false);
 
     }
+
+
 }
 
 
