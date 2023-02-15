@@ -7,18 +7,18 @@ public class GameManager : MonoBehaviour
 {
     //private
     [SerializeField]
-    private StudioEventEmitter[] studioEventEmitters;
+    private StudioEventEmitter[]                studioEventEmitters;
 
-    private bool _audioState; 
+    private bool                                _audioState; 
 
     // Testing New Game Manager
-    public static GameManager Instance;
+    public static GameManager                   Instance;
 
     //[HideInInspector]
     public GameState State;
 
 
-    public static event Action<GameState> OnGameStateChanged;
+    public static event Action<GameState>       OnGameStateChanged;
 
 
     private void Awake()
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
 
     public void ExitToMainMenu()
     {
-        SceneManager.LoadScene("_StartMenu");
+        SceneManager.LoadScene("StartMenu");
     }
 
 
