@@ -41,7 +41,7 @@ public class Projectile : MonoBehaviour
     private Rigidbody                                           _rb;
 
     [Header("Physics")]
-    [Tooltip("If set to true configure gravity and speed")]
+    [Tooltip("if RB (use of RigidBody for movement is true). It will be possible to select further options such as force and gravity")]
     [SerializeField] private bool                              _useRBPhysics; 
 
 
