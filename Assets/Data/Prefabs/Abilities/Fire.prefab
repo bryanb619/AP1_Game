@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2646837571204449985}
   - component: {fileID: 5885891267316142602}
   - component: {fileID: 2646837571204449986}
-  - component: {fileID: 618719312382757049}
+  - component: {fileID: 2504261287011787066}
   m_Layer: 12
   m_Name: Fire
   m_TagString: Untagged
@@ -98,10 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4336a90595913c844a9cb487c5c5b21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _projectileData: {fileID: 0}
+  impactEffect: {fileID: 2646837571204449996, guid: c260a68264f869d4bac44fab76e9c98f, type: 3}
+  _impactEffet: 1
   speed: 15
   _type: 2
-  enemyDamage: 0
-  enemyChaseDamage: 0
+  _useRBPhysics: 0
 --- !u!135 &2646837571204449986
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -115,7 +117,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &618719312382757049
+--- !u!54 &2504261287011787066
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,4 +132,4 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
