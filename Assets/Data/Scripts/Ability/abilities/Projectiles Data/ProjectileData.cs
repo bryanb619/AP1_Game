@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName ="Akarya/abilities/Projectiles & impact effects/Projectile data")]
+[CreateAssetMenu(menuName ="Akarya/abilities/Projectiles and impact effects/Projectile data")]
 public class ProjectileData : ScriptableObject
 {
 
@@ -42,16 +42,6 @@ public class ProjectileData : ScriptableObject
     public bool _useImpact;
 
     [Tooltip("Set impact game object and previous bool must be set to true")]
-    public GameObject impactEffect;
-
-    public FMOD.Studio.EventInstance MagicSound;
-
-
-    private void Awake()
-    {
-        MagicSound = FMODUnity.RuntimeManager.CreateInstance("event:/Spells/FIRESPELL3D");
-    }
-    
-    
+    public GameObject impactEffect; 
 
 }

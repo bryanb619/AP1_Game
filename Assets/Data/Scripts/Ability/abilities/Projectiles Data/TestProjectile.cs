@@ -1,3 +1,6 @@
+using FMOD.Studio;
+using FMODUnity;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
 public class TestProjectile : MonoBehaviour
@@ -8,7 +11,7 @@ public class TestProjectile : MonoBehaviour
     private bool _gamePlay;
 
     private GameState _state; 
-    private  WeaponType _weaponType;
+    private WeaponType _weaponType;
 
     private Rigidbody _rb;
 
@@ -21,8 +24,7 @@ public class TestProjectile : MonoBehaviour
     private bool _impactEffet;
     private GameObject impactObject;
 
-
-    private FMOD.Studio.EventInstance playShootSound;
+    private StudioEventEmitter sound;  
 
     #endregion
 
@@ -42,6 +44,7 @@ public class TestProjectile : MonoBehaviour
                     _gamePlay = true;
                     //playShootSound.setPaused(false);
                     //print("gameplay");
+                    sound.Play();   
                     break;
                 }
             case GameState.Paused:
@@ -51,7 +54,7 @@ public class TestProjectile : MonoBehaviour
 
                     //playShootSound.setPaused(true);
 
-                   
+                    
                     //print("paused");
                     break;
                 }
@@ -60,9 +63,19 @@ public class TestProjectile : MonoBehaviour
 
     private void Start()
     {
+
+        
+
         if (_rb != null)
         {
             _rb = GetComponent<Rigidbody>();
+        }
+
+        if(sound!= null) 
+        {
+            sound = GetComponent<StudioEventEmitter>();
+
+            sound.Play();
         }
 
         // speed 
@@ -71,7 +84,6 @@ public class TestProjectile : MonoBehaviour
         // sound
         // playShootSound = data.MagicSound;
 
-        playShootSound = FMODUnity.RuntimeManager.CreateInstance("event:/Spells/FIRESPELL3D");
 
         // rigidbody 
         _useRb = data._useRBPhysics;
@@ -93,8 +105,6 @@ public class TestProjectile : MonoBehaviour
             case GameState.Gameplay:
                 {
                     _gamePlay = true;
-
-                    playShootSound.start();
                     break;
                 }
             case GameState.Paused:
@@ -150,7 +160,6 @@ public class TestProjectile : MonoBehaviour
         {
             DestroyBullet();
         }
-        //Instantiate(impactEffect, transform.position, transform.rotation);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -217,21 +226,14 @@ public class TestProjectile : MonoBehaviour
         Instantiate(impactObject, transform.position, Quaternion.identity);
     }
 
-
     private void DestroyBullet()
     {
        if (_impactEffet)
        {
             ImpactEffect();
        }
-        
-
         Destroy(this.gameObject);
     }
-
-
-
-
 
     private void DestroyOnDistance()
     {

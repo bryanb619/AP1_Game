@@ -2,20 +2,22 @@ using UnityEngine;
 
 public class ImpactEffect : MonoBehaviour
 {
+    [SerializeField] private ImpactData data;
+
     private float elapsed;
+    private int maxTime;
+    
 
-    private int maxTime; 
-
-    [SerializeField] private ImpactData data; 
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         maxTime = data.timeInScene;
+
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         elapsed += Time.deltaTime;
 
