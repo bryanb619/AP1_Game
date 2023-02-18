@@ -1,7 +1,6 @@
-using FMOD.Studio;
-using FMODUnity;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using FMODUnity;
+using UnityEditor; 
 
 public class TestProjectile : MonoBehaviour
 {
@@ -11,14 +10,15 @@ public class TestProjectile : MonoBehaviour
     private bool _gamePlay;
 
     private GameState _state; 
+
     private WeaponType _weaponType;
 
     private Rigidbody _rb;
-
     private bool _useRb;
 
     private float elapsed;
     private int speed;
+
     private int rangedDamage, chaseDamage, bossDamage;
 
     private bool _impactEffet;
@@ -44,7 +44,7 @@ public class TestProjectile : MonoBehaviour
                     _gamePlay = true;
                     //playShootSound.setPaused(false);
                     //print("gameplay");
-                    sound.Play();   
+                    //sound.Play();   
                     break;
                 }
             case GameState.Paused:
@@ -73,9 +73,9 @@ public class TestProjectile : MonoBehaviour
 
         if(sound!= null) 
         {
-            sound = GetComponent<StudioEventEmitter>();
+            //sound = GetComponent<StudioEventEmitter>();
 
-            sound.Play();
+            //sound.Play();
         }
 
         // speed 
@@ -116,6 +116,8 @@ public class TestProjectile : MonoBehaviour
     }
 
     #endregion
+
+    #region Fixed update & Update
     private void FixedUpdate()
     {
         PhsysicsMovement();
@@ -127,8 +129,9 @@ public class TestProjectile : MonoBehaviour
         ProjectileMovement();
         UpdatePhysicstTime();
     }
+    #endregion
 
-
+    #region Collision
     private void OnTriggerEnter(Collider hitInfo)
     {
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
@@ -169,8 +172,9 @@ public class TestProjectile : MonoBehaviour
             DestroyBullet();
         }
     }
+    #endregion
 
-
+    #region Physics, movement and Time in game
     private void PhsysicsMovement()
     {
         if (_useRb)
@@ -223,9 +227,12 @@ public class TestProjectile : MonoBehaviour
 
     private void ImpactEffect()
     {
+        // spawn projectile
         Instantiate(impactObject, transform.position, Quaternion.identity);
     }
+    #endregion
 
+    #region Destroy Game object
     private void DestroyBullet()
     {
        if (_impactEffet)
@@ -239,9 +246,33 @@ public class TestProjectile : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
     private void OnDestroy()
     {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+        // unsubscribe of Game manager on destroy
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged; 
     }
+    #endregion
+
+    #region Editor Gizmos
+    private void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+
+        switch(_gamePlay)
+        {
+            case true:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Gameplay");
+                    break; 
+                }
+            case false:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Pause");
+                    break;
+                }
+        }
+
+#endif
+    }
+    #endregion
 }

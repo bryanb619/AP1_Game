@@ -5,8 +5,7 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using Unity.VisualScripting;
-using State = LibGameAI.FSMs.State;
+using UnityEditor;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -16,6 +15,20 @@ using State = LibGameAI.FSMs.State;
 public class EnemyChaseBehaviour : MonoBehaviour
 {
     #region Variables
+
+    private enum AI
+    {
+        _GUARD,
+        _PATROL,
+        _ATTACK,
+        _COVER,
+        _SEARCH,
+        _GLORYKILL,
+        _NONE
+    }
+
+    private AI _stateAI;
+
     //Gem spawn
     [Header("Gem Spawn")]
     [SerializeField] private bool gemSpawnOnDeath = true;
@@ -163,7 +176,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     
 
-
     // Get references to enemies
     private void Awake()
     {
@@ -217,7 +229,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Start()
     {
- 
         #region  States 
         // Non Combat states
         State onGuardState = new State("",
@@ -328,16 +339,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Health = 100;
         _canAttack = true;
         _canMove = true;
-
-
-        
-
-
     }
     #endregion
-
-
-
 
     #region Update
     // Request actions to the FSM and perform them
@@ -385,7 +388,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     #endregion
-
 
     #region Condition checked in update
 
@@ -455,7 +457,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
  
         #endregion
     
-
     #region AI Actions
 
     private void Patrol()
@@ -724,7 +725,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     #endregion
 
-
     #region AI Health 
     public void TakeDamage(int _damage, WeaponType _Type)
     {
@@ -797,8 +797,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
-
-    #region Coroutines
     #region Cover Routine
     
     private IEnumerator Hide(Transform Target)
@@ -967,6 +965,61 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetComponent<Renderer>().material.color = originalColor;
     }
     #endregion
-    #endregion
+   
 
+    #region Editor Gizmos
+    private void OnDrawGizmos()
+    {
+
+#if UNITY_EDITOR
+
+        #region AI State Label 
+
+        switch (_stateAI)
+        {
+            case AI._GUARD:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Guard");
+                    break;
+                }
+            case AI._PATROL:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Patrol");
+                    break;
+                }
+            case AI._ATTACK:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Attack");
+                    break;
+                }
+            case AI._SEARCH:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Search");
+                    break;
+                }
+            case AI._COVER:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Cover");
+                    break;
+                }
+            case AI._GLORYKILL:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Glory Kill");
+                    break;
+                }
+            case AI._NONE:
+                {
+                    Handles.Label(transform.position + Vector3.up, "NONE");
+                    break;
+                }
+            default: 
+                {
+                    Handles.Label(transform.position + Vector3.up, "NO STATE FOUND");
+                    break; 
+                }
+        }
+        #endregion
+#endif
+    }
+    #endregion
 }
