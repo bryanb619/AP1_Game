@@ -64,7 +64,7 @@ public class WarningSystemAI : MonoBehaviour
             {
                 canAlertAI = true;
 
-                Debug.Log("Can Alert Enemy Chase");
+                //Debug.Log("Can Alert Enemy Chase");
             }
           
         }

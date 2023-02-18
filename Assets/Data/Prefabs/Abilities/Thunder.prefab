@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2646837571204449984}
   - component: {fileID: 2646837571204449985}
   - component: {fileID: 2646837571204449986}
-  - component: {fileID: 3264320236620487798}
   - component: {fileID: -4366530315691907318}
+  - component: {fileID: 5714515358046491947}
   m_Layer: 12
   m_Name: Thunder
   m_TagString: Untagged
@@ -99,22 +99,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.71322465
   m_Center: {x: 0, y: 0.21322465, z: 0}
---- !u!114 &3264320236620487798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2646837571204449996}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4336a90595913c844a9cb487c5c5b21d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 14
-  _type: 3
-  enemyDamage: 0
-  enemyChaseDamage: 0
 --- !u!54 &-4366530315691907318
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -131,3 +115,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5714515358046491947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2646837571204449996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794a9d003c9044f44a002add5a1f2ab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: 72e324eeba3f87d41a34770497daa1e2, type: 2}

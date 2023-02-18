@@ -365,7 +365,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             Action actions = stateMachine.Update();
             actions?.Invoke();
         }
-        else if(_gamePlay == false)  
+        else if(!_gamePlay)  
         {
             PauseAgent();
         }
@@ -775,7 +775,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         
         
-        //Debug.Log("enemy shot" + _Health);
+        Debug.Log("enemy shot" + _Health);
     }
 
     
