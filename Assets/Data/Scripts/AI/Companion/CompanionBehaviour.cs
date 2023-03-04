@@ -51,13 +51,9 @@ public class CompanionBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-
         
-        
-        StartCoroutine(FOVRoutine());
         CompanionMesh = GetComponent<MeshRenderer>();
         _MiniMapCollor = FindObjectOfType<mini>();
-
 
         _playerIsMoving = false;
 
@@ -101,13 +97,13 @@ public class CompanionBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-
+        StartCoroutine(FOVRoutine());
 
         //LookAtUpdate();
+        LookAtUpdate();
         CheckMoveBool();
         CheckEnemy();
         AlphaUpdate();
-
         
 
         Action actions = stateMachine.Update();

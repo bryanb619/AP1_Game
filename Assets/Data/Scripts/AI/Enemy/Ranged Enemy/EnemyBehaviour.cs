@@ -47,7 +47,6 @@ public class EnemyBehaviour : MonoBehaviour
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
 
-
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -71,7 +70,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float fireRate = 2f;
     private float nextFire = 0f;
-
 
 
     // hide code
@@ -197,8 +195,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     }
 
-    
-    
 
     private void MinimalCheck()
     {
@@ -309,9 +305,8 @@ public class EnemyBehaviour : MonoBehaviour
 
         HandleGainSight(PlayerTarget);
 
-
-
     }
+    
     #region hide Routine
 
     private IEnumerator Hide(Transform Target)

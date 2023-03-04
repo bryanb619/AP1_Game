@@ -1,89 +1,90 @@
+#region Library
 using UnityEngine;
 using FMODUnity;
-using UnityEditor; 
+using UnityEditor;
+
+#endregion
 
 public class TestProjectile : MonoBehaviour
 {
     #region Variables
-    [SerializeField] ProjectileData data;
+    [SerializeField] ProjectileData     data;
 
-    private bool _gamePlay;
+    private bool                        _gamePlay;
 
-    private GameState _state; 
+    private GameState                   _state; 
 
-    private WeaponType _weaponType;
+    private WeaponType                  _weaponType;
 
-    private Rigidbody _rb;
-    private bool _useRb;
+    private Rigidbody                   _rb;
+    private float                       thrust; 
+    private bool                        _useRb;
 
-    private float elapsed;
-    private int speed;
+    private float                       elapsed;
+    private int                         speed;
 
-    private int rangedDamage, chaseDamage, bossDamage;
+    private int                         rangedDamage, chaseDamage, bossDamage;
 
-    private bool _impactEffet;
-    private GameObject impactObject;
+    private bool                        _impactEffet;
+    private GameObject                  impactObject;
 
-    private StudioEventEmitter sound;  
+    //private EventInstance               effectSound;
+    //[SerializeField]
+    private StudioEventEmitter          _emitter;
 
     #endregion
 
     #region Awake & Start 
+
+    #region Awake
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
 
-        switch (state)
+
+    #endregion
+
+    #region Start & Data collection
+    private void Start()
+    {
+        CollectData();
+        UseRB();
+    }
+
+    /// <summary>
+    ///  Data collection of:
+    ///  Components
+    ///  Variables
+    ///  Game State
+    /// </summary>
+    private void CollectData()
+    {
+        #region Check Game State at start
+
+        _emitter = GetComponent<StudioEventEmitter>();
+
+        switch (_state)
         {
             case GameState.Gameplay:
                 {
-
                     _gamePlay = true;
-                    //playShootSound.setPaused(false);
-                    //print("gameplay");
-                    //sound.Play();   
                     break;
                 }
             case GameState.Paused:
                 {
                     _gamePlay = false;
-                    //playShootSound.getPaused(!_gamePlay, out);
-
-                    //playShootSound.setPaused(true);
-
-                    
-                    //print("paused");
                     break;
                 }
         }
-    }
+        #endregion
 
-    private void Start()
-    {
-
-        
-
-        if (_rb != null)
-        {
-            _rb = GetComponent<Rigidbody>();
-        }
-
-        if(sound!= null) 
-        {
-            //sound = GetComponent<StudioEventEmitter>();
-
-            //sound.Play();
-        }
-
+        #region Scriptable object data
         // speed 
         speed = data.speed;
 
         // sound
         // playShootSound = data.MagicSound;
-
 
         // rigidbody 
         _useRb = data._useRBPhysics;
@@ -99,21 +100,21 @@ public class TestProjectile : MonoBehaviour
         _impactEffet = data._useImpact;
         impactObject = data.impactEffect;
 
+        //effectSound = RuntimeManager.CreateInstance("event:/path/to/your/sound");
+        //effectSound.start();
 
-        switch (_state)
+        #endregion
+    }
+
+    private void UseRB()
+    {
+        if (_useRb && _rb != null)
         {
-            case GameState.Gameplay:
-                {
-                    _gamePlay = true;
-                    break;
-                }
-            case GameState.Paused:
-                {
-                    _gamePlay = false;
-                    break;
-                }
+            _rb = GetComponent<Rigidbody>();
         }
     }
+
+    #endregion
 
     #endregion
 
@@ -128,6 +129,7 @@ public class TestProjectile : MonoBehaviour
     {
         ProjectileMovement();
         UpdatePhysicstTime();
+        SoundUpdate();
     }
     #endregion
 
@@ -174,7 +176,7 @@ public class TestProjectile : MonoBehaviour
     }
     #endregion
 
-    #region Physics, movement and Time in game
+    #region Physics, movement, Time and sound in game
     private void PhsysicsMovement()
     {
         if (_useRb)
@@ -196,7 +198,7 @@ public class TestProjectile : MonoBehaviour
         {
             elapsed += Time.deltaTime;
 
-            Debug.Log(elapsed);
+            //Debug.Log(elapsed);
             if (elapsed >= 6.5f)
             {
                 DestroyOnDistance();
@@ -225,7 +227,37 @@ public class TestProjectile : MonoBehaviour
         }
     }
 
-    private void ImpactEffect()
+    /// <summary>
+    /// Set sound state acording to game state
+    /// </summary>
+    private void SoundUpdate()
+    {
+        switch(_gamePlay) 
+        {
+            case true:
+                {
+                    SoundSetPlay();
+                    break;
+                }
+            case false:
+                {
+                    SoundSetPause();
+                    break;
+                }
+        }
+    }
+
+    private void SoundSetPlay()
+    {
+        _emitter.EventInstance.setPaused(false); // set play
+    }
+
+    private void SoundSetPause()
+    {
+        _emitter.EventInstance.setPaused(true); // set paused
+    }   
+
+private void ImpactEffect()
     {
         // spawn projectile
         Instantiate(impactObject, transform.position, Quaternion.identity);
@@ -245,6 +277,24 @@ public class TestProjectile : MonoBehaviour
     private void DestroyOnDistance()
     {
         Destroy(gameObject);
+    }
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
     }
     private void OnDestroy()
     {

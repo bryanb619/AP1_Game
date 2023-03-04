@@ -1,10 +1,11 @@
-using FMODUnity;
 using System;
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
+using FMODUnity;
 
 public class GameManager : MonoBehaviour
 {
+    #region Variables
     //private
     [SerializeField]
     private StudioEventEmitter[]                studioEventEmitters;
@@ -15,74 +16,82 @@ public class GameManager : MonoBehaviour
     public static GameManager                   Instance;
 
     //[HideInInspector]
-    public GameState State;
-
+    public GameState                            State;
 
     public static event Action<GameState>       OnGameStateChanged;
 
 
+    public BattleStates                         _battleState;
+
+    public static event Action<BattleStates>    OnBattleStateChanged;
+
+    #endregion
+
+    #region Awake & Start
     private void Awake()
     {
         Instance = this;
+        
     }
 
     private void Start()
     {
         UpdateGameState(GameState.Gameplay);
-    }
-    public void UpdateGameState(GameState newstate)
-    {
-        State = newstate;
 
-        switch (newstate)
+        Cursor.visible = false;
+    }
+    #endregion
+
+    #region Game State
+
+    public void UpdateGameState(GameState newGamestate)
+    {
+        State = newGamestate;
+
+        switch (newGamestate)
         {
             case GameState.Gameplay:
                 {
-                    // set cursor settings to play mode
-                    Cursor.visible = false; 
-                    Cursor.lockState = CursorLockMode.Confined;
-
-                    Time.timeScale = 1f;
-                    _audioState= true;
+                    HandleGameplay(); // set Gameplay
                     break; 
                 }
             case GameState.Paused:
                 {
-
-                    // set cursor to pause mode
-                    Cursor.visible = true;
-                    Cursor.lockState = CursorLockMode.None;
-
-                    _audioState = false;
-                    Time.timeScale = 0f;
+                    HandlePaused(); // set paused
                     break;
                 }
-            default: 
-                {
-                    print("Invalid/State not added to Game Manager"); 
-                    throw new ArgumentOutOfRangeException(nameof(newstate), newstate, null);
-                }
-
-
+            default: {throw new ArgumentOutOfRangeException(nameof(newGamestate), newGamestate, null);}
         }
+        OnGameStateChanged?.Invoke(newGamestate);
+    }
 
-        //AudioState();
-        OnGameStateChanged?.Invoke(newstate);
+    private void HandleGameplay()
+    {
+        // set cursor settings to play mode
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+
+        Time.timeScale = 1f;
+        _audioState = true;
         
     }
 
-    private void HandleNewState()
+    private void HandlePaused()
     {
-        
+        // set cursor to pause mode
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
+        _audioState = false;
+        Time.timeScale = 0f;
 
+        StopAllCoroutines();
     }
 
     public void ExitToMainMenu()
     {
         SceneManager.LoadScene("StartMenu");
     }
-
 
     public void AudioState()
     {
@@ -93,6 +102,69 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Battle states
+    public void FightState(BattleStates newBattleState)
+    {
+        _battleState = newBattleState;
+
+        switch(newBattleState)
+        {
+            case BattleStates._NONE:
+                {
+                    print("No Battle active");
+                    break;
+                }
+
+            case BattleStates._PLAYERTURM: 
+                {
+                    HandlePlayerTurn();
+                    break;
+                }
+            case BattleStates._ENEMYTURN: 
+                {
+                    HandleEnemyTurn();
+                    break;
+                }
+            case BattleStates._VICTORY:
+                {
+                    HandleVictory();
+                    break;
+                }
+             case BattleStates._DEFEAT: 
+                {
+                    HandleDefeat();
+                    break;
+                }
+            default:{throw new ArgumentOutOfRangeException(nameof(newBattleState), newBattleState, null);}
+        }
+
+        OnBattleStateChanged?.Invoke(newBattleState);
+    }
+
+
+    private void HandlePlayerTurn()
+    {
+
+    }
+
+    private void HandleEnemyTurn()
+    {
+       
+    }
+
+    private void HandleVictory()
+    {
+
+    }
+
+    private void HandleDefeat() 
+    {
+
+    }
+
+    #endregion
 
     /*
     public void Pause(bool state)
@@ -114,9 +186,3 @@ public class GameManager : MonoBehaviour
 
 
 }
-
-
-
-
-
-

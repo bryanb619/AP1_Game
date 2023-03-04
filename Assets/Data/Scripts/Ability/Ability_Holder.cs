@@ -7,7 +7,7 @@ public class Ability_Holder : MonoBehaviour
     //[SerializeField] private Image icon = default;
     //[SerializeField] private Image coolDownImage = default;
 
-    // TESTING FUNCTION
+  
     public Ability abilityNEW;
 
     // used variables from "Ability script"
@@ -76,10 +76,7 @@ public class Ability_Holder : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
+    
 
     private void FindAbilityStateInput()
     {
@@ -154,5 +151,10 @@ public class Ability_Holder : MonoBehaviour
         ActiveSprite.SetActive(false);
         CooldownSprite.SetActive(true);
     }
-   
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
 }
