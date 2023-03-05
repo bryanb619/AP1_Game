@@ -5,8 +5,7 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using Unity.VisualScripting;
-using State = LibGameAI.FSMs.State;
+using UnityEditor;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -16,19 +15,31 @@ using State = LibGameAI.FSMs.State;
 public class EnemyChaseBehaviour : MonoBehaviour
 {
     #region Variables
-    //Gem spawn
-    [Header("Gem Spawn")]
-    [SerializeField] private bool gemSpawnOnDeath = true;
-    [SerializeField] private GameObject gemPrefab;
+
+    private enum AI
+    {
+        _GUARD,
+        _PATROL,
+        _ATTACK,
+        _COVER,
+        _SEARCH,
+        _GLORYKILL,
+        _NONE
+    }
+    [SerializeField] private AI _stateAI;
+
+    [Header("AI Profile")]
+    [SerializeField] private AIChaseData data;
+
+    private bool gemSpawnOnDeath = true;
+    private GameObject gemPrefab;
 
 
     // Reference to the state machine
     private LibGameAI.FSMs.StateMachine stateMachine;
 
-    //private MeleeAttack AIAttack;
-
     private NavMeshAgent Agent;
-    private NavMeshPath path;
+    //private NavMeshPath path;
     private float _Health;
 
     // References to player
@@ -39,10 +50,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private PredictionModel pathPrediction;
 
-
     // Patrol Points
 
-    [Header("Patrol Settings")]
+    [Header("Patrol")]
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
 
@@ -50,23 +60,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
     public Transform PlayerTarget => playerTarget;
 
 
-    [Header("AI Attack Settings")]
-    //[Range(0, 10)] 
-    [SerializeField] private float minDist = 7f;
+    //[SerializeField] 
+    private float minDist;
+    //[Range(0, 15)]
+    //[SerializeField] 
+    private float minDistInCover;
 
-    [Range(0, 15)][SerializeField] private float minDistInCover = 12f;
 
 
+    //[Range(10, 150)]
+    private float radius;
+    public float Radius => radius;
+    //[Range(50, 360)]
+    private float angle;
+    public float Angle => angle;
 
-    [Range(10, 150)]
-    public float radius;
-    //public float Radius => radius;
-    [Range(50, 360)]
-    public float angle;
-    //public float Angle => angle;
-
-    public LayerMask targetMask;
-    public LayerMask obstructionMask;
+    private LayerMask targetMask;
+    private LayerMask obstructionMask;
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
@@ -74,36 +84,38 @@ public class EnemyChaseBehaviour : MonoBehaviour
     public bool canSee => canSeePlayer;
 
     // Attack rate
-    [Range(1, 5)] private float AttackRate = 2f;
-    private float nextAttack = 0f;
+    //[Range(1, 5)] 
+    private float AttackRate;
+    private float nextAttack;
 
     private bool _canAttack; 
     private Color originalColor;
-    public int damage = 20;
-    public int damageBoost = 0;
-
+    private int damage;
+    internal int damageBoost;
 
 
     // hide code
-    [Header("Hide config")]
+    //[Header("Hide config")]
     private Collider[] Colliders = new Collider[10];
 
-    [Range(-1, 1)]
-    [Tooltip("Lower is a better hiding spot")]
-    public float HideSensitivity = 0;
-    [Range(0.01f, 1f)][SerializeField] private float UpdateFrequency = 0.25f;
+    //[Range(-1, 1)]
+    //[Tooltip("Lower is a better hiding spot")]
+    private float HideSensitivity = 0;
+    //[Range(0.01f, 1f)][SerializeField] 
+    private float UpdateFrequency = 0.25f;
 
-    [SerializeField] private LayerMask HidableLayers;
+    private LayerMask HidableLayers;
 
 
-    public SceneChecker LineOfSightChecker;
+    private SceneChecker LineOfSightChecker;
 
     private Coroutine MovementCoroutine;
 
 
-    [Range(0, 10)][SerializeField] private float healthInCreasePerFrame;
+    //[Range(0, 10)][SerializeField] 
+    private float healthInCreasePerFrame;
 
-    //private const float MAXHEALTH = 100f;
+    private float MAXHEALTH;
 
     private Vector3 previousPos;
 
@@ -132,10 +144,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float damagePerSecondFire = 2f;
     private float durationOfFireDamage = 10f;
 
-
-
     private Transform aiTransform;
 
+
+    private bool _iceWeak, _fireWeak, _thunderWeak; 
 
     //private PauseMenu _pause;
 
@@ -143,27 +155,28 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // new cover code
     // The speed at which the AI character moves
-    public float moveSpeed = 5f;
+    private float moveSpeed = 5f;
 
     // The distance at which the AI character starts fleeing from the player
-    public float fleeDistance = 15f;
+    private float fleeDistance = 15f;
 
     // The current cover position the AI character is using
     private Transform currentCoverPosition;
 
-    public float aiPointRadius;
-    #endregion
+    //public float aiPointRadius;
+
     // test code 
 
+    /*
     private Vector3 dest = Vector3.zero;
 
     [Range(0, 20)]
     [SerializeField]
     float AIradius = 20f;
+    */
+    #endregion
 
-    
-
-
+    #region Awake & Start
     // Get references to enemies
     private void Awake()
     {
@@ -173,11 +186,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
         Warning = GetComponent<WarningSystemAI>();
 
-        //_pause= FindObjectOfType<PauseMenu>();
-
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
-
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -200,10 +209,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //throw new NotImplementedException();
     }
 
-    private void OnDestroy()
-    {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
+   
     #region Void Start 
 
     /// <summary>
@@ -217,7 +223,34 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Start()
     {
- 
+
+        #region profile Sync
+        // attack 
+        minDist= data.MinDist;
+        AttackRate= data.AttackRate;
+        // FOV
+        radius= data.Radius;
+        angle= data.Angle;
+        targetMask= data.TargetMask;
+        obstructionMask= data.ObstructionMask;  
+        // Cover
+        HidableLayers= data.HidableLayers;
+        minDistInCover= data.MindistIncover;
+        // Health
+        _Health= data.Health;
+        // Weakness
+        _iceWeak = data.Ice;
+        _fireWeak= data.Fire;
+        _thunderWeak= data.Thunder;
+        // Gem
+        gemSpawnOnDeath= data.GemSpawnOnDeath;
+        gemPrefab = data.Gem;
+
+
+
+        #endregion
+
+
         #region  States 
         // Non Combat states
         State onGuardState = new State("",
@@ -258,55 +291,63 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Add the transitions
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true,
+                //canSeePlayer == true
+                () => _stateAI == AI._ATTACK,
                 () => Debug.Log("Player found!"),
                 ChaseState));
        
         ChaseState.AddTransition(
            new Transition(
-               () => InCoverState == true,
+               //InCoverState == true
+               () => _stateAI == AI._COVER,
                () => Debug.Log(""),
                FindCover));
 
         ChaseState.AddTransition(
            new Transition(
-               () => _inSearch == true,
+               //_inSearch == true
+               () => _stateAI == AI._SEARCH,
                () => Debug.Log(""),
                SearchState));
 
         ChaseState.AddTransition(
             new Transition(
-                () => _canGloryKill == true,
+                //_canGloryKill == true
+                () => _stateAI == AI._GLORYKILL,
                 () => Debug.Log(""),
                 GloryKillState));
 
         SearchState.AddTransition(
            new Transition(
-               () => _inSearch == false || canSeePlayer == true,
+               () => _inSearch == false || canSeePlayer == true, // SEEK SOLUTION
+               //_stateAI == AI._ATTACK,
                () => Debug.Log(""),
                ChaseState));
 
         SearchState.AddTransition(
            new Transition(
-               () => _returnPatrol == true,
+               //_returnPatrol == true
+               () => _stateAI == AI._PATROL,
                () => Debug.Log(""),
                PatrolState));
 
         FindCover.AddTransition(
            new Transition(
-               () => InCoverState == false,
+               () => //InCoverState == false 
+                     _stateAI == AI._COVER,
                () => Debug.Log(""),
                ChaseState));
 
         FindCover.AddTransition(
           new Transition(
-              () => _canGloryKill == true,
+              () => //_canGloryKill == true
+              _stateAI == AI._GLORYKILL,
               () => Debug.Log(""),
               ChaseState));
 
         PatrolState.AddTransition(
            new Transition(
-               () => canSeePlayer == true || _engage == true,
+               () => canSeePlayer == true || _engage == true, // SEEK SOLUTION
                () => Debug.Log(""),
                ChaseState));
 
@@ -328,21 +369,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _Health = 100;
         _canAttack = true;
         _canMove = true;
-
-
-        
-
-
     }
     #endregion
 
-
-
+    #endregion
 
     #region Update
     // Request actions to the FSM and perform them
     private void Update()
     {
+        // FOV
+        radius = data.Radius;
+        angle = data.Angle;
+        targetMask = data.TargetMask;
+        obstructionMask = data.ObstructionMask;
+
         UpdateFunctions(); 
     }
 
@@ -365,7 +406,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             Action actions = stateMachine.Update();
             actions?.Invoke();
         }
-        else if(_gamePlay == false)  
+        else if(!_gamePlay)  
         {
             PauseAgent();
         }
@@ -378,14 +419,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void PauseAgent()
     {
-        Agent.speed = 0f; 
+        //Agent.speed = 0f; 
         Agent.Stop(); 
     }
 
 
 
     #endregion
-
 
     #region Condition checked in update
 
@@ -396,7 +436,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     private void MinimalCheck()
     {
-        if(_canGloryKill == false)
+        if(!_canGloryKill)
         {
             if ((playerTarget.transform.position - transform.position).magnitude < minDist)
             {
@@ -413,15 +453,38 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void HealthCheck()
     {
-        if (_Health <= 50)//&& _Health > 10) 
+        if(_Health <= 15)
+        {
+            SetGloryKill();
+        }
+
+
+        else if (_Health <= 50)//&& _Health > 10) 
         {
             InCoverState = true;
+
+            SetCover();
+            
             //HandleGainSight(PlayerTarget); 
         }
 
         else if (_Health >= 75)
         {
             InCoverState = false;
+            switch (canSeePlayer) 
+            {
+                case true:
+                    {
+                        SetAttack();
+                        break;
+                    }
+                case false: 
+                    {
+                        SetSearch();
+                        break;
+                    }
+            }
+
         }
 
 
@@ -455,7 +518,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
  
         #endregion
     
-
     #region AI Actions
 
     private void Patrol()
@@ -520,10 +582,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 _initiateStartTimer = false;
             }
         }
-        
-
-
-
         //print("ATTACK");
     }
 
@@ -570,8 +628,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
         }
-        
-
     }
 
 
@@ -602,6 +658,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     */
 
+    /*
     private void QuickCover()
     {
         Vector3 retreatPoint = transform.position - transform.forward * retreatDist;
@@ -611,32 +668,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Agent.isStopped = false;
 
     }
-    
+    */
     private void Search()
     {
-
-        
         if (Agent.remainingDistance <= Agent.stoppingDistance)
         {
-
             if(canSeePlayer)
             {
                 _inSearch = false;
+                SetAttack();
             }
-
-            
             // Get the player's last position (their destination)
             Vector3 lastPosition = Agent.destination;
-
-
             // * play animation ( Move FOV HEAD in Y rotation) and initiate again patrol state
 
             //Debug.Log("Player's last position: " + lastPosition);
 
             //GetPath();
             PathPredict();
-             
-
         }
         
     }
@@ -689,16 +738,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
             HandleGainSight(PlayerTarget);
             // GetCover();
 
-            if (curSpeed <= 0.5 && IsAttacking == false && _Health > 10)
+            if (curSpeed <= 0.5 && IsAttacking == false && _Health >= 16)
             {
                 _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, MAXHEALTH);
                 //Debug.Log("Chase health: " + _Health);
             }
             Attack();
         }
-        
-
-        
     }
 
     private void HandleGainSight(Transform Target)
@@ -718,12 +764,42 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void GloryKill()
     {
         Agent.radius = 1f;
-        Agent.isStopped = true;
+        PauseAgent();
+
+        //Agent.isStopped = true;
     }
 
 
     #endregion
 
+    #region Actions Reset
+
+    private void SetGuard()
+    {
+        _stateAI = AI._GUARD;
+    }
+    private void SetPatrol()
+    {
+        _stateAI = AI._PATROL;
+    }
+    private void SetAttack()
+    {
+        _stateAI = AI._ATTACK;
+    }
+    private void SetCover()
+    {
+        _stateAI = AI._COVER;
+    }
+    private void SetSearch()
+    {
+        _stateAI= AI._SEARCH;   
+    }
+    private void SetGloryKill()
+    {
+        _stateAI = AI._GLORYKILL;
+    }
+    
+    #endregion
 
     #region AI Health 
     public void TakeDamage(int _damage, WeaponType _Type)
@@ -736,7 +812,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             Die();
         }
-        if(_Health > 0) 
+        else if(_Health > 0) 
         {
             // ALERT AI OF player presence
             WarningSystemAI warn;
@@ -775,7 +851,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         
         
-        //Debug.Log("enemy shot" + _Health);
+        Debug.Log("enemy shot" + _Health);
     }
 
     
@@ -797,8 +873,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
-
-    #region Coroutines
     #region Cover Routine
     
     private IEnumerator Hide(Transform Target)
@@ -904,7 +978,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void FieldOfViewCheck()
     {
+
+        // collider check
         Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
+
 
         if (rangeChecks.Length != 0)
         {
@@ -916,7 +993,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(FOV.position, target.position);
 
                 if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                {
                     canSeePlayer = true;
+
+                    SetAttack();
+                }
+                    
                 else
                     canSeePlayer = false;
             }
@@ -926,9 +1008,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         else if (canSeePlayer)
             canSeePlayer = false;
     }
-
-
-
     #endregion
 
     #region IEnumeratos associated with damage on AI
@@ -967,6 +1046,83 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetComponent<Renderer>().material.color = originalColor;
     }
     #endregion
-    #endregion
 
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    #region Editor Gizmos
+    private void OnDrawGizmos()
+    {
+
+#if UNITY_EDITOR
+
+
+        //Vector3 namePosition = new Vector3(transform.position.x, transform.position.y, 2f);
+
+        GUIStyle red = new GUIStyle();
+        red.normal.textColor = Color.red;
+
+        GUIStyle yellow = new GUIStyle();
+        yellow.normal.textColor = Color.yellow;
+
+        GUIStyle blue = new GUIStyle();
+        blue.normal.textColor = Color.blue;
+        
+        GUIStyle green = new GUIStyle();
+        green.normal.textColor = Color.green;
+        
+        GUIStyle cyan = new GUIStyle();
+        cyan.normal.textColor = Color.cyan;
+        
+        #region AI State Label 
+
+        switch (_stateAI)
+        {
+            case AI._GUARD:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Guard" + "  Gameplay: "+ _gamePlay, green);
+                    break;
+                }
+            case AI._PATROL:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Patrol" + "  Gameplay: " + _gamePlay, blue);
+                    break;
+                }
+            case AI._ATTACK:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: " + _gamePlay, red);
+                    break;
+                }
+            case AI._SEARCH:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Search" + "  Gameplay: " + _gamePlay, yellow);
+                    break;
+                }
+            case AI._COVER:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Cover" + "  Gameplay: " + _gamePlay, cyan);
+                    break;
+                }
+            case AI._GLORYKILL:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: " + _gamePlay);
+                    break;
+                }
+            case AI._NONE:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "NONE" + "  Gameplay: " + _gamePlay);
+                    break;
+                }
+            default: 
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: " + _gamePlay);
+                    break; 
+                }
+        }
+        #endregion
+#endif
+    }
+    #endregion
 }

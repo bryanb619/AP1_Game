@@ -59,6 +59,11 @@ public class SceneChecker : MonoBehaviour
         return false;
     }
 
+    private void ColliderShow()
+    {
+        
+    }
+
     private IEnumerator CheckForLineOfSight(Transform Target)
     {
         WaitForSeconds Wait = new WaitForSeconds(0.5f);

@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
+//using UnityEngine.UI;
+//using UnityEngine.UIElements;
 
 public class GemManager : MonoBehaviour
 {
@@ -100,8 +100,11 @@ public class GemManager : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
+        {
             GemCatch();
             Destroy(gameObject);
+        }
+            
     }
 
     #region Gem type and functions
