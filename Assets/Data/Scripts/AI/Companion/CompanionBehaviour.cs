@@ -100,7 +100,7 @@ public class CompanionBehaviour : MonoBehaviour
         StartCoroutine(FOVRoutine());
 
         //LookAtUpdate();
-        LookAtUpdate();
+        //LookAtUpdate();
         CheckMoveBool();
         CheckEnemy();
         AlphaUpdate();
@@ -172,9 +172,6 @@ public class CompanionBehaviour : MonoBehaviour
         Companion.SetDestination(Target.position);
 
     }
-
-
-
 
     private void Follow()
     {

@@ -42,7 +42,7 @@ public class LightOptimize : MonoBehaviour
     {
         distance = Vector3.Distance(Player.transform.position, transform.position);
 
-        print(distance);
+        //print(distance);
         if (distance >= minDist)
         {
             DisableLight();

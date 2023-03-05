@@ -12,7 +12,6 @@ public class PlayerCam : MonoBehaviour
     private float xRotation, yRotation;
 
 
-
     public float range = 10f;
 
 

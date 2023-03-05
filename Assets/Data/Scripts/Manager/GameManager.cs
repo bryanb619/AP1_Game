@@ -8,9 +8,16 @@ public class GameManager : MonoBehaviour
     #region Variables
     //private
     [SerializeField]
-    private StudioEventEmitter[]                studioEventEmitters;
+    private StudioEventEmitter[]               ambientSound;
 
-    public bool                                _audioState; 
+    [SerializeField]
+    private StudioEventEmitter[]               sfxSound; 
+
+    [SerializeField]
+
+
+    private float                                volume;
+    private bool                                _audioState; 
 
     // Testing New Game Manager
     public static GameManager                   Instance;
@@ -24,6 +31,9 @@ public class GameManager : MonoBehaviour
     public BattleStates                         _battleState;
 
     public static event Action<BattleStates>    OnBattleStateChanged;
+
+
+
 
     #endregion
 
@@ -90,16 +100,6 @@ public class GameManager : MonoBehaviour
 
         HandleEventEmitterState();
 
-
-
-    }
-
-    private void HandleEventEmitterState()
-    {
-        foreach (FMODUnity.StudioEventEmitter emitter in studioEventEmitters)
-        {
-            emitter.EventInstance.setPaused(_audioState);
-        }
     }
 
     public void ExitToMainMenu()
@@ -107,6 +107,30 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("StartMenu");
     }
 
+    #region FMOD Sound state
+
+    /// <summary>
+    /// Handle of FMOD emitters sound states such play, pause and volume
+    /// </summary>
+    private void HandleEventEmitterState()
+    {
+        foreach (FMODUnity.StudioEventEmitter emitter in ambientSound)
+        {
+            // Set according to bool value
+            emitter.EventInstance.setPaused(_audioState);
+        }
+    }
+    public void HandleAmbientVolume(float newVolume)
+    {
+        volume = newVolume;
+
+        foreach (FMODUnity.StudioEventEmitter emitter in ambientSound)
+        {
+            // ambient
+            emitter.SetParameter("Volume", volume);
+        }
+    }
+    #endregion
     /*
     public void AudioState()
     {
