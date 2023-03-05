@@ -136,7 +136,6 @@ public class ImpactEffect : MonoBehaviour
                     Handles.Label(transform.position + Vector3.up, "Paused");
                     break;
                 }
-
         }
         
     }

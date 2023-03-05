@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         _audioState = false;
         Time.timeScale = 0f;
 
-        StopAllCoroutines();
+        
     }
 
     public void ExitToMainMenu()
