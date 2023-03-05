@@ -19,7 +19,7 @@ public class PlayerCam : MonoBehaviour
     private bool inView;
     public bool InView => inView;
 
-    [SerializeField] private bool CanRotateCamera = true;
+    [SerializeField] private bool CanRotateCamera = false;
 
     private bool _gamePlay; 
 

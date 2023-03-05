@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private StudioEventEmitter[]                studioEventEmitters;
 
-    private bool                                _audioState; 
+    public bool                                _audioState; 
 
     // Testing New Game Manager
     public static GameManager                   Instance;
@@ -68,13 +68,15 @@ public class GameManager : MonoBehaviour
     private void HandleGameplay()
     {
         // set cursor settings to play mode
-        Cursor.visible = false;
+        Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
 
-        Time.timeScale = 1f;
-        _audioState = true;
-        
+        //Time.timeScale = 1f;
+        _audioState = false;
+
+        HandleEventEmitterState();
     }
+
 
     private void HandlePaused()
     {
@@ -82,10 +84,22 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        _audioState = false;
-        Time.timeScale = 0f;
-
+        _audioState = true;
         
+        //Time.timeScale = 0f;
+
+        HandleEventEmitterState();
+
+
+
+    }
+
+    private void HandleEventEmitterState()
+    {
+        foreach (FMODUnity.StudioEventEmitter emitter in studioEventEmitters)
+        {
+            emitter.EventInstance.setPaused(_audioState);
+        }
     }
 
     public void ExitToMainMenu()
@@ -93,6 +107,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("StartMenu");
     }
 
+    /*
     public void AudioState()
     {
         foreach (var emitter in studioEventEmitters)
@@ -101,6 +116,7 @@ public class GameManager : MonoBehaviour
             instance.setPaused(_audioState);
         }
     }
+    */
 
     #endregion
 
