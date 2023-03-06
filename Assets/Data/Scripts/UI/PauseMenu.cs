@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PauseMenu : MonoBehaviour
 { 
@@ -11,11 +12,11 @@ public class PauseMenu : MonoBehaviour
     [SerializeField]
     private GameObject      PauseCanvas, _pauseMenu, _OptionsMenu;
 
+    [SerializeField] private Slider audioSlider; 
 
     private void Start()
     {
         _manager = FindObjectOfType<GameManager>();
-
 
         PauseCanvas.SetActive(true);
         _pauseMenu.SetActive(false);
@@ -99,6 +100,8 @@ public class PauseMenu : MonoBehaviour
     {
         Application.Quit();
     }
+
+
 
     // Options Menu
 

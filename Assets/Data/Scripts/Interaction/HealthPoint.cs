@@ -1,7 +1,6 @@
 using UnityEngine;
 using FMODUnity;
-using FMOD.Studio;
-using System.Collections;
+
 
 [RequireComponent(typeof(BoxCollider))]
 public class HealthPoint : MonoBehaviour
@@ -12,14 +11,81 @@ public class HealthPoint : MonoBehaviour
     private int m_Health;
     public int Health => m_Health;
 
-    [SerializeField] private GameObject m_prefab; 
+    [SerializeField] private GameObject m_prefab;
+
+    private GameState                   _state; 
+
+    private bool                        _gamePlay; 
+
+    private StudioEventEmitter          m_Emitter;
+
+    private bool                        _audioState;
+
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
 
     private void Start()
     {
         m_BoxCollider = GetComponent<BoxCollider>();
+        m_Emitter = GetComponent<StudioEventEmitter>(); 
        
         m_Health = data.Health;
+
+        switch (_state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
     }
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+    }
+
+    private void Update()
+    {
+        switch (_gamePlay) 
+        {
+            case true: 
+                {
+                    _audioState = false;
+                    UpdateSound();
+                    break; 
+                }
+            case false: 
+                {
+                    _audioState = true;
+                    UpdateSound();
+                    break; 
+                }
+                
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         PlayerMovement player = other.GetComponent<PlayerMovement>();
@@ -37,6 +103,12 @@ public class HealthPoint : MonoBehaviour
             }
             //player
         }
+    }
+
+
+    private void UpdateSound()
+    {
+        m_Emitter.EventInstance.setPaused(_audioState); // set play
     }
 
 }

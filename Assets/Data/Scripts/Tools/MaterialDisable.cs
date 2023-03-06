@@ -2,7 +2,7 @@
 #endregion
 using UnityEngine;
 
-public class MaterialClear : MonoBehaviour
+public class MaterialDisable : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

@@ -2,17 +2,19 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     #region Variables
     //private
     [SerializeField]
-    private StudioEventEmitter[]               ambientSound;
+    private StudioEventEmitter[]               ambientSounds;
     [SerializeField]
-    private StudioEventEmitter[]               sfxSound;
+    private StudioEventEmitter[]               sfxSounds;
     [SerializeField]
-    private StudioEventEmitter[]               musicSound;
+    private StudioEventEmitter[]               musicSounds;
 
     //[SerializeField]
     private float                               ambientVolume;
@@ -35,6 +37,12 @@ public class GameManager : MonoBehaviour
     public static event Action<BattleStates>    OnBattleStateChanged;
 
 
+    public class SFXSound : UnityEvent<float> {}
+
+    public static SFXSound OnSFXValueChange = new SFXSound();
+
+
+    [SerializeField] private Slider _slider;
 
 
     #endregion
@@ -50,7 +58,9 @@ public class GameManager : MonoBehaviour
     {
         UpdateGameState(GameState.Gameplay);
 
-        Cursor.visible = false;
+       // HandleAmbientVolume(_slider.value);
+
+        //_slider.onValueChanged.AddListener(HandleAmbientVolume);
     }
     #endregion
 
@@ -76,6 +86,8 @@ public class GameManager : MonoBehaviour
         }
         OnGameStateChanged?.Invoke(newGamestate);
     }
+
+   
 
     private void HandleGameplay()
     {
@@ -116,7 +128,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void HandleEventEmitterState()
     {
-        foreach (FMODUnity.StudioEventEmitter emitter in ambientSound)
+        foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
         {
             // Set according to bool value
             emitter.EventInstance.setPaused(_audioState);
@@ -124,12 +136,13 @@ public class GameManager : MonoBehaviour
     }
     public void HandleAmbientVolume(float newVolume)
     {
-        ambientVolume = newVolume;
+        //ambientVolume = newVolume;
 
-        foreach (FMODUnity.StudioEventEmitter emitter in ambientSound)
+        foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
         {
-            // ambient
-            emitter.SetParameter("Volume", ambientVolume);
+            // 
+            emitter.SetParameter("Volume", newVolume);
+
         }
     }
     #endregion

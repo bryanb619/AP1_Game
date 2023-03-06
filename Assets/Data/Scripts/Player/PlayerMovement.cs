@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI; 
 using UnityEngine.SceneManagement;
 
 
@@ -76,6 +77,12 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private Camera mainCamera; 
 
+    private GameManager gameManager;
+
+    private NavMeshAgent agent;
+
+    [SerializeField] private GameObject effect; 
+
     private enum MovementState
     {
         walking,
@@ -84,7 +91,6 @@ public class PlayerMovement : MonoBehaviour
         //crouching,
         air
     }
-
 
     private void Awake()
     {
@@ -110,10 +116,6 @@ public class PlayerMovement : MonoBehaviour
         //throw new NotImplementedException();
     }
 
-    private void OnDestroy()
-    {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
 
 
     private void Start()
@@ -130,6 +132,9 @@ public class PlayerMovement : MonoBehaviour
         restartMenu = FindObjectOfType<RestartMenu>();
         HealthSetAtMax = true;
         _currentHealth = 100;
+
+        gameManager = FindObjectOfType<GameManager>();  
+        agent = GetComponent<NavMeshAgent>();   
     }
 
     private void Update()
@@ -265,12 +270,25 @@ public class PlayerMovement : MonoBehaviour
     private void MyInput()
     {
         if(_gamePlay)
-        {
-            if (CanMove == true)
-            {
 
-                horizontalInput = Input.GetAxisRaw("Horizontal");
-                verticalInput = Input.GetAxisRaw("Vertical");
+
+        {
+            if (CanMove)
+            {
+                if(Input.GetMouseButtonDown(0)) 
+                {
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                    {
+                        agent.destination = hit.point;
+                        Instantiate(effect, hit.point, Quaternion.identity);
+                    }
+                }
+               
+
+                    //horizontalInput = Input.GetAxisRaw("Horizontal");
+                    //verticalInput = Input.GetAxisRaw("Vertical");
 
 
                 if (Input.GetKey(jumpKey) && readyToJump && grounded && !crouching)
@@ -508,6 +526,12 @@ public class PlayerMovement : MonoBehaviour
         {
             GiveHealth(20);
         }
+    }
+
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
     #endregion
 

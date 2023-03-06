@@ -2,6 +2,7 @@
 using UnityEngine;
 using FMODUnity;
 using UnityEditor;
+using static GameManager;
 
 #endregion
 
@@ -32,6 +33,7 @@ public class TestProjectile : MonoBehaviour
     //[SerializeField]
     private StudioEventEmitter          _emitter;
 
+    private float                       volume; 
     #endregion
 
     #region Awake
@@ -59,6 +61,8 @@ public class TestProjectile : MonoBehaviour
         #region Check Game State at start
 
         _emitter = GetComponent<StudioEventEmitter>();
+
+        OnSFXValueChange.AddListener(Setvolume);
 
         switch (_state)
         {
@@ -251,9 +255,15 @@ public class TestProjectile : MonoBehaviour
     private void SoundSetPause()
     {
         _emitter.EventInstance.setPaused(true); // set paused
-    }   
+    }
+    
+    private void Setvolume(float newVolume)
+    {
+        volume = newVolume; 
+        _emitter.SetParameter("volume", volume);
+    }
 
-private void ImpactEffect()
+    private void ImpactEffect()
     {
         // spawn projectile
         Instantiate(impactObject, transform.position, Quaternion.identity);
