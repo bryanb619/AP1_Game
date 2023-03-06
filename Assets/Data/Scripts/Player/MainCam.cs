@@ -10,7 +10,7 @@ public class MainCam : MonoBehaviour
 
     [SerializeField] private LayerMask obstructionLayer;
 
-    [SerializeField] private float alphaValue = 0.5f;
+    [SerializeField] private float alphaValue = 0.3f;
 
     private List<MeshRenderer> obstructedRenderers = new List<MeshRenderer>();
 

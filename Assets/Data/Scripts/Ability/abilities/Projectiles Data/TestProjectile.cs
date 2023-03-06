@@ -34,18 +34,14 @@ public class TestProjectile : MonoBehaviour
 
     #endregion
 
-    #region Awake & Start 
-
     #region Awake
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
-
-
     #endregion
 
-    #region Start & Data collection
+    #region Start
     private void Start()
     {
         CollectData();
@@ -116,8 +112,6 @@ public class TestProjectile : MonoBehaviour
 
     #endregion
 
-    #endregion
-
     #region Fixed update & Update
     private void FixedUpdate()
     {
@@ -138,9 +132,8 @@ public class TestProjectile : MonoBehaviour
     {
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
-        PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
+        //PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
 
-        
         if (enemy != null)
         {
             enemy.TakeDamage(rangedDamage, _weaponType);
@@ -157,14 +150,17 @@ public class TestProjectile : MonoBehaviour
             
 
         }
+        /*
         else if (player != null)
         {
             DestroyBullet();
         }
+        */
         else if (hitInfo.tag == "Wall" || hitInfo.tag == "Default")
         {
             DestroyBullet();
         }
+        
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -176,7 +172,7 @@ public class TestProjectile : MonoBehaviour
     }
     #endregion
 
-    #region Physics, movement, Time and sound in game
+    #region Physics, Movement, Time and sound
     private void PhsysicsMovement()
     {
         if (_useRb)

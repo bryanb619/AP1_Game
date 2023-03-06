@@ -4,9 +4,7 @@ using UnityEngine;
 public class Fire : Ability
 {
     private Shooter shoot;
-
-
-
+    
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
@@ -15,13 +13,11 @@ public class Fire : Ability
 
         if(shoot != null) 
         {
+
             shoot = FindObjectOfType<Shooter>();
+
             shoot.Shoot();
         }
-        
-
-
-
         
         //_player.TakeDamage(7);
 

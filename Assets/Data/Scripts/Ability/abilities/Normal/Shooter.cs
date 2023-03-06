@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
-    [SerializeField] private Transform      companion; 
+  
     [SerializeField] private Transform      firePoint;
     [SerializeField] private GameObject     normalPrefab, firePrefab, icePrefab, thunderPrefab;
 
-    protected private WeaponType            _magicType;
-    protected private bool                  _gameplay;
-
-    [SerializeField] private Camera         mainCamera;
+    public WeaponType            _magicType;
+    private bool                  _gameplay;
 
     private void Awake()
     {
@@ -51,39 +49,8 @@ public class Shooter : MonoBehaviour
 
     private void ShootPos()
     {
-        // Get the cursor position in screen space
-        Vector3 cursorPosition = Input.mousePosition;
 
-        // Convert the cursor position to world space
-        cursorPosition.z = mainCamera.transform.position.y;
-        cursorPosition = mainCamera.ScreenToWorldPoint(cursorPosition);
-
-        // Make the object follow the cursor position
-        //transform.position = cursorPosition;
-
-        // Rotate the object in the y-axis based on the cursor position
-        Vector3 direction = cursorPosition - transform.position;
-        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-        companion.transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-        /*
-        // Use a raycast to determine the direction in which to fire the bullet
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        RaycastHit hit;
-
-        Vector3 targetPosition;
-        if (Physics.Raycast(ray, out hit))
-        {
-            targetPosition = hit.point;
-            targetPosition.y = companion.transform.rotation.y;
-        }
-        else
-        {
-            targetPosition = ray.GetPoint(100);
-        }
-        companion.transform.LookAt(targetPosition);
-        */
+       
     }
 
     private void ShootInput()
@@ -117,6 +84,7 @@ public class Shooter : MonoBehaviour
             case WeaponType.Normal: // input nº1
                 {
                     // call Script for time out
+                    
                     Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
                     break; 
                 }
@@ -139,6 +107,7 @@ public class Shooter : MonoBehaviour
         }
         
     }
+
 
     private void OnDestroy()
     {

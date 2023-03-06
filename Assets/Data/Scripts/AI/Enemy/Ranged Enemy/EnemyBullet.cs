@@ -180,6 +180,7 @@ public class EnemyBullet : MonoBehaviour
         if (player != null)
         {
             DestroyBullet();
+            player.TakeDamage(10);
         }
         else if (hitInfo.tag == "Wall" || hitInfo.tag == "Default")
         {

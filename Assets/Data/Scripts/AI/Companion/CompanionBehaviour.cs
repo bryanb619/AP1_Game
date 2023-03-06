@@ -32,10 +32,14 @@ public class CompanionBehaviour : MonoBehaviour
 
     private float minDist = 0.4f;
     // Reference to the state machine
-    private StateMachine stateMachine;
+    private LibGameAI.FSMs.StateMachine stateMachine;
 
     private bool _enemyIS;
     public bool canSee => _enemyIS;
+
+    private bool _gameplay; 
+
+    private GameState _gameState;
 
     [Range(10, 150)]
     public float radius;
@@ -46,18 +50,53 @@ public class CompanionBehaviour : MonoBehaviour
     public LayerMask obstructionMask;
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
+    float rotationSpeed = 10.0f;
 
 
+    [SerializeField] private Camera mainCamera;
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Paused:
+                {
+                    _gameplay = false;
+                    break;
+                }
+            case GameState.Gameplay:
+                {
+                    _gameplay = true;
+                    break;
+                }
+        }
+    }
     // Create the FSM
     private void Start()
     {
-        
+
+        switch (_gameState)
+        {
+            case GameState.Paused:
+                {
+                    _gameplay = false;
+                    break;
+                }
+            case GameState.Gameplay:
+                {
+                    _gameplay = true;
+                    break;
+                }
+        }
+
         CompanionMesh = GetComponent<MeshRenderer>();
         _MiniMapCollor = FindObjectOfType<mini>();
 
         _playerIsMoving = false;
-
-
       
         // Create the states
         State IdleState = new State("",
@@ -97,23 +136,82 @@ public class CompanionBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        StartCoroutine(FOVRoutine());
+        if(_gameplay) 
+        {
+            StartCoroutine(FOVRoutine());
 
-        //LookAtUpdate();
-        //LookAtUpdate();
-        CheckMoveBool();
-        CheckEnemy();
-        AlphaUpdate();
-        
+            LookAtUpdate();
 
-        Action actions = stateMachine.Update();
-        actions?.Invoke();
+            CheckMoveBool();
+            CheckEnemy();
+            AlphaUpdate();
 
+
+            Action actions = stateMachine.Update();
+            actions?.Invoke();
+        }
     }
 
     private void LookAtUpdate()
     {
-        RaycastHit HitInfo;
+        // Get the cursor position in screen space
+        //Vector3 cursorPosition = Input.mousePosition;
+
+        // Convert the cursor position to world space
+        //cursorPosition.z = mainCamera.transform.position.y;
+        //cursorPosition = mainCamera.ScreenToWorldPoint(cursorPosition);
+
+        // Make the object follow the cursor position
+        //transform.position = cursorPosition;
+
+        // Rotate the object in the y-axis based on the cursor position
+        //Vector3 direction = cursorPosition - transform.position;
+        //float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        //transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        float angle = Vector3.SignedAngle(transform.up, ray.direction, transform.forward);
+
+        // Update the rotation of the transform
+        Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            // Get the target position to rotate towards
+            Vector3 targetPos = hit.point;
+
+            // Ignore the y-axis to only rotate around the vertical axis
+            targetPos.y = transform.position.y;
+
+            // Calculate the direction to the target
+            Vector3 UpdateDirection = targetPos - transform.position;
+
+            // Calculate the rotation angle around the vertical axis
+            float Updateangle = Mathf.Atan2(UpdateDirection.x, UpdateDirection.z) * Mathf.Rad2Deg;
+
+            // Set the new rotation
+            transform.rotation = Quaternion.Euler(0f, Updateangle, 0f);
+        }
+        /*
+        if (Input.GetMouseButton(0))
+        {
+            // Get the direction from the companion to the mouse position
+            Vector3 shootDirection = cursorPosition - transform.position;
+            shootDirection.y = 0f;
+            shootDirection.Normalize();
+
+            // Calculate the angle between the companion's forward vector and the shoot direction
+            float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
+
+            // Rotate the companion towards the shoot direction
+            transform.Rotate(0f, shootAngle, 0f);
+        }
+        */
+
+        /*        RaycastHit HitInfo;
         Ray RayCast;
 
         RayCast = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
@@ -125,6 +223,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             transform.LookAt(transform.forward);
         }
+        */
     }
 
     private void CheckMoveBool()

@@ -70,6 +70,12 @@ public class PlayerMovement : MonoBehaviour
 
     private bool _gamePlay;
 
+    public enum _PlayerHealth {_Max, NotMax}
+
+    public _PlayerHealth _playerHealthState;
+
+    [SerializeField] private Camera mainCamera; 
+
     private enum MovementState
     {
         walking,
@@ -128,6 +134,24 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        switch(HealthSetAtMax)
+        {
+            case true:
+                {
+                    _playerHealthState = _PlayerHealth._Max;
+                    break;
+                }
+            case false:
+                {
+                    _playerHealthState = _PlayerHealth.NotMax;
+                    break;
+                }
+        }
+
+       
+            
+       
+
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
@@ -404,6 +428,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Regen()
     {
+        /*
         if ((_currentHealth < _MaxHealth))
         {
             GiveHealth(1);
@@ -412,6 +437,7 @@ public class PlayerMovement : MonoBehaviour
                 _currentHealth = _MaxHealth;
             }
         }
+        */
     }
 
     public void TakeDamage(int damage)
@@ -433,6 +459,11 @@ public class PlayerMovement : MonoBehaviour
 
             //Time.timeScale = 0f;
         }
+    }
+    public void Takehealth(int health)
+    {
+        _currentHealth += health;
+        _healthBar.SetHealth(_currentHealth);
     }
 
     private void EnemiesAround()

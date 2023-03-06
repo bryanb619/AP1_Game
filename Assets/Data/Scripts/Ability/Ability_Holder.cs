@@ -19,7 +19,11 @@ public class Ability_Holder : MonoBehaviour
 
     [SerializeField] private GameObject ActiveSprite, CooldownSprite;
 
-    private bool _isPaused; 
+    private bool _isPaused;
+
+    private Shooter shooter; 
+
+    private WeaponType _weaponType; 
 
     // types of ability condition
     private enum Ability_State
@@ -48,6 +52,7 @@ public class Ability_Holder : MonoBehaviour
 
     private void Start()
     {
+        shooter = FindObjectOfType<Shooter>();
         PowerReady();
     }
 
@@ -138,7 +143,6 @@ public class Ability_Holder : MonoBehaviour
         }
         
     }
-
 
     private void PowerReady()
     {

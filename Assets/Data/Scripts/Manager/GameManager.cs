@@ -9,14 +9,16 @@ public class GameManager : MonoBehaviour
     //private
     [SerializeField]
     private StudioEventEmitter[]               ambientSound;
-
     [SerializeField]
-    private StudioEventEmitter[]               sfxSound; 
-
+    private StudioEventEmitter[]               sfxSound;
     [SerializeField]
+    private StudioEventEmitter[]               musicSound;
 
+    //[SerializeField]
+    private float                               ambientVolume;
+    private float                               sfxVolume;
+    private float                               musicVolume;
 
-    private float                                volume;
     private bool                                _audioState; 
 
     // Testing New Game Manager
@@ -122,12 +124,12 @@ public class GameManager : MonoBehaviour
     }
     public void HandleAmbientVolume(float newVolume)
     {
-        volume = newVolume;
+        ambientVolume = newVolume;
 
         foreach (FMODUnity.StudioEventEmitter emitter in ambientSound)
         {
             // ambient
-            emitter.SetParameter("Volume", volume);
+            emitter.SetParameter("Volume", ambientVolume);
         }
     }
     #endregion
