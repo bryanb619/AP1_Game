@@ -95,30 +95,30 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _canGloryKill;
 
-    private Enum _Type;
+    private bool _gamePlay;
 
     private bool _canMove;
 
     // Get references to enemies
     private void Awake()
-    {
-        PlayerObject = GameObject.Find("Player");
-
-        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
-
+    { 
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
     // Create the FSM
     private void Start()
     {
-        Agent = GetComponent<NavMeshAgent>();
-        //StartCoroutine(FOVRoutine());
-
         _canMove = true;
 
         canSeePlayer = false;
         health = 100f;
 
+        Agent = GetComponent<NavMeshAgent>();
+        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+
+        PlayerObject = GameObject.Find("Player");
+        //StartCoroutine(FOVRoutine());
+       
         // Create the states
         State onGuardState = new State("On Guard",
             () => Debug.Log("Enter On Guard state"),
@@ -184,16 +184,74 @@ public class EnemyBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
+        UpdateAI();
+    }
+
+    private void UpdateAI()
+    {
+        switch(_gamePlay)
+        {
+            case true:
+                {
+                    ResumeAgent();
+                    break;
+                }
+            case false:
+                {
+                    PauseAgent();
+                    break;
+                }  
+        }
+        
+    }
+
+    private void ResumeAgent()
+    {
+        Agent.Resume();
+
         MinimalCheck(); // Tester
+
         StartCoroutine(FOVRoutine());
+
         Action actions = stateMachine.Update();
         actions?.Invoke();
 
         Vector3 curMove = transform.position - previousPos;
         curSpeed = curMove.magnitude / Time.deltaTime;
         previousPos = transform.position;
-
     }
+
+    private void PauseAgent()
+    {
+        //Agent.speed = 0f; 
+        Agent.Stop();
+
+        StopAllCoroutines();
+    }
+
+
+
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+
 
 
     private void MinimalCheck()
@@ -579,4 +637,8 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
 }

@@ -121,11 +121,12 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("StartMenu");
     }
 
-    #region FMOD Sound state
+    #region FMOD Sounds
 
     /// <summary>
     /// Handle of FMOD emitters sound states such play, pause and volume
     /// </summary>
+    /// 
     private void HandleEventEmitterState()
     {
         foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
@@ -133,18 +134,53 @@ public class GameManager : MonoBehaviour
             // Set according to bool value
             emitter.EventInstance.setPaused(_audioState);
         }
+        foreach (FMODUnity.StudioEventEmitter emitter in musicSounds)
+        {
+            // Set according to bool value
+            emitter.EventInstance.setPaused(_audioState);
+        }
     }
-    public void HandleAmbientVolume(float newVolume)
-    {
-        //ambientVolume = newVolume;
+    #region Volume change
 
-        foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
+    public void HandleMusicVolume(float newVolume)
+    {
+        musicVolume = newVolume;
+
+        print("ambient " + ambientVolume);
+
+        foreach (FMODUnity.StudioEventEmitter emitter in musicSounds)
         {
             // 
-            emitter.SetParameter("Volume", newVolume);
+            emitter.SetParameter("Volume", musicVolume);
 
         }
     }
+
+    public void HandleAmbientVolume(float newVolume)
+    {
+        ambientVolume = newVolume;
+        
+        print("ambient " + ambientVolume);
+
+        foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
+        {
+            emitter.SetParameter("Volume", ambientVolume);
+        }
+    }
+
+    public void HandleSFXVolume(float newVolume)
+    {
+        sfxVolume = newVolume;
+
+        print("ambient " + sfxVolume);
+
+        foreach (FMODUnity.StudioEventEmitter emitter in sfxSounds)
+        {
+            emitter.SetParameter("Volume", sfxVolume);
+        }
+    }
+    #endregion
+
     #endregion
     /*
     public void AudioState()

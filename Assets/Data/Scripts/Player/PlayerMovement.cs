@@ -81,7 +81,9 @@ public class PlayerMovement : MonoBehaviour
 
     private NavMeshAgent agent;
 
-    [SerializeField] private GameObject effect; 
+    [SerializeField] private GameObject effect;
+
+    [SerializeField] private LayerMask SeeThroughLayer; 
 
     private enum MovementState
     {
@@ -270,27 +272,29 @@ public class PlayerMovement : MonoBehaviour
     private void MyInput()
     {
         if(_gamePlay)
-
-
         {
+            //NavMesh.GetAreaFromName("Walakble")
+
             if (CanMove)
             {
                 if(Input.GetMouseButtonDown(0)) 
                 {
                     RaycastHit hit;
 
-                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                    //
+                    // Something other than the world was hit!
+                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
                     {
-                        agent.destination = hit.point;
                         Instantiate(effect, hit.point, Quaternion.identity);
+                        transform.LookAt(new Vector3(0, hit.point.y, 0));
+                        agent.destination = hit.point;
+                        
                     }
+                    
                 }
                
-
                     //horizontalInput = Input.GetAxisRaw("Horizontal");
                     //verticalInput = Input.GetAxisRaw("Vertical");
-
-
                 if (Input.GetKey(jumpKey) && readyToJump && grounded && !crouching)
                 {
                     readyToJump = false;
