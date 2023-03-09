@@ -10,16 +10,6 @@ public class PlayerMovement : MonoBehaviour
                      internal float walkSpeed;
     [SerializeField] internal float dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
 
-    [Header("Jumping"), SerializeField]
-                     private float jumpForce; 
-    [SerializeField] private float jumpCooldown, airMultiplier;
-    [SerializeField] private KeyCode jumpKey = KeyCode.Space;
-
-    [Header("Crouching")]
-    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
-                     private float crouchModifier = 4;
-                     private bool crouching = false;
-
     [Header("Ground Check"), SerializeField]
                      private float playerHeight;
     [SerializeField] private LayerMask whatIsGround;
@@ -89,8 +79,6 @@ public class PlayerMovement : MonoBehaviour
     {
         walking,
         dashing,
-        //for possible future implementation, but needs bugfixing
-        //crouching,
         air
     }
 
@@ -203,12 +191,6 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = walkSpeed;
         }
 
-        /*else if (crouching)
-        {
-            state = MovementState.crouching;
-            desiredMoveSpeed = walkSpeed - crouchModifier;
-        }*/
-
         else
         {
             state = MovementState.air;
@@ -293,30 +275,8 @@ public class PlayerMovement : MonoBehaviour
                     
                 }
                
-                    //horizontalInput = Input.GetAxisRaw("Horizontal");
-                    //verticalInput = Input.GetAxisRaw("Vertical");
-                if (Input.GetKey(jumpKey) && readyToJump && grounded && !crouching)
-                {
-                    readyToJump = false;
-
-                    Jump();
-
-                    Invoke(nameof(ResetJump), jumpCooldown);
-                }
-
-                if (Input.GetKeyDown(crouchKey) && grounded)
-                {
-                    crouching = true;
-                }
-                else if (Input.GetKeyUp(crouchKey))
-                {
-                    crouching = false;
-                }
             }
-            else if (CanMove == false)
-            {
-
-            }
+            
         }
         
         
@@ -339,8 +299,6 @@ public class PlayerMovement : MonoBehaviour
 
         if(state == MovementState.walking)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-        else
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         /*
         if(state == MovementState.crouching)
@@ -369,20 +327,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
         }
-    }
-
-    private void Jump()
-    {
-        exitingSlope = true;
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);   
-    }
-
-    private void ResetJump()
-    {
-        readyToJump = true;
-        exitingSlope = false;
     }
 
     private bool OnSlope()
@@ -513,7 +457,7 @@ public class PlayerMovement : MonoBehaviour
         {
             HealthSetAtMax = true;
             // how to variables equal?
-            _currentHealth = 100;
+            _currentHealth = _MaxHealth;
             _healthBar.SetHealth(_currentHealth);
             Debug.Log("Player health: " + _currentHealth);
 

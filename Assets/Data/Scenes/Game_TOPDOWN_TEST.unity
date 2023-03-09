@@ -5203,6 +5203,10 @@ PrefabInstance:
       propertyPath: PlayerTarget
       value: 
       objectReference: {fileID: 1986035649109019981}
+    - target: {fileID: 1409802377973767059, guid: ab44aa43b3d92504a92ec22d87341b98, type: 3}
+      propertyPath: gemSpawnOnDeath
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1409802379433222129, guid: ab44aa43b3d92504a92ec22d87341b98, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.99984777
@@ -15988,8 +15992,7 @@ MonoBehaviour:
   dashUpwardForce: 0
   dashDuration: 0.4
   dashCd: 2.5
-  dashKey: 304
-  useCameraFoward: 0
+  useCameraFoward: 1
   allowAllDirections: 1
   disableGravity: 1
   resetVel: 1
@@ -16032,11 +16035,6 @@ MonoBehaviour:
   groundDrag: 4
   moveSpeed: 0
   maxSpeed: 10
-  jumpForce: 12
-  jumpCooldown: 0.25
-  airMultiplier: 0.4
-  jumpKey: 32
-  crouchKey: 306
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2

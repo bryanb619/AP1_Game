@@ -22,9 +22,6 @@ public class Dashing : MonoBehaviour
     private float dashCd;
     private float dashCdTimer;
 
-    [Header("Input"), SerializeField]
-    private KeyCode dashKey = KeyCode.LeftShift;
-
     [Header("Settings"), SerializeField]
     private bool useCameraFoward = true; 
     [SerializeField]
