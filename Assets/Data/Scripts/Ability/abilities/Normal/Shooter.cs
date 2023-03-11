@@ -15,7 +15,7 @@ public class Shooter : MonoBehaviour
     }
     private void Start()
     {
-        _magicType = WeaponType.Normal;
+        _magicType = WeaponType.Fire;
     }
 
 

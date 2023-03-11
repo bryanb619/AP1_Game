@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
     public static SFXSound OnSFXValueChange = new SFXSound();
 
 
-    [SerializeField] private Slider _slider;
+    //[SerializeField] private Slider _ambientSlider;
 
 
     #endregion
