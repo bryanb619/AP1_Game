@@ -10,12 +10,9 @@ public class GemManager : MonoBehaviour
 {
     [Header ("Script References")]
     public PlayerMovement playerScript;
-    public EnemyBehaviour enemy;
-    public EnemyChaseBehaviour enemyChase;
 
     private WaitForSeconds waitFor10Seconds = new(10f);
 
-    [SerializeField]
     private Gems gemType = new();
 
     private TextMeshProUGUI gemText;
@@ -27,7 +24,7 @@ public class GemManager : MonoBehaviour
     private int gemSpeed = 2;
 
     [SerializeField]
-    private Material damage, shield, speed, health;
+    private Material mana, health;
 
     private GameObject player;
     private int gemNumber;
@@ -39,8 +36,6 @@ public class GemManager : MonoBehaviour
     void Start()
     {
         playerScript = FindObjectOfType<PlayerMovement>();
-        enemy = FindObjectOfType<EnemyBehaviour>();
-        enemyChase = FindObjectOfType<EnemyChaseBehaviour>();
         player = GameObject.Find("Player");
     }
 
@@ -48,19 +43,8 @@ public class GemManager : MonoBehaviour
     {
         gemText = GetComponentInChildren<TextMeshProUGUI>();
 
-        if (gemType == Gems.Damage) 
-            GemNumber(1);
-        else if (gemType == Gems.Shield)
-            GemNumber(2);
-        else if (gemType == Gems.Speed)
-            GemNumber(3);
-        else if (gemType == Gems.Health)
-            GemNumber(4);
-        else
-        {
-            gemNumber = UnityEngine.Random.Range(1, 4);
-            GemNumber(gemNumber);
-        }
+        gemNumber = UnityEngine.Random.Range(1, 2);
+        GemNumber(gemNumber);
     }
 
     // Update is called once per frame
@@ -71,16 +55,6 @@ public class GemManager : MonoBehaviour
         LookAtPlayer();
     }
    
-    /*     
-    private void ChangeTextToGemType(string gemTypeText)
-    {
-        
-
-        gemText = gemTypeText;
-
-        Debug.Log("Success on changing text");
-    }
-   */
     private void LookAtPlayer()
     {
         Canvas canvas = GetComponentInChildren<Canvas>();
@@ -113,24 +87,12 @@ public class GemManager : MonoBehaviour
         switch (i)
         {
             case 1:
-                gemType = Gems.Damage;
-                GetComponentInChildren<MeshRenderer>().material = damage;
-                gemText.text = "Damage";
+                gemType = Gems.Mana;
+                GetComponentInChildren<MeshRenderer>().material = mana;
+                gemText.text = "Mana";
                 break;
 
             case 2:
-                gemType = Gems.Shield;
-                GetComponentInChildren<MeshRenderer>().material = shield;
-                gemText.text = "Shield";
-                break;
-
-            case 3:
-                gemType = Gems.Speed;
-                GetComponentInChildren<MeshRenderer>().material = speed;
-                gemText.text = "Speed";
-                break;
-
-            case 4:
                 gemType = Gems.Health;
                 GetComponentInChildren<MeshRenderer>().material = health;
                 gemText.text = "Health";
@@ -148,31 +110,13 @@ public class GemManager : MonoBehaviour
     {
         switch (gemType)
         {
-            case Gems.Damage:
+            case Gems.Mana:
                 StopCoroutine(HealthGem());
-                StopCoroutine(ShieldGem());
-                StopCoroutine(SpeedGem());
-                StartCoroutine(DamageGem());
-                break;
-
-            case Gems.Shield:
-                StopCoroutine(DamageGem());
-                StopCoroutine(HealthGem());
-                StopCoroutine(SpeedGem());
-                StartCoroutine(ShieldGem());
-                break;
-
-            case Gems.Speed:
-                StopCoroutine(DamageGem());
-                StopCoroutine(ShieldGem());
-                StopCoroutine(HealthGem());
-                StartCoroutine(SpeedGem());
+                StartCoroutine(ManaGem());
                 break;
 
             case Gems.Health:
-                StopCoroutine(DamageGem());
-                StopCoroutine(ShieldGem());
-                StopCoroutine(SpeedGem());
+                StopCoroutine(ManaGem());
                 StartCoroutine(HealthGem());
                 break;
 
@@ -181,44 +125,17 @@ public class GemManager : MonoBehaviour
         }
     }
 
-
-    IEnumerator DamageGem()
-    {
-        enemy.damageBoost = 30;
-        enemyChase.damageBoost = 30;
-
-        yield return waitFor10Seconds;
-
-        enemy.damageBoost = 0;
-        enemyChase.damageBoost = 0;
-    }
-
-    IEnumerator ShieldGem()
-    {
-        playerScript.shield = 10;
-
-        yield return waitFor10Seconds;
-
-        playerScript.shield = 0;
-    }
-
-    IEnumerator SpeedGem()
-    {
-        playerScript.walkSpeed += 10;
-        playerScript.dashSpeed += 10;
-        playerScript.maxSpeed += 10;
-        
-        yield return waitFor10Seconds;
-
-        playerScript.walkSpeed -= 10;
-        playerScript.dashSpeed -= 10;
-        playerScript.maxSpeed -= 10;
-    }
-
     IEnumerator HealthGem()
     {
         playerScript.GiveHealth(10);
 
+        yield return null;
+    }
+
+    IEnumerator ManaGem()
+    {
+        //Awaiting mana implementation
+        Debug.Log("Mana gem caught");
         yield return null;
     }
 
@@ -239,8 +156,6 @@ public class GemManager : MonoBehaviour
 
 public enum Gems
 {
-    Damage,
     Health,
-    Shield,
-    Speed
+    Mana
 }

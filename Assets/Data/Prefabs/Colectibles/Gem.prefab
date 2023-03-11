@@ -261,7 +261,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 680847071157996187}
-  m_LocalRotation: {x: 0.35355338, y: -0.1464466, z: 0.35355338, w: 0.8535535}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -82.39, y: 0, z: 0.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -270,7 +270,7 @@ Transform:
   - {fileID: 719382758}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 45}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &680847071157996185
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -297,14 +297,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerScript: {fileID: 0}
-  enemy: {fileID: 0}
-  enemyChase: {fileID: 0}
-  gemType: 0
   maxDistance: 7
   gemSpeed: 2
-  damage: {fileID: 2100000, guid: 417f60ef22dc30a42bd9c30e75f2f537, type: 2}
-  shield: {fileID: 2100000, guid: 8d1a6788bbda5be469715906864b6a9a, type: 2}
-  speed: {fileID: 2100000, guid: fe7aff683a80fef4385895a47bd5d344, type: 2}
+  mana: {fileID: 2100000, guid: fe7aff683a80fef4385895a47bd5d344, type: 2}
   health: {fileID: 2100000, guid: 4e7c0f610945a7e4c909a1aa54e2f56b, type: 2}
   CubeRenderer: {fileID: 6807215719515059969}
 --- !u!1 &6371524222306957076
@@ -360,7 +355,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 417f60ef22dc30a42bd9c30e75f2f537, type: 2}
+  - {fileID: 2100000, guid: 4e7c0f610945a7e4c909a1aa54e2f56b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
