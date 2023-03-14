@@ -2656,7 +2656,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc85721b5d4fdf4eab75bf9860240bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  studioEventEmitters: []
+  ambientSounds: []
+  sfxSounds: []
+  musicSounds: []
   State: 0
   _battleState: 0
 --- !u!4 &579049719
@@ -4159,6 +4161,10 @@ PrefabInstance:
 
 '
       objectReference: {fileID: 0}
+    - target: {fileID: 2081816141254829054, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2081816141441930418, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
       propertyPath: m_CullTransparentMesh
       value: 1
@@ -4285,6 +4291,46 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: c003c16dbd6955e41b7a70d7941de6b9, type: 3}
     - target: {fileID: 2081816142587470077, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840015475041743809, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840015475041743809, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840015475041743809, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8277765184262784407, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8277765184262784407, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8277765184262784407, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8813770866840877512, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8813770866840877512, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9155899064319323750, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9155899064319323750, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -15598,6 +15644,12 @@ MonoBehaviour:
   explosionForce: 100
   explosionDamage: 20
   shield: 0
+  _playerHealthState: 0
+  mainCamera: {fileID: 0}
+  effect: {fileID: 0}
+  SeeThroughLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &1986035649109019984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15630,6 +15682,7 @@ MonoBehaviour:
   firePrefab: {fileID: 2646837571204449996, guid: 358a9e9a785ebb846abde0cf67b9bb47, type: 3}
   icePrefab: {fileID: 2646837571204449996, guid: 8f8791d117d386f44a2568855124e77d, type: 3}
   thunderPrefab: {fileID: 2646837571204449996, guid: ec857e43d8f1a484083a2c899198816c, type: 3}
+  _magicType: 0
 --- !u!33 &1986035650042862808
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -15944,6 +15997,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   FOV: {fileID: 6686890631918039276}
+  mainCamera: {fileID: 0}
 --- !u!1001 &4795243931517057460
 PrefabInstance:
   m_ObjectHideFlags: 0

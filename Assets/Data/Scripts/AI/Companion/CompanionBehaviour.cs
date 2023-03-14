@@ -32,7 +32,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private float minDist = 0.4f;
     // Reference to the state machine
-    private LibGameAI.FSMs.StateMachine stateMachine;
+    private StateMachine stateMachine;
 
     private bool _enemyIS;
     public bool canSee => _enemyIS;
@@ -146,7 +146,6 @@ public class CompanionBehaviour : MonoBehaviour
             CheckEnemy();
             AlphaUpdate();
 
-
             Action actions = stateMachine.Update();
             actions?.Invoke();
         }
@@ -194,6 +193,21 @@ public class CompanionBehaviour : MonoBehaviour
 
             // Set the new rotation
             transform.rotation = Quaternion.Euler(0f, Updateangle, 0f);
+
+            //if (Input.GetMouseButton(0))
+            if(Input.GetKeyDown(KeyCode.Alpha9))
+            {
+                // Get the direction from the companion to the mouse position
+                Vector3 shootDirection = targetPos - transform.position;
+                shootDirection.y = 0f;
+                shootDirection.Normalize();
+
+                // Calculate the angle between the companion's forward vector and the shoot direction
+                float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
+
+                // Rotate the companion towards the shoot direction
+                transform.Rotate(0f, shootAngle, 0f);
+            }
         }
         /*
         if (Input.GetMouseButton(0))
@@ -229,7 +243,6 @@ public class CompanionBehaviour : MonoBehaviour
     private void CheckMoveBool()
     {
 
-
         if (_playerIsMoving == true)
         {
             _StartFollow = true;
@@ -239,7 +252,6 @@ public class CompanionBehaviour : MonoBehaviour
             _StartFollow = false;
         }
     }
-
 
     // Chase the small enemy
     private void Idle()
@@ -261,15 +273,11 @@ public class CompanionBehaviour : MonoBehaviour
         {
             KetChup();
         }
-
-
-
     }
     private void CameraUpdatePos()
     {
         //
         Companion.SetDestination(Target.position);
-
     }
 
     private void Follow()
@@ -280,18 +288,17 @@ public class CompanionBehaviour : MonoBehaviour
         // print("follow!!");
         Companion.SetDestination(Target.position);
 
-        if (Companion.remainingDistance >= 4F)
+        if (Companion.remainingDistance >= 2F)
         {
             KetChup();
         }
-        else if (Companion.remainingDistance >= 6f)
+        else if (Companion.remainingDistance >= 4f)
         {
 
             transform.position = Target.transform.position;
 
         }
     }
-
 
     private void KetChup()
     {
@@ -301,7 +308,6 @@ public class CompanionBehaviour : MonoBehaviour
 
     }
   
-
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);

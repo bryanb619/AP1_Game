@@ -1,8 +1,9 @@
 using UnityEngine;
-using UnityEditor;
-
+//using UnityEditor;
+/*
 public class UIAssetProcessor : AssetPostprocessor
 {
+    
     void OnPostprocessTexture(Texture2D texture)
     {
         if (assetPath.Contains("UI"))
@@ -19,7 +20,9 @@ public class UIAssetProcessor : AssetPostprocessor
         }
         
     }
+    
 
 
    
 }
+*/

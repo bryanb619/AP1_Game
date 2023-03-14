@@ -10,12 +10,25 @@ using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
 using System.Collections;
+using UnityEditor;
 
 
 // The script that controls an agent using an FSM
 //[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
+    private enum AI
+    {
+        _GUARD,
+        _PATROL,
+        _ATTACK,
+        _COVER,
+        _SEARCH,
+        _GLORYKILL,
+        _NONE
+    }
+
+    private AI _stateAI; 
 
     private Color originalColor;
     public int damageBoost = 0;
@@ -40,6 +53,10 @@ public class EnemyBehaviour : MonoBehaviour
     private bool InDanger;
 
     private float AttackRequiredDistance = 8f;
+
+    private float randomPercentage;
+
+    private float maxPercentage = 75f; 
 
 
     // Patrol Points
@@ -99,6 +116,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _canMove;
 
+
+   
+
     // Get references to enemies
     private void Awake()
     { 
@@ -108,6 +128,10 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
+
+        randomPercentage = UnityEngine.Random.Range(0f, 60f) * 100f;
+
+        print(randomPercentage); 
         _canMove = true;
 
         canSeePlayer = false;
@@ -260,7 +284,8 @@ public class EnemyBehaviour : MonoBehaviour
         {
             if ((playerTarget.transform.position - transform.position).magnitude < minDist)
             {
-                transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+                //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+                transform.LookAt(playerTarget.position);
             }
         }
        
@@ -276,7 +301,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void GetPlayer()
     {
-        if(_canMove)
+        if(_canMove && _gamePlay)
         {
             transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
         }
@@ -304,6 +329,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             transform.LookAt(playerTarget.position);
+            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
             Agent.speed = 4f;
             Agent.SetDestination(PlayerTarget.position);
@@ -321,9 +347,8 @@ public class EnemyBehaviour : MonoBehaviour
 
             }
 
-            if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
+            else if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
             {
-
                 GetDistance();
             }
         }
@@ -338,12 +363,19 @@ public class EnemyBehaviour : MonoBehaviour
     {
 
         //transform.LookAt(playerTarget);
+        transform.LookAt(playerTarget);
 
         if (Time.time > nextFire)
         {
+            randomPercentage =  UnityEngine.Random.Range(0f, maxPercentage) * 100f;
+
+            if(randomPercentage >= 50)
+            {
+                Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+            }
             nextFire = Time.time + fireRate;
 
-            Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+
         }
     }
     
@@ -637,8 +669,115 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
+
+    #region Actions Reset
+
+    private void SetGuard()
+    {
+        _stateAI = AI._GUARD;
+    }
+    private void SetPatrol()
+    {
+        _stateAI = AI._PATROL;
+    }
+    private void SetAttack()
+    {
+        _stateAI = AI._ATTACK;
+    }
+    private void SetCover()
+    {
+        _stateAI = AI._COVER;
+    }
+    private void SetSearch()
+    {
+        _stateAI= AI._SEARCH;   
+    }
+    private void SetGloryKill()
+    {
+        _stateAI = AI._GLORYKILL;
+    }
+
+    #endregion
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
+
+/*
+    #region Editor Gizmos
+    private void OnDrawGizmos()
+    {
+
+#if UNITY_EDITOR
+
+
+        //Vector3 namePosition = new Vector3(transform.position.x, transform.position.y, 2f);
+
+        GUIStyle red = new GUIStyle();
+        red.normal.textColor = Color.red;
+
+        GUIStyle yellow = new GUIStyle();
+        yellow.normal.textColor = Color.yellow;
+
+        GUIStyle blue = new GUIStyle();
+        blue.normal.textColor = Color.blue;
+
+        GUIStyle green = new GUIStyle();
+        green.normal.textColor = Color.green;
+
+        GUIStyle cyan = new GUIStyle();
+        cyan.normal.textColor = Color.cyan;
+
+        #region AI State Label 
+
+        switch (_stateAI)
+        {
+            case AI._GUARD:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Guard" + "  Gameplay: " + _gamePlay, green);
+                    break;
+                }
+            case AI._PATROL:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Patrol" + "  Gameplay: " + _gamePlay, blue);
+                    break;
+                }
+            case AI._ATTACK:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: " + _gamePlay, red);
+                    break;
+                }
+            case AI._SEARCH:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Search" + "  Gameplay: " + _gamePlay, yellow);
+                    break;
+                }
+            case AI._COVER:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Cover" + "  Gameplay: " + _gamePlay, cyan);
+                    break;
+                }
+            case AI._GLORYKILL:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: " + _gamePlay);
+                    break;
+                }
+            case AI._NONE:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "NONE" + "  Gameplay: " + _gamePlay);
+                    break;
+                }
+            default:
+                {
+                    Handles.Label(FOV.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: " + _gamePlay);
+                    break;
+                }
+        }
+        #endregion
+#endif
+    }
+    #endregion
+
+    */
 }

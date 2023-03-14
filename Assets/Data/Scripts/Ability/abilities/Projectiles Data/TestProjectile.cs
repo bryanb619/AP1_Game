@@ -2,7 +2,6 @@
 using UnityEngine;
 using FMODUnity;
 using UnityEditor;
-using static GameManager;
 
 #endregion
 
@@ -62,7 +61,7 @@ public class TestProjectile : MonoBehaviour
 
         _emitter = GetComponent<StudioEventEmitter>();
 
-        OnSFXValueChange.AddListener(Setvolume);
+        //OnSFXValueChange.AddListener(Setvolume);
 
         switch (_state)
         {
@@ -302,13 +301,15 @@ public class TestProjectile : MonoBehaviour
                 }
         }
     }
+
+    // unsubscribe of Game manager on destroy
     private void OnDestroy()
     {
-        // unsubscribe of Game manager on destroy
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged; 
     }
     #endregion
 
+    /*
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
@@ -331,4 +332,5 @@ public class TestProjectile : MonoBehaviour
 #endif
     }
     #endregion
+    */
 }
