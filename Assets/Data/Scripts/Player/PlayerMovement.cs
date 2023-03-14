@@ -19,17 +19,17 @@ public class PlayerMovement : MonoBehaviour
 
 
     [Header("Slope Handling")]
+    [HideInInspector]public bool CanMove; 
                      private float maxSlopeAngle;
                      private RaycastHit slopeHit;
                      private bool exitingSlope;
 
-                     private bool readyToJump, grounded;
+                     private bool grounded;
                      private float horizontalInput, verticalInput;
                      Vector3 moveDirection;
                      Rigidbody rb;
                      public bool dashing;
 
-    [HideInInspector]public bool CanMove; 
 
                      private bool PlayerOnMove;
                      public bool _PlayerOnMove => PlayerOnMove;
@@ -47,33 +47,37 @@ public class PlayerMovement : MonoBehaviour
                      public int CurretHealth => _currentHealth;
 
     [Header("Health bar")]
-                     public HealthBar _healthBar;
-    [HideInInspector]public bool HealthSetAtMax;
     [SerializeField] private int regenAmount;
     [SerializeField] private float regenTimer;
     [SerializeField] private bool regenOn;
     [SerializeField] private LayerMask aiLayer;
+                     public HealthBar _healthBar;
+                     public bool HealthSetAtMax;
 
     [Header("Dash Explosion"), SerializeField]
                      private float explosionForce = 10f;
     [SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
 
+    [Header("References"), SerializeField]
+                     private MeshRenderer playerMaterial;
+    [SerializeField] private Camera mainCamera; 
+    [SerializeField] private GameObject effect;
+    [SerializeField] private LayerMask SeeThroughLayer; 
+    [SerializeField] private GameObject playerMesh; 
+    
     private bool _gamePlay;
 
     public enum _PlayerHealth {_Max, NotMax}
 
     public _PlayerHealth _playerHealthState;
 
-    [SerializeField] private Camera mainCamera; 
 
     private GameManager gameManager;
 
     private NavMeshAgent agent;
 
-    [SerializeField] private GameObject effect;
 
-    [SerializeField] private LayerMask SeeThroughLayer; 
 
     private enum MovementState
     {
@@ -116,7 +120,6 @@ public class PlayerMovement : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
-        readyToJump = true;
 
         _CompanionMovement = FindObjectOfType<CompanionBehaviour>();
         restartMenu = FindObjectOfType<RestartMenu>();
@@ -124,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
         _currentHealth = 100;
 
         gameManager = FindObjectOfType<GameManager>();  
-        agent = GetComponent<NavMeshAgent>();   
+        agent = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
@@ -267,19 +270,13 @@ public class PlayerMovement : MonoBehaviour
                     // Something other than the world was hit!
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
                     {
-                        Instantiate(effect, hit.point, Quaternion.identity);
+                        //Instantiate(effect, hit.point, Quaternion.identity);
                         transform.LookAt(new Vector3(0, hit.point.y, 0));
                         agent.destination = hit.point;
-                        
                     }
-                    
                 }
-               
             }
-            
         }
-        
-        
     }
 
     private void MovePlayer()
@@ -300,12 +297,6 @@ public class PlayerMovement : MonoBehaviour
         if(state == MovementState.walking)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        /*
-        if(state == MovementState.crouching)
-            rb.AddForce(moveDirection.normalized * (moveSpeed - crouchModifier) * 10f, ForceMode.Force);
-        else
-            rb.AddForce(moveDirection.normalized * (moveSpeed - crouchModifier) * 10f * airMultiplier, ForceMode.Force);
-        */
         rb.useGravity = !OnSlope();
     }
 
@@ -392,26 +383,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Regen()
-    {
-        /*
-        if ((_currentHealth < _MaxHealth))
-        {
-            GiveHealth(1);
-            if (_currentHealth > _MaxHealth)
-            {
-                _currentHealth = _MaxHealth;
-            }
-        }
-        */
-    }
-
     public void TakeDamage(int damage)
     {
-        CancelInvoke("Regen");
         regenOn = false;
         HealthSetAtMax = false;
         _currentHealth -= (damage - shield);
+
+        StartCoroutine(VisualFeedbackDamage());
 
         _healthBar.SetHealth(_currentHealth);
         Debug.Log("Player Health: " + _currentHealth);
@@ -436,10 +414,26 @@ public class PlayerMovement : MonoBehaviour
     {
         Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
         // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
-        if (aiHits.Length == 0)
-        {
-            //Debug.Log("Invoked Regen");
-            Invoke("Regen", regenTimer);
+    }
+
+    IEnumerator VisualFeedbackDamage()
+    {
+        Debug.Log("ooga booga damage");
+        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
+    }
+
+    IEnumerator VisualFeedbackHeal()
+    {
+        Debug.Log("ooga booga heal");
+
+        for (int i=0; i<=2; i++)
+        { 
+        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
+        yield return new WaitForSeconds(0.1f);
+        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
+        yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -451,6 +445,8 @@ public class PlayerMovement : MonoBehaviour
 
         Debug.Log("Player health is: " + _currentHealth);
 
+        StartCoroutine(VisualFeedbackHeal());
+
         _healthBar.SetHealth(_currentHealth);
 
         if (_currentHealth >= _MaxHealth)
@@ -460,8 +456,9 @@ public class PlayerMovement : MonoBehaviour
             _currentHealth = _MaxHealth;
             _healthBar.SetHealth(_currentHealth);
             Debug.Log("Player health: " + _currentHealth);
-
         }
+
+        VisualFeedbackHeal();
     }
 
     private void CheatCheck()
