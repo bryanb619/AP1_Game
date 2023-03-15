@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Dashing : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class Dashing : MonoBehaviour
     private Transform orientation, playerCam;
     private Rigidbody rb;
     private PlayerMovement pm;
+    private NavMeshAgent playerNavMesh;
 
     [SerializeField]
     private Animator Cam_anim;
@@ -23,14 +24,13 @@ public class Dashing : MonoBehaviour
     private float dashCdTimer;
 
     [Header("Settings"), SerializeField]
-    private bool useCameraFoward = true; 
-    [SerializeField]
     private bool allowAllDirections = true, disableGravity = false, resetVel = true;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         pm = GetComponent<PlayerMovement>();
+        playerNavMesh = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
@@ -42,6 +42,7 @@ public class Dashing : MonoBehaviour
     {
         if (Input.GetButtonDown("Dash"))
         {
+            playerNavMesh.ResetPath();
             Dash();
         }
 
@@ -59,16 +60,11 @@ public class Dashing : MonoBehaviour
         }
         pm.dashing = true;
 
-        Transform forwardT;
-
-        if (useCameraFoward)
-            forwardT = playerCam;
-        else
-            forwardT = orientation;
-
+        Transform forwardT = orientation;
+         
         Vector3 direction = GetDirection(forwardT);
 
-        Vector3 forceToApply = direction * dashForce + orientation.up * dashUpwardForce;
+        Vector3 forceToApply = gameObject.transform.forward * dashForce + orientation.up * dashUpwardForce;
 
         if (disableGravity)
             rb.useGravity = false;
