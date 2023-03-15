@@ -59,22 +59,6 @@ public class CompanionBehaviour : MonoBehaviour
         GameManager.OnGameStateChanged += OnGameStateChanged;
     }
 
-    private void OnGameStateChanged(GameState state)
-    {
-        switch (state)
-        {
-            case GameState.Paused:
-                {
-                    _gameplay = false;
-                    break;
-                }
-            case GameState.Gameplay:
-                {
-                    _gameplay = true;
-                    break;
-                }
-        }
-    }
     // Create the FSM
     private void Start()
     {
@@ -151,6 +135,8 @@ public class CompanionBehaviour : MonoBehaviour
         }
     }
 
+
+
     private void LookAtUpdate()
     {
         // Get the cursor position in screen space
@@ -195,7 +181,7 @@ public class CompanionBehaviour : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, Updateangle, 0f);
 
             //if (Input.GetMouseButton(0))
-            if(Input.GetKeyDown(KeyCode.Alpha9))
+            if(Input.GetKeyDown(KeyCode.R))
             {
                 // Get the direction from the companion to the mouse position
                 Vector3 shootDirection = targetPos - transform.position;
@@ -238,6 +224,23 @@ public class CompanionBehaviour : MonoBehaviour
             transform.LookAt(transform.forward);
         }
         */
+    }
+
+    private void OnGameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Paused:
+                {
+                    _gameplay = false;
+                    break;
+                }
+            case GameState.Gameplay:
+                {
+                    _gameplay = true;
+                    break;
+                }
+        }
     }
 
     private void CheckMoveBool()
@@ -283,8 +286,14 @@ public class CompanionBehaviour : MonoBehaviour
     private void Follow()
     {
 
+        if(Companion.pathPending)
+        {
+            Companion.angularSpeed = 0; 
+        }
         // follow player and camera movement
-        Companion.speed = 10F;
+        Companion.speed = 4F;
+        Companion.acceleration = 7f; 
+
         // print("follow!!");
         Companion.SetDestination(Target.position);
 
@@ -302,7 +311,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void KetChup()
     {
-        Companion.acceleration = 12;
+        Companion.acceleration = 12F;
         Companion.speed = 15F;
         Companion.SetDestination(Target.position);
 

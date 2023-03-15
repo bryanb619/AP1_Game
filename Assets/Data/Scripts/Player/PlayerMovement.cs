@@ -352,20 +352,16 @@ public class PlayerMovement : MonoBehaviour
         speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
         lastPosition = transform.position;
 
-        if(speed >= 5f)
+        if(speed >= 2f)
         {
             _CompanionMovement._playerIsMoving = true;
 
-        }
-        else if (speed >= 12)
-        {
-
-            _CompanionMovement._playerIsMoving = true;
         }
         else
         {
             _CompanionMovement._playerIsMoving = false;
         }
+        
     }
 
     void OnCollisionEnter(Collision other) 

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
 using UnityEngine.Events;
-using UnityEngine.UI;
+//using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -32,11 +32,6 @@ public class GameManager : MonoBehaviour
     public static event Action<GameState>       OnGameStateChanged;
 
 
-    public BattleStates                         _battleState;
-
-    public static event Action<BattleStates>    OnBattleStateChanged;
-
-
     public class SFXSound : UnityEvent<float> {}
 
     public static SFXSound OnSFXValueChange = new SFXSound();
@@ -57,10 +52,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         UpdateGameState(GameState.Gameplay);
-
-       // HandleAmbientVolume(_slider.value);
-
-        //_slider.onValueChanged.AddListener(HandleAmbientVolume);
     }
     #endregion
 
@@ -182,98 +173,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #endregion
-    /*
-    public void AudioState()
-    {
-        foreach (var emitter in studioEventEmitters)
-        {
-            var instance = emitter.EventInstance;
-            instance.setPaused(_audioState);
-        }
-    }
-    */
-
     #endregion
-
-    #region Battle states
-    public void FightState(BattleStates newBattleState)
-    {
-        _battleState = newBattleState;
-
-        switch(newBattleState)
-        {
-            case BattleStates._NONE:
-                {
-                    print("No Battle active");
-                    break;
-                }
-
-            case BattleStates._PLAYERTURM: 
-                {
-                    HandlePlayerTurn();
-                    break;
-                }
-            case BattleStates._ENEMYTURN: 
-                {
-                    HandleEnemyTurn();
-                    break;
-                }
-            case BattleStates._VICTORY:
-                {
-                    HandleVictory();
-                    break;
-                }
-             case BattleStates._DEFEAT: 
-                {
-                    HandleDefeat();
-                    break;
-                }
-            default:{throw new ArgumentOutOfRangeException(nameof(newBattleState), newBattleState, null);}
-        }
-
-        OnBattleStateChanged?.Invoke(newBattleState);
-    }
-
-
-    private void HandlePlayerTurn()
-    {
-
-    }
-
-    private void HandleEnemyTurn()
-    {
-       
-    }
-
-    private void HandleVictory()
-    {
-
-    }
-
-    private void HandleDefeat() 
-    {
-
-    }
-
-    #endregion
-
-    /*
-    public void Pause(bool state)
-    {
-        foreach (var emitter in studioEventEmitters)
-        {
-            var instance = emitter.EventInstance;
-            instance.setPaused(state);
-        }
-    }
-    */
-
-    /*
-    public void ExitGame()
-    {
-        Application.Quit();
-    }
-    */
-
 
 }

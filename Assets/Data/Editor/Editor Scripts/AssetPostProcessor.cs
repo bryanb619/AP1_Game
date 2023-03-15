@@ -1,6 +1,6 @@
 using UnityEngine;
-//using UnityEditor;
-/*
+using UnityEditor;
+
 public class UIAssetProcessor : AssetPostprocessor
 {
     
@@ -25,4 +25,4 @@ public class UIAssetProcessor : AssetPostprocessor
 
    
 }
-*/
+
