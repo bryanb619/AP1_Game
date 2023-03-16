@@ -1,4 +1,4 @@
-﻿/*  */
+/*  */
 
 using System;
 using System.Collections;
@@ -14,22 +14,22 @@ using UnityEditor;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
+    public float rotationSpeed = 1f;
+    
+
+
     #region Variables
 
     private enum AI
     {
-        _GUARD,
-        _PATROL,
-        _ATTACK,
-        _COVER,
-        _SEARCH,
-        _GLORYKILL,
-        _NONE
+        _GUARD, _PATROL,_ATTACK,_COVER,_SEARCH,_GLORYKILL,_NONE
     }
-    [SerializeField] private AI _stateAI;
+    private AI _stateAI;
 
     [Header("AI Profile")]
     [SerializeField] private AIChaseData data;
+
+    [SerializeField] private AIController _control;
 
     private bool gemSpawnOnDeath = true;
     private GameObject gemPrefab;
@@ -189,27 +189,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
-        
-        switch(state)
-        {
-            case GameState.Gameplay:
-                {
-                    _gamePlay = true;
-                    break; 
-                }
-            case GameState.Paused: 
-                {
-                    _gamePlay = false;
-                    break; 
-                }
-        }
-
-        //throw new NotImplementedException();
-    }
-
-   
     #region Void Start 
 
     /// <summary>
@@ -225,6 +204,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
 
         Agent = GetComponent<NavMeshAgent>();
+
+        Agent.updateRotation = false;
         //path = new NavMeshPath();
 
         pathPrediction = gameObject.AddComponent<PredictionModel>();
@@ -381,16 +362,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
         UpdateFunctions(); 
     }
 
-
     private void UpdateFunctions()
     {
-
         switch(_gamePlay)
         {
             case true:
                 {
                     ResumeAgent();
-
                     CanFOV();
                     MinimalCheck();
                     HealthCheck();
@@ -411,16 +389,47 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void ResumeAgent()
     {
-        Agent.Resume();
+        // Get the current agent velocity
+        Vector3 velocity = Agent.velocity;
+
+        // Calculate the rotation angle based on the agent's velocity
+        float rotationAngle = Mathf.Atan2(velocity.x, velocity.z) * Mathf.Rad2Deg;
+
+        // Rotate the agent around its Y-axis
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, rotationAngle, 0), rotationSpeed * Time.deltaTime);
+
+        //Agent.Resume();
+        Agent.isStopped = false;
     }
 
     private void PauseAgent()
     {
         //Agent.speed = 0f; 
-        Agent.Stop(); 
+        //Agent.Stop(); 
+        Agent.isStopped = true; 
     }
 
     #endregion
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+        
+        switch(state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break; 
+                }
+            case GameState.Paused: 
+                {
+                    _gamePlay = false;
+                    break; 
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
 
     #region Condition checked in update
 
@@ -476,7 +485,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     }
                 case false: 
                     {
-                        //SetSearch();
+                        SetSearch();
                         break;
                     }
             }
@@ -505,6 +514,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if(_canMove)
         {
+            if(!canSeePlayer)
+            {
+                SetPatrol(); 
+            }
             //_returnPatrol = false;
 
             Agent.autoBraking = false;
@@ -542,7 +555,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if(_canMove)
         {
             //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-            transform.LookAt(playerTarget);
+            //transform.LookAt(playerTarget);
 
             Agent.stoppingDistance = 3f;
 
@@ -550,6 +563,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
             Agent.acceleration = 11f;
 
             Agent.SetDestination(playerTarget.position);
+
+            if(!canSeePlayer)
+            {
+                Search();
+            }
 
             Attack(); 
         }
@@ -561,7 +579,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_canMove)
         {
-            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             if (Agent.remainingDistance <= 3)
             {
                 Agent.stoppingDistance = 2.7f;
@@ -570,7 +588,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 {
                     if (Time.time > nextAttack)
                     {
-                        transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+                       // transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
                         print("player attacked");
                         //transform.LookAt(playerTarget);
@@ -597,7 +615,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_canMove && _gamePlay)
         {
-            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
         }
     }
 
@@ -654,9 +672,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     }
                 case false:
                     {
+                        if(_stateAI == AI._ATTACK)
+                        {
+                            SetSearch();
+                        }
                         break;
                     }
             }
+
+            /*
             if(canSeePlayer)
             {
                 //Vector3 lastPosition = Agent.destination;
@@ -665,6 +689,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
             }
+            */
             // Get the player's last position (their destination)
             
             // * play animation ( Move FOV HEAD in Y rotation) and initiate again patrol state
@@ -747,18 +772,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetAttack()
     {
         _stateAI = AI._ATTACK;
+        //_control.IsPlayerUnderAttack(); 
+        _control.PlayerAttackStatus(true);
     }
     private void SetCover()
     {
         _stateAI = AI._COVER;
+        _control.PlayerAttackStatus(false);
     }
-    /*private void SetSearch()
-    {
-        _stateAI= AI._SEARCH;   
-    }*/
+    private void SetSearch()
+    { 
+        _stateAI= AI._SEARCH; 
+        _control.PlayerAttackStatus(false);  
+    }
     private void SetGloryKill()
     {
         _stateAI = AI._GLORYKILL;
+        _control.PlayerAttackStatus(false);
     }
     
     #endregion
@@ -1013,13 +1043,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
-/*
+
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
 
 #if UNITY_EDITOR
-
 
         //Vector3 namePosition = new Vector3(transform.position.x, transform.position.y, 2f);
 
@@ -1038,6 +1067,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GUIStyle cyan = new GUIStyle();
         cyan.normal.textColor = Color.cyan;
         
+
         #region AI State Label 
 
         switch (_stateAI)
@@ -1087,5 +1117,5 @@ public class EnemyChaseBehaviour : MonoBehaviour
 #endif
     }
     #endregion
-*/
+
 }

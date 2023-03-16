@@ -15,6 +15,9 @@ public class OptionMenu : MonoBehaviour
         Screen.fullScreen = true;
     }
 
+/// <summary>
+/// Resolution set up 
+/// </summary>
     private void ResolutionSetup()
     {
         resolutions = Screen.resolutions;

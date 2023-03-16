@@ -231,7 +231,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void ResumeAgent()
     {
-        Agent.Resume();
+        //Agent.Resume();
+        Agent.isStopped = false;
 
         MinimalCheck(); // Tester
 
@@ -248,8 +249,9 @@ public class EnemyBehaviour : MonoBehaviour
     private void PauseAgent()
     {
         //Agent.speed = 0f; 
-        Agent.Stop();
-
+        //Agent.Stop();
+        Agent.isStopped = true;
+         
         StopAllCoroutines();
     }
 
