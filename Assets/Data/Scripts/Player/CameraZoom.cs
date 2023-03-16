@@ -26,7 +26,7 @@ public class CameraZoom : MonoBehaviour
 
     private float followMin = 5f; 
 
-    private float followMax = 10f; 
+    private float followMax = 15f; 
 
     [SerializeField] private CinemachineVirtualCamera cam; 
 
