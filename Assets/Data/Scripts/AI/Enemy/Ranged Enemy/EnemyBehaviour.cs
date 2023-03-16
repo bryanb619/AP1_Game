@@ -11,6 +11,7 @@ using LibGameAI.FSMs;
 using UnityEngine.AI;
 using System.Collections;
 using UnityEditor;
+using UnityEngine.UI;
 
 
 // The script that controls an agent using an FSM
@@ -116,7 +117,10 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _canMove;
 
-    private Animator _animator; 
+    private Animator _animator;
+
+
+    private Slider _healthSlider;
 
 
    
@@ -134,6 +138,8 @@ public class EnemyBehaviour : MonoBehaviour
 
         randomPercentage = UnityEngine.Random.Range(0f, 60f) * 100f;
 
+        _healthSlider = GetComponentInChildren<Slider>();
+
         print(randomPercentage); 
         _canMove = true;
 
@@ -144,8 +150,10 @@ public class EnemyBehaviour : MonoBehaviour
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
         PlayerObject = GameObject.Find("Player");
+
+        PlayerTarget = PlayerObject.transform;
         //StartCoroutine(FOVRoutine());
-       
+
         // Create the states
         State onGuardState = new State("On Guard",
             () => Debug.Log("Enter On Guard state"),
@@ -598,12 +606,14 @@ public class EnemyBehaviour : MonoBehaviour
     {
         health -= (_damage + damageBoost);
 
+        
+
         if (health <= 0)
         {
             Die();
         }
 
-        if (health > 0)
+        else if (health > 0)
         {
             // ALERT AI OF player presence
             WarningSystemAI warn;
@@ -641,7 +651,7 @@ public class EnemyBehaviour : MonoBehaviour
                 StartCoroutine(HitFlash());
             }
         }
-
+        _healthSlider.value = health;
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
     }
 

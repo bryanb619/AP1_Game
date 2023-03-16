@@ -4,6 +4,7 @@ using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
 using UnityEditor;
+using UnityEngine.UI;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -134,7 +135,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     //private bool _initiateStartTimer; 
 
 
-    private float retreatDist = 2f;
+    //private float retreatDist = 2f;
 
     // fire damage variables
     private float damagePerSecondFire = 2f;
@@ -154,10 +155,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float moveSpeed = 5f;
 
     // The distance at which the AI character starts fleeing from the player
-    private float fleeDistance = 15f;
+    //private float fleeDistance = 15f;
 
     // The current cover position the AI character is using
     private Transform currentCoverPosition;
+
+    private Slider _healthSlider; 
 
     //public float aiPointRadius;
 
@@ -198,6 +201,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         aiTransform = transform;
 
         _Health = 100;
+        _healthSlider.value = _Health;
         _canAttack = true;
         _canMove = true;
     }
@@ -211,6 +215,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //path = new NavMeshPath();
 
         pathPrediction = gameObject.AddComponent<PredictionModel>();
+        _warn = GetComponent<WarningSystemAI>();
+
+        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+        _healthSlider = GetComponentInChildren<Slider>();
 
 
         PlayerObject = GameObject.Find("Player");
@@ -221,8 +229,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         _Player = FindObjectOfType<PlayerMovement>();
 
-        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
-        _warn = GetComponent<WarningSystemAI>();
+        
+        
     }
     #endregion
 
