@@ -907,6 +907,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5a093415981128847b3e7914c4fcbfe5, type: 3}
   m_PrefabInstance: {fileID: 115803527}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &117914385 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 405513494459397910, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+  m_PrefabInstance: {fileID: 2175094279818591595}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &128201365
 GameObject:
   m_ObjectHideFlags: 0
@@ -1367,6 +1372,11 @@ Mesh:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
   m_PrefabInstance: {fileID: 1381647994}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &281514590 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2175094280960145857, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+  m_PrefabInstance: {fileID: 2175094279818591595}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &284225653
 GameObject:
@@ -3226,7 +3236,6 @@ MonoBehaviour:
   - {fileID: 1694030354}
   musicSounds: []
   State: 0
-  _battleState: 0
 --- !u!4 &579049719
 Transform:
   m_ObjectHideFlags: 0
@@ -8450,6 +8459,11 @@ MonoBehaviour:
 --- !u!4 &1361835790 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2175094281146583653, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+  m_PrefabInstance: {fileID: 2175094279818591595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!195 &1361835792 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 2175094281146583651, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
   m_PrefabInstance: {fileID: 2175094279818591595}
   m_PrefabAsset: {fileID: 0}
 --- !u!43 &1378242551
@@ -19043,12 +19057,36 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: dashCd
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
       propertyPath: Cam_anim
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: dashForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
       propertyPath: playerCam
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 281514590}
+    - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: orientation
+      value: 
+      objectReference: {fileID: 117914385}
+    - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: navmeshAgent
+      value: 
+      objectReference: {fileID: 1361835792}
+    - target: {fileID: 2175094281146583648, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: SeeThroughLayer.m_Bits
+      value: 1988855
       objectReference: {fileID: 0}
     - target: {fileID: 2175094281146583649, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
       propertyPath: _canvasManager
@@ -19058,10 +19096,22 @@ PrefabInstance:
       propertyPath: _cameraTransform
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2175094281146583650, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 281514590}
+    - target: {fileID: 2175094281146583651, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: m_AutoBraking
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2175094281146583655, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
       propertyPath: _healthBar
       value: 
       objectReference: {fileID: 1404860998}
+    - target: {fileID: 2175094281146583655, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
+      propertyPath: SeeThroughLayer.m_Bits
+      value: 1988855
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce87e59dff5a87a449ae4a4d887c1803, type: 3}
 --- !u!1 &2542221273729609396

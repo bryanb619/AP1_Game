@@ -43,7 +43,7 @@ public class GemManager : MonoBehaviour
     {
         gemText = GetComponentInChildren<TextMeshProUGUI>();
 
-        gemNumber = UnityEngine.Random.Range(1, 2);
+        gemNumber = UnityEngine.Random.Range(1, 3);
         GemNumber(gemNumber);
     }
 
@@ -84,23 +84,17 @@ public class GemManager : MonoBehaviour
     #region Gem type and functions
     public void GemNumber(int i)
     {
-        switch (i)
+        if (i == 1)
+        { 
+            gemType = Gems.Mana;
+            GetComponentInChildren<MeshRenderer>().material = mana;
+            gemText.text = "Mana";
+        }
+        else if (i == 2)
         {
-            case 1:
-                gemType = Gems.Mana;
-                GetComponentInChildren<MeshRenderer>().material = mana;
-                gemText.text = "Mana";
-                break;
-
-            case 2:
                 gemType = Gems.Health;
                 GetComponentInChildren<MeshRenderer>().material = health;
                 gemText.text = "Health";
-                break;
-
-            default:
-                print("Error Selecting the Gem Type");
-                break;
         }
 
         Debug.Log("Number: " + gemNumber + " Type: " + gemType);

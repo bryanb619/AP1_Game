@@ -5,19 +5,17 @@ using UnityEngine.AI;
 
 public class Dashing : MonoBehaviour
 {
-    [Header("References"), SerializeField]
-    private Transform orientation, playerCam;
-    private Rigidbody rb;
-    private PlayerMovement pm;
-    private NavMeshAgent playerNavMesh;
-
-    [SerializeField]
-    private Animator Cam_anim;
+    [SerializeField] private NavMeshAgent navmeshAgent;
+    [SerializeField] private Transform orientation;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private LayerMask SeeThroughLayer;
+                     private Rigidbody rb;
+                     private PlayerMovement pm;
+                     private NavMeshAgent playerNavMesh;
 
     [Header("Dashing"), SerializeField]
-    private float dashForce;
-    [SerializeField]
-    private float dashUpwardForce, dashDuration;
+                     private float dashForce;
+    [SerializeField] private float dashUpwardForce, dashDuration;
 
     [Header("Cooldown"), SerializeField]
     private float dashCd;
@@ -28,6 +26,7 @@ public class Dashing : MonoBehaviour
 
     private void Start()
     {
+        navmeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         pm = GetComponent<PlayerMovement>();
         playerNavMesh = GetComponent<NavMeshAgent>();
@@ -40,27 +39,33 @@ public class Dashing : MonoBehaviour
 
     private void DashInput()
     {
-        if (Input.GetButtonDown("Dash"))
+        if (Input.GetButtonDown("Dash") && dashCdTimer <= 0)
         {
-            playerNavMesh.ResetPath();
-            Dash();
+            RaycastHit hit;
+
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
+            {
+                transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                playerNavMesh.ResetPath();
+                StartCoroutine(DeactivateNavMesh(0.4f));
+                Dash(hit);
+            }
         }
 
         if (dashCdTimer > 0)
             dashCdTimer -= Time.deltaTime;
     }
 
-    private void Dash()
+    private void Dash(RaycastHit hit)
     {
         if (dashCdTimer > 0) return;
         else
         {
             dashCdTimer = dashCd;
-            Cam_anim.SetTrigger("dashed");
         }
         pm.dashing = true;
 
-        Transform forwardT = orientation;
+        Transform forwardT = hit.transform;
          
         Vector3 direction = GetDirection(forwardT);
 
@@ -109,6 +114,15 @@ public class Dashing : MonoBehaviour
             direction = forwardT.forward;
 
         return direction.normalized;
+    }
+
+    IEnumerator DeactivateNavMesh(float time)
+    {
+        navmeshAgent.enabled = false;
+        Debug.Log("Deactivated NavMeshAgent");
+        yield return new WaitForSeconds(time);
+        navmeshAgent.enabled = true;
+        Debug.Log("Activated NavMeshAgent");
     }
 
 }
