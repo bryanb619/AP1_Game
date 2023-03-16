@@ -42,12 +42,24 @@ public class Dashing : MonoBehaviour
     {
         if (Input.GetButtonDown("Dash"))
         {
-            playerNavMesh.ResetPath();
+            Kinematicdeactivation();
+            //playerNavMesh.ResetPath();
             Dash();
+
+            // Reactivate NavMeshAgent kinematic option after some time (in seconds)
+            float reactivateTime = 1.0f; // Example: reactivate after 2 seconds
+            StartCoroutine(ReactivateNavAgentKinematic(reactivateTime));
         }
 
         if (dashCdTimer > 0)
             dashCdTimer -= Time.deltaTime;
+    }
+
+    private void Kinematicdeactivation()
+    {
+        // Deactivate NavMeshAgent kinematic option
+        playerNavMesh.updatePosition = false;
+        playerNavMesh.updateRotation = false;
     }
 
     private void Dash()
@@ -109,6 +121,13 @@ public class Dashing : MonoBehaviour
             direction = forwardT.forward;
 
         return direction.normalized;
+    }
+
+    IEnumerator ReactivateNavAgentKinematic(float time)
+    {
+        yield return new WaitForSeconds(time);
+        playerNavMesh.updatePosition = true;
+        playerNavMesh.updateRotation = true;
     }
 
 }

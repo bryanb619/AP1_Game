@@ -2,12 +2,18 @@ using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
-  
+    [Header("References")]
     [SerializeField] private Transform      firePoint;
-    [SerializeField] private GameObject     normalPrefab, firePrefab, icePrefab, thunderPrefab;
+    [SerializeField] private Camera         mainCamera;
 
-    public WeaponType            _magicType;
-    private bool                  _gameplay;
+    [Header("Prefabs")]
+    [SerializeField] private GameObject normalPrefab;
+    [SerializeField] private GameObject firePrefab, icePrefab, thunderPrefab;
+
+    private Vector3 enemyPosition;
+
+    public WeaponType _magicType;
+    private bool _gameplay;
 
     private void Awake()
     {
@@ -59,21 +65,25 @@ public class Shooter : MonoBehaviour
         {
             _magicType = WeaponType.Normal;
             print("Ability is set to normal");
+            Shoot();
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Q))
         {
             _magicType = WeaponType.Fire;
             print("Ability is set to fire");
+            Shoot();
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+            _magicType = WeaponType.Thunder;
+            print("Ability is set to Ice");
+            Shoot();
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
         {
             _magicType = WeaponType.Ice;
-            print("Ability is set to Ice");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
             print("Ability is set to Thunder");
-            _magicType = WeaponType.Thunder;
+            Shoot();
         }
     }
 
@@ -81,24 +91,23 @@ public class Shooter : MonoBehaviour
     {
         switch(_magicType)
         {
-            case WeaponType.Normal: // input nº1
-                {
-                    // call Script for time out
-                    
+            case WeaponType.Normal: // input nÂº1
+                {                    
                     Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
                     break; 
                 }
-            case WeaponType.Fire: // input nº2
+            case WeaponType.Fire: // input nÂº2 (Q)
                 {
                     Instantiate(firePrefab, firePoint.position, firePoint.rotation);
                     break;
                 }
-            case WeaponType.Ice: // input nº3
+            case WeaponType.Thunder: // input nÂº3 (W)
                 {
-                    Instantiate(icePrefab, firePoint.position, firePoint.rotation);
+                    //Instantiate inside the TargetAttack function to avoid unecessary code
+                    TargetAttack();
                     break; 
                 }
-            case WeaponType.Thunder: // input nº4
+            case WeaponType.Ice: // input nÂº4 (R)
                 {
                     Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
                     break;
@@ -108,6 +117,19 @@ public class Shooter : MonoBehaviour
         
     }
 
+    private void TargetAttack()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
+                Debug.Log("Enemy Hit with Ice");
+            }
+        }
+    }
 
     private void OnDestroy()
     {
