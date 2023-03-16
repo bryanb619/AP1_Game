@@ -4,6 +4,7 @@ using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
 using UnityEditor;
+using TMPro;
 
 /// <summary>
 /// Enemy AI chase behaviour
@@ -15,6 +16,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Variables
     private float rotationSpeed = 1f;
 
+    private TextMeshProUGUI damageText;
 
     private enum AI
     {
@@ -174,8 +176,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     #region Awake 
     // Get references to enemies
-    private void Awake(){
+    private void Awake()
+    {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        damageText = GetComponentInChildren<TextMeshProUGUI>();
     }
     #endregion
 
@@ -796,6 +800,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         print(_Health);
         _Health -= _damage + damageBoost;
 
+        damageText.text = _damage.ToString();
+        StartCoroutine(DamageTextDisappear());
 
         if (_Health <= 0)
         {
@@ -863,6 +869,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #endregion
 
     #region Coroutines (cover & FOV)
+    
     #region Cover Routine
 
     private IEnumerator Hide(Transform Target)
@@ -999,6 +1006,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
             canSeePlayer = false;
     }
     #endregion
+    
+    #region Other Coroutins
+    IEnumerator DamageTextDisappear()
+    {
+        yield return new WaitForSeconds(2f);
+        damageText.text = " ";
+    }
+    #endregion
+    
     #endregion
 
     #region Couroutines AI Damage
