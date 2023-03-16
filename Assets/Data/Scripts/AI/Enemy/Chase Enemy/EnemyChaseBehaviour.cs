@@ -23,6 +23,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     private AI _stateAI;
 
+    private GameState _gameState;
+
     [Header("AI Profile")]
     [SerializeField] private AIChaseData data;
 
@@ -200,10 +202,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
        
         aiTransform = transform;
 
-        _Health = 100;
-        _healthSlider.value = _Health;
-        _canAttack = true;
-        _canMove = true;
+        
     }
 
     #region Components Sync
@@ -229,6 +228,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         _Player = FindObjectOfType<PlayerMovement>();
 
+        _Health = 100;
+        _healthSlider.value = _Health;
+
+        _canAttack = true;
+        _canMove = true;
+
+        switch (_gameState) 
+        {
+            case GameState.Gameplay: _gamePlay = true; break;
+            case GameState.Paused: _gamePlay = false; break;    
+        }
         
         
     }
