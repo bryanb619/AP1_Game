@@ -1,5 +1,3 @@
-/*  */
-
 using System;
 using System.Collections;
 using UnityEngine;
@@ -14,11 +12,9 @@ using UnityEditor;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyChaseBehaviour : MonoBehaviour
 {
-    public float rotationSpeed = 1f;
-    
-
-
     #region Variables
+    private float rotationSpeed = 1f;
+
 
     private enum AI
     {
@@ -176,20 +172,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
     */
     #endregion
 
-    #region Awake & Start
+    #region Awake 
     // Get references to enemies
-    private void Awake()
-    {
-        //PlayerObject = GameObject.Find("Player");
-        _Player = FindObjectOfType<PlayerMovement>();
-
-        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
-        _warn = GetComponent<WarningSystemAI>();
-
+    private void Awake(){
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
+    #endregion
 
-    #region Void Start 
+    #region Start 
 
     /// <summary>
     /// INFO in Void Start: 
@@ -199,10 +189,22 @@ public class EnemyChaseBehaviour : MonoBehaviour
     /// * State Transitions
     /// 
     /// </summary>
-
     private void Start()
     {
+        GetComponents();
+        GetProfile();
+        GetStates();
+       
+        aiTransform = transform;
 
+        _Health = 100;
+        _canAttack = true;
+        _canMove = true;
+    }
+
+    #region Components Sync
+    private void GetComponents()
+    {
         Agent = GetComponent<NavMeshAgent>();
 
         Agent.updateRotation = false;
@@ -210,34 +212,55 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         pathPrediction = gameObject.AddComponent<PredictionModel>();
 
-        #region profile Sync
+
+        PlayerObject = GameObject.Find("Player");
+        playerTarget = PlayerObject.transform;
+
+        //playerTarget = GetComponent<Transform>();
+
+        
+        _Player = FindObjectOfType<PlayerMovement>();
+
+        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+        _warn = GetComponent<WarningSystemAI>();
+    }
+    #endregion
+
+    #region profile Sync
+    private void GetProfile()
+    {
+
         // attack 
         minDist = data.MinDist;
-        AttackRate= data.AttackRate;
+        AttackRate = data.AttackRate;
         // FOV
-        radius= data.Radius;
-        angle= data.Angle;
-        targetMask= data.TargetMask;
-        obstructionMask= data.ObstructionMask;  
+        radius = data.Radius;
+        angle = data.Angle;
+        targetMask = data.TargetMask;
+        obstructionMask = data.ObstructionMask;
         // Cover
-        HidableLayers= data.HidableLayers;
-        minDistInCover= data.MindistIncover;
+        HidableLayers = data.HidableLayers;
+        minDistInCover = data.MindistIncover;
         // Health
-        _Health= data.Health;
+        _Health = data.Health;
         // Weakness
         _iceWeak = data.Ice;
-        _fireWeak= data.Fire;
-        _thunderWeak= data.Thunder;
+        _fireWeak = data.Fire;
+        _thunderWeak = data.Thunder;
         // Gem
-        gemSpawnOnDeath= data.GemSpawnOnDeath;
+        gemSpawnOnDeath = data.GemSpawnOnDeath;
         gemPrefab = data.Gem;
 
         //
-        damage = data.Damage;   
-        #endregion
+        damage = data.Damage;
 
+    }
+    #endregion
 
-        #region  States 
+    #region  States Sync 
+    private void GetStates()
+    {
+        #region States
         // Non Combat states
         State onGuardState = new State("",
             () => Debug.Log("Enter On Guard state"),
@@ -273,6 +296,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         #endregion
 
+
         #region Trasintion of states
         // Add the transitions
         onGuardState.AddTransition(
@@ -281,7 +305,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 () => _stateAI == AI._ATTACK || canSeePlayer,
                 () => Debug.Log("Player found!"),
                 ChaseState));
-       
+
         ChaseState.AddTransition(
            new Transition(
                //InCoverState == true
@@ -332,20 +356,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         #endregion
 
-        aiTransform = transform;
-
         stateMachine = new StateMachine(PatrolState);
 
-        
-
-        //StartCoroutine(FOVRoutine());
-        //InvokeRepeating("Reapet Fov", 0.5f, 1f);
-
-        _Health = 100;
-        _canAttack = true;
-        _canMove = true;
     }
     #endregion
+
 
     #endregion
 
@@ -359,9 +374,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         targetMask = data.TargetMask;
         obstructionMask = data.ObstructionMask;
 
-        UpdateFunctions(); 
+        UpdateFunctions();
     }
-
     private void UpdateFunctions()
     {
         switch(_gamePlay)
@@ -387,6 +401,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
 
+    #region agent state
     private void ResumeAgent()
     {
         // Get the current agent velocity
@@ -408,28 +423,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //Agent.Stop(); 
         Agent.isStopped = true; 
     }
-
     #endregion
 
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
-        
-        switch(state)
-        {
-            case GameState.Gameplay:
-                {
-                    _gamePlay = true;
-                    break; 
-                }
-            case GameState.Paused: 
-                {
-                    _gamePlay = false;
-                    break; 
-                }
-        }
-
-        //throw new NotImplementedException();
-    }
+    #endregion
 
     #region Condition checked in update
 
@@ -445,7 +441,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             if ((playerTarget.transform.position - transform.position).magnitude < minDist)
             {
                 //transform.LookAt(new Vector3(0,playerTarget.position.y, 0));
-                transform.LookAt(playerTarget);
+                //transform.LookAt(playerTarget);
+                Agent.SetDestination(playerTarget.transform.position);
                 _inAttackRange = true;
             }
             else
@@ -773,22 +770,22 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         _stateAI = AI._ATTACK;
         //_control.IsPlayerUnderAttack(); 
-        _control.PlayerAttackStatus(true);
+        //_control.PlayerAttackStatus(true);
     }
     private void SetCover()
     {
         _stateAI = AI._COVER;
-        _control.PlayerAttackStatus(false);
+        //_control.PlayerAttackStatus(false);
     }
     private void SetSearch()
     { 
         _stateAI= AI._SEARCH; 
-        _control.PlayerAttackStatus(false);  
+        //_control.PlayerAttackStatus(false);  
     }
     private void SetGloryKill()
     {
         _stateAI = AI._GLORYKILL;
-        _control.PlayerAttackStatus(false);
+        //_control.PlayerAttackStatus(false);
     }
     
     #endregion
@@ -865,8 +862,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
+    #region Coroutines (cover & FOV)
     #region Cover Routine
-    
+
     private IEnumerator Hide(Transform Target)
     {
         WaitForSeconds Wait = new WaitForSeconds(UpdateFrequency);
@@ -1001,8 +999,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
             canSeePlayer = false;
     }
     #endregion
+    #endregion
 
-    #region IEnumeratos associated with damage on AI
+    #region Couroutines AI Damage
     private IEnumerator STFS(float value)
     {
 
@@ -1039,10 +1038,36 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
+    #region Game state state reception
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region Script destroy actions
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
+    #endregion
 
     #region Editor Gizmos
     private void OnDrawGizmos()
@@ -1117,5 +1142,4 @@ public class EnemyChaseBehaviour : MonoBehaviour
 #endif
     }
     #endregion
-
 }

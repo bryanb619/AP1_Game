@@ -116,6 +116,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _canMove;
 
+    private Animator _animator; 
+
 
    
 
@@ -128,6 +130,7 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
+        _animator = GetComponentInChildren<Animator>();   
 
         randomPercentage = UnityEngine.Random.Range(0f, 60f) * 100f;
 
@@ -233,6 +236,15 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //Agent.Resume();
         Agent.isStopped = false;
+
+        if(curSpeed > 0.3) 
+        {
+            _animator.SetBool("isWalking", true); 
+        }
+        else
+        {
+            _animator.SetBool("isWalking", false);
+        }
 
         MinimalCheck(); // Tester
 
@@ -369,18 +381,27 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (Time.time > nextFire)
         {
-            randomPercentage =  UnityEngine.Random.Range(0f, maxPercentage) * 100f;
+            
 
-            if(randomPercentage >= 50)
-            {
-                Instantiate(bullet, _shootPos.position, _shootPos.rotation);
-            }
+            _animator.SetBool("isAttacking", true);
+
+            Instantiate(bullet, _shootPos.position, _shootPos.rotation);
             nextFire = Time.time + fireRate;
+        }
 
+        //randomPercentage =  UnityEngine.Random.Range(0f, maxPercentage) * 100f;
 
+        //if(randomPercentage >= 50)
+        //{
+
+        //}
+
+        else
+        {
+            _animator.SetBool("isAttacking", false);
+            //
         }
     }
-    
 
     private void GetDistance()
     {
