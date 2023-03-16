@@ -258,6 +258,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(_gamePlay)
         {
+            agent.isStopped = false;
             //NavMesh.GetAreaFromName("Walakble")
 
             if (CanMove)
@@ -269,12 +270,16 @@ public class PlayerMovement : MonoBehaviour
                     // Something other than the world was hit!
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
                     {
-                        //Instantiate(effect, hit.point, Quaternion.identity);
+                        Instantiate(effect, hit.point, Quaternion.identity);
                         transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
                         agent.destination = hit.point;
                     }
                 }
             }
+        }
+        else if(!_gamePlay) 
+        {
+            agent.isStopped = true;
         }
     }
 
