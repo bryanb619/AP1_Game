@@ -362,6 +362,7 @@ public class CompanionBehaviour : MonoBehaviour
         lerpProgres = Mathf.Clamp01(distance / maxDistance);
         CompanionMesh.material.Lerp(normal, AlphaLow, transitionSpeed);
         */
+        /*
         if ((AlphaPoint.transform.position - transform.position).magnitude < minDist)
         {
             Setlow();
@@ -372,6 +373,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             SetHigh();
         }
+        */
     }
 
     private void CheckEnemy()

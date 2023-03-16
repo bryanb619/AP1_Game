@@ -706,7 +706,7 @@ public class EnemyBehaviour : MonoBehaviour
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-/*
+
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
@@ -781,5 +781,5 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
-    */
+    
 }

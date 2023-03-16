@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
 
-        //Time.timeScale = 1f;
+        Time.timeScale = 1f;
         _audioState = false;
 
         HandleEventEmitterState();
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
 
         _audioState = true;
         
-        //Time.timeScale = 0f;
+        Time.timeScale = 0f;
 
         HandleEventEmitterState();
 
