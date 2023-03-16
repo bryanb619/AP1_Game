@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 9187043567967739488}
   - component: {fileID: 9187043567967739491}
   - component: {fileID: 9187043567967739494}
+  - component: {fileID: 5372535872662114359}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -125,9 +126,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46a8b8254029fc3448d9a4fc68947e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  navmeshAgent: {fileID: 0}
   orientation: {fileID: 0}
-  playerCam: {fileID: 0}
-  Cam_anim: {fileID: 0}
+  mainCamera: {fileID: 0}
+  SeeThroughLayer:
+    serializedVersion: 2
+    m_Bits: 0
   dashForce: 0
   dashUpwardForce: 0
   dashDuration: 0
@@ -187,6 +191,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5372535872662114359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9187043567967739500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 252288758c9a3394797f28612abc21c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firePoint: {fileID: 0}
+  mainCamera: {fileID: 0}
+  normalPrefab: {fileID: 0}
+  firePrefab: {fileID: 0}
+  icePrefab: {fileID: 0}
+  thunderPrefab: {fileID: 0}
+  _magicType: 0
 --- !u!1 &9187043567983448155
 GameObject:
   m_ObjectHideFlags: 0

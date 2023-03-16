@@ -38,6 +38,7 @@ public class Tester : MonoBehaviour
         CheckBools();
         KillAll();
 
+/*
         if (Input.GetKeyDown(KeyCode.M))
         {
             
@@ -56,6 +57,7 @@ public class Tester : MonoBehaviour
             }
             
         }
+        */
     }
 
 
@@ -109,11 +111,11 @@ public class Tester : MonoBehaviour
             //Enemy1.TakeDamage(100);
             //Enemy2.TakeDamage(100); 
         }
-        if (Input.GetKeyDown(KeyCode.Y)) //|| KillEnemy == true)
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             //Die();
-            //Enemy1.TakeDamage(25);
-            //Enemy2.TakeDamage(25);
+            Enemy1.TakeDamage(10, WeaponType.Normal);
+            Enemy2.TakeDamage(10, WeaponType.Normal);
         }
     }
 
