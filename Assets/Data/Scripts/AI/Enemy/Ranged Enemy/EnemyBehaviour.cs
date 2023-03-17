@@ -31,9 +31,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     private AI _stateAI; 
 
-
-    private GameState _gameState;   
-
     private Color originalColor;
     public int damageBoost = 0;
 
@@ -126,7 +123,7 @@ public class EnemyBehaviour : MonoBehaviour
     private Slider _healthSlider;
 
 
-  
+   
 
     // Get references to enemies
     private void Awake()
@@ -137,13 +134,6 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        switch (_gameState)
-        {
-            case GameState.Gameplay: _gamePlay = true; break;
-            case GameState.Paused: _gamePlay = false; break;
-        }
-
-
         _animator = GetComponentInChildren<Animator>();   
 
         randomPercentage = UnityEngine.Random.Range(0f, 60f) * 100f;
@@ -155,7 +145,6 @@ public class EnemyBehaviour : MonoBehaviour
 
         canSeePlayer = false;
         health = 100f;
-        
 
         Agent = GetComponent<NavMeshAgent>();
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
