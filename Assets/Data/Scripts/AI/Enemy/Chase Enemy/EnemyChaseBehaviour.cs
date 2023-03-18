@@ -1086,7 +1086,38 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     #endregion
 
-    #region Script destroy actions
+    public void OnBecomeVisible()
+    {
+        //ResumeAgent();
+        //this.gameObject.SetActive(false);
+        //enabled = false;  
+
+        Debug.Log("Enemy Invisible");
+    }
+    public void OnBecomeInvisible()
+    {
+        //PauseAgent();
+        //this.gameObject.SetActive(true);
+        //enabled = true;
+        Debug.Log("Enemy Visible");
+    }
+
+
+    private void OnBecameInvisible()
+    {
+        this.gameObject.SetActive(false);
+        print("out of cam range"); 
+    }
+
+    private void OnBecameVisible()
+    {
+        this.gameObject.SetActive(true);
+        print("in cam range");
+    }
+
+
+
+    #region Script destroy actions 
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;

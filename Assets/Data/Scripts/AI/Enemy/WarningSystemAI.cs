@@ -30,14 +30,14 @@ public class WarningSystemAI : MonoBehaviour
 
             enemy = GetComponent<EnemyChaseBehaviour>();
 
-            Debug.Log(type.ToString());
+            //Debug.Log(type.ToString());
         }
 
         if (TryGetComponent(out EnemyBehaviour r))
         {
             type = EnemyType.enemyRanged;
             enemy2 = GetComponent<EnemyBehaviour>();
-            Debug.Log(type.ToString());
+            //Debug.Log(type.ToString());
         }
 
 

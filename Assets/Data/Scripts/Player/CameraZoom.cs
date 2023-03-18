@@ -49,6 +49,8 @@ public class CameraZoom : MonoBehaviour
     {
        //HandleZoom();
        HandleTransformZoom(); 
+
+        
        
        //transform.LookAt(target); 
    
@@ -85,7 +87,7 @@ public class CameraZoom : MonoBehaviour
     private void HandleTransformZoom()
     {
 
-        Debug.Log(Input.mouseScrollDelta); 
+        //Debug.Log(Input.mouseScrollDelta); 
 
         Vector3 ZOOMDIR =  followOffset.normalized;
 

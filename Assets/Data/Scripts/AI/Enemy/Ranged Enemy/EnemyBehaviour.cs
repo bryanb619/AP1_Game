@@ -140,7 +140,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         _healthSlider = GetComponentInChildren<Slider>();
 
-        print(randomPercentage); 
+        //print(randomPercentage); 
         _canMove = true;
 
         canSeePlayer = false;
@@ -731,6 +731,19 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
     #endregion
+
+
+    private void OnBecameInvisible()
+    {
+        this.gameObject.SetActive(false);
+     
+    }
+
+    private void OnBecameVisible()
+    {
+        this.gameObject.SetActive(true);
+        
+    }
 
     private void OnDestroy()
     {

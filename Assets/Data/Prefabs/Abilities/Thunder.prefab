@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2646837571204449986}
   - component: {fileID: -4366530315691907318}
   - component: {fileID: 5714515358046491947}
+  - component: {fileID: -7819069722328685975}
   m_Layer: 12
   m_Name: Thunder
   m_TagString: Untagged
@@ -114,7 +115,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &5714515358046491947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,3 +129,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 72e324eeba3f87d41a34770497daa1e2, type: 2}
+--- !u!114 &-7819069722328685975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2646837571204449996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 931600225
+      Data2: 1126829286
+      Data3: -1754371174
+      Data4: 1427993918
+    Path: event:/Spells/THUNDERSPELL3D
+  Event: 
+  PlayEvent: 1
+  StopEvent: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20

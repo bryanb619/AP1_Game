@@ -73,10 +73,12 @@ public class PlayerMovement : MonoBehaviour
     public _PlayerHealth _playerHealthState;
 
 
-    private GameManager gameManager;
+    private NavMeshPath path;
+    private float elapsed = 0.0f;
 
     private NavMeshAgent agent;
 
+    private LayerMask _layerMask; 
 
 
     private enum MovementState
@@ -121,13 +123,16 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
+        agent = GetComponent<NavMeshAgent>();
+
         _CompanionMovement = FindObjectOfType<CompanionBehaviour>();
         restartMenu = FindObjectOfType<RestartMenu>();
         HealthSetAtMax = true;
         _currentHealth = 100;
 
-        gameManager = FindObjectOfType<GameManager>();  
-        agent = GetComponent<NavMeshAgent>();
+        path = new NavMeshPath();
+        elapsed = 0.0f;
+
     }
 
     private void Update()
@@ -259,20 +264,22 @@ public class PlayerMovement : MonoBehaviour
         if(_gamePlay)
         {
             agent.isStopped = false;
-            //NavMesh.GetAreaFromName("Walakble")
-
+           
             if (CanMove)
             {
-                if(Input.GetMouseButtonDown(0)) 
+                if(Input.GetMouseButtonDown(1)) 
                 {
                     RaycastHit hit;
 
                     // Something other than the world was hit!
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
+                    //if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, NavMesh.GetAreaFromName("Walkable")))
                     {
-                        Instantiate(effect, hit.point, Quaternion.identity);
-                        transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+
                         agent.destination = hit.point;
+                        Instantiate(effect, hit.point, Quaternion.identity);
+                        //transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                        
                     }
                 }
             }
