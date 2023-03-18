@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 //using UnityEngine.Animations;
 
@@ -12,6 +11,8 @@ using UnityEngine.UIElements;
 public class CompanionBehaviour : MonoBehaviour
 {
 
+    private enum CompanionState { _idle, _follow, _rotate}
+    private CompanionState _StateAI;  
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     private mini _MiniMapCollor;
@@ -54,15 +55,15 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField] private LayerMask _attackLayers;
 
-    private Vector3 lookPos; 
 
     [SerializeField] private Camera mainCamera;
 
     [SerializeField] Transform companionAim;
 
-    public float cursorOffset;
+    private bool _canRotate; 
+    [SerializeField] private GameObject target;
+    [SerializeField] private float degreesPerSecond = 45;
 
-    [SerializeField] private float MaxHit; 
 
 
     private void Awake()
@@ -104,25 +105,30 @@ public class CompanionBehaviour : MonoBehaviour
             Follow,
             () => Debug.Log(""));
 
-      
+        State RotateState = new State("",
+            () => Debug.Log(""),
+            RotateAroundPlayer,
+            () => Debug.Log(""));
+
+
 
         // Add the transitions
 
-      
-        // Idle
+
+        // Idle -> Follow
         IdleState.AddTransition(
             new Transition(
-                () => _StartFollow == true,
+                () => _StateAI == CompanionState._follow,
                 () => Debug.Log(""),
                 FollowState));
 
-        // Follow
+        // Follow -> Idle
         FollowState.AddTransition(
            new Transition(
-               () => _StartFollow == false,
+               () => _StateAI == CompanionState._idle,
                () => Debug.Log(""),
                IdleState));
-       
+
 
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
@@ -133,17 +139,22 @@ public class CompanionBehaviour : MonoBehaviour
     {
         if(_gameplay) 
         {
+            ResumeAgent();
             StartCoroutine(FOVRoutine());
 
-            //LookAtUpdate();
             Aim();
 
             CheckMoveBool();
             CheckEnemy();
-            AlphaUpdate();
+            //AlphaUpdate();
+            RotateTimer();
 
             Action actions = stateMachine.Update();
             actions?.Invoke();
+        }
+        else if(!_gameplay)
+        {
+            AgentPause();
         }
     }
 
@@ -206,6 +217,8 @@ public class CompanionBehaviour : MonoBehaviour
         Debug.DrawRay(transform.position, direction, Color.yellow);
         */
     }
+
+    #region Raycast aim mouse Update
     private void Aim()
     {
         var (success, position) = GetMousePosition();
@@ -241,71 +254,58 @@ public class CompanionBehaviour : MonoBehaviour
     }
 
     /*
-    // Get the cursor position in screen space
-    //Vector3 cursorPosition = Input.mousePosition;
+// Get the cursor position in screen space
+//Vector3 cursorPosition = Input.mousePosition;
 
-    // Convert the cursor position to world space
-    //cursorPosition.z = mainCamera.transform.position.y;
-    //cursorPosition = mainCamera.ScreenToWorldPoint(cursorPosition);
+// Convert the cursor position to world space
+//cursorPosition.z = mainCamera.transform.position.y;
+//cursorPosition = mainCamera.ScreenToWorldPoint(cursorPosition);
 
-    // Make the object follow the cursor position
-    //transform.position = cursorPosition;
+// Make the object follow the cursor position
+//transform.position = cursorPosition;
 
-    // Rotate the object in the y-axis based on the cursor position
-    //Vector3 direction = cursorPosition - transform.position;
-    //float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-    //transform.rotation = Quaternion.Euler(0f, angle, 0f);
+// Rotate the object in the y-axis based on the cursor position
+//Vector3 direction = cursorPosition - transform.position;
+//float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+//transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-    float angle = Vector3.SignedAngle(transform.up, ray.direction, transform.forward);
+float angle = Vector3.SignedAngle(transform.up, ray.direction, transform.forward);
 
-    // Update the rotation of the transform
-    Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+// Update the rotation of the transform
+Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
 
-    if (Physics.Raycast(ray, out RaycastHit hit))
+if (Physics.Raycast(ray, out RaycastHit hit))
+{
+    // Get the target position to rotate towards
+    Vector3 targetPos = hit.point;
+
+    // Ignore the y-axis to only rotate around the vertical axis
+    targetPos.y = transform.position.y;
+
+    // Calculate the direction to the target
+    Vector3 UpdateDirection = targetPos - transform.position;
+
+    // Calculate the rotation angle around the vertical axis
+    float Updateangle = Mathf.Atan2(UpdateDirection.x, UpdateDirection.z) * Mathf.Rad2Deg;
+
+    // Set the new rotation
+    transform.rotation = Quaternion.Euler(0f, Updateangle, 0f);
+
+    /*
+
+    //if (Input.GetMouseButton(0))
+    if(Input.GetMouseButton(0))
     {
-        // Get the target position to rotate towards
-        Vector3 targetPos = hit.point;
 
-        // Ignore the y-axis to only rotate around the vertical axis
-        targetPos.y = transform.position.y;
+        RaycastHit Mousehit;
 
-        // Calculate the direction to the target
-        Vector3 UpdateDirection = targetPos - transform.position;
-
-        // Calculate the rotation angle around the vertical axis
-        float Updateangle = Mathf.Atan2(UpdateDirection.x, UpdateDirection.z) * Mathf.Rad2Deg;
-
-        // Set the new rotation
-        transform.rotation = Quaternion.Euler(0f, Updateangle, 0f);
-
-        /*
-
-        //if (Input.GetMouseButton(0))
-        if(Input.GetMouseButton(0))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
         {
-
-            RaycastHit Mousehit;
-
-            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
-            {
-                Vector3 shootDirection = hit.transform.position - transform.position;
-                shootDirection.y = 0f;
-                shootDirection.Normalize();
-
-                // Calculate the angle between the companion's forward vector and the shoot direction
-                float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
-
-                // Rotate the companion towards the shoot direction
-                transform.Rotate(0f, shootAngle, 0f);
-            }
-
-            /*
-            // Get the direction from the companion to the mouse position
-            Vector3 shootDirection = targetPos - transform.position;
+            Vector3 shootDirection = hit.transform.position - transform.position;
             shootDirection.y = 0f;
             shootDirection.Normalize();
 
@@ -314,10 +314,23 @@ public class CompanionBehaviour : MonoBehaviour
 
             // Rotate the companion towards the shoot direction
             transform.Rotate(0f, shootAngle, 0f);
-
-
         }
-         */
+
+        /*
+        // Get the direction from the companion to the mouse position
+        Vector3 shootDirection = targetPos - transform.position;
+        shootDirection.y = 0f;
+        shootDirection.Normalize();
+
+        // Calculate the angle between the companion's forward vector and the shoot direction
+        float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
+
+        // Rotate the companion towards the shoot direction
+        transform.Rotate(0f, shootAngle, 0f);
+
+
+    }
+     */
     /*
     private void NewAim()
     {
@@ -394,36 +407,30 @@ public class CompanionBehaviour : MonoBehaviour
     }
     */
 
-    private void OnGameStateChanged(GameState state)
-    {
-        switch (state)
-        {
-            case GameState.Paused:
-                {
-                    _gameplay = false;
-                    break;
-                }
-            case GameState.Gameplay:
-                {
-                    _gameplay = true;
-                    break;
-                }
-        }
-    }
+    #endregion
+
+
+
+    
 
     private void CheckMoveBool()
     {
+        print(_playerIsMoving); 
 
-        if (_playerIsMoving == true)
+        if (_playerIsMoving)
         {
-            _StartFollow = true;
+            //_StartFollow = true;
+            _StateAI = CompanionState._follow;
         }
-        else
+        else if(!_playerIsMoving)
         {
-            _StartFollow = false;
+            // _StartFollow = false;
+            _StateAI = CompanionState._idle;
         }
     }
 
+
+    #region Idle State
     // Chase the small enemy
     private void Idle()
     {
@@ -433,23 +440,46 @@ public class CompanionBehaviour : MonoBehaviour
         Companion.isStopped = true;
 
         // follow only camera movement
-
-        if (Companion.remainingDistance <= 2f)
-        {
-            CameraUpdatePos();
-        }
-
-        else if (Companion.remainingDistance >= 6F)
-        {
-            KetChup();
-        }
+       
+       
     }
+
+    private void RotateTimer()
+    {
+        if(_canRotate) 
+        {
+            float elapsed = 0F;
+
+            elapsed += Time.deltaTime;
+            print(elapsed); 
+            if(elapsed >= 5f)
+            {
+                _StateAI = CompanionState._rotate; 
+            }
+
+        }
+        
+
+        
+    }
+
+    private void RotateAroundPlayer()
+    {
+        transform.RotateAround(target.transform.position, Vector3.forward, degreesPerSecond * Time.deltaTime);
+    }
+
+
     private void CameraUpdatePos()
     {
         Companion.isStopped = false;
         Companion.SetDestination(Target.position);
     }
 
+
+    #endregion
+
+
+    #region Follow State
     private void Follow()
     {
         Companion.isStopped = false;
@@ -486,7 +516,11 @@ public class CompanionBehaviour : MonoBehaviour
      
 
     }
-  
+
+    #endregion
+
+
+    #region Enemy detection
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);
@@ -523,6 +557,23 @@ public class CompanionBehaviour : MonoBehaviour
             _enemyIS = false;
     }
 
+    private void CheckEnemy()
+    {
+
+        if (_enemyIS)
+        {
+            //_EPI.SetActive(true);
+            //_MiniMapCollor.SetCollorRed();
+        }
+        else
+        {
+            //_EPI.SetActive(false);
+            //_MiniMapCollor.SetCollorDefault();
+        }
+    }
+    #endregion
+
+    #region Alpha update
     private void AlphaUpdate()
     {
         /*
@@ -546,20 +597,6 @@ public class CompanionBehaviour : MonoBehaviour
         */
     }
 
-    private void CheckEnemy()
-    {
-
-        if (_enemyIS)
-        {
-            //_EPI.SetActive(true);
-            //_MiniMapCollor.SetCollorRed();
-        }
-        else
-        {
-            //_EPI.SetActive(false);
-            //_MiniMapCollor.SetCollorDefault();
-        }
-    }
 
     private void Setlow()
     {
@@ -573,7 +610,46 @@ public class CompanionBehaviour : MonoBehaviour
         // change to normal material
         CompanionMesh.material = normal;
     }
- 
+    #endregion
 
+    #region Gamplay State
+    private void OnGameStateChanged(GameState state)
+    {
+        switch (state)
+        {
+            case GameState.Paused:
+                {
+                    _gameplay = false;
+                    break;
+                }
+            case GameState.Gameplay:
+                {
+                    _gameplay = true;
+                    break;
+                }
+        }
+    }
+    private void ResumeAgent()
+    {
+        if(_StateAI == CompanionState._follow) 
+        {
+           Companion.isStopped = true;
+        }
+        else 
+        {
+            Companion.isStopped = false;    
+        }
+    }
+
+    private void AgentPause()
+    {
+        Companion.isStopped = true;
+    }
+    #endregion
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= OnGameStateChanged;
+    }
 
 }
