@@ -10,17 +10,22 @@ public class Shooter : MonoBehaviour
     [SerializeField] private GameObject normalPrefab;
     [SerializeField] private GameObject firePrefab, icePrefab, thunderPrefab;
 
+    public WeaponType _magicType;
+    
+    [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
-    private RaycastHit hit;
 
+    private ManaManager manaManager;
+
+    private RaycastHit hit;
     private Vector3 enemyPosition;
 
-    public WeaponType _magicType;
     private bool _gameplay;
 
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        manaManager = GetComponent<ManaManager>();
     }
     private void Start()
     {
@@ -50,16 +55,9 @@ public class Shooter : MonoBehaviour
     {
         if (_gameplay)
         {
-            ShootPos();
             ShootInput();
         }
         
-    }
-
-    private void ShootPos()
-    {
-
-       
     }
 
     private void ShootInput()
@@ -101,22 +99,34 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
-                    Instantiate(firePrefab, firePoint.position, firePoint.rotation);
-                    break;
+                    if (manaManager.ManaCheck(_magicType) == true)
+                    { 
+                        Instantiate(firePrefab, firePoint.position, firePoint.rotation);
+                        break;
+                    }
+                    else
+                        break;
                 }
             case WeaponType.Ice: // input nº3 (W)
                 {
                     //Instantiate inside the TargetAttack function to avoid unecessary code
                     TargetAttack();
-                    break; 
-                }
-            case WeaponType.Thunder: // input nº4 (R)
-                {
-                    //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
-                    AreaAttack();
                     break;
                 }
-            default: {break;}
+            case WeaponType.Thunder: // input nº4 (R)
+                    {
+                        if (manaManager.ManaCheck(_magicType) == true)
+                        {
+                            //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
+                            AreaAttack();
+                            break;
+                        }
+                        else
+                            break;
+                }
+            
+            default: 
+                break;
         }
         
     }
@@ -127,8 +137,13 @@ public class Shooter : MonoBehaviour
         {
             if (hit.collider.CompareTag("Enemy"))
             {
-                Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
-                Debug.Log("Enemy Hit with Ice");
+                if (manaManager.ManaCheck(_magicType) == true)
+                {
+                    Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
+                    Debug.Log("Enemy Hit with Ice");
+                }
+                else
+                    Debug.Log("Not enough mana");
             }
         }
     }
