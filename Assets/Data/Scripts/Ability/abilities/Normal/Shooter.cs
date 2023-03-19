@@ -10,6 +10,9 @@ public class Shooter : MonoBehaviour
     [SerializeField] private GameObject normalPrefab;
     [SerializeField] private GameObject firePrefab, icePrefab, thunderPrefab;
 
+    [SerializeField] private float areaAttackRadius = 5f;
+    private RaycastHit hit;
+
     private Vector3 enemyPosition;
 
     public WeaponType _magicType;
@@ -75,13 +78,13 @@ public class Shooter : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {
-            _magicType = WeaponType.Thunder;
+            _magicType = WeaponType.Ice;
             print("Ability is set to Ice");
             Shoot();
         }
         else if (Input.GetKeyDown(KeyCode.R))
         {
-            _magicType = WeaponType.Ice;
+            _magicType = WeaponType.Thunder;
             print("Ability is set to Thunder");
             Shoot();
         }
@@ -101,15 +104,16 @@ public class Shooter : MonoBehaviour
                     Instantiate(firePrefab, firePoint.position, firePoint.rotation);
                     break;
                 }
-            case WeaponType.Thunder: // input nº3 (W)
+            case WeaponType.Ice: // input nº3 (W)
                 {
                     //Instantiate inside the TargetAttack function to avoid unecessary code
                     TargetAttack();
                     break; 
                 }
-            case WeaponType.Ice: // input nº4 (R)
+            case WeaponType.Thunder: // input nº4 (R)
                 {
-                    Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
+                    //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
+                    AreaAttack();
                     break;
                 }
             default: {break;}
@@ -119,8 +123,6 @@ public class Shooter : MonoBehaviour
 
     private void TargetAttack()
     {
-        RaycastHit hit;
-
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
         {
             if (hit.collider.CompareTag("Enemy"))
@@ -131,9 +133,37 @@ public class Shooter : MonoBehaviour
         }
     }
 
+    private void AreaAttack()
+    {
+/*  
+        if (hit.collider.CompareTag("Enemy"))
+        {
+            Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
+            Debug.Log("Enemy Hit with Ice");
+        }
+*/
+
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaAttackRadius);
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Enemy"))
+            {
+                // Deal damage to the enemy
+                Instantiate(thunderPrefab, hitCollider.transform.position, firePoint.rotation);
+            }
+        }
+    }
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Draw a wireframe sphere to show the attack range
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, areaAttackRadius);
     }
 
 }
