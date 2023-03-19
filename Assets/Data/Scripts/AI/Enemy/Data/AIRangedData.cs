@@ -91,8 +91,10 @@ public class AIRangedData : ScriptableObject
     [SerializeField] private bool thunder;
     public bool Thunder => thunder;
 
-    [Header("Gem")]
+    public GameObject projectile;
+    public GameObject specialProjectile;
 
+    [Header("Gem")]
     [Tooltip("Set true to spawn Gem")]
     [SerializeField] private bool gemSpawnOnDeath;
     public bool GemSpawnOnDeath => gemSpawnOnDeath;

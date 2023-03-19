@@ -18,7 +18,7 @@ public class EnemyBullet : MonoBehaviour
 
     private int                                 speed;
 
-    public int                                  damage;
+    private int                                  damage;
 
     private int                                 maxTime; 
 
@@ -92,7 +92,9 @@ public class EnemyBullet : MonoBehaviour
 
         maxTime = data.timeAirbone;
 
+      
         _impactEffet = data._useImpact;
+
         impactObject = data.impactEffect;
 
         if (_rb != null && _useRb)
@@ -135,7 +137,7 @@ public class EnemyBullet : MonoBehaviour
         {
             elapsed += Time.deltaTime;
 
-            Debug.Log(elapsed);
+            //Debug.Log(elapsed);
             if (elapsed >= maxTime)
             {
                 DestroyOnDistance();
@@ -180,7 +182,7 @@ public class EnemyBullet : MonoBehaviour
         if (player != null)
         {
             DestroyBullet();
-            player.TakeDamage(10);
+            player.TakeDamage(damage);
         }
         else if (hitInfo.tag == "Wall" || hitInfo.tag == "Default")
         {

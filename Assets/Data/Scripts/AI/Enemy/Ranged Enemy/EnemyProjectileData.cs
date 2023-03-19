@@ -29,6 +29,7 @@ public class EnemyProjectileData : ScriptableObject
 
     public int                                  timeAirbone; 
 
+
   
     [Header("Impact effect")]
     [Tooltip("set to true")]

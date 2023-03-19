@@ -1,10 +1,4 @@
-﻿/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Author: Nuno Fachada
- * */
-
+﻿#region Libs
 using System;
 using UnityEngine;
 using LibGameAI.FSMs;
@@ -12,12 +6,25 @@ using UnityEngine.AI;
 using System.Collections;
 using UnityEditor;
 using UnityEngine.UI;
+#endregion
 
+#region Ranged AI Brain Script
 
-// The script that controls an agent using an FSM
-//[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
+    #region  Variables
+
+    // Reference to AI data
+    [SerializeField] private AIRangedData data;
+
+    // Reference to the state machine
+    private StateMachine stateMachine;
+
+    // Reference to the NavMeshAgent
+    internal NavMeshAgent agent;
+
+    // AI Set states
     private enum AI
     {
         _GUARD,
@@ -29,7 +36,14 @@ public class EnemyBehaviour : MonoBehaviour
         _NONE
     }
 
-    private AI _stateAI; 
+    private AI _stateAI;
+
+
+    private Animator _animator;
+
+    private Slider _healthSlider;
+
+    [SerializeField] private Agents _agentAI;
 
     private Color originalColor;
     public int damageBoost = 0;
@@ -37,7 +51,7 @@ public class EnemyBehaviour : MonoBehaviour
     GemManager gemManager;
 
     [SerializeField] private bool gemSpawnOnDeath;
-    internal NavMeshAgent Agent;
+
     private float health;
 
     // References to enemies
@@ -65,8 +79,7 @@ public class EnemyBehaviour : MonoBehaviour
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
 
-    // Reference to the state machine
-    private StateMachine stateMachine;
+
 
     [Range(10, 150)]
     public float radius;
@@ -84,10 +97,16 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField]
     private Transform _shootPos;
 
-    [SerializeField] private GameObject bullet, gemPrefab;
+    [SerializeField] private GameObject gemPrefab;
+
+    private GameObject bullet, specialBullet; 
 
     private float fireRate = 2f;
     private float nextFire = 0f;
+
+
+    private float powerCooldown = 5f;
+    private float timeSincePowerCooldown = 0f; 
 
 
     // hide code
@@ -117,59 +136,95 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _canMove;
 
-    private Animator _animator;
+
+    private bool _canAttack;
+
+    private bool _isAttacking; 
 
 
-    private Slider _healthSlider;
+    #endregion
 
-
-   
-
+    #region Awake
     // Get references to enemies
     private void Awake()
     { 
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
     }
 
+    #endregion
+
+    #region Start
     // Create the FSM
     private void Start()
     {
-        _animator = GetComponentInChildren<Animator>();   
-
-        randomPercentage = UnityEngine.Random.Range(0f, 60f) * 100f;
-
-        _healthSlider = GetComponentInChildren<Slider>();
-
-        //print(randomPercentage); 
         _canMove = true;
+        GetComponents();
+        GetProfile();
+        GetStates();
 
-        canSeePlayer = false;
+        // temp code
         health = 100f;
+        _canAttack = true;
+        _isAttacking = false;
 
-        Agent = GetComponent<NavMeshAgent>();
+       
+    }
+
+    #region Components Sync
+    private void GetComponents()
+    {
+        agent = GetComponent<NavMeshAgent>();
+
+        _agentAI = GetComponentInChildren<Agents>();
+        _animator = GetComponentInChildren<Animator>();
+        _healthSlider = GetComponentInChildren<Slider>();
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+
+       
 
         PlayerObject = GameObject.Find("Player");
 
         PlayerTarget = PlayerObject.transform;
-        //StartCoroutine(FOVRoutine());
 
+    }
+    #endregion
+
+    #region Profile Sync
+    private void GetProfile()
+    {
+
+
+
+        // Abilities
+        bullet = data.projectile;
+        specialBullet = data.specialProjectile; 
+    
+    }
+    #endregion
+
+    #region States
+    private void GetStates()
+    {
         // Create the states
         State onGuardState = new State("On Guard",
             () => Debug.Log("Enter On Guard state"),
             null,
-            () => Debug.Log("Leave On Guard state"));
+            () => Debug.Log("Left Guard state"));
+
+        State PatrolState = new State("On Patrol",
+           () => Debug.Log("Entered Patrol state"),
+           Patrol,
+           () => Debug.Log("Left Patrol state"));
 
         State ChaseState = new State("Fight",
             () => Debug.Log("Enter Fight state"),
             ChasePlayer,
-            () => Debug.Log("Leave Fight state"));
+            () => Debug.Log("LeFT Fight state"));
 
-
-        State PatrolState = new State("no visual",
-            () => Debug.Log("Enter Fight state"),
-            Patrol,
-            () => Debug.Log("Leave Fight state"));
+        State CoverState = new State("Cover State",
+           () => Debug.Log("Entered Cover state"),
+           Cover,
+           () => Debug.Log("Left Cover State"));
 
         State GloryKillState = new State("Glory Kill State",
             () => Debug.Log("Entered glory kill state"),
@@ -177,7 +232,7 @@ public class EnemyBehaviour : MonoBehaviour
             () => Debug.Log("Left Glory Kill State"));
 
 
-    
+
         // Add the transitions
 
         onGuardState.AddTransition(
@@ -196,7 +251,7 @@ public class EnemyBehaviour : MonoBehaviour
             new Transition(
                 () => _canGloryKill == true,
                 () => Debug.Log(""),
-                GloryKillState));   
+                GloryKillState));
 
         PatrolState.AddTransition(
            new Transition(
@@ -204,24 +259,27 @@ public class EnemyBehaviour : MonoBehaviour
                () => Debug.Log(""),
                ChaseState));
 
-        
-       
+        CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == false, ()=> Debug.Log("Cover State"), PatrolState));
+        CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == true, () => Debug.Log("Cover State"), ChaseState));
+
+        ChaseState.AddTransition(new Transition(() => _canAttack == false, () => Debug.Log("Cover State"), CoverState));
 
         // Create the state machine
         stateMachine = new StateMachine(PatrolState);
     }
+    #endregion
 
-    private void FixedUpdate()
-    {
-        
-    }
+    #endregion
 
+    #region Update
     // Request actions to the FSM and perform them
     private void Update()
     {
         UpdateAI();
     }
+    #endregion
 
+    #region AI update
     private void UpdateAI()
     {
         switch(_gamePlay)
@@ -243,7 +301,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void ResumeAgent()
     {
         //Agent.Resume();
-        Agent.isStopped = false;
+        agent.isStopped = false;
 
         if(curSpeed > 0.3) 
         {
@@ -270,35 +328,10 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //Agent.speed = 0f; 
         //Agent.Stop();
-        Agent.isStopped = true;
+        agent.isStopped = true;
          
         StopAllCoroutines();
     }
-
-
-
-
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
-
-        switch (state)
-        {
-            case GameState.Gameplay:
-                {
-                    _gamePlay = true;
-                    break;
-                }
-            case GameState.Paused:
-                {
-                    _gamePlay = false;
-                    break;
-                }
-        }
-
-        //throw new NotImplementedException();
-    }
-
-
 
     private void MinimalCheck()
     {
@@ -329,11 +362,11 @@ public class EnemyBehaviour : MonoBehaviour
         }
         
     }
+    #endregion
 
     #region AI ACTIONS
     private void HandleGainSight(Transform Target)
     {
-
         if (MovementCoroutine != null)
         {
             StopCoroutine(MovementCoroutine);
@@ -347,20 +380,26 @@ public class EnemyBehaviour : MonoBehaviour
     // Chase 
     private void ChasePlayer()
     {
+        StartAttacking(); 
+
+
         if(_canMove)
         {
             //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             transform.LookAt(playerTarget.position);
             //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-            Agent.speed = 4f;
-            Agent.SetDestination(PlayerTarget.position);
+            agent.speed = 4f;
+            agent.SetDestination(PlayerTarget.position);
 
 
             if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
             {
-                Agent.speed = 0;
-                Attack();
+                agent.speed = 0;
+                StartAttacking();
+
+                Attack(); 
+               
 
                 // se estiver atacando por x tempo
 
@@ -383,27 +422,31 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Attack()
     {
+        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-        //transform.LookAt(playerTarget);
-        transform.LookAt(playerTarget);
 
         if (Time.time > nextFire)
         {
-            
+            randomPercentage = UnityEngine.Random.Range(0f, 100f);
 
+            print("percentage is: "+randomPercentage);
             _animator.SetBool("isAttacking", true);
 
-            Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+            if(randomPercentage <= 10f) 
+            {
+                Instantiate(specialBullet, _shootPos.position, _shootPos.rotation);
+            }
+            else if(timeSincePowerCooldown >= powerCooldown)
+            {
+
+                powerCooldown = 0f; 
+            }
+            else 
+            {
+                Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+            }
             nextFire = Time.time + fireRate;
         }
-
-        //randomPercentage =  UnityEngine.Random.Range(0f, maxPercentage) * 100f;
-
-        //if(randomPercentage >= 50)
-        //{
-
-        //}
-
         else
         {
             _animator.SetBool("isAttacking", false);
@@ -413,22 +456,26 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void GetDistance()
     {
-        Agent.speed = 5f;
-        Agent.acceleration = 12;
+        agent.speed = 5f;
+        agent.acceleration = 12;
         
 
         if (curSpeed <= 1 && canSee)
         {
-
             Attack();
-            //Debug.Log("Chase health: " + _Health);
         }
 
         HandleGainSight(PlayerTarget);
 
     }
+
+    private void Cover()
+    {
+        StopAttacking(); 
+        HandleGainSight(PlayerTarget);
+    }
     
-    #region hide Routine
+    #region Get Distance
 
     private IEnumerator Hide(Transform Target)
     {
@@ -440,7 +487,7 @@ public class EnemyBehaviour : MonoBehaviour
                 Colliders[i] = null;
             }
 
-            int hits = Physics.OverlapSphereNonAlloc(Agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
+            int hits = Physics.OverlapSphereNonAlloc(agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
 
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
@@ -457,31 +504,31 @@ public class EnemyBehaviour : MonoBehaviour
 
             for (int i = 0; i < hits; i++)
             {
-                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, Agent.areaMask))
+                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, agent.areaMask))
                 {
-                    if (!NavMesh.FindClosestEdge(hit.position, out hit, Agent.areaMask))
+                    if (!NavMesh.FindClosestEdge(hit.position, out hit, agent.areaMask))
                     {
                         Debug.LogError($"Unable to find edge close to {hit.position}");
                     }
 
                     if (Vector3.Dot(hit.normal, (Target.position - hit.position).normalized) < HideSensitivity)
                     {
-                        Agent.SetDestination(hit.position);
+                        agent.SetDestination(hit.position);
                         break;
                     }
                     else
                     {
                         // Since the previous spot wasn't facing "away" enough from teh target, we'll try on the other side of the object
-                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, Agent.areaMask))
+                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, agent.areaMask))
                         {
-                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, Agent.areaMask))
+                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, agent.areaMask))
                             {
                                 Debug.LogError($"Unable to find edge close to {hit2.position} (second attempt)");
                             }
 
                             if (Vector3.Dot(hit2.normal, (Target.position - hit2.position).normalized) < HideSensitivity)
                             {
-                                Agent.SetDestination(hit2.position);
+                                agent.SetDestination(hit2.position);
                                 break;
                             }
                         }
@@ -512,7 +559,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
         else
         {
-            return Vector3.Distance(Agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(Agent.transform.position, B.transform.position));
+            return Vector3.Distance(agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(agent.transform.position, B.transform.position));
         }
     }
 
@@ -523,10 +570,10 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(_canMove)
         {
-            Agent.autoBraking = false;
-            Agent.stoppingDistance = 0f;
+            agent.autoBraking = false;
+            agent.stoppingDistance = 0f;
 
-            if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
+            if (!agent.pathPending && agent.remainingDistance < 0.5f)
             {
                 GotoNetPoint();
             }
@@ -539,13 +586,13 @@ public class EnemyBehaviour : MonoBehaviour
     private void GotoNetPoint()
     {
         
-        Agent.speed = 3f;
+        agent.speed = 3f;
         // Returns if no points have been set up
         if (_PatrolPoints.Length == 0)
             return;
 
         // Set the agent to go to the currently selected destination.
-        Agent.destination = _PatrolPoints[destPoint].position;
+        agent.destination = _PatrolPoints[destPoint].position;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
@@ -554,8 +601,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void GloryKill()
     {
-        Agent.radius = 1f;
-        Agent.isStopped = true;
+        StopAttacking();
+        agent.radius = 1f;
+        agent.isStopped = true;
     }
 
     #endregion
@@ -601,7 +649,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
-
+    #region Health
     public void TakeDamage(int _damage, WeaponType _Type)
     {
         health -= (_damage + damageBoost);
@@ -663,7 +711,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         Debug.Log("Enemy died");
     }
-
+    #endregion
 
     #region Combat IEnumerators
     IEnumerator HitFlash()
@@ -702,7 +750,6 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
-
     #region Actions Reset
 
     private void SetGuard()
@@ -732,7 +779,28 @@ public class EnemyBehaviour : MonoBehaviour
 
     #endregion
 
+    #region Agents Info Exchange
 
+    public void StartAttacking()
+    {
+       if(!_isAttacking) 
+       {
+            _agentAI.StartAttacking();
+       }
+    }
+
+    public void StopAttacking()
+    {
+        if(_isAttacking)
+        {
+            _agentAI.StopAttacking();
+            _canAttack = false;
+        }
+        
+    }
+    #endregion
+
+    #region Camera rendering
     private void OnBecameInvisible()
     {
         this.gameObject.SetActive(false);
@@ -744,12 +812,36 @@ public class EnemyBehaviour : MonoBehaviour
         this.gameObject.SetActive(true);
         
     }
+    #endregion
 
+    #region GameState
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+    #endregion
+
+    #region Destroy
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
-
+    #endregion
 
     #region Editor Gizmos
     private void OnDrawGizmos()
@@ -824,6 +916,5 @@ public class EnemyBehaviour : MonoBehaviour
 #endif
     }
     #endregion
-
-    
 }
+#endregion
