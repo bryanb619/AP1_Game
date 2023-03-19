@@ -130,9 +130,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     //private bool _canGloryKill; 
 
     // sub state condition bools
-    private bool IsAttacking;
+    private bool _isAttacking;
     //private bool _underAttack;
-    bool _inAttackRange;
+    private bool _inAttackRange;
     private bool _canMove; 
     //private bool _initiateStartTimer; 
 
@@ -454,7 +454,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 //transform.LookAt(new Vector3(0,playerTarget.position.y, 0));
                 //transform.LookAt(playerTarget);
-                Agent.SetDestination(playerTarget.transform.position);
+                Agent.SetDestination(playerTarget.position);
                 _inAttackRange = true;
             }
             else
@@ -527,6 +527,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 SetPatrol(); 
             }
+            else if(canSeePlayer)
+            {
+                SetAttack(); 
+            }
             //_returnPatrol = false;
 
             Agent.autoBraking = false;
@@ -566,19 +570,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
             //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
             //transform.LookAt(playerTarget);
 
-            Agent.stoppingDistance = 3f;
+           
+            if(canSeePlayer)
+            {
+                Agent.speed = 5f;
+                Agent.acceleration = 11f;
 
-            Agent.speed = 5f;
-            Agent.acceleration = 11f;
-
-            Agent.SetDestination(playerTarget.position);
-
-            if(!canSeePlayer)
+                Agent.SetDestination(playerTarget.position);
+                Attack();
+            }
+            else
             {
                 Search();
             }
 
-            Attack(); 
+            
         }
         //print("ATTACK");
     }
@@ -586,37 +592,38 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Attack()
     {
-        if (_canMove)
+        print(Agent.remainingDistance); 
+        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+        Agent.stoppingDistance = 3.7f;
+        if (Agent.remainingDistance <= Agent.stoppingDistance)
         {
-            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-            if (Agent.remainingDistance <= 3)
+            if (Time.time > nextAttack)
             {
-                Agent.stoppingDistance = 2.7f;
+                // transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-                if (_inAttackRange)
+                print("player attacked");
+                //transform.LookAt(playerTarget);
+
+
+                Agent.speed = 0.3f; 
+
+                nextAttack = Time.time + AttackRate;
+                _Player.TakeDamage(damage);
+
+                _isAttacking = true;
+            }
+            else
+            {
+                Agent.speed = 5f; 
+
+                if(Time.time < nextAttack)
                 {
-                    if (Time.time > nextAttack)
-                    {
-                       // transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-
-                        print("player attacked");
-                        //transform.LookAt(playerTarget);
-
-                        nextAttack = Time.time + AttackRate;
-                        _Player.TakeDamage(damage);
-                        _canAttack = false;
-                    }
-                    else
-                    {
-                        IsAttacking = false;
-                    }
-
+                    HandleGainSight(playerTarget);
                 }
+                
+                _isAttacking = false;
             }
         }
-       
-       
-
 
     }
 
@@ -656,17 +663,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     */
 
-    /*
-    private void QuickCover()
-    {
-        Vector3 retreatPoint = transform.position - transform.forward * retreatDist;
-        Agent.SetDestination(retreatPoint);
-
-        // Make the character move towards the destination
-        Agent.isStopped = false;
-
-    }
-    */
     private void Search()
     {
         if (Agent.remainingDistance <= Agent.stoppingDistance)
@@ -734,12 +730,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
             HandleGainSight(PlayerTarget);
             // GetCover();
 
-            if (curSpeed <= 0.5 && !IsAttacking && _Health >= 16)
+            if (curSpeed <= 0.5 && !_isAttacking && _Health >= 16)
             {
                 _Health = Mathf.Clamp(_Health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, MAXHEALTH);
                 //Debug.Log("Chase health: " + _Health);
             }
-            Attack();
+            else
+            {
+                Attack();
+            }
+            
         }
     }
 
@@ -761,8 +761,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         Agent.radius = 1f;
         PauseAgent();
-
-        //Agent.isStopped = true;
     }
 
 
@@ -1085,36 +1083,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
 
     #endregion
-
-    public void OnBecomeVisible()
-    {
-        //ResumeAgent();
-        //this.gameObject.SetActive(false);
-        //enabled = false;  
-
-        Debug.Log("Enemy Invisible");
-    }
-    public void OnBecomeInvisible()
-    {
-        //PauseAgent();
-        //this.gameObject.SetActive(true);
-        //enabled = true;
-        Debug.Log("Enemy Visible");
-    }
-
-
-    private void OnBecameInvisible()
-    {
-        this.gameObject.SetActive(false);
-        print("out of cam range"); 
-    }
-
-    private void OnBecameVisible()
-    {
-        this.gameObject.SetActive(true);
-        print("in cam range");
-    }
-
 
 
     #region Script destroy actions 

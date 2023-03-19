@@ -10,7 +10,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CompanionBehaviour : MonoBehaviour
 {
-
+    #region Variables
     private enum CompanionState { _idle, _follow, _rotate}
     private CompanionState _StateAI;  
 
@@ -64,13 +64,16 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField] private GameObject target;
     [SerializeField] private float degreesPerSecond = 45;
 
+    #endregion
 
-
+    #region Awake
     private void Awake()
     {
         GameManager.OnGameStateChanged += OnGameStateChanged;
     }
+    #endregion
 
+    #region Start
     // Create the FSM
     private void Start()
     {
@@ -134,6 +137,9 @@ public class CompanionBehaviour : MonoBehaviour
         stateMachine = new StateMachine(IdleState);
     }
 
+    #endregion
+
+    #region Update
     // Request actions to the FSM and perform them
     private void Update()
     {
@@ -147,7 +153,7 @@ public class CompanionBehaviour : MonoBehaviour
             CheckMoveBool();
             CheckEnemy();
             //AlphaUpdate();
-            RotateTimer();
+            //RotateTimer();
 
             Action actions = stateMachine.Update();
             actions?.Invoke();
@@ -157,8 +163,7 @@ public class CompanionBehaviour : MonoBehaviour
             AgentPause();
         }
     }
-
-
+    #endregion
 
     private void LookAtUpdate()
     {
@@ -409,13 +414,10 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
     #endregion
 
-
-
-    
-
+    #region AI Actions
     private void CheckMoveBool()
     {
-        print(_playerIsMoving); 
+        //print(_playerIsMoving); 
 
         if (_playerIsMoving)
         {
@@ -475,9 +477,8 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         Companion.SetDestination(Target.position);
     }
 
-
     #endregion
-
+    #endregion
 
     #region Follow State
     private void Follow()
@@ -518,7 +519,6 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     }
 
     #endregion
-
 
     #region Enemy detection
     private IEnumerator FOVRoutine()
@@ -647,9 +647,11 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     }
     #endregion
 
+    #region Destroy
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= OnGameStateChanged;
     }
+    #endregion
 
 }

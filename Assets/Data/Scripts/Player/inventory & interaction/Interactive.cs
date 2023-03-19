@@ -84,8 +84,8 @@ public class Interactive : MonoBehaviour
     
         if (aiHits.Length <= 0)
         {
-
-            print("interaction works");
+            
+            //print("interaction works");
             ActivateFunctions();
 
         }
