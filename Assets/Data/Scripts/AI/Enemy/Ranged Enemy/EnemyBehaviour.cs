@@ -390,7 +390,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (!_canGloryKill)
         {
-            if ((playerTarget.transform.position - transform.position).magnitude < minDist)
+            if ((playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
             {
                 //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
                 //transform.LookAt(playerTarget.position);

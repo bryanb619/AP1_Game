@@ -11,8 +11,8 @@ public class AIRangedData : ScriptableObject
     public float MinDist => minDist;
 
     [Tooltip("Attack rate")]
-    [Range(1f, 5f)]
-    [SerializeField] private float attackRate = 2f;
+    [Range(1f, 10f)]
+    [SerializeField] private float attackRate = 5f;
     public float AttackRate => attackRate;
 
     [Header("Special Attack")]
