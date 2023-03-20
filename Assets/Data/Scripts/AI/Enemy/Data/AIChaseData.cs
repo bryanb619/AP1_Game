@@ -6,7 +6,7 @@ public class AIChaseData : ScriptableObject
 {
     [Header("Attack")]
 
-    [Tooltip("Minimum distance to player or projectiles")]
+    [Tooltip("Minimum distance to detect player or projectiles")]
     [Range(0f, 10f)]
     [SerializeField] private float minDist = 7f;
     public float MinDist => minDist;
@@ -18,17 +18,41 @@ public class AIChaseData : ScriptableObject
 
     [Tooltip("Attack damage")]
     [Range(0, 30)]
-    [SerializeField] private int damage = 20;
+    [SerializeField] private int damage = 10;
     public int Damage => damage;
 
-    [Tooltip("cant be higher than 3.9F")]
-    [SerializeField] private float attackDist; 
-    public float AttackDist => attackDist;
+    [Tooltip("Agent Stop distance from player position")]
+    [SerializeField]
+    private float stopDistance= 3.9F;
+    public float StopDistance => stopDistance; 
+
+    [Tooltip("attack value is set to previuos option, use this option to allow some more space so action can be completed succesfuly")]
+    [SerializeField] private float attackDistOffset = 4F; 
+    public float AttackDistOffset => attackDistOffset;
+
+    [SerializeField]
+    private float attackSpeed = 4F;
+    public float AttackSpeed => attackSpeed;
+
+    [SerializeField]
+    private float cooldownSpeed = 3F;
+    public float CooldownSpeed => cooldownSpeed;    
+
 
     [Header("Special Attack")]
+
+    [Range(0, 50)]
+    [SerializeField]
+    private int specialDamage = 20;
+    public int SpecialDamage => specialDamage;
+
+    [Range(0, 100)]
+    [SerializeField]
     private float currentAbilityValue = 40f;
     public float CurrentAbilityValue => currentAbilityValue;
 
+    [Range(0, 20)]
+    [SerializeField]
     private float abilityIncreasePerFrame = 4f;
     public float AbilityIncreasePerFrame => abilityIncreasePerFrame;
 
@@ -118,6 +142,3 @@ public class AIChaseData : ScriptableObject
     [SerializeField] private float spawnChance;
     public float SpawnChance => spawnChance;    
 }
-
-
-  

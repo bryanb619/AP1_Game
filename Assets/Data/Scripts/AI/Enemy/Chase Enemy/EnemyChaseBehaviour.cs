@@ -98,7 +98,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private int                                 damage; 
 
-    // Speed
+    // GET AI Speed
     private Vector3                             previousPos;
     private float                               curSpeed;
 
@@ -108,6 +108,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     // attack
+    private float                               attackSpeed = 4F;
+    private float                               cooldownSpeed = 3F;
+
+    private float                               attackDistanceOfsset;
+    private float                               stopDistance; 
+
     private float                               attackRate;
     private float                               nextAttack;
 
@@ -116,7 +122,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool                                _isAttacking;
 
     private float                               minDist;
-    private float                               attackDist;
+    private float                               attackDistForFinalCheck;
 
 
     // special ability 
@@ -125,9 +131,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private float                               currentAbilityValue;
 
-    private float                               abilityIncreasePerFrame; 
-       
+    private float                               abilityIncreasePerFrame;
 
+    private int                                 specialDamage; 
 
     // UI 
     [SerializeField] private Slider            _healthSlider;
@@ -221,11 +227,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // attack 
         minDist = data.MinDist;
         attackRate = data.AttackRate;
-        attackDist = data.AttackDist; 
+
+        attackDistanceOfsset = data.AttackDistOffset;
+        stopDistance = data.StopDistance;
+
+        attackSpeed = data.AttackSpeed;
+        cooldownSpeed = data.CooldownSpeed;
         
         // special attack
         abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
         currentAbilityValue = data.CurrentAbilityValue; 
+
+        specialDamage = data.SpecialDamage; 
 
         // FOV
         radius = data.Radius;
@@ -535,7 +548,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
-        if ((playerTarget.transform.position - transform.position).magnitude < 3.9f)
+        
+        if ((playerTarget.transform.position - transform.position).magnitude < attackDistanceOfsset)
         {
             agent.speed = 3.0f;
             Attack();
@@ -575,7 +589,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             print("special ability");
 
-           // _Player.TakeDamage(25);
+            _Player.TakeDamage(specialDamage);
 
             currentAbilityValue = 0;
             _AbilitySlider.value = currentAbilityValue;
@@ -584,7 +598,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         else if (Time.time > nextAttack)
         {
             //float randomPercentage = UnityEngine.Random.Range(0f, 100f);
-            _Player.TakeDamage(10);
+            _Player.TakeDamage(damage);
             print("DAMAGE DONE BY CHASE AI");
 
             nextAttack = Time.time + attackRate;
@@ -742,25 +756,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void SetAttack()
     {
-        //float xRotation = 0f;
-        // Get the target position
-        //Vector3 targetPos = playerTarget.position;
-
-        // Ignore the Y component of the target position
-        //targetPos.y = playerTarget.position.y;
-
-        //ransform.LookAt(targetPos, Vector3.up);
-
-        //transform.Rotate(Vector3.right, xRotation); 
-
-        print("ATTACK FIRED");
-        //print(agent.remainingDistance); 
-        _stateAI = AI._ATTACK;
-
         // Agent configuration
-        agent.speed = 4f; 
+
+        agent.speed = attackSpeed;
         agent.stoppingDistance = 3.9f;
         agent.angularSpeed = 0f;
+        StartAttacking();
+
+        //print("ATTACK FIRED");
+        //print(agent.remainingDistance); 
+
+        _stateAI = AI._ATTACK;
+
+
 
     }
     private void SetCover()
@@ -796,6 +804,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             //WarningSystemAI warn;
 
             _warn.canAlertAI = true;
+            SetAttack();
 
             if (_Type == WeaponType.Normal)
             {
@@ -916,7 +925,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (!_isAttacking)
         {
-            _agentAI.StartAttacking();
+            //_agentAI.StartAttacking();
         }
     }
 
@@ -924,8 +933,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_isAttacking)
         {
-            _agentAI.StopAttacking();
-            _canAttack = false;
+            //_agentAI.StopAttacking();
+           // _canAttack = false;
         }
 
     }
