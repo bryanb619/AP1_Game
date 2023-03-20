@@ -32,14 +32,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Reference to the NAV MESH AGENT
     private NavMeshAgent                        agent;
 
-    private Agents                              _agentAI; 
+    [SerializeField] private Agents             _agentAI; 
 
 
     // References to player
-    [SerializeField] private GameObject         PlayerObject;
+     private GameObject         PlayerObject;
     private PlayerMovement _Player;
 
-    [SerializeField] private Transform          playerTarget;
+    private Transform          playerTarget;
     public Transform PlayerTarget =>            playerTarget;
 
     private WarningSystemAI                     _warn;
@@ -59,6 +59,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private LayerMask                           targetMask;
     private LayerMask                           obstructionMask;
+
     [SerializeField] private Transform          FOV;
     public Transform                            EEFOV => FOV; // Enemy Editor FOV
 
@@ -133,9 +134,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private float                               abilityIncreasePerFrame;
 
-    private int                                 specialDamage; 
+    private int                                 specialDamage;
 
     // UI 
+    [Header("UI Sliders")]
     [SerializeField] private Slider            _healthSlider;
 
     [SerializeField] private Slider            _AbilitySlider; 
@@ -187,6 +189,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetProfile();
         GetStates();
 
+        _canAttack = true; 
         _healthSlider.value = _health;
 
         _AbilitySlider.value = currentAbilityValue; 
@@ -563,25 +566,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         if (currentAbilityValue <= ABILITY_MAX_VALUE)
         {
-                float INCREASEPERFRAMCE = 5F;
 
-                print(currentAbilityValue);
+                //print(currentAbilityValue);
 
-                currentAbilityValue = Mathf.Clamp(currentAbilityValue + (INCREASEPERFRAMCE * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
+                currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
 
                 _AbilitySlider.value = currentAbilityValue;
         }
         
 
     }
-
-    private IEnumerator SearchTimer()
-    {
-        yield return new WaitForSeconds(5f);
-        SetPatrol(); 
-    }
-
-
     private void Attack()
     {
 
@@ -628,7 +622,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         else
         {
-            Attack();
+            SetAttack();  ;
         }
 
     }
@@ -853,6 +847,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
+    void OnPlayerWarning(Vector3 Target)
+    {
+        if (_canAttack)
+        {
+            SetAttack();
+        }
+
+    }
+
     #region Visual Coroutines
     IEnumerator DamageTextDisappear()
     {
@@ -925,7 +928,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (!_isAttacking)
         {
-            //_agentAI.StartAttacking();
+            _agentAI.StartAttacking();
         }
     }
 
@@ -933,7 +936,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_isAttacking)
         {
-            //_agentAI.StopAttacking();
+            _agentAI.StopAttacking();
            // _canAttack = false;
         }
 

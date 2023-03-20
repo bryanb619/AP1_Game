@@ -14,23 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDist: 7
   attackRate: 2
+  currentAbilityValue: 50
+  abilityIncreasePerFrame: 3
+  specialDamage: 25
   radius: 0
   angle: 0
   targetMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2048
   obstructionMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1049153
   hidableLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   minDistInCover: 12
   coverMoveSpeed: 5
   fleeDistance: 15
-  health: 0
-  healthRegen: 0
-  maxHealthRegen: 0
+  health: 100
+  healthRegen: 10
+  maxHealthRegen: 75
   damage: 0
   _ice: 0
   fire: 0

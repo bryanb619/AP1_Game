@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
-using UnityEditor;
+
+//using UnityEditor; // comment this on build
+
 #endregion
 #region Ranged AI Brain Script
 
@@ -27,23 +29,13 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private Outline outlineDeactivation;
 
     // AI Set states
-    private enum AI
-    {
-        _GUARD,
-        _PATROL,
-        _ATTACK,
-        _COVER,
-        _SEARCH,
-        _GLORYKILL,
-        _NONE
-    }
+    private enum AI {_GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE}
 
     private AI _stateAI;
 
-
     private Animator _animator;
 
-    private Slider _healthSlider;
+    private WarningSystemAI _warn; 
 
     [SerializeField] private Agents _agentAI;
 
@@ -62,25 +54,26 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private Transform PlayerTarget;
     public Transform playerTarget => PlayerTarget;
 
+    private PlayerMovement _player; 
+
     private float minDist = 7f;
 
+
+    // AI SPEED
     private float curSpeed;
     private Vector3 previousPos;
 
-    private bool InDanger;
-
     private float AttackRequiredDistance = 8f;
 
-    private float randomPercentage;
 
-    private float maxPercentage = 75f; 
+    // percentage
+    private float randomPercentage;
 
 
     // Patrol Points
 
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
-
 
 
     [Range(10, 150)]
@@ -96,10 +89,13 @@ public class EnemyBehaviour : MonoBehaviour
     private bool canSeePlayer;
     public bool canSee => canSeePlayer;
 
+
+    // Attack 
+
     [SerializeField]
     private Transform _shootPos;
 
-    [SerializeField] private GameObject gemPrefab;
+    private GameObject gemPrefab;
 
     private GameObject bullet, specialBullet; 
 
@@ -108,7 +104,20 @@ public class EnemyBehaviour : MonoBehaviour
 
 
     private float powerCooldown = 5f;
-    private float timeSincePowerCooldown = 0f; 
+    private float timeSincePowerCooldown = 0f;
+
+
+    //
+
+    // special ability 
+
+    private const float ABILITY_MAX_VALUE = 100F;
+
+    private float currentAbilityValue;
+
+    private float abilityIncreasePerFrame;
+
+    private int specialDamage;
 
 
     // hide code
@@ -128,6 +137,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     private Coroutine MovementCoroutine;
 
+
+    // UI
+    [SerializeField] private Slider _healthSlider;
+
+    [SerializeField] private Slider _abilitySlider;
+
     // fire damage variables
     private float damagePerSecondFire = 2f;
     private float durationOfFireDamage = 10f; 
@@ -138,10 +153,11 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _canMove;
 
+    private bool _canSpecialAttack = false; 
 
     private bool _canAttack;
 
-    private bool _isAttacking; 
+    private bool _isAttacking;
 
 
     #endregion
@@ -165,11 +181,9 @@ public class EnemyBehaviour : MonoBehaviour
         GetStates();
 
         // temp code
-        health = 100f;
         _canAttack = true;
         _isAttacking = false;
-
-       
+        _canAttack = false;
     }
 
     #region Components Sync
@@ -180,10 +194,13 @@ public class EnemyBehaviour : MonoBehaviour
         _agentAI = GetComponentInChildren<Agents>();
         _animator = GetComponentInChildren<Animator>();
         _healthSlider = GetComponentInChildren<Slider>();
+
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
-       
+        _warn = GetComponentInChildren<WarningSystemAI>();
 
+       
+        _player = FindObjectOfType<PlayerMovement>();
         PlayerObject = GameObject.Find("Player");
 
         PlayerTarget = PlayerObject.transform;
@@ -194,13 +211,41 @@ public class EnemyBehaviour : MonoBehaviour
     #region Profile Sync
     private void GetProfile()
     {
+       
+        // HEALTH //
+        health = data.Health;
+       
+
+        // ATTACK //
+        fireRate = data.AttackRate;
+
+        minDist = data.MinDist;
 
 
+        // Special attack Ability
 
-        // Abilities
+        currentAbilityValue = data.CurrentAbilityValue;
+
+        abilityIncreasePerFrame = data.AbilityIncreasePerFrame; 
+
+        // projectiles //
+
         bullet = data.projectile;
-        specialBullet = data.specialProjectile; 
-    
+        specialBullet = data.specialProjectile;
+
+
+        // GEM //
+
+        gemPrefab = data.Gem;
+
+
+        // FOV //
+
+
+        // UI //
+        _healthSlider.value = health;
+        _abilitySlider.value = currentAbilityValue; 
+
     }
     #endregion
 
@@ -237,34 +282,39 @@ public class EnemyBehaviour : MonoBehaviour
 
         // Add the transitions
 
+
+        // GUARD -> CHASE
         onGuardState.AddTransition(
             new Transition(
                 () => canSeePlayer == true,
-                () => Debug.Log(""),
+                () => Debug.Log(" GUARD -> CHASE"),
                 ChaseState));
 
+        // CHASE->PATROL
         ChaseState.AddTransition(
             new Transition(
-                () => canSeePlayer == false,
-                () => Debug.Log(""),
+                () => _stateAI == AI._PATROL,
+                () => Debug.Log("CHASE -> PATROL"),
                 PatrolState));
 
+       // CHASE -> GLORY KILL
         ChaseState.AddTransition(
             new Transition(
                 () => _canGloryKill == true,
-                () => Debug.Log(""),
+                () => Debug.Log("CHASE -> GLORY KILL"),
                 GloryKillState));
 
+        //  PATROL -> CHASE 
         PatrolState.AddTransition(
            new Transition(
                () => canSeePlayer == true,
-               () => Debug.Log(""),
+               () => Debug.Log("PATROL -> CHASE"),
                ChaseState));
 
-        CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == false, ()=> Debug.Log("Cover State"), PatrolState));
-        CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == true, () => Debug.Log("Cover State"), ChaseState));
+        //CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == false, ()=> Debug.Log("Cover State"), PatrolState));
+        //CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == true, () => Debug.Log("Cover State"), ChaseState));
 
-        ChaseState.AddTransition(new Transition(() => _canAttack == false, () => Debug.Log("Cover State"), CoverState));
+        //ChaseState.AddTransition(new Transition(() => _canAttack == false, () => Debug.Log("Cover State"), CoverState));
 
         // Create the state machine
         stateMachine = new StateMachine(PatrolState);
@@ -333,35 +383,29 @@ public class EnemyBehaviour : MonoBehaviour
         //Agent.Stop();
         agent.isStopped = true;
          
-        StopAllCoroutines();
+        //StopAllCoroutines();
     }
 
     private void MinimalCheck()
     {
-        if (_canGloryKill == false)
+        if (!_canGloryKill)
         {
             if ((playerTarget.transform.position - transform.position).magnitude < minDist)
             {
                 //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-                transform.LookAt(playerTarget.position);
+                //transform.LookAt(playerTarget.position);
+                SetAttack(); 
             }
         }
        
     }
 
+
     void OnPlayerWarning(Vector3 Target)
     {
-        // The player has been detected within the warning radius!
-        // Do something to react to this, such as chasing the player or going into alert mode.
-        GetPlayer();
-
-    }
-
-    public void GetPlayer()
-    {
-        if(_canMove && _gamePlay)
+        if(_canAttack) 
         {
-            transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
+            SetAttack();
         }
         
     }
@@ -383,27 +427,34 @@ public class EnemyBehaviour : MonoBehaviour
     // Chase 
     private void ChasePlayer()
     {
-        StartAttacking(); 
+        //StartAttacking();
 
+        SetAttack(); 
 
-        if(_canMove)
+        agent.speed = 4f;
+
+        print(_canSpecialAttack);
+
+        if (_canSpecialAttack)
         {
-            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-            transform.LookAt(playerTarget.position);
-            //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
 
-            agent.speed = 4f;
-            agent.SetDestination(PlayerTarget.position);
+            if (currentAbilityValue >= ABILITY_MAX_VALUE)
+            {
+                SpecialAttack();
+            }
+        }
 
+        else if(!_canSpecialAttack)
+        {
 
             if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
             {
+                transform.LookAt(playerTarget.position);
+
                 agent.speed = 0;
                 StartAttacking();
 
-                Attack(); 
-               
-
+                Attack();
                 // se estiver atacando por x tempo
 
 
@@ -411,22 +462,62 @@ public class EnemyBehaviour : MonoBehaviour
 
             }
 
-            else if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance)
+            else if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance || currentAbilityValue < ABILITY_MAX_VALUE)
             {
                 GetDistance();
+
+                if (!_canSpecialAttack)
+                {
+                    CoolDoownPower();
+                    //HandleGainSight(playerTarget);
+                }
+
             }
         }
-        
-
-
-
         //print("ATTACK");
+    }
+
+    private void SpecialAttack()
+    {
+        agent.SetDestination(playerTarget.position);
+
+        agent.stoppingDistance = 4f; 
+
+        if((playerTarget.transform.position - transform.position).magnitude <=4.3f)
+        {
+            transform.LookAt(playerTarget.position);
+
+            print("SPECIAL DAMAGE");
+            _player.TakeDamage(specialDamage);
+
+            currentAbilityValue = 0;
+            _abilitySlider.value = currentAbilityValue;
+            _canSpecialAttack = false;
+        }
+    }
+
+    private void CoolDoownPower()
+    {
+        currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
+
+        _abilitySlider.value = currentAbilityValue;
+        if (currentAbilityValue == ABILITY_MAX_VALUE)
+        {
+            _canSpecialAttack = true;
+            
+        }
+        else
+        {
+            _canSpecialAttack = false;
+        }
+
+        
     }
 
     private void Attack()
     {
         //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-
+        
 
         if (Time.time > nextFire)
         {
@@ -438,11 +529,6 @@ public class EnemyBehaviour : MonoBehaviour
             if(randomPercentage <= 10f) 
             {
                 Instantiate(specialBullet, _shootPos.position, _shootPos.rotation);
-            }
-            else if(timeSincePowerCooldown >= powerCooldown)
-            {
-
-                powerCooldown = 0f; 
             }
             else 
             {
@@ -457,14 +543,16 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
+   
     private void GetDistance()
     {
         agent.speed = 5f;
         agent.acceleration = 12;
         
 
-        if (curSpeed <= 1 && canSee)
+        if (curSpeed <= 1 && canSee)          
         {
+            transform.LookAt(playerTarget.position);
             Attack();
         }
 
@@ -574,7 +662,7 @@ public class EnemyBehaviour : MonoBehaviour
         if(_canMove)
         {
             agent.autoBraking = false;
-            agent.stoppingDistance = 0f;
+            agent.stoppingDistance = 0.1f;
 
             if (!agent.pathPending && agent.remainingDistance < 0.5f)
             {
@@ -667,19 +755,14 @@ public class EnemyBehaviour : MonoBehaviour
         else if (health > 0)
         {
             // ALERT AI OF player presence
-            WarningSystemAI warn;
-            warn = GetComponent<WarningSystemAI>();
-            warn.canAlertAI = true;
-            GetPlayer();
+            _warn.canAlertAI = true;
+            //GetPlayer();
 
             if (_Type == WeaponType.Normal)
             {
-                //if (_Health <= 20)
-                //{
-                //_canGloryKill = true;
-                //}
+  
                 health -= _damage + damageBoost;
-                GetPlayer();
+               
                 //QuickCover();
                 StartCoroutine(HitFlash());
 
@@ -703,7 +786,27 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
         _healthSlider.value = health;
+        HealthCheck();
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
+    }
+
+
+    private void HealthCheck()
+    {
+        if(health >= 15)
+        {
+            SetAttack(); 
+
+        }
+        else if(health <20 )
+        {
+            _canSpecialAttack = false;
+        }
+
+        else if(health <= 14)
+        {
+            SetGloryKill();
+        }
     }
 
     private void Die()
@@ -769,14 +872,12 @@ public class EnemyBehaviour : MonoBehaviour
     private void SetAttack()
     {
         _stateAI = AI._ATTACK;
+
+       
     }
     private void SetCover()
     {
         _stateAI = AI._COVER;
-    }
-    private void SetSearch()
-    {
-        _stateAI= AI._SEARCH;   
     }
     private void SetGloryKill()
     {
@@ -849,6 +950,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
+    /*
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
@@ -922,5 +1024,6 @@ public class EnemyBehaviour : MonoBehaviour
 #endif
     }
     #endregion
+    */
 }
 #endregion

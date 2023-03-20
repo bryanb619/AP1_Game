@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 //using UnityEngine.Animations;
 
@@ -147,6 +148,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             ResumeAgent();
             StartCoroutine(FOVRoutine());
+            Companion.updateRotation = false; 
 
             Aim();
 
@@ -439,11 +441,24 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         // player is not moving (agent stop)
 
         //print("doing nothing now");
-        Companion.isStopped = true;
+        //Companion.isStopped = true;
+        Companion.SetDestination(Target.position); 
+       
+        if (Companion.remainingDistance >= 3f)
+        {
 
+            DashUpate();
+
+        }
         // follow only camera movement
-       
-       
+
+
+    }
+
+    private void DashUpate()
+    {
+        Companion.acceleration = 10F;
+        Companion.speed = 12F;
     }
 
     private void RotateTimer()
@@ -467,7 +482,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
     private void RotateAroundPlayer()
     {
-        transform.RotateAround(target.transform.position, Vector3.forward, degreesPerSecond * Time.deltaTime);
+        //transform.RotateAround(target.transform.position, Vector3.forward, degreesPerSecond * Time.deltaTime);
     }
 
 
@@ -488,34 +503,25 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
         Companion.SetDestination(Target.position);
 
-        if (Companion.remainingDistance >= 2F)
+        if (Companion.remainingDistance >= 4F)
         {
-            FollowTargetNormal(); 
+            KetChup();
         }
-        else if (Companion.remainingDistance >= 5f)
-        {
-        
-           KetChup();
-
-        }
-        else{
-             transform.position = Target.transform.position;
-
-        }
+      
+       
     }
 
     private void FollowTargetNormal()
     {
-        Companion.speed = 5f; 
-        Companion.acceleration = 6f; 
+        Companion.speed = 3f; 
+        Companion.acceleration = 8f; 
     }
 
     private void KetChup()
     {
-        Companion.acceleration = 50F;
-        Companion.speed = 50F;
+        Companion.acceleration = 12F;
+        Companion.speed = 10F;
      
-
     }
 
     #endregion

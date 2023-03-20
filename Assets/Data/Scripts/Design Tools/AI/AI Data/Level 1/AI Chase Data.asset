@@ -15,7 +15,13 @@ MonoBehaviour:
   minDist: 3
   attackRate: 4
   damage: 10
-  attackDist: 4
+  stopDistance: 3.9
+  attackDistOffset: 4
+  attackSpeed: 4
+  cooldownSpeed: 3
+  specialDamage: 20
+  currentAbilityValue: 40
+  abilityIncreasePerFrame: 4
   radius: 20
   angle: 80
   targetMask:
@@ -31,8 +37,8 @@ MonoBehaviour:
   coverMoveSpeed: 5
   fleeDistance: 15
   health: 100
-  healthRegen: 0
-  maxHealthRegen: 0
+  healthRegen: 5
+  maxHealthRegen: 70
   _ice: 0
   fire: 0
   thunder: 0

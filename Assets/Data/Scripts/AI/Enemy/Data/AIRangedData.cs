@@ -15,6 +15,19 @@ public class AIRangedData : ScriptableObject
     [SerializeField] private float attackRate = 2f;
     public float AttackRate => attackRate;
 
+    [Header("Special Attack")]
+    [SerializeField]
+    private float currentAbilityValue = 50f;
+    public float CurrentAbilityValue => currentAbilityValue;    
+
+    [SerializeField]
+    private float abilityIncreasePerFrame = 3f;
+    public float AbilityIncreasePerFrame => abilityIncreasePerFrame; 
+
+    [SerializeField] ///////////
+    private int specialDamage = 25;
+    public int SpecialDamage => specialDamage;
+
     [Header("FOV")]
 
     [Tooltip("Radius of FOV")]
