@@ -17,7 +17,8 @@ public class WarningSystemAI : MonoBehaviour
 
     private EnemyChaseBehaviour enemy;
     private EnemyBehaviour enemy2;
-    
+
+    private enum EnemyType {enemyChase, enemyRanged}
     private EnemyType type;
 
     internal bool canAlertAI;
@@ -40,13 +41,6 @@ public class WarningSystemAI : MonoBehaviour
             //Debug.Log(type.ToString());
         }
 
-
-    }
-
-    private enum EnemyType
-    {
-        enemyChase,
-        enemyRanged
 
     }
 
@@ -80,12 +74,10 @@ public class WarningSystemAI : MonoBehaviour
 
     private void AlertAI()
     {
-        // Check if the player is within the warning radius (Target layer optional)
+        // Check if the player is within the warning radius
         Collider[] aiHits = Physics.OverlapSphere(transform.position, AIradius, aiLayer);
-       // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
         if (aiHits.Length > 0)
         {
-            // If the player is within the warning radius, get a list of all AI game objects within the radius
             
 
             // Iterate through the list of AI game objects and send a warning message

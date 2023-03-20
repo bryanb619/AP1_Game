@@ -21,6 +21,17 @@ public class AIChaseData : ScriptableObject
     [SerializeField] private int damage = 20;
     public int Damage => damage;
 
+    [Tooltip("cant be higher than 3.9F")]
+    [SerializeField] private float attackDist; 
+    public float AttackDist => attackDist;
+
+    [Header("Special Attack")]
+    private float currentAbilityValue = 40f;
+    public float CurrentAbilityValue => currentAbilityValue;
+
+    private float abilityIncreasePerFrame = 4f;
+    public float AbilityIncreasePerFrame => abilityIncreasePerFrame;
+
     [Header("FOV")]
 
     [Tooltip("Radius of FOV")]
