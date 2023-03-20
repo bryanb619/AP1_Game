@@ -795,10 +795,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
         else if (_health > 0)
         {
             // ALERT AI OF player presence
-            //WarningSystemAI warn;
 
             _warn.canAlertAI = true;
-            SetAttack();
+
+            if(_canAttack) 
+            {
+                SetAttack();
+
+            }
+   
 
             if (_Type == WeaponType.Normal)
             {
@@ -808,8 +813,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 //}
                 _health -= _damage + damageBoost;
 
-                SetAttack(); 
-                //QuickCover();
                 StartCoroutine(HitFlash());
 
             }

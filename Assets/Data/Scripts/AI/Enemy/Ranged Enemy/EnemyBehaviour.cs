@@ -757,6 +757,10 @@ public class EnemyBehaviour : MonoBehaviour
             // ALERT AI OF player presence
             _warn.canAlertAI = true;
             //GetPlayer();
+            if(_canAttack) 
+            {
+                SetAttack(); 
+            }
 
             if (_Type == WeaponType.Normal)
             {
