@@ -56,6 +56,7 @@ public class Shooter : MonoBehaviour
         if (_gameplay)
         {
             ShootInput();
+            HoverHighlight();
         }
         
     }
@@ -129,6 +130,13 @@ public class Shooter : MonoBehaviour
                 break;
         }
         
+    }
+
+    private void HoverHighlight()
+    {
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+            if (hit.collider.CompareTag("Enemy"))
+                hit.collider.gameObject.GetComponent<Outline>().enabled = true;
     }
 
     private void TargetAttack()
