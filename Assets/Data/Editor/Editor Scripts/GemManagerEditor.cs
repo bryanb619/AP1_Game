@@ -38,7 +38,7 @@ public class GemManagerEditor : Editor
 
         base.OnInspectorGUI();
 
-        ChangeMaterial(gemName.enumValueIndex);
+        //ChangeMaterial(gemName.enumValueIndex);
 
         serializedObject.ApplyModifiedProperties();
     }

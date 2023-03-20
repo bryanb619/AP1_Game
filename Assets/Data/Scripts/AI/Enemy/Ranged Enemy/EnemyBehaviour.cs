@@ -1,13 +1,12 @@
 ﻿#region Libs
 using System;
-using UnityEngine;
-using LibGameAI.FSMs;
-using UnityEngine.AI;
 using System.Collections;
-using UnityEditor;
+using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
+using LibGameAI.FSMs;
+using UnityEditor;
 #endregion
-
 #region Ranged AI Brain Script
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -23,6 +22,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     // Reference to the NavMeshAgent
     internal NavMeshAgent agent;
+
+    // Reference to the Outline component
+    [SerializeField] private Outline outlineDeactivation;
 
     // AI Set states
     private enum AI
@@ -286,6 +288,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case true:
                 {
+                    outlineDeactivation.enabled = false;
                     ResumeAgent();
                     break;
                 }
@@ -706,7 +709,10 @@ public class EnemyBehaviour : MonoBehaviour
     private void Die()
     {
         if(gemSpawnOnDeath)
+        { 
             Instantiate(gemPrefab, transform.position, Quaternion.identity);
+            Debug.Log("Spawned Gem");
+        }
         Destroy(gameObject);
 
         Debug.Log("Enemy died");
