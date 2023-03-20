@@ -64,8 +64,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Camera mainCamera; 
     [SerializeField] private GameObject effect;
     [SerializeField] private LayerMask SeeThroughLayer; 
-    [SerializeField] private GameObject playerMesh; 
-    
+    [SerializeField] private GameObject playerMesh;
+
+    SkinnedMeshRenderer[] skinnedMeshRenderers;
+
     private bool _gamePlay;
 
     public enum _PlayerHealth {_Max, NotMax}
@@ -132,7 +134,6 @@ public class PlayerMovement : MonoBehaviour
 
         path = new NavMeshPath();
         elapsed = 0.0f;
-
     }
 
     private void Update()
@@ -425,22 +426,60 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator VisualFeedbackDamage()
     {
-        Debug.Log("ooga booga damage");
-        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.red;
+        // Make a list of all SkinnedMeshRender in the character
+        SkinnedMeshRenderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        // Create an array to store the original colors
+        Color[] originalColors = new Color[skinnedMeshRenderers.Length];
+        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+        {
+            originalColors[i] = skinnedMeshRenderers[i].material.color;
+        }
+
+        //Change the material colors to red
+        foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
+        {
+            skinnedMeshRenderer.material.color = Color.red;
+        }
+
         yield return new WaitForSeconds(0.1f);
-        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
+
+        // Change the material colors back to their original colors
+        for (int j = 0; j < skinnedMeshRenderers.Length; j++)
+        {
+            skinnedMeshRenderers[j].material.color = originalColors[j];
+        }
     }
 
     IEnumerator VisualFeedbackHeal()
     {
-        Debug.Log("ooga booga heal");
+        // Make a list of all SkinnedMeshRender in the character
+        SkinnedMeshRenderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
 
-        for (int i=0; i<=2; i++)
-        { 
-        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.green;
-        yield return new WaitForSeconds(0.1f);
-        gameObject.GetComponentInChildren<MeshRenderer>().material.color = Color.gray;
-        yield return new WaitForSeconds(0.1f);
+        // Create an array to store the original colors
+        Color[] originalColors = new Color[skinnedMeshRenderers.Length];
+        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+        {
+            originalColors[i] = skinnedMeshRenderers[i].material.color;
+        }
+
+        for (int i = 0; i <= 2; i++)
+        {
+            // Set the material colors to green
+            foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
+            {
+                skinnedMeshRenderer.material.color = Color.green;
+            }
+
+            yield return new WaitForSeconds(0.2f);
+
+            // Change the material colors back to their original colors
+            for (int j = 0; j < skinnedMeshRenderers.Length; j++)
+            {
+                skinnedMeshRenderers[j].material.color = originalColors[j];
+            }
+
+            yield return new WaitForSeconds(0.2f);
         }
     }
 

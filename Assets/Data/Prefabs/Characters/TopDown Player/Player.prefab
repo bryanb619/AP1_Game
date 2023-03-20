@@ -203,10 +203,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d540fab044061c24289cfc5019378ecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxMana: 100
   mana: 100
-  fireAttackManaUsage: 10
-  iceAttackManaUsage: 20
-  thunderAttackManaUsage: 30
+  fireAttackCost: 10
+  iceAttackCost: 20
+  thunderAttackCost: 30
+  manaRegenRate: 0.2
+  manaRegenAmount: 1
+  waitTime: 5
+  manaUI: {fileID: 0}
+  manaCheat: 1
 --- !u!195 &9187043567967739488
 NavMeshAgent:
   m_ObjectHideFlags: 0
