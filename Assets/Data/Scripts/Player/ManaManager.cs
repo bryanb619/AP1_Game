@@ -39,7 +39,10 @@ public class ManaManager : MonoBehaviour
             CancelInvoke("ManaRegeneration");
 
         if (manaCheat == true)
+        {
             mana = maxMana;
+            manaUI.SetMana(mana);
+        }
     }
 
     #region Mana Management
