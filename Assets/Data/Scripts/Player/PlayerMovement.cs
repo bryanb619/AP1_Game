@@ -274,22 +274,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if(_gamePlay)
         {
-            agent.isStopped = false;
+            //agent.isStopped = false;
            
             if (CanMove)
             {
                 if(Input.GetMouseButtonDown(1)) 
                 {
+                    agent.isStopped = false;
                     RaycastHit hit;
 
                     // Something other than the world was hit!
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
                     //if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, NavMesh.GetAreaFromName("Walkable")))
                     {
-
+                        agent.angularSpeed = 0f; 
                         agent.destination = hit.point;
                         Instantiate(effect, hit.point, Quaternion.identity);
-                        //transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                        transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
                         
                     }
                 }

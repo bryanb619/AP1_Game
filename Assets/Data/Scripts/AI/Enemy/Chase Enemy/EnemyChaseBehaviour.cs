@@ -145,6 +145,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private TextMeshProUGUI                     damageText;
 
 
+    // animation
+
+    private Animator                            _animator;
+
+
     #endregion
 
     #region Awake 
@@ -207,6 +212,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _warn = GetComponent<WarningSystemAI>();
 
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+        _animator = GetComponentInChildren<Animator>();
         //_healthSlider = GetComponentInChildren<Slider>();
 
 
@@ -511,6 +517,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Vector3 curMove = transform.position - previousPos;
         curSpeed = curMove.magnitude / Time.deltaTime;
         previousPos = transform.position;
+
+        if(curSpeed >= 0.01f)
+        {
+            _animator.SetBool("walk", true);
+        }
+        else
+        {
+            _animator.SetBool("walk", false);
+        }
     }
     #endregion
 
@@ -747,11 +762,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetAttack()
     {
         // Agent configuration
+        
 
         agent.speed = attackSpeed;
         agent.stoppingDistance = 3.9f;
-        agent.angularSpeed = 0f;
+        //agent.angularSpeed = 120f;
         StartAttacking();
+
+        //transform.LookAt(playerTarget.transform.position);  
 
         //print("ATTACK FIRED");
         //print(agent.remainingDistance); 
@@ -799,7 +817,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 SetAttack();
 
             }
-   
 
             if (_Type == WeaponType.Normal)
             {
@@ -831,6 +848,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             }
         }
 
+        _healthSlider.value = _health; 
 
         Debug.Log("enemy shot" + _health);
     }

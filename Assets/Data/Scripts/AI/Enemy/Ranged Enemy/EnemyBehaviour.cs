@@ -9,6 +9,7 @@ using LibGameAI.FSMs;
 //using UnityEditor; // comment this on build
 
 #endregion
+
 #region Ranged AI Brain Script
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -32,8 +33,6 @@ public class EnemyBehaviour : MonoBehaviour
     private enum AI {_GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE}
 
     private AI _stateAI;
-
-    private Animator _animator;
 
     private WarningSystemAI _warn; 
 
@@ -64,11 +63,6 @@ public class EnemyBehaviour : MonoBehaviour
     private Vector3 previousPos;
 
     private float AttackRequiredDistance = 8f;
-
-
-    // percentage
-    private float randomPercentage;
-
 
     // Patrol Points
 
@@ -103,12 +97,6 @@ public class EnemyBehaviour : MonoBehaviour
     private float nextFire = 0f;
 
 
-    private float powerCooldown = 5f;
-    private float timeSincePowerCooldown = 0f;
-
-
-    //
-
     // special ability 
 
     private const float ABILITY_MAX_VALUE = 100F;
@@ -137,16 +125,22 @@ public class EnemyBehaviour : MonoBehaviour
 
     private Coroutine MovementCoroutine;
 
+    private float fleeDistance; 
+
 
     // UI
     [SerializeField] private Slider _healthSlider;
 
     [SerializeField] private Slider _abilitySlider;
 
+    // animation
+    private Animator _animator;
+
     // fire damage variables
     private float damagePerSecondFire = 2f;
     private float durationOfFireDamage = 10f; 
 
+    // states & actions
     private bool _canGloryKill;
 
     private bool _gamePlay;
@@ -175,12 +169,13 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        _canMove = true;
+        
         GetComponents();
         GetProfile();
         GetStates();
 
         // temp code
+        _canMove = true;
         _canAttack = true;
         _isAttacking = false;
         _canAttack = false;
@@ -232,6 +227,11 @@ public class EnemyBehaviour : MonoBehaviour
 
         bullet = data.projectile;
         specialBullet = data.specialProjectile;
+
+
+        // cover //
+
+        
 
 
         // GEM //
@@ -516,14 +516,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Attack()
     {
-        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-        
-
         if (Time.time > nextFire)
         {
+            float randomPercentage;
+
             randomPercentage = UnityEngine.Random.Range(0f, 100f);
 
-            print("percentage is: "+randomPercentage);
+            //print("percentage is: "+randomPercentage);
+
             _animator.SetBool("isAttacking", true);
 
             if(randomPercentage <= 10f) 
