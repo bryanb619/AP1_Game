@@ -66,8 +66,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask SeeThroughLayer; 
     [SerializeField] private GameObject playerMesh;
 
-    SkinnedMeshRenderer[] skinnedMeshRenderers;
-
+    private SkinnedMeshRenderer[] skinnedMeshRenderers;
+    private Color[] originalColors;
     private bool _gamePlay;
 
     public enum _PlayerHealth {_Max, NotMax}
@@ -119,6 +119,16 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         this.enabled = true;
+
+        // Make a list of all SkinnedMeshRender in the character
+        skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        // Create an array to store the original colors
+        originalColors = new Color[skinnedMeshRenderers.Length];
+        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+        {
+            originalColors[i] = skinnedMeshRenderers[i].material.color;
+        }
 
         CanMove = true;
 
@@ -426,15 +436,6 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator VisualFeedbackDamage()
     {
-        // Make a list of all SkinnedMeshRender in the character
-        SkinnedMeshRenderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-
-        // Create an array to store the original colors
-        Color[] originalColors = new Color[skinnedMeshRenderers.Length];
-        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
-        {
-            originalColors[i] = skinnedMeshRenderers[i].material.color;
-        }
 
         //Change the material colors to red
         foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
@@ -453,16 +454,6 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator VisualFeedbackHeal()
     {
-        // Make a list of all SkinnedMeshRender in the character
-        SkinnedMeshRenderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-
-        // Create an array to store the original colors
-        Color[] originalColors = new Color[skinnedMeshRenderers.Length];
-        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
-        {
-            originalColors[i] = skinnedMeshRenderers[i].material.color;
-        }
-
         for (int i = 0; i <= 2; i++)
         {
             // Set the material colors to green
