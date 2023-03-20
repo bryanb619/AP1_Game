@@ -4,34 +4,54 @@ using UnityEngine;
 
 public class ManaManager : MonoBehaviour
 {
-    private int maxMana;
-    [SerializeField] private int mana = 100;
-    [SerializeField] private int fireAttackManaUsage;
-    [SerializeField] private int iceAttackManaUsage;
-    [SerializeField] private int thunderAttackManaUsage;
-    private WeaponType _magicType;
+    [Header("Values")]
+    [SerializeField] private float maxMana = 100;
+    [SerializeField] private float mana;
+
+    [Header("Ability Mana Cost")]
+    [SerializeField] private int fireAttackCost;
+    [SerializeField] private int iceAttackCost;
+    [SerializeField] private int thunderAttackCost;
+    
+    [Header ("Regeneration")]
+    [SerializeField] private float manaRegenRate = 1f;
+    [SerializeField] private float manaRegenAmount = 10f;
+    [SerializeField] private float waitTime = 2f;
+                     private WaitForSeconds manaTimer;
+    
+    [Header("References")]
+    [SerializeField] private ManaBar manaUI;
+
+    [Header("Cheats")]
+    [SerializeField] private bool manaCheat;
 
 
     private void Start()
     {
-        maxMana = mana;
+        manaTimer = new WaitForSeconds(waitTime);
     }
 
     private void Update()
     {
-        if (mana > maxMana)
-            mana = maxMana;
+        mana = Mathf.Clamp(mana, 0f, maxMana);
+        
+        if (mana == maxMana)
+            CancelInvoke("ManaRegeneration");
 
-        if (mana < 0)
-            mana = 0;
+        if (manaCheat == true)
+            mana = maxMana;
     }
+
+    #region Mana Management
 
     internal bool ManaCheck(WeaponType _magicType)
     {
-        switch(_magicType)
+        CancelInvoke("ManaRegeneration");
+
+        switch (_magicType)
         { 
             case WeaponType.Fire:
-                if (mana > fireAttackManaUsage)
+                if (mana >= fireAttackCost)
                 { 
                     FireAttack();
                     return true;
@@ -40,7 +60,7 @@ public class ManaManager : MonoBehaviour
                     return false;
 
             case WeaponType.Ice:
-                if (mana > iceAttackManaUsage)
+                if (mana >= iceAttackCost)
                 {
                     IceAttack();
                     return true;
@@ -49,7 +69,7 @@ public class ManaManager : MonoBehaviour
                     return false;
 
             case WeaponType.Thunder:
-                if (mana > thunderAttackManaUsage)
+                if (mana >= thunderAttackCost)
                 { 
                     ThunderAttack();
                     return true;
@@ -62,22 +82,53 @@ public class ManaManager : MonoBehaviour
         }
     }
 
+    IEnumerator RegenerationTimer()
+    {
+        yield return new WaitForSecondsRealtime(waitTime);
+        InvokeRepeating("ManaRegeneration", 0f, manaRegenRate);
+    }
+
+    private void ManaRegeneration()
+    {
+        mana += manaRegenAmount;
+        manaUI.SetMana(mana);
+    }
+    internal void RecoverMana(int recoverable)
+    {
+        mana += recoverable;
+        manaUI.SetMana(mana);
+    }
+
+    #endregion
+
+    #region Abilities
+
     internal void FireAttack()
     {
-        mana -= fireAttackManaUsage;
+        mana -= fireAttackCost;
+        manaUI.SetMana(mana);
+
+        StopCoroutine(RegenerationTimer());
+        StartCoroutine(RegenerationTimer());
     }
     internal void IceAttack()
     {
-        mana -= iceAttackManaUsage;
+        mana -= iceAttackCost;
+        manaUI.SetMana(mana);
+
+        StopCoroutine(RegenerationTimer());
+        StartCoroutine(RegenerationTimer());
     }
     internal void ThunderAttack()
     {
-        mana -= thunderAttackManaUsage;
+        mana -= thunderAttackCost;
+        manaUI.SetMana(mana);
+
+        StopCoroutine(RegenerationTimer());
+        StartCoroutine(RegenerationTimer());
     }
 
-    internal void RecoverMana()
-    {
+    #endregion
 
-    }
-
+    
 }

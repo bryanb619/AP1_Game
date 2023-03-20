@@ -253,7 +253,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &680847071157996186
 Transform:
   m_ObjectHideFlags: 0
@@ -296,11 +296,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00b5d07d7c833154bafb8cd6fcb122b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerScript: {fileID: 0}
   maxDistance: 7
   gemSpeed: 2
   mana: {fileID: 2100000, guid: fe7aff683a80fef4385895a47bd5d344, type: 2}
   health: {fileID: 2100000, guid: 4e7c0f610945a7e4c909a1aa54e2f56b, type: 2}
+  manaGemRecovery: 50
+  healthGemRecovery: 30
   CubeRenderer: {fileID: 6807215719515059969}
 --- !u!1 &6371524222306957076
 GameObject:

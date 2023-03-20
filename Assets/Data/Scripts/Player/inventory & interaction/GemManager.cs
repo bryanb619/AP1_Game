@@ -8,23 +8,19 @@ using UnityEngine;
 
 public class GemManager : MonoBehaviour
 {
-    [Header ("Script References")]
-    public PlayerMovement playerScript;
-
-    private WaitForSeconds waitFor10Seconds = new(10f);
+    [Header ("script references")]
+    private PlayerMovement playerScript;
+    private ManaManager manaManager;
 
     private Gems gemType = new();
 
     private TextMeshProUGUI gemText;
-
-    [SerializeField]
-    private float maxDistance = 3;
-
-    [SerializeField]
-    private int gemSpeed = 2;
-
-    [SerializeField]
-    private Material mana, health;
+    
+    [Header ("Variables")]
+    [SerializeField] private float maxDistance = 3;
+    [SerializeField] private int gemSpeed = 2;
+    [SerializeField] private Material mana, health;
+    [SerializeField] private int manaGemRecovery, healthGemRecovery;
 
     private GameObject player;
     private int gemNumber;
@@ -36,6 +32,7 @@ public class GemManager : MonoBehaviour
     void Start()
     {
         playerScript = FindObjectOfType<PlayerMovement>();
+        manaManager = FindObjectOfType<ManaManager>();
         player = GameObject.Find("Player");
     }
 
@@ -92,9 +89,9 @@ public class GemManager : MonoBehaviour
         }
         else if (i == 2)
         {
-                gemType = Gems.Health;
-                GetComponentInChildren<MeshRenderer>().material = health;
-                gemText.text = "Health";
+            gemType = Gems.Health;
+            GetComponentInChildren<MeshRenderer>().material = health;
+            gemText.text = "Health";
         }
 
         Debug.Log("Number: " + gemNumber + " Type: " + gemType);
@@ -105,32 +102,16 @@ public class GemManager : MonoBehaviour
         switch (gemType)
         {
             case Gems.Mana:
-                StopCoroutine(HealthGem());
-                StartCoroutine(ManaGem());
+                manaManager.RecoverMana(manaGemRecovery);
                 break;
 
             case Gems.Health:
-                StopCoroutine(ManaGem());
-                StartCoroutine(HealthGem());
+                playerScript.GiveHealth(healthGemRecovery);
                 break;
 
             default:
                 break;
         }
-    }
-
-    IEnumerator HealthGem()
-    {
-        playerScript.GiveHealth(10);
-
-        yield return null;
-    }
-
-    IEnumerator ManaGem()
-    {
-        //Awaiting mana implementation
-        Debug.Log("Mana gem caught");
-        yield return null;
     }
 
     #endregion
