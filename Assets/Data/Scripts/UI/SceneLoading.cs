@@ -9,7 +9,7 @@ public class SceneLoading : MonoBehaviour
     public static SceneLoading Instance;
 
     [SerializeField] private Slider loadingBar;
-    [SerializeField] private GameObject LoadPanel;
+    //[SerializeField] private GameObject LoadPanel;
 
     private float target; 
 
@@ -43,7 +43,7 @@ public class SceneLoading : MonoBehaviour
     {
         target = 0;
         loadingBar.value = 0f; 
-        var scene = SceneManager.LoadSceneAsync("Game_TOPDOWN_TEST");
+        var scene = SceneManager.LoadSceneAsync("Game");
         scene.allowSceneActivation = false;
 
         do

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +8,7 @@ public class RestartMenu : MonoBehaviour
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        Time.timeScale = 1f;
     }
 
     public void LoadRestart()
@@ -21,12 +20,12 @@ public class RestartMenu : MonoBehaviour
     // buttons
     public void RetartButton()
     {
-        SceneManager.LoadScene("_Game");
+        SceneManager.LoadScene("Game");
     }
 
     public void MainMenuButton()
     {
-        SceneManager.LoadScene("_StartMenu");
+        SceneManager.LoadScene("StartMenu");
     }
 
 
