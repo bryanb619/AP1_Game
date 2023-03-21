@@ -4,7 +4,7 @@ using System.Collections;
 public class Shooter : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform firePoint;
+    private Transform firePoint;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Material cleansedCrystal;
     

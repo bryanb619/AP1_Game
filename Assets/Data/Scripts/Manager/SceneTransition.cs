@@ -16,15 +16,4 @@ public class SceneTransition : MonoBehaviour
     {
         SceneManager.LoadScene(interactive.levelChosen, LoadSceneMode.Single);
     }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        PlayerMovement _player = GetComponent<PlayerMovement>();    
-        if(_player != null)
-        {
-            SceneManager.LoadScene("EndScene");
-        }
-        
-    }
 }
