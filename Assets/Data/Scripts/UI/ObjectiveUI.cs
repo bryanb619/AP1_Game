@@ -5,7 +5,7 @@ using TMPro;
 
 public class ObjectiveUI : MonoBehaviour
 {
-    private bool passedSecondObjective;
+    [HideInInspector]public bool passedSecondObjective;
     private TextMeshProUGUI textReference;
     [SerializeField] private string firstObjective;
     [SerializeField] private string secondObjective;
@@ -46,13 +46,11 @@ public class ObjectiveUI : MonoBehaviour
                 crystal.GetComponent<Outline>().enabled = true;
             }
         }
-
-        passedSecondObjective = true;
     }
 
     private void CleansedTheCrystals()
     {
         //Reference the door opening script here
-
+        textReference.text = thirdObjective;
     }
 }

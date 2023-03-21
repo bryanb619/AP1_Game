@@ -2,7 +2,7 @@
 using UnityEngine;
 //using UnityEngine.UI;
 
-public class Ability_Holder : MonoBehaviour
+public class AbilityHolder : MonoBehaviour
 {
     //[SerializeField] private Image icon = default;
     //[SerializeField] private Image coolDownImage = default;

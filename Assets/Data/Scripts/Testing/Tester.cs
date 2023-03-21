@@ -8,11 +8,12 @@ public class Tester : MonoBehaviour
     [SerializeField] private bool LightActive;
 
     [SerializeField] private GameObject GameTestLight;
+    [SerializeField] private GameObject Player;
 
-    [SerializeField] private EnemyBehaviour Enemy1;
-    [SerializeField] private EnemyChaseBehaviour Enemy2;
+    [SerializeField] private bool killCheat = false;
 
-    public bool KillEnemy;
+    [SerializeField] private float damageRadius = 10f;
+    [SerializeField] private int damageAmount = 30;
 
     private bool _show; 
 
@@ -21,14 +22,9 @@ public class Tester : MonoBehaviour
 
     private void Start()
     {
-        KillEnemy = false;
+        //KillEnemy = false;
         TimeBoost = false;
         LightActive = false;
-
-        //Enemy1 = FindObjectOfType<EnemyBehaviour>();
-        //Enemy2 = FindObjectOfType<EnemyChaseBehaviour>();
-
-
     }
 
     // Start is called before the first frame update
@@ -36,28 +32,7 @@ public class Tester : MonoBehaviour
     void Update()
     {
         CheckBools();
-        KillAll();
-
-/*
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            
-            if(!_show)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                _show = true;
-            }
-            else if(_show) 
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = false;
-
-                _show = false;
-            }
-            
-        }
-        */
+        DamageAllInRange();
     }
 
 
@@ -103,14 +78,8 @@ public class Tester : MonoBehaviour
         GameTestLight.SetActive(false);
     }
 
-    private void KillAll()
+    /*private void KillAll()
     {
-        if (Input.GetKeyDown(KeyCode.T) || KillEnemy == true)
-        {
-            //Die();
-            //Enemy1.TakeDamage(100);
-            //Enemy2.TakeDamage(100); 
-        }
         if (Input.GetKeyDown(KeyCode.Y))
         {
             //Die();
@@ -118,9 +87,26 @@ public class Tester : MonoBehaviour
             Enemy2.TakeDamage(10, WeaponType.Normal);
         }
     }
+    */
 
+    private void DamageAllInRange()
+    {
+        if(Input.GetKeyDown(KeyCode.Y) && killCheat == true)
+        {
+            Collider[] hitColliders = Physics.OverlapSphere(Player.transform.position, damageRadius);
+            
+            foreach (Collider hitCollider in hitColliders)
+            {
+                if (hitCollider.CompareTag("Enemy"))
+                {
+                    // Deal damage to the enemy
+                    if(hitCollider.GetComponent<EnemyBehaviour>() == true)
+                        hitCollider.GetComponent<EnemyBehaviour>().TakeDamage(damageAmount, WeaponType.Normal);
 
-
-
-
+                    else if(hitCollider.GetComponent<EnemyChaseBehaviour>() == true)
+                        hitCollider.GetComponent<EnemyChaseBehaviour>().TakeDamage(damageAmount, WeaponType.Normal);
+                }
+            }
+        }
+    }
 }
