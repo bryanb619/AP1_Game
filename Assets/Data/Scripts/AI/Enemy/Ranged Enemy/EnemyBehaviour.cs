@@ -239,7 +239,6 @@ public class EnemyBehaviour : MonoBehaviour
 
         gemPrefab = data.Gem;
 
-
         // FOV //
 
         radius = data.Radius;
