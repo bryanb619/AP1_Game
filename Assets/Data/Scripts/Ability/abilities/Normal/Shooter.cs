@@ -62,6 +62,7 @@ public class Shooter : MonoBehaviour
         {
             ShootInput();
             HoverHighlight();
+            firePoint = GameObject.Find("CompanionShootPos").transform;
         }
 
     }
