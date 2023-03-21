@@ -30,11 +30,7 @@ public class CameraZoom : MonoBehaviour
 
     [SerializeField] private CinemachineVirtualCamera cam;
 
-    private bool _gamePlay;
-
-
-   
-
+    private GameState _state;
 
     private void Awake()
     {
@@ -46,9 +42,23 @@ public class CameraZoom : MonoBehaviour
     {
         //cam = GetComponent<CinemachineVirtualCamera>();
 
-        //targetFOV = 50f; 
+       CinemachineCollider collider = cam.GetComponentInChildren<CinemachineCollider>();
+        if (collider != null)
+        {
+            collider.enabled = false;
+        }
+
+        switch(_state)
+        {
+            case GameState.Gameplay:
+                {
+                    _state = GameState.Gameplay; break;
+                }
+            case GameState.Paused: { _state = GameState.Paused; break;}
+        }
 
     }
+
 
     void Update()
     {
@@ -91,7 +101,7 @@ public class CameraZoom : MonoBehaviour
 
     private void HandleTransformZoom()
     {
-        if(_gamePlay) 
+        if(_state == GameState.Gameplay) 
         {
             Vector3 ZOOMDIR = followOffset.normalized;
 
@@ -128,8 +138,7 @@ public class CameraZoom : MonoBehaviour
         //Debug.Log(Input.mouseScrollDelta); 
 
       
-        
-        
+    
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -139,12 +148,12 @@ public class CameraZoom : MonoBehaviour
         {
             case GameState.Gameplay:
                 {
-                    _gamePlay = true;
+                    _state = GameState.Gameplay;
                     break;
                 }
             case GameState.Paused:
                 {
-                    _gamePlay = false;
+                    _state = GameState.Paused;    
                     break;
                 }
         }
