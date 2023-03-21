@@ -1,4 +1,3 @@
-using System; 
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -56,7 +55,7 @@ public class MainCam : MonoBehaviour
             }
         }
 
-        // Iterate over obstructed renderers and add them to the reset list if they are no longer obstructed
+      
         foreach (MeshRenderer renderer in obstructedRenderers)
         {
             bool isObstructed = false;
@@ -81,81 +80,5 @@ public class MainCam : MonoBehaviour
             obstructedRenderers.Remove(renderer);
         }
 
-        /*
-        // Reduce the alpha of obstructing objects
-        foreach (RaycastHit hit in hits)
-        {
-            MeshRenderer renderer = hit.collider.GetComponent<MeshRenderer>();
-            if (renderer != null)
-            {
-                
-                print("hit :" + hit.collider.name);
-
-                if (!obstructedRenderers.Contains(renderer))
-                {
-                    obstructedRenderers.Add(renderer);
-                    Color color = renderer.material.color;
-                    color.a = alphaValue;
-                    renderer.material.color = color;
-                }
-            }
-        }
-        // Reset the alpha of previously obstructed objects
-        foreach (MeshRenderer renderer in obstructedRenderers)
-        {
-            if (!hits.Any(hit => hit.collider.GetComponent<MeshRenderer>() == renderer))
-            {
-                Color color = renderer.material.color;
-                color.a = 1f;
-                renderer.material.color = color;
-                obstructedRenderers.Remove(renderer);
-            }
-        }
-    */
-
-
-
-
     }
 }
-/*
-using System.Collections.Generic;
-using UnityEngine;
-
-public class MainCam : MonoBehaviour
-{
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private LayerMask obstructionLayer;
-    [SerializeField] private float alphaValue = 0.5f;
-
-    private List<MeshRenderer> obstructedRenderers = new List<MeshRenderer>();
-
-    private void Update()
-    {
-        Vector3 cameraPosition = transform.position;
-        Vector3 playerPosition = playerTransform.position;
-        Vector3 direction = (playerPosition - cameraPosition).normalized;
-        float distance = Vector3.Distance(cameraPosition, playerPosition);
-        RaycastHit[] hits = Physics.RaycastAll(cameraPosition, direction, distance, obstructionLayer);
-
-        Debug.DrawLine(cameraPosition, playerPosition);
-        // Reduce the alpha of obstructing objects
-        foreach (RaycastHit hit in hits)
-        {
-            MeshRenderer renderer = hit.collider.GetComponent<MeshRenderer>();
-            if (renderer != null)
-            {
-                print("hit");
-                renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, alphaValue);
-                obstructedRenderers.Add(renderer);
-            }
-        }
-        // Reset the alpha of previously obstructed objects
-        foreach (MeshRenderer renderer in obstructedRenderers)
-        {
-            renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, 1f);
-        }
-        obstructedRenderers.Clear();
-    }
-}
-*/
