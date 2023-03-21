@@ -191,7 +191,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8544066703244059447}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 392, y: 0, z: 313.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -291,6 +291,11 @@ MonoBehaviour:
   thunderPrefab: {fileID: 2646837571204449996, guid: ec857e43d8f1a484083a2c899198816c, type: 3}
   _magicType: 0
   areaAttackRadius: 7
+  normalTimer: 2
+  fireTimer: 2
+  iceTimer: 2
+  thunderTimer: 2
+  objectiveUI: {fileID: 0}
 --- !u!114 &3408498664106022569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,7 +317,8 @@ MonoBehaviour:
   manaRegenAmount: 1
   waitTime: 5
   manaUI: {fileID: 0}
-  manaCheat: 1
+  shooter: {fileID: 0}
+  manaCheat: 0
 --- !u!195 &8544066703244059451
 NavMeshAgent:
   m_ObjectHideFlags: 0

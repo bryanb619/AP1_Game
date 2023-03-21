@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Shooter : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Shooter : MonoBehaviour
 
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
+    [SerializeField] private float normalTimer, fireTimer, iceTimer, thunderTimer;
+    internal bool normalCooldown, fireCooldown, iceCooldown, thunderCooldown = false;
 
     [Header("Script References")]
     private ManaManager manaManager;
@@ -112,7 +115,11 @@ public class Shooter : MonoBehaviour
                     }
                     else
                     {
-                        Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
+                        if (!normalCooldown)
+                        {
+                            Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
+                            StartCoroutine(NormalAttackCooldown());
+                        }
                         break;
                     }
                 }
@@ -120,7 +127,11 @@ public class Shooter : MonoBehaviour
                 {
                     if (manaManager.ManaCheck(_magicType) == true)
                     {
-                        Instantiate(firePrefab, firePoint.position, firePoint.rotation);
+                        if (!fireCooldown)
+                        {
+                            StartCoroutine(FireAttackCooldown());
+                            Instantiate(firePrefab, firePoint.position, firePoint.rotation);
+                        }
                         break;
                     }
                     else
@@ -175,6 +186,7 @@ public class Shooter : MonoBehaviour
             {
                 if (manaManager.ManaCheck(_magicType) == true)
                 {
+
                     Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
                     Debug.Log("Enemy Hit with Ice");
                 }
@@ -197,6 +209,33 @@ public class Shooter : MonoBehaviour
         }
     }
     
+    IEnumerator NormalAttackCooldown()
+    {
+        normalCooldown = true;
+        yield return new WaitForSecondsRealtime(normalTimer);
+        normalCooldown = false;
+    }   
+    IEnumerator FireAttackCooldown()
+    {
+        fireCooldown = true;
+        yield return new WaitForSecondsRealtime(fireTimer);
+        fireCooldown = false;
+    }
+
+    IEnumerator IceAttackCooldown()
+    {
+        iceCooldown = true;
+        yield return new WaitForSecondsRealtime(iceTimer);
+        iceCooldown = false;
+    }
+
+    IEnumerator ThunderAttackCooldown()
+    {
+        thunderCooldown = true;
+        yield return new WaitForSecondsRealtime(thunderTimer);
+        thunderCooldown = false;
+    }
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
