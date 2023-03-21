@@ -14,6 +14,7 @@ public class MainCam : MonoBehaviour
 
     private List<MeshRenderer> meshInObstruction = new List<MeshRenderer>();
 
+
     #endregion
 
     #region Start

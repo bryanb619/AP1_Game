@@ -28,12 +28,17 @@ public class CameraZoom : MonoBehaviour
 
     private float followMax = 15f; 
 
-    [SerializeField] private CinemachineVirtualCamera cam; 
+    [SerializeField] private CinemachineVirtualCamera cam;
+
+    private bool _gamePlay;
+
+
+   
 
 
     private void Awake()
-    { 
-        
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
         followOffset = cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset; 
     }
 
@@ -86,42 +91,70 @@ public class CameraZoom : MonoBehaviour
 
     private void HandleTransformZoom()
     {
+        if(_gamePlay) 
+        {
+            Vector3 ZOOMDIR = followOffset.normalized;
 
+
+            float ZoomSpeed = 2F;
+
+            if (Input.mouseScrollDelta.y > 0)
+            {
+                followOffset -= ZOOMDIR;
+            }
+
+            else if (Input.mouseScrollDelta.y < 0)
+            {
+                followOffset += ZOOMDIR;
+            }
+
+            if (followOffset.magnitude < followMin)
+            {
+
+                followOffset = ZOOMDIR * followMin;
+            }
+
+            if (followOffset.magnitude > followMax)
+            {
+                followOffset = ZOOMDIR * followMax;
+            }
+
+
+
+            cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset =
+                Vector3.Lerp(cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset,
+                followOffset, Time.deltaTime * ZoomSpeed);
+        }
         //Debug.Log(Input.mouseScrollDelta); 
 
-        Vector3 ZOOMDIR =  followOffset.normalized;
-
-
-        float  ZoomSpeed = 2F;
-
-        if(Input.mouseScrollDelta.y > 0)
-        {
-            followOffset -= ZOOMDIR; 
-        }
-
-        else if(Input.mouseScrollDelta.y < 0)
-        {
-            followOffset += ZOOMDIR; 
-        }
-
-        if(followOffset.magnitude < followMin)
-        {
-            
-            followOffset = ZOOMDIR * followMin; 
-        }
-
-        if(followOffset.magnitude> followMax)
-        {
-            followOffset = ZOOMDIR * followMax; 
-        }
-
-       
-
-        cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = 
-            Vector3.Lerp(cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset, 
-            followOffset, Time.deltaTime * ZoomSpeed);
+      
         
         
+    }
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
 }
