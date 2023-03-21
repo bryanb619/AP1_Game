@@ -28,8 +28,10 @@ public class ObjectiveUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(passedSecondObjective == false)
+        if (passedSecondObjective == false)
             KillEnemiesCheck();
+        else if (passedSecondObjective == true)
+            CleansedTheCrystals();
     }
 
     private void KillEnemiesCheck()
@@ -46,5 +48,11 @@ public class ObjectiveUI : MonoBehaviour
         }
 
         passedSecondObjective = true;
+    }
+
+    private void CleansedTheCrystals()
+    {
+        //Reference the door opening script here
+
     }
 }
