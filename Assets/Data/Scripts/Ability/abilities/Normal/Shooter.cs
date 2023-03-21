@@ -3,19 +3,21 @@ using UnityEngine;
 public class Shooter : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform      firePoint;
-    [SerializeField] private Camera         mainCamera;
-    [SerializeField] private Material       cleansedCrystal;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Material cleansedCrystal;
+    
     [Header("Prefabs")]
     [SerializeField] private GameObject normalPrefab;
     [SerializeField] private GameObject firePrefab, icePrefab, thunderPrefab;
-
     public WeaponType _magicType;
-    
+
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
 
+    [Header("Script References")]
     private ManaManager manaManager;
+    [SerializeField] private ObjectiveUI objectiveUI;
 
     private RaycastHit hit;
     private Vector3 enemyPosition;
@@ -35,17 +37,17 @@ public class Shooter : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState state)
     {
-        switch (state) 
+        switch (state)
         {
             case GameState.Paused:
                 {
                     _gameplay = false;
-                    break; 
+                    break;
                 }
             case GameState.Gameplay:
                 {
                     _gameplay = true;
-                    break; 
+                    break;
                 }
         }
 
@@ -58,7 +60,7 @@ public class Shooter : MonoBehaviour
             ShootInput();
             HoverHighlight();
         }
-        
+
     }
 
     private void ShootInput()
@@ -91,7 +93,7 @@ public class Shooter : MonoBehaviour
 
     public void Shoot()
     {
-        switch(_magicType)
+        switch (_magicType)
         {
             case WeaponType.Normal: // input nº1
                 {
@@ -102,6 +104,7 @@ public class Shooter : MonoBehaviour
                         {
                             hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                             hit.collider.GetComponent<Outline>().enabled = false;
+                            objectiveUI.passedSecondObjective = true;
                             break;
                         }
                         else
@@ -116,7 +119,7 @@ public class Shooter : MonoBehaviour
             case WeaponType.Fire: // input nº2 (Q)
                 {
                     if (manaManager.ManaCheck(_magicType) == true)
-                    { 
+                    {
                         Instantiate(firePrefab, firePoint.position, firePoint.rotation);
                         break;
                     }
@@ -130,21 +133,21 @@ public class Shooter : MonoBehaviour
                     break;
                 }
             case WeaponType.Thunder: // input nº4 (R)
+                {
+                    if (manaManager.ManaCheck(_magicType) == true)
                     {
-                        if (manaManager.ManaCheck(_magicType) == true)
-                        {
-                            //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
-                            AreaAttack();
-                            break;
-                        }
-                        else
-                            break;
+                        //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
+                        AreaAttack();
+                        break;
+                    }
+                    else
+                        break;
                 }
-            
-            default: 
+
+            default:
                 break;
         }
-        
+
     }
 
     private void HoverHighlight()
@@ -155,7 +158,7 @@ public class Shooter : MonoBehaviour
             else
             {
                 GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-                
+
                 foreach (GameObject enemy in enemies)
                 {
                     enemy.GetComponent<Outline>().enabled = false;
@@ -183,14 +186,6 @@ public class Shooter : MonoBehaviour
 
     private void AreaAttack()
     {
-/*  
-        if (hit.collider.CompareTag("Enemy"))
-        {
-            Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
-            Debug.Log("Enemy Hit with Ice");
-        }
-*/
-
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaAttackRadius);
         foreach (Collider hitCollider in hitColliders)
         {
@@ -201,7 +196,7 @@ public class Shooter : MonoBehaviour
             }
         }
     }
-
+    
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
