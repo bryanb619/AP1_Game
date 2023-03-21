@@ -1,4 +1,4 @@
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -27,9 +27,6 @@ public class EnemyBullet : MonoBehaviour
     private bool                                _impactEffet;
 
     private GameObject                          impactObject;
-
-    private float startTime;
-
     #endregion
 
     private void Awake()
@@ -81,7 +78,7 @@ public class EnemyBullet : MonoBehaviour
                 }
         }
 
-        startTime = 0f;
+       
 
         speed = data.speed;
 
@@ -209,34 +206,37 @@ public class EnemyBullet : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    #region Editor Gizmos
-    private void OnDrawGizmos()
-    {
-#if UNITY_EDITOR
-
-        switch (_gamePlay)
-        {
-            case true:
-                {
-                    Handles.Label(transform.position + Vector3.up, "Gameplay");
-                    break;
-                }
-            case false:
-                {
-                    Handles.Label(transform.position + Vector3.up, "Pause");
-                    break;
-                }
-        }
-
-#endif
-    }
-    #endregion
-
-
     #region Destroy call 
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
     #endregion
+
+    /*
+        #region Editor Gizmos
+        private void OnDrawGizmos()
+        {
+    #if UNITY_EDITOR
+
+            switch (_gamePlay)
+            {
+                case true:
+                    {
+                        Handles.Label(transform.position + Vector3.up, "Gameplay");
+                        break;
+                    }
+                case false:
+                    {
+                        Handles.Label(transform.position + Vector3.up, "Pause");
+                        break;
+                    }
+            }
+
+    #endif
+        }
+        #endregion
+
+        */
+
 }

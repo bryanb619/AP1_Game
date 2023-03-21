@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class GameUIElements : MonoBehaviour
 {
-    private Camera camera;
+    private Camera mainCamera;
 
     public Transform _camTransform; 
 
     // Start is called before the first frame update
     void Start()
     {
-        camera = FindObjectOfType<Camera>();
+        mainCamera = FindObjectOfType<Camera>();
 
-        _camTransform = camera.transform;
+        _camTransform = mainCamera.transform;
        
     }
 

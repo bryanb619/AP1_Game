@@ -363,9 +363,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerSpeed()
     {
-        speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
-        lastPosition = transform.position;
-
+       // speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        //lastPosition = transform.position;
+        /*
         if(speed >= 2f)
         {
             _CompanionMovement._playerIsMoving = true;
@@ -375,7 +375,7 @@ public class PlayerMovement : MonoBehaviour
         {
             _CompanionMovement._playerIsMoving = false;
         }
-        
+        */
     }
 
     void OnCollisionEnter(Collision other) 

@@ -62,7 +62,7 @@ public class Puzzle1Manager : MonoBehaviour
     private void AtivateDoor()
     {
         // set mirror active
-        Door.OpenDoor();
+        //Door.OpenDoor();
 
     }
 }

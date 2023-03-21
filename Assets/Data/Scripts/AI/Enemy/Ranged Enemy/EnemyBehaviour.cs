@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
+using UnityEditor.ShaderGraph.Internal;
 
 //using UnityEditor; // comment this on build
 
@@ -43,14 +44,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     GemManager gemManager;
 
-    [SerializeField] private bool gemSpawnOnDeath;
+    private bool gemSpawnOnDeath;
 
     private float health;
 
     // References to enemies
     private GameObject PlayerObject;
 
-    [SerializeField] private Transform PlayerTarget;
+    private Transform PlayerTarget;
     public Transform playerTarget => PlayerTarget;
 
     private PlayerMovement _player; 
@@ -70,13 +71,15 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private Transform[] _PatrolPoints;
 
 
-    [Range(10, 150)]
-    public float radius;
-    [Range(50, 360)]
-    public float angle;
+    //[Range(10, 150)]
+    private float radius;
+    public float Radius => radius;
+    //[Range(50, 360)]
+    private float angle;
+    public float Angle => angle;
 
-    public LayerMask targetMask;
-    public LayerMask obstructionMask;
+    private LayerMask targetMask;
+    private LayerMask obstructionMask;
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
@@ -169,10 +172,10 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        
         GetComponents();
         GetProfile();
         GetStates();
+
 
         // temp code
         _canMove = true;
@@ -228,12 +231,10 @@ public class EnemyBehaviour : MonoBehaviour
         bullet = data.projectile;
         specialBullet = data.specialProjectile;
 
-
         // cover //
+        fleeDistance = data.FleeDistance; 
 
         
-
-
         // GEM //
 
         gemPrefab = data.Gem;
@@ -241,6 +242,9 @@ public class EnemyBehaviour : MonoBehaviour
 
         // FOV //
 
+        radius = data.Radius;
+        
+        angle = data.Angle;
 
         // UI //
         _healthSlider.value = health;
@@ -307,7 +311,7 @@ public class EnemyBehaviour : MonoBehaviour
         //  PATROL -> CHASE 
         PatrolState.AddTransition(
            new Transition(
-               () => canSeePlayer == true,
+               () => _stateAI == AI._ATTACK,
                () => Debug.Log("PATROL -> CHASE"),
                ChaseState));
 
@@ -725,7 +729,11 @@ public class EnemyBehaviour : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(FOV.position, target.position);
 
                 if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                {
                     canSeePlayer = true;
+                    SetAttack(); 
+                }
+                    
                 else
                     canSeePlayer = false;
             }
@@ -756,6 +764,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             // ALERT AI OF player presence
             _warn.canAlertAI = true;
+            SetAttack(); 
             //GetPlayer();
             if(_canAttack) 
             {
@@ -872,12 +881,11 @@ public class EnemyBehaviour : MonoBehaviour
     private void SetPatrol()
     {
         _stateAI = AI._PATROL;
+
     }
     private void SetAttack()
     {
         _stateAI = AI._ATTACK;
-
-       
     }
     private void SetCover()
     {

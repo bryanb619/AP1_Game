@@ -20,24 +20,25 @@ public class CompanionBehaviour : MonoBehaviour
     private CompanionState _StateAI;  
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
-    private mini _MiniMapCollor;
+    //private mini _MiniMapCollor;
 
     [SerializeField] internal NavMeshAgent Companion;
     [SerializeField] private Transform Target;
     public Transform playerTarget => Target;
 
-    [HideInInspector] public bool _playerIsMoving;
+    //[HideInInspector] public bool _playerIsMoving;
 
-    private bool _StartFollow;
+    //private bool _StartFollow;
 
     //private PlayerMovement _Player;
-    [Header("Mesh Configuration")]
-    [SerializeField] private MeshRenderer CompanionMesh;
-    [SerializeField] Material normal, AlphaLow;
+    //[Header("Mesh Configuration")]
 
-    [SerializeField] private Transform AlphaPoint;
+    //[SerializeField] private MeshRenderer CompanionMesh;
+    //[SerializeField] Material normal, AlphaLow;
 
-    private float minDist = 0.4f;
+    //[SerializeField] private Transform AlphaPoint;
+
+    //private float minDist = 0.4f;
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -60,14 +61,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField] private LayerMask _attackLayers;
 
-
     [SerializeField] private Camera mainCamera;
-
-    [SerializeField] Transform companionAim;
-
-    private bool _canRotate; 
-    [SerializeField] private GameObject target;
-    [SerializeField] private float degreesPerSecond = 45;
 
     #endregion
 
@@ -97,10 +91,10 @@ public class CompanionBehaviour : MonoBehaviour
                 }
         }
 
-        CompanionMesh = GetComponent<MeshRenderer>();
-        _MiniMapCollor = FindObjectOfType<mini>();
+        //CompanionMesh = GetComponent<MeshRenderer>();
+        //_MiniMapCollor = FindObjectOfType<mini>();
         //mainCamera = Camera.main;
-        _playerIsMoving = false;
+        //_playerIsMoving = false;
       
         // Create the states
         State IdleState = new State("",
@@ -128,16 +122,15 @@ public class CompanionBehaviour : MonoBehaviour
         IdleState.AddTransition(
             new Transition(
                 () => _StateAI == CompanionState._follow,
-                () => Debug.Log(""),
+                () => Debug.Log("Idle -> Follow"),
                 FollowState));
 
         // Follow -> Idle
         FollowState.AddTransition(
            new Transition(
                () => _StateAI == CompanionState._idle,
-               () => Debug.Log(""),
+               () => Debug.Log("Follow -> Idle"),
                IdleState));
-
 
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
@@ -558,14 +551,14 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void Setlow()
     {
         // change to transparent material version
-        CompanionMesh.material = AlphaLow;
+        //CompanionMesh.material = AlphaLow;
 
     }
 
     private void SetHigh()
     {
         // change to normal material
-        CompanionMesh.material = normal;
+        //CompanionMesh.material = normal;
     }
     #endregion
 

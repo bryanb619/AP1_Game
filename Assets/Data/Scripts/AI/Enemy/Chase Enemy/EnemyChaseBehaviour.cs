@@ -254,15 +254,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
         angle = data.Angle;
         targetMask = data.TargetMask;
         obstructionMask = data.ObstructionMask;
+
         // Cover
         HidableLayers = data.HidableLayers;
         minDistInCover = data.MindistIncover;
+
         // Health
         _health = data.Health;
+        healthInCreasePerFrame = data.HealthRegen;
+        
+
         // Weakness
         _iceWeak = data.Ice;
         _fireWeak = data.Fire;
         _thunderWeak = data.Thunder;
+
         // Gem
         gemSpawnOnDeath = data.GemSpawnOnDeath;
         gemPrefab = data.Gem;
@@ -334,8 +340,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // COVER -> CHASE
         FindCover.AddTransition(
            new Transition(
-               () => //InCoverState == false 
-                     _stateAI == AI._ATTACK,
+               () => _stateAI == AI._ATTACK,
                () => Debug.Log("COVER -> CHASE"),
                ChaseState));
 
@@ -477,9 +482,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         if ((playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
         {
-            //transform.LookAt(new Vector3(0,playerTarget.position.y, 0));
-            //transform.LookAt(playerTarget);
-            //Agent.SetDestination(playerTarget.position);
             SetAttack();
             
         }
@@ -491,6 +493,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Health Check 
     private void HealthCheck()
     {
+
         if (_health <= 15)
         {
             SetGloryKill();
@@ -501,13 +504,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             SetCover();
         }
-
-        else if (_health >= 75 && _stateAI == AI._COVER)
-        {
-            SetAttack();
-        }
-
-
     }
     #endregion
 
@@ -578,11 +574,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (currentAbilityValue <= ABILITY_MAX_VALUE)
         {
 
-                //print(currentAbilityValue);
-
-                currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
-
-                _AbilitySlider.value = currentAbilityValue;
+            currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
+            _AbilitySlider.value = currentAbilityValue;
         }
         
 
@@ -609,10 +602,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             nextAttack = Time.time + attackRate;
         }
 
-
-
-
-
     }
     #endregion
 
@@ -624,18 +613,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
         agent.radius = 1f;
 
         HandleGainSight(PlayerTarget);
-        // GetCover();
 
-        if (curSpeed <= 0.5 && !_isAttacking && _health >= 16)
+        //print(curSpeed); 
+        if (curSpeed <= 0.5 && _health >= 16)
         {
             _health = Mathf.Clamp(_health + (healthInCreasePerFrame * Time.deltaTime), 0.0f, MAXHEALTH);
-            //Debug.Log("Chase health: " + _Health);
-        }
-        else
-        {
-            SetAttack();  ;
-        }
+            //Debug.Log("Chase health: " + _health);
 
+            _healthSlider.value = _health;  
+
+            if(_health >= 70) { _canAttack = true;}
+
+            else { _canAttack = false;}
+
+        }
+        //else if(_health < 15) { SetGloryKill();}
+
+        else if(_canAttack){ SetAttack();}
     }
 
     private void HandleGainSight(Transform Target)
@@ -750,7 +744,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void SetPatrol()
     {
-        print("patrol FIRED");
+        //print("patrol FIRED");
         _stateAI = AI._PATROL;
 
         agent.autoBraking = false;
@@ -762,18 +756,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetAttack()
     {
         // Agent configuration
-        
+       
 
         agent.speed = attackSpeed;
         agent.stoppingDistance = 3.9f;
         //agent.angularSpeed = 120f;
-        StartAttacking();
 
-        //transform.LookAt(playerTarget.transform.position);  
-
-        //print("ATTACK FIRED");
-        //print(agent.remainingDistance); 
-
+        //StartAttacking();
         _stateAI = AI._ATTACK;
 
 
@@ -781,6 +770,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     private void SetCover()
     {
+        _canAttack = false;
         _stateAI = AI._COVER;
       
     }
@@ -838,7 +828,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             }
             else if (_Type == WeaponType.Fire)
             {
-                StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
+                //StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
             }
             else if (_Type == WeaponType.Dash)
             {
@@ -848,6 +838,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             }
         }
 
+        print(_health); 
         _healthSlider.value = _health; 
 
         Debug.Log("enemy shot" + _health);

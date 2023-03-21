@@ -44,7 +44,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 40
+  m_Radius: 20
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1520560322554408967
 MonoBehaviour:
@@ -730,17 +730,7 @@ MonoBehaviour:
   outlineDeactivation: {fileID: 3580100482103403493}
   _agentAI: {fileID: 0}
   damageBoost: 20
-  gemSpawnOnDeath: 0
-  PlayerTarget: {fileID: 0}
   _PatrolPoints: []
-  radius: 14
-  angle: 140
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 6144
-  obstructionMask:
-    serializedVersion: 2
-    m_Bits: 1615425
   FOV: {fileID: 7207599052736451569}
   _shootPos: {fileID: 7207599052140597720}
   HideSensitivity: -0.06

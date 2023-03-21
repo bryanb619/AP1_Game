@@ -1,4 +1,4 @@
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -16,7 +16,7 @@ public class LightOptimize : MonoBehaviour
 
     public GameObject                           Player;
 
-    private bool                                _isActive;
+    //private bool                                _isActive;
     
     private void Start()
     {
@@ -56,15 +56,17 @@ public class LightOptimize : MonoBehaviour
     private void DisableLight()
     {
         Lightcomponent.enabled = false;
-        _isActive = false;
+        
     }
 
     private void EnableLight()
     {
         Lightcomponent.enabled = true;
-        _isActive = true;
+        
     }
 
+ 
+/*
 #if UNITY_EDITOR
 
     private void OnDrawGizmos()
@@ -92,4 +94,5 @@ public class LightOptimize : MonoBehaviour
     }
 
 #endif
+*/
 }
