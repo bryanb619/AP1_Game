@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class MainCam : MonoBehaviour
 {
+    #region Variables
     private GameObject player;
 
     private Transform playerTransform;
@@ -11,15 +12,15 @@ public class MainCam : MonoBehaviour
 
     [SerializeField] private float alphaValue = 0.3f;
 
-    private List<MeshRenderer> obstructedRenderers = new List<MeshRenderer>();
+    private List<MeshRenderer> meshInObstruction = new List<MeshRenderer>();
 
+
+    #endregion
+
+    #region Start
     private void Start()
     {
         CollectData();
-    }
-    private void Update()
-    {
-        UpdateRaycast();
     }
 
     private void CollectData()
@@ -28,35 +29,54 @@ public class MainCam : MonoBehaviour
         playerTransform = player.transform;
     }
 
+    #endregion
+
+    #region Update
+    private void Update()
+    {
+        UpdateRaycast();
+    }
+
+    
+
     /// <summary>
     /// Raycast Update of player visibility
     /// This code manages other Game Objects mesh renderes alpha and will lower and reset according to player visibilty between camera and player
     /// </summary>
     private void UpdateRaycast()
     {
-        Vector3 cameraPosition = transform.position;
-        Vector3 playerPosition = playerTransform.position;
+        // player position 
+        Vector3 playerPos = playerTransform.position;
 
-        Vector3 direction = (playerPosition - cameraPosition).normalized;
-        float distance = Vector3.Distance(cameraPosition, playerPosition);
+        // camera position
+        Vector3 cameraPos = transform.position;
+        
 
-        RaycastHit[] hits = Physics.RaycastAll(cameraPosition, direction, distance, obstructionLayer);
-        Debug.DrawLine(cameraPosition, playerPosition);
+        // 
+        Vector3 direction = (playerPos - cameraPos).normalized;
 
-        List<MeshRenderer> resetRenderers = new List<MeshRenderer>(); // Create a new list to keep track of renderers to reset
 
+        float distance = Vector3.Distance(cameraPos, playerPos);
+
+        RaycastHit[] hits = Physics.RaycastAll(cameraPos, direction, distance, obstructionLayer); // raycast
+        //Debug.DrawLine(cameraPosition, playerPosition);
+
+        // list
+        List<MeshRenderer> resetRenderers = new List<MeshRenderer>(); 
+
+        // for each object reduce alpha
         foreach (RaycastHit hit in hits)
         {
             MeshRenderer renderer = hit.collider.GetComponent<MeshRenderer>();
-            if (renderer != null && !obstructedRenderers.Contains(renderer))
+            if (renderer != null && !meshInObstruction.Contains(renderer))
             {
                 renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, alphaValue);
-                obstructedRenderers.Add(renderer);
+                meshInObstruction.Add(renderer);
             }
         }
 
-      
-        foreach (MeshRenderer renderer in obstructedRenderers)
+
+        foreach (MeshRenderer renderer in meshInObstruction)
         {
             bool isObstructed = false;
             foreach (RaycastHit hit in hits)
@@ -67,18 +87,21 @@ public class MainCam : MonoBehaviour
                     break;
                 }
             }
+            // add renderer to remove list
             if (!isObstructed)
             {
                 resetRenderers.Add(renderer);
             }
         }
 
-        // Reset the alpha value of renderers in the reset list
+        // Reset alpha value
         foreach (MeshRenderer renderer in resetRenderers)
         {
+            
             renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, 1f);
-            obstructedRenderers.Remove(renderer);
+            meshInObstruction.Remove(renderer);
         }
 
     }
+    #endregion
 }

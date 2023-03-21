@@ -23,8 +23,11 @@ public class CompanionBehaviour : MonoBehaviour
     //private mini _MiniMapCollor;
 
     [SerializeField] internal NavMeshAgent Companion;
-    [SerializeField] private Transform Target;
+
+    private Transform Target;
     public Transform playerTarget => Target;
+
+    private CompanionSpawn point; 
 
     //[HideInInspector] public bool _playerIsMoving;
 
@@ -61,7 +64,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField] private LayerMask _attackLayers;
 
-    [SerializeField] private Camera mainCamera;
+     private Camera mainCamera;
 
     #endregion
 
@@ -76,6 +79,12 @@ public class CompanionBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
+        mainCamera = FindObjectOfType<Camera>();
+
+        point = FindObjectOfType<CompanionSpawn>(); 
+
+        Target = point.transform;
+
 
         switch (_gameState)
         {
@@ -95,6 +104,8 @@ public class CompanionBehaviour : MonoBehaviour
         //_MiniMapCollor = FindObjectOfType<mini>();
         //mainCamera = Camera.main;
         //_playerIsMoving = false;
+
+        
       
         // Create the states
         State IdleState = new State("",
@@ -598,6 +609,12 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     #endregion
 
     #region Destroy
+
+    public void Replace()
+    {
+        Destroy(gameObject); 
+    }
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= OnGameStateChanged;

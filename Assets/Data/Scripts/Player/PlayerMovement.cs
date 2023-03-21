@@ -287,10 +287,25 @@ public class PlayerMovement : MonoBehaviour
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
                     //if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, NavMesh.GetAreaFromName("Walkable")))
                     {
-                        agent.angularSpeed = 0f; 
-                        agent.destination = hit.point;
+                        agent.angularSpeed = 0f;
+
                         Instantiate(effect, hit.point, Quaternion.identity);
-                        transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+
+                        if (hit.transform.CompareTag("Walk"))
+                        {
+                            //agent.destination = hit.point;
+                            agent.isStopped = false;
+
+                            agent.SetDestination(hit.point);
+                           
+                            transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                        }
+                        else
+                        {
+                            agent.isStopped = true; 
+                        }
+                        
+                        
                         
                     }
                 }
