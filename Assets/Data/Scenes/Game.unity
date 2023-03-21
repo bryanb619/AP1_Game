@@ -5981,7 +5981,7 @@ PrefabInstance:
     - target: {fileID: 4855835871993818476, guid: e7fd3b85d70209b44a6d79514c35ee57, type: 3}
       propertyPath: firePoint
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 887391942}
     - target: {fileID: 4855835871993818476, guid: e7fd3b85d70209b44a6d79514c35ee57, type: 3}
       propertyPath: mainCamera
       value: 
@@ -6592,6 +6592,11 @@ Transform:
   m_Father: {fileID: 1521124089}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &887391942 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1510856067042679246, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
+  m_PrefabInstance: {fileID: 2095938084}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &903568925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8520,8 +8525,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   door: {fileID: 1460608003}
-  startPos: {fileID: 0}
-  Endpos: {fileID: 0}
+  startPos: {fileID: 87358531}
+  Endpos: {fileID: 745117598}
 --- !u!4 &1205888256
 Transform:
   m_ObjectHideFlags: 0
@@ -19712,10 +19717,6 @@ PrefabInstance:
     - target: {fileID: 1510856066898559175, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
       propertyPath: m_Name
       value: Companion
-      objectReference: {fileID: 0}
-    - target: {fileID: 1510856067042679245, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
-      propertyPath: m_Name
-      value: CompanionShootPos
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
