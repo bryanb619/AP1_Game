@@ -12,7 +12,7 @@ public class HealthPointSound : MonoBehaviour
     void Update()
     {
         elapsed += Time.deltaTime;
-        print(elapsed); 
+        //print(elapsed); 
 
         if (elapsed >= 3f)
         {

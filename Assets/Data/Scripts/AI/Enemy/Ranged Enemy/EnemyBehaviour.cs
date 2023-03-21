@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
+using UnityEditor.ShaderGraph.Internal;
 
 //using UnityEditor; // comment this on build
 
 #endregion
+
 #region Ranged AI Brain Script
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -33,8 +35,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     private AI _stateAI;
 
-    private Animator _animator;
-
     private WarningSystemAI _warn; 
 
     [SerializeField] private Agents _agentAI;
@@ -44,14 +44,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     GemManager gemManager;
 
-    [SerializeField] private bool gemSpawnOnDeath;
+    private bool gemSpawnOnDeath;
 
     private float health;
 
     // References to enemies
     private GameObject PlayerObject;
 
-    [SerializeField] private Transform PlayerTarget;
+    private Transform PlayerTarget;
     public Transform playerTarget => PlayerTarget;
 
     private PlayerMovement _player; 
@@ -65,24 +65,21 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float AttackRequiredDistance = 8f;
 
-
-    // percentage
-    private float randomPercentage;
-
-
     // Patrol Points
 
     private int destPoint = 0;
     [SerializeField] private Transform[] _PatrolPoints;
 
 
-    [Range(10, 150)]
-    public float radius;
-    [Range(50, 360)]
-    public float angle;
+    //[Range(10, 150)]
+    private float radius;
+    public float Radius => radius;
+    //[Range(50, 360)]
+    private float angle;
+    public float Angle => angle;
 
-    public LayerMask targetMask;
-    public LayerMask obstructionMask;
+    private LayerMask targetMask;
+    private LayerMask obstructionMask;
     [SerializeField] private Transform FOV;
     public Transform EEFOV => FOV; // Enemy Editor FOV
 
@@ -102,12 +99,6 @@ public class EnemyBehaviour : MonoBehaviour
     private float fireRate = 2f;
     private float nextFire = 0f;
 
-
-    private float powerCooldown = 5f;
-    private float timeSincePowerCooldown = 0f;
-
-
-    //
 
     // special ability 
 
@@ -137,16 +128,22 @@ public class EnemyBehaviour : MonoBehaviour
 
     private Coroutine MovementCoroutine;
 
+    private float fleeDistance; 
+
 
     // UI
     [SerializeField] private Slider _healthSlider;
 
     [SerializeField] private Slider _abilitySlider;
 
+    // animation
+    private Animator _animator;
+
     // fire damage variables
     private float damagePerSecondFire = 2f;
     private float durationOfFireDamage = 10f; 
 
+    // states & actions
     private bool _canGloryKill;
 
     private bool _gamePlay;
@@ -175,12 +172,13 @@ public class EnemyBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
-        _canMove = true;
         GetComponents();
         GetProfile();
         GetStates();
 
+
         // temp code
+        _canMove = true;
         _canAttack = true;
         _isAttacking = false;
         _canAttack = false;
@@ -233,7 +231,10 @@ public class EnemyBehaviour : MonoBehaviour
         bullet = data.projectile;
         specialBullet = data.specialProjectile;
 
+        // cover //
+        fleeDistance = data.FleeDistance; 
 
+        
         // GEM //
 
         gemPrefab = data.Gem;
@@ -241,6 +242,9 @@ public class EnemyBehaviour : MonoBehaviour
 
         // FOV //
 
+        radius = data.Radius;
+        
+        angle = data.Angle;
 
         // UI //
         _healthSlider.value = health;
@@ -307,7 +311,7 @@ public class EnemyBehaviour : MonoBehaviour
         //  PATROL -> CHASE 
         PatrolState.AddTransition(
            new Transition(
-               () => canSeePlayer == true,
+               () => _stateAI == AI._ATTACK,
                () => Debug.Log("PATROL -> CHASE"),
                ChaseState));
 
@@ -516,14 +520,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Attack()
     {
-        //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-        
-
         if (Time.time > nextFire)
         {
+            float randomPercentage;
+
             randomPercentage = UnityEngine.Random.Range(0f, 100f);
 
-            print("percentage is: "+randomPercentage);
+            //print("percentage is: "+randomPercentage);
+
             _animator.SetBool("isAttacking", true);
 
             if(randomPercentage <= 10f) 
@@ -725,7 +729,11 @@ public class EnemyBehaviour : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(FOV.position, target.position);
 
                 if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                {
                     canSeePlayer = true;
+                    SetAttack(); 
+                }
+                    
                 else
                     canSeePlayer = false;
             }
@@ -756,6 +764,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             // ALERT AI OF player presence
             _warn.canAlertAI = true;
+            SetAttack(); 
             //GetPlayer();
             if(_canAttack) 
             {
@@ -872,12 +881,11 @@ public class EnemyBehaviour : MonoBehaviour
     private void SetPatrol()
     {
         _stateAI = AI._PATROL;
+
     }
     private void SetAttack()
     {
         _stateAI = AI._ATTACK;
-
-       
     }
     private void SetCover()
     {

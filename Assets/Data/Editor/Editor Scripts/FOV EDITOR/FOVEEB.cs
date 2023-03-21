@@ -8,15 +8,15 @@ public class FOVEEB : Editor
     {
         EnemyBehaviour fov = (EnemyBehaviour)target;
         Handles.color = Color.red;
-        Handles.DrawWireArc(fov.EEFOV.position, Vector3.up, Vector3.forward, 360, fov.radius);
+        Handles.DrawWireArc(fov.EEFOV.position, Vector3.up, Vector3.forward, 360, fov.Radius);
 
-        Vector3 viewAngle01 = DirectionFromAngle(fov.EEFOV.transform.eulerAngles.y, -fov.angle / 2);
-        Vector3 viewAngle02 = DirectionFromAngle(fov.EEFOV.eulerAngles.y, fov.angle / 2);
+        Vector3 viewAngle01 = DirectionFromAngle(fov.EEFOV.transform.eulerAngles.y, -fov.Angle / 2);
+        Vector3 viewAngle02 = DirectionFromAngle(fov.EEFOV.eulerAngles.y, fov.Angle / 2);
 
         Handles.color = Color.green;
-        Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle01 * fov.radius);
-        Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle02 * fov.radius);
-
+        Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle01 * fov.Radius);
+        Handles.DrawLine(fov.EEFOV.position, fov.EEFOV.position + viewAngle02 * fov.Radius);
+            
         if (fov.canSee)
         {
             Handles.color = Color.cyan;

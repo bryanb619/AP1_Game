@@ -43,6 +43,8 @@ public class Dashing : MonoBehaviour
         {
             RaycastHit hit;
 
+            
+
             if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
             {
                 transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));

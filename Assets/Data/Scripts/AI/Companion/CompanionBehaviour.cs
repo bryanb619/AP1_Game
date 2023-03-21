@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using Unity.VisualScripting.Antlr3.Runtime;
 
 //using UnityEngine.Animations;
 
@@ -11,29 +10,35 @@ using Unity.VisualScripting.Antlr3.Runtime;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CompanionBehaviour : MonoBehaviour
 {
+
+    public float acceleration = 2f;
+    public float deceleration = 60f;
+
+    public float closeEnoughMeters = 3f;
     #region Variables
     private enum CompanionState { _idle, _follow, _rotate}
     private CompanionState _StateAI;  
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
-    private mini _MiniMapCollor;
+    //private mini _MiniMapCollor;
 
     [SerializeField] internal NavMeshAgent Companion;
     [SerializeField] private Transform Target;
     public Transform playerTarget => Target;
 
-    [HideInInspector] public bool _playerIsMoving;
+    //[HideInInspector] public bool _playerIsMoving;
 
-    private bool _StartFollow;
+    //private bool _StartFollow;
 
     //private PlayerMovement _Player;
-    [Header("Mesh Configuration")]
-    [SerializeField] private MeshRenderer CompanionMesh;
-    [SerializeField] Material normal, AlphaLow;
+    //[Header("Mesh Configuration")]
 
-    [SerializeField] private Transform AlphaPoint;
+    //[SerializeField] private MeshRenderer CompanionMesh;
+    //[SerializeField] Material normal, AlphaLow;
 
-    private float minDist = 0.4f;
+    //[SerializeField] private Transform AlphaPoint;
+
+    //private float minDist = 0.4f;
     // Reference to the state machine
     private StateMachine stateMachine;
 
@@ -56,14 +61,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField] private LayerMask _attackLayers;
 
-
     [SerializeField] private Camera mainCamera;
-
-    [SerializeField] Transform companionAim;
-
-    private bool _canRotate; 
-    [SerializeField] private GameObject target;
-    [SerializeField] private float degreesPerSecond = 45;
 
     #endregion
 
@@ -93,10 +91,10 @@ public class CompanionBehaviour : MonoBehaviour
                 }
         }
 
-        CompanionMesh = GetComponent<MeshRenderer>();
-        _MiniMapCollor = FindObjectOfType<mini>();
+        //CompanionMesh = GetComponent<MeshRenderer>();
+        //_MiniMapCollor = FindObjectOfType<mini>();
         //mainCamera = Camera.main;
-        _playerIsMoving = false;
+        //_playerIsMoving = false;
       
         // Create the states
         State IdleState = new State("",
@@ -109,12 +107,13 @@ public class CompanionBehaviour : MonoBehaviour
             Follow,
             () => Debug.Log(""));
 
+        /*
         State RotateState = new State("",
             () => Debug.Log(""),
             RotateAroundPlayer,
             () => Debug.Log(""));
 
-
+        */
 
         // Add the transitions
 
@@ -123,16 +122,15 @@ public class CompanionBehaviour : MonoBehaviour
         IdleState.AddTransition(
             new Transition(
                 () => _StateAI == CompanionState._follow,
-                () => Debug.Log(""),
+                () => Debug.Log("Idle -> Follow"),
                 FollowState));
 
         // Follow -> Idle
         FollowState.AddTransition(
            new Transition(
                () => _StateAI == CompanionState._idle,
-               () => Debug.Log(""),
+               () => Debug.Log("Follow -> Idle"),
                IdleState));
-
 
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
@@ -147,8 +145,10 @@ public class CompanionBehaviour : MonoBehaviour
         if(_gameplay) 
         {
             ResumeAgent();
+            Companion.angularSpeed = 0;
             StartCoroutine(FOVRoutine());
-            Companion.updateRotation = false; 
+
+            CheckDist(); 
 
             Aim();
 
@@ -167,63 +167,19 @@ public class CompanionBehaviour : MonoBehaviour
     }
     #endregion
 
-    private void LookAtUpdate()
+    private void CheckDist()
     {
-       
-        /*
-        Vector3 mousePos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, mainCamera.transform.position.y));
-
-        // Calculate the direction from the player to the mouse position
-        Vector3 direction = mousePos - transform.position;
-        direction.y = 0f; // Ignore the Y component of the direction
-
-        // Rotate the player towards the mouse position
-        if (direction != Vector3.zero)
+        if ((Target.position - transform.position).magnitude >= 1f)
         {
-            transform.rotation = Quaternion.LookRotation(direction);
-        }
-
-        // Cast a ray from the camera position to the mouse position
-        Ray ray = new Ray(mainCamera.transform.position, direction);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, MaxHit))
-        {
-            // Calculate the cursor offset based on the hit distance
-            cursorOffset = hit.distance / mainCamera.transform.position.y;
-
-            // Debug draw the adjusted ray
-            Debug.DrawRay(mainCamera.transform.position, direction * (hit.distance + cursorOffset), Color.red);
+            _StateAI = CompanionState._follow;
         }
         else
         {
-            // If the ray doesn't hit anything, use a default offset value
-            //cursorOffset = 1f;
-
-            // Debug draw the unadjusted ray
-            Debug.DrawRay(mainCamera.transform.position, direction * 10f, Color.red);
+            _StateAI = CompanionState._idle;
         }
-
-
-
-        /*
-       //Get the mouse position in the game world
-        Vector3 mousePos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, mainCamera.transform.position.y));
-
-        // Calculate the direction from the player to the mouse position
-        Vector3 direction = mousePos - transform.position;
-        direction.y = 0f; // Ignore the Y component of the direction
-
-        // Rotate the player towards the mouse position
-
-        if (direction != Vector3.zero)
-        {
-            transform.rotation = Quaternion.LookRotation(direction);
-            companionAim.position = mousePos;   
-        }
-        Debug.DrawRay(transform.position, direction, Color.yellow);
-        */
     }
+
+   
 
     #region Raycast aim mouse Update
     private void Aim()
@@ -250,7 +206,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _attackLayers))
         {
-            companionAim.transform.position = hitInfo.point;
+            //companionAim.transform.position = hitInfo.point;
             return (success: true, position: hitInfo.point);
                
         }
@@ -420,7 +376,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void CheckMoveBool()
     {
         //print(_playerIsMoving); 
-
+        /*
         if (_playerIsMoving)
         {
             //_StartFollow = true;
@@ -431,6 +387,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
             // _StartFollow = false;
             _StateAI = CompanionState._idle;
         }
+        */
     }
 
 
@@ -438,29 +395,16 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     // Chase the small enemy
     private void Idle()
     {
-        // player is not moving (agent stop)
+        PosUpdate();
 
-        //print("doing nothing now");
-        //Companion.isStopped = true;
-        Companion.SetDestination(Target.position); 
-       
-        if (Companion.remainingDistance >= 3f)
+        if (Companion.hasPath)
         {
-
-            DashUpate();
-
+            Companion.acceleration = (Companion.remainingDistance < closeEnoughMeters) ? deceleration : acceleration;
         }
-        // follow only camera movement
-
 
     }
 
-    private void DashUpate()
-    {
-        Companion.acceleration = 10F;
-        Companion.speed = 12F;
-    }
-
+    /*
     private void RotateTimer()
     {
         if(_canRotate) 
@@ -476,20 +420,34 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
         }
         
-
-        
     }
 
-    private void RotateAroundPlayer()
+     private void RotateAroundPlayer()
     {
         //transform.RotateAround(target.transform.position, Vector3.forward, degreesPerSecond * Time.deltaTime);
     }
+    */
 
-
-    private void CameraUpdatePos()
+    private void PosUpdate()
     {
         Companion.isStopped = false;
         Companion.SetDestination(Target.position);
+
+        Companion.speed = 3.4f;
+
+
+        if ((Target.position - transform.position).magnitude >= 3f)
+        {
+            Companion.speed = 12f; 
+        }
+        else if ((Target.position - transform.position).magnitude >= 6f)
+        {
+                transform.position = Target.position;   
+        }
+        else if((Target.position - transform.position).magnitude <= 1.7f)
+        {
+            SlowDown(); 
+        }
     }
 
     #endregion
@@ -498,30 +456,16 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     #region Follow State
     private void Follow()
     {
-        Companion.isStopped = false;
-        Companion.angularSpeed = 0;
+        PosUpdate();
 
-        Companion.SetDestination(Target.position);
-
-        if (Companion.remainingDistance >= 4F)
-        {
-            KetChup();
-        }
-      
        
     }
+    
 
-    private void FollowTargetNormal()
+    private void SlowDown()
     {
-        Companion.speed = 3f; 
-        Companion.acceleration = 8f; 
-    }
-
-    private void KetChup()
-    {
-        Companion.acceleration = 12F;
-        Companion.speed = 10F;
-     
+        //Companion.acceleration = 8F;
+        Companion.speed = 3F;
     }
 
     #endregion
@@ -607,14 +551,14 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void Setlow()
     {
         // change to transparent material version
-        CompanionMesh.material = AlphaLow;
+        //CompanionMesh.material = AlphaLow;
 
     }
 
     private void SetHigh()
     {
         // change to normal material
-        CompanionMesh.material = normal;
+        //CompanionMesh.material = normal;
     }
     #endregion
 
@@ -659,5 +603,4 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         GameManager.OnGameStateChanged -= OnGameStateChanged;
     }
     #endregion
-
 }
