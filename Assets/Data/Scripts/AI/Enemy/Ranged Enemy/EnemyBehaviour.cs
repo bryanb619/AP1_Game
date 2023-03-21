@@ -49,14 +49,14 @@ public class EnemyBehaviour : MonoBehaviour
     private float health;
 
     // References to enemies
-    private GameObject PlayerObject;
+    public GameObject PlayerObject;
 
-    private Transform PlayerTarget;
-    public Transform playerTarget => PlayerTarget;
+    private Transform _playerTarget;
+    public Transform PlayerTarget => _playerTarget;
 
     private PlayerMovement _player; 
 
-    private float minDist = 7f;
+    private float minDist = 5f;
 
 
     // AI SPEED
@@ -201,7 +201,7 @@ public class EnemyBehaviour : MonoBehaviour
         _player = FindObjectOfType<PlayerMovement>();
         PlayerObject = GameObject.Find("Player");
 
-        PlayerTarget = PlayerObject.transform;
+        _playerTarget = PlayerObject.transform;
 
     }
     #endregion
@@ -245,6 +245,10 @@ public class EnemyBehaviour : MonoBehaviour
         radius = data.Radius;
         
         angle = data.Angle;
+
+        targetMask = data.TargetMask;
+
+        obstructionMask = data.ObstructionMask; 
 
         // UI //
         _healthSlider.value = health;
@@ -394,7 +398,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (!_canGloryKill)
         {
-            if ((playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
+            if ((_playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
             {
                 //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
                 //transform.LookAt(playerTarget.position);
@@ -422,7 +426,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             StopCoroutine(MovementCoroutine);
         }
-        PlayerTarget = Target;
+        _playerTarget = Target;
 
         MovementCoroutine = StartCoroutine(Hide(Target));
     }
@@ -451,9 +455,9 @@ public class EnemyBehaviour : MonoBehaviour
         else if(!_canSpecialAttack)
         {
 
-            if ((playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
+            if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
             {
-                transform.LookAt(playerTarget.position);
+                transform.LookAt(_playerTarget.position);
 
                 agent.speed = 0;
                 StartAttacking();
@@ -466,7 +470,7 @@ public class EnemyBehaviour : MonoBehaviour
 
             }
 
-            else if ((playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance || currentAbilityValue < ABILITY_MAX_VALUE)
+            else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance || currentAbilityValue < ABILITY_MAX_VALUE)
             {
                 GetDistance();
 
@@ -483,13 +487,13 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void SpecialAttack()
     {
-        agent.SetDestination(playerTarget.position);
+        agent.SetDestination(_playerTarget.position);
 
         agent.stoppingDistance = 4f; 
 
-        if((playerTarget.transform.position - transform.position).magnitude <=4.3f)
+        if((_playerTarget.transform.position - transform.position).magnitude <=4.3f)
         {
-            transform.LookAt(playerTarget.position);
+            transform.LookAt(_playerTarget.position);
 
             print("SPECIAL DAMAGE");
             _player.TakeDamage(specialDamage);
@@ -556,7 +560,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (curSpeed <= 1 && canSee)          
         {
-            transform.LookAt(playerTarget.position);
+            transform.LookAt(_playerTarget.position);
             Attack();
         }
 
@@ -676,7 +680,6 @@ public class EnemyBehaviour : MonoBehaviour
         
 
     }
-
 
     private void GotoNetPoint()
     {

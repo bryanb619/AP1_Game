@@ -20,7 +20,7 @@ public class FOVEEB : Editor
         if (fov.canSee)
         {
             Handles.color = Color.cyan;
-            Handles.DrawLine(fov.EEFOV.position, fov.playerTarget.transform.position);
+            Handles.DrawLine(fov.EEFOV.position, fov.PlayerTarget.transform.position);
         }
     }
 
