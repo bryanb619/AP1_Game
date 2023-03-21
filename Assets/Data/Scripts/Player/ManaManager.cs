@@ -21,6 +21,7 @@ public class ManaManager : MonoBehaviour
     
     [Header("References")]
     [SerializeField] private ManaBar manaUI;
+    [SerializeField] private Shooter shooter;
 
     [Header("Cheats")]
     [SerializeField] private bool manaCheat;
