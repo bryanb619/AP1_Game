@@ -922,6 +922,8 @@ public class EnemyBehaviour : MonoBehaviour
     #endregion
 
     #region Camera rendering
+
+    /*
     private void OnBecameInvisible()
     {
         this.gameObject.SetActive(false);
@@ -933,6 +935,7 @@ public class EnemyBehaviour : MonoBehaviour
         this.gameObject.SetActive(true);
         
     }
+    */
     #endregion
 
     #region GameState
