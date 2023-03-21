@@ -5,7 +5,7 @@ public class Shooter : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform      firePoint;
     [SerializeField] private Camera         mainCamera;
-
+    [SerializeField] private Material       cleansedCrystal;
     [Header("Prefabs")]
     [SerializeField] private GameObject normalPrefab;
     [SerializeField] private GameObject firePrefab, icePrefab, thunderPrefab;
@@ -63,7 +63,7 @@ public class Shooter : MonoBehaviour
 
     private void ShootInput()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             _magicType = WeaponType.Normal;
             print("Ability is set to normal");
@@ -94,9 +94,24 @@ public class Shooter : MonoBehaviour
         switch(_magicType)
         {
             case WeaponType.Normal: // input nº1
-                {                    
-                    Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
-                    break; 
+                {
+                    //Cleanse Crystal
+                    if (hit.collider.name == "Crystal" && hit.collider.GetComponent<Outline>().enabled == true)
+                    {
+                        if (Input.GetKeyDown(KeyCode.Mouse0))
+                        {
+                            hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
+                            hit.collider.GetComponent<Outline>().enabled = false;
+                            break;
+                        }
+                        else
+                            break;
+                    }
+                    else
+                    {
+                        Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
+                        break;
+                    }
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
@@ -137,6 +152,16 @@ public class Shooter : MonoBehaviour
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
             if (hit.collider.CompareTag("Enemy"))
                 hit.collider.gameObject.GetComponent<Outline>().enabled = true;
+            else
+            {
+                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                
+                foreach (GameObject enemy in enemies)
+                {
+                    enemy.GetComponent<Outline>().enabled = false;
+                }
+            }
+
     }
 
     private void TargetAttack()

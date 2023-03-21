@@ -5,6 +5,7 @@ using TMPro;
 
 public class ObjectiveUI : MonoBehaviour
 {
+    private bool passedSecondObjective;
     private TextMeshProUGUI textReference;
     [SerializeField] private string firstObjective;
     [SerializeField] private string secondObjective;
@@ -13,9 +14,13 @@ public class ObjectiveUI : MonoBehaviour
     [SerializeField] private float radius = 20f;
     [SerializeField] private LayerMask AILayer;
 
+    [Header("Crystal")]
+    [SerializeField] private GameObject[] Crystals;
+
     // Start is called before the first frame update
     void Start()
     {
+        passedSecondObjective = false;
         textReference = GetComponent<TextMeshProUGUI>();
         textReference.text = firstObjective;
     }
@@ -23,7 +28,8 @@ public class ObjectiveUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        KillEnemiesCheck();
+        if(passedSecondObjective == false)
+            KillEnemiesCheck();
     }
 
     private void KillEnemiesCheck()
@@ -33,6 +39,12 @@ public class ObjectiveUI : MonoBehaviour
         if (enemies.Length <= 0)
         {
             textReference.text = secondObjective;
+            foreach(GameObject crystal in Crystals)
+            {
+                crystal.GetComponent<Outline>().enabled = true;
+            }
         }
+
+        passedSecondObjective = true;
     }
 }

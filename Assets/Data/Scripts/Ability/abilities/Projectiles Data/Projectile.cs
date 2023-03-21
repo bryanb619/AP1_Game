@@ -1,153 +1,123 @@
+#region Library
 using UnityEngine;
+using FMODUnity;
+using UnityEditor;
+
+#endregion
 
 public class Projectile : MonoBehaviour
 {
+    #region Variables
+    [SerializeField] ProjectileData     data;
 
-    [SerializeField] ProjectileData                             _projectileData;
+    private bool                        _gamePlay;
 
-    [Header("Impact effect")]
-    [SerializeField] private GameObject                         impactEffect;
+    private GameState                   _state; 
 
-    [SerializeField] private bool                               _impactEffet; 
+    private WeaponType                  _weaponType;
 
+    private Rigidbody                   _rb;
+    private float                       thrust; 
+    private bool                        _useRb;
 
-    [Header("Speed")]
-    [Range(1f, 30f)][SerializeField] private int                speed;
+    private float                       elapsed;
+    private int                         speed;
 
-    [Header("Magic")]
-    [Tooltip("set Magic Type")]
-    [SerializeField] private WeaponType                         _type;
+    private int                         rangedDamage, chaseDamage, bossDamage;
 
-    private GameState                                           _state;
+    private bool                        _impactEffet;
+    private GameObject                  impactObject;
 
-    //[Header("Ranged enemy damage value")]
-    //[Tooltip("Damage values are automaticaly updated on type change and will not be visable in inspector")]
-    //[SerializeField] 
-    private int                                                 enemyDamage;
+    //private EventInstance               effectSound;
+    //[SerializeField]
+    private StudioEventEmitter          _emitter;
 
-    //[Header("Ranged enemy damage value")]
-    //[Tooltip("Damage values are automaticaly updated on type change and will not be visable in inspector")]
-    //[SerializeField] 
-    private int                                                 enemyChaseDamage;
+    private float                       volume; 
+    #endregion
 
-
-    private float                                               elapsed;
-
-    private bool                                                _gamePlay;
-
-
-
-
-    private Rigidbody                                           _rb;
-
-    [Header("Physics")]
-    [Tooltip("if RB (use of RigidBody for movement is true). It will be possible to select further options such as force and gravity")]
-    [SerializeField] private bool                              _useRBPhysics; 
-
-
+    #region Awake
     private void Awake()
     {
-        
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-
     }
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
-        
-        switch (state)
-        {
-            case GameState.Gameplay:
-                {
+    #endregion
 
-                    _gamePlay = true;
-
-                    print("gameplay");
-                    break;
-                }
-            case GameState.Paused:
-                {
-                    _gamePlay = false;
-
-                    print("paused");
-                    break;
-                }
-        }
-    }
-
+    #region Start
     private void Start()
     {
-        
+        CollectData();
+        UseRB();
+    }
 
-        if(_rb != null ) 
-        {
-            _rb = GetComponent<Rigidbody>();
-        }
+    /// <summary>
+    ///  Data collection of:
+    ///  Components
+    ///  Variables
+    ///  Game State
+    /// </summary>
+    private void CollectData()
+    {
+        #region Check Game State at start
 
-        // auto updating damage values on START
+        _emitter = GetComponent<StudioEventEmitter>();
+
+        //OnSFXValueChange.AddListener(Setvolume);
+
         switch (_state)
-        { 
+        {
             case GameState.Gameplay:
                 {
                     _gamePlay = true;
-                    break; 
+                    break;
                 }
             case GameState.Paused:
                 {
                     _gamePlay = false;
-                    break; 
+                    break;
                 }
         }
+        #endregion
 
-        switch (_type)
-        {
-            case WeaponType.None:
-                {
-                    enemyChaseDamage = 0;
-                    enemyDamage = 0;
+        #region Scriptable object data
+        // speed 
+        speed = data.speed;
 
-                    //  determine sound types
-                    break;
-                }
-            case WeaponType.Normal:
-                {
-                    enemyChaseDamage = 10;
-                    enemyDamage = 10;
+        // sound
+        // playShootSound = data.MagicSound;
 
-                    //  determine sound types
-                    break;
-                }
-            case WeaponType.Ice:
-                {
-                    enemyChaseDamage = 10;
-                    enemyDamage = 20;
+        // rigidbody 
+        _useRb = data._useRBPhysics;
+        //  weapon type
+        _weaponType = data._magic;
 
-                    //  determine sound types
-                    break;
-                }
-            case WeaponType.Fire:
-                {
-                    speed = 15;
-                    enemyChaseDamage = 10;
-                    enemyDamage = 40;
+        // enemies damage
+        rangedDamage = data.enemyRangedDamage;
+        chaseDamage = data.enemyChaseDamage;
+        bossDamage = data.enemybossDamage;
 
-                    //  determine sound types
-                    break;
-                }
+        // impact
+        _impactEffet = data._useImpact;
+        impactObject = data.impactEffect;
 
-            case WeaponType.Thunder:
-                {
-                    enemyChaseDamage = 30;
-                    enemyDamage = 40;
+        //effectSound = RuntimeManager.CreateInstance("event:/path/to/your/sound");
+        //effectSound.start();
 
-                    //  determine sound types
-                    break;
-                }
-
-            default: { break; }
-        }
-
+        #endregion
     }
 
+    private void UseRB()
+    {
+        if (_useRb && _rb != null)
+        {
+            _rb = GetComponent<Rigidbody>();
+
+            _rb.velocity = transform.forward * speed;
+        }
+    }
+
+    #endregion
+
+    #region Fixed update & Update
     private void FixedUpdate()
     {
         PhsysicsMovement();
@@ -156,77 +126,80 @@ public class Projectile : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        
         ProjectileMovement();
         UpdatePhysicstTime();
-
+        SoundUpdate();
     }
+    #endregion
 
-
+    #region Collision
     private void OnTriggerEnter(Collider hitInfo)
     {
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
-        PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
+        //PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
 
         if (enemy != null)
         {
-            enemy.TakeDamage(enemyDamage, WeaponType.Normal);
+            enemy.TakeDamage(rangedDamage, _weaponType);
+            
             DestroyBullet();
             //Debug.Log("HIT");
 
         }
         else if (ChaseEnemy != null)
         {
-            ChaseEnemy.TakeDamage(enemyChaseDamage, WeaponType.Normal);
+            ChaseEnemy.TakeDamage(chaseDamage, _weaponType);
+            
             DestroyBullet();
-            Debug.Log("HIT");
+            
 
         }
+        /*
         else if (player != null)
         {
             DestroyBullet();
         }
+        
         else if (hitInfo.tag == "Wall" || hitInfo.tag == "Default")
         {
             DestroyBullet();
         }
-
-        //Instantiate(impactEffect, transform.position, transform.rotation);
+        */
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Default" || collision.gameObject.tag == "Wall")
         {
-            
             DestroyBullet();
         }
     }
+    #endregion
 
-
+    #region Physics, Movement, Time and sound
     private void PhsysicsMovement()
     {
-        if (_useRBPhysics)
+        if (_useRb)
         {
             if (_gamePlay)
             {
-                _rb.constraints = RigidbodyConstraints.None;
+                //_rb.constraints = RigidbodyConstraints.None;
             }
-            else if (!_gamePlay && _useRBPhysics)
+            else if (!_gamePlay && _useRb)
             {
-                _rb.constraints = RigidbodyConstraints.FreezeAll;
+                //_rb.constraints = RigidbodyConstraints.FreezeAll;
             }
         }
     }
 
     private void UpdatePhysicstTime()
     {
-        if(_gamePlay && _useRBPhysics) 
+        if (_gamePlay && _useRb)
         {
             elapsed += Time.deltaTime;
 
-            Debug.Log(elapsed);
+            //Debug.Log(elapsed);
             if (elapsed >= 6.5f)
             {
                 DestroyOnDistance();
@@ -236,7 +209,7 @@ public class Projectile : MonoBehaviour
 
     private void ProjectileMovement()
     {
-        if(!_useRBPhysics)
+        if (!_useRb)
         {
             if (_gamePlay)
             {
@@ -244,7 +217,7 @@ public class Projectile : MonoBehaviour
 
                 elapsed += Time.deltaTime;
 
-                Debug.Log(elapsed);
+                //Debug.Log(elapsed);
                 if (elapsed >= 6.5f)
                 {
                     DestroyOnDistance();
@@ -253,37 +226,113 @@ public class Projectile : MonoBehaviour
                 //Debug.Log(speed + " gameplay ");
             }
         }
-        
-        
+    }
+
+    /// <summary>
+    /// Set sound state acording to game state
+    /// </summary>
+    private void SoundUpdate()
+    {
+        switch(_gamePlay) 
+        {
+            case true:
+                {
+                    SoundSetPlay();
+                    break;
+                }
+            case false:
+                {
+                    SoundSetPause();
+                    break;
+                }
+        }
+    }
+
+    private void SoundSetPlay()
+    {
+        _emitter.EventInstance.setPaused(false); // set play
+    }
+
+    private void SoundSetPause()
+    {
+        _emitter.EventInstance.setPaused(true); // set paused
+    }
+    
+    private void Setvolume(float newVolume)
+    {
+        volume = newVolume; 
+        _emitter.SetParameter("volume", volume);
     }
 
     private void ImpactEffect()
     {
-        Instantiate(impactEffect, transform.position, Quaternion.identity);
+        // spawn projectile
+        Instantiate(impactObject, transform.position, Quaternion.identity);
     }
+    #endregion
 
-
+    #region Destroy Game object
     private void DestroyBullet()
     {
-        if(_impactEffet)
-        {
+       if (_impactEffet)
+       {
             ImpactEffect();
-        }
-        
+       }
         Destroy(this.gameObject);
     }
-
-
-
-
 
     private void DestroyOnDistance()
     {
         Destroy(gameObject);
     }
 
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+    }
+
+    // unsubscribe of Game manager on destroy
     private void OnDestroy()
     {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged; 
     }
+    #endregion
+
+    /*
+    #region Editor Gizmos
+    private void OnDrawGizmos()
+    {
+#if UNITY_EDITOR
+
+        switch(_gamePlay)
+        {
+            case true:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Gameplay");
+                    break; 
+                }
+            case false:
+                {
+                    Handles.Label(transform.position + Vector3.up, "Pause");
+                    break;
+                }
+        }
+
+#endif
+    }
+    #endregion
+    */
 }
