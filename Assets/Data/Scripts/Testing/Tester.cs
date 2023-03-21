@@ -8,7 +8,7 @@ public class Tester : MonoBehaviour
     [SerializeField] private bool LightActive;
 
     [SerializeField] private GameObject GameTestLight;
-    [SerializeField] private GameObject Player;
+                     private GameObject Player;
 
     [SerializeField] private bool killCheat = false;
 
@@ -22,6 +22,7 @@ public class Tester : MonoBehaviour
 
     private void Start()
     {
+        Player = GameObject.FindGameObjectWithTag("Player") ;
         //KillEnemy = false;
         TimeBoost = false;
         LightActive = false;
