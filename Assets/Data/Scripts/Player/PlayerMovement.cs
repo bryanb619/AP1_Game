@@ -282,7 +282,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if(Input.GetMouseButtonDown(1)) 
                 {
-                    agent.isStopped = false;
+                   // agent.isStopped = false;
                     RaycastHit hit;
 
                     // Something other than the world was hit!
@@ -296,10 +296,12 @@ public class PlayerMovement : MonoBehaviour
                         if (hit.transform.CompareTag("Walk"))
                         {
                             //agent.destination = hit.point;
-                            agent.isStopped = false;
-
-                            agent.SetDestination(hit.point);
-                           
+                            if(agent.enabled) 
+                            {
+                                agent.isStopped = false;
+                                agent.SetDestination(hit.point);
+                            }
+                            
                             transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
                         }
                         else

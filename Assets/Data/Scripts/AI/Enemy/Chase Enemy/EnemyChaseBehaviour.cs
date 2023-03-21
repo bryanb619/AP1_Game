@@ -952,14 +952,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #endregion
 
     #region Camera rendering
-    private void OnBecameVisible()
+   /* private void OnBecameVisible()
     {
-        ResumeAgent(); 
+        //ResumeAgent();
+        print("triggered"); 
+        this.gameObject.SetActive(true);
     }
     private void OnBecameInvisible() 
     {
-        PauseAgent();
+        this.gameObject.SetActive(false);
+        print("triggered off");
+        //PauseAgent();
     }
+   */
     #endregion
 
     #region Script destroy actions 
