@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float regenTimer;
     [SerializeField] private bool regenOn;
     [SerializeField] private LayerMask aiLayer;
-                     public HealthBar _healthBar;
+                     private HealthBar _healthBar;
                      public bool HealthSetAtMax;
 
     [Header("Dash Explosion"), SerializeField]
@@ -122,6 +122,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Make a list of all SkinnedMeshRender in the character
         skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        _healthBar = FindObjectOfType<HealthBar>();
 
         // Create an array to store the original colors
         originalColors = new Color[skinnedMeshRenderers.Length];
