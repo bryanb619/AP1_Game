@@ -117,17 +117,17 @@ public class Shooter : MonoBehaviour
                     {
                         if (!normalCooldown)
                         {
-                            Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
                             StartCoroutine(NormalAttackCooldown());
+                            Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
                         }
                         break;
                     }
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
-                    if (manaManager.ManaCheck(_magicType) == true)
-                    {
-                        if (!fireCooldown)
+                    if(!fireCooldown)
+                    { 
+                        if (manaManager.ManaCheck(_magicType) == true)
                         {
                             StartCoroutine(FireAttackCooldown());
                             Instantiate(firePrefab, firePoint.position, firePoint.rotation);
@@ -139,17 +139,22 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Ice: // input nº3 (W)
                 {
-                    //Instantiate inside the TargetAttack function to avoid unecessary code
-                    TargetAttack();
+                    if(!iceCooldown)
+                        //Instantiate inside the TargetAttack function to avoid unecessary code
+                        TargetAttack();
+                    
                     break;
                 }
             case WeaponType.Thunder: // input nº4 (R)
                 {
-                    if (manaManager.ManaCheck(_magicType) == true)
+                    if(!thunderCooldown)
                     {
-                        //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
-                        AreaAttack();
-                        break;
+                        if (manaManager.ManaCheck(_magicType) == true)
+                        {
+                            //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
+                            AreaAttack();
+                        }
+                            break;
                     }
                     else
                         break;
@@ -184,12 +189,12 @@ public class Shooter : MonoBehaviour
         {
             if (hit.collider.CompareTag("Enemy"))
             {
-                if (manaManager.ManaCheck(_magicType) == true)
-                {
-
-                    Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
-                    Debug.Log("Enemy Hit with Ice");
-                }
+                    if (manaManager.ManaCheck(_magicType) == true)
+                    {
+                        StartCoroutine(IceAttackCooldown());
+                        Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
+                        Debug.Log("Enemy Hit with Ice");
+                    }
                 else
                     Debug.Log("Not enough mana");
             }
@@ -199,6 +204,7 @@ public class Shooter : MonoBehaviour
     private void AreaAttack()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaAttackRadius);
+        
         foreach (Collider hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Enemy"))
@@ -207,6 +213,7 @@ public class Shooter : MonoBehaviour
                 Instantiate(thunderPrefab, hitCollider.transform.position, firePoint.rotation);
             }
         }
+        StartCoroutine(ThunderAttackCooldown());
     }
     
     IEnumerator NormalAttackCooldown()
