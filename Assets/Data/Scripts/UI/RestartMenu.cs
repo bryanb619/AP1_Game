@@ -11,16 +11,11 @@ public class RestartMenu : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    public void LoadRestart()
-    {
-        SceneManager.LoadScene("RestartScene");
-    }
-
 
     // buttons
     public void RetartButton()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void MainMenuButton()
