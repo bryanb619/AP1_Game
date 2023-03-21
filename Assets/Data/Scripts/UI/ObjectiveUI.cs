@@ -5,8 +5,9 @@ using TMPro;
 
 public class ObjectiveUI : MonoBehaviour
 {
-    [HideInInspector]public bool passedSecondObjective;
     private TextMeshProUGUI textReference;
+    private DoorHandler doorHandler;
+    [HideInInspector]public bool passedSecondObjective;
     [SerializeField] private string firstObjective;
     [SerializeField] private string secondObjective;
     [SerializeField] private string thirdObjective;
@@ -23,6 +24,8 @@ public class ObjectiveUI : MonoBehaviour
         passedSecondObjective = false;
         textReference = GetComponent<TextMeshProUGUI>();
         textReference.text = firstObjective;
+
+        doorHandler = FindObjectOfType<DoorHandler>();
     }
 
     // Update is called once per frame
@@ -52,5 +55,6 @@ public class ObjectiveUI : MonoBehaviour
     {
         //Reference the door opening script here
         textReference.text = thirdObjective;
+        doorHandler.state = DoorHandler.DoorState.Opening;
     }
 }
