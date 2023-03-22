@@ -25,7 +25,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool gemSpawnOnDeath =              true;
     private GameObject gemPrefab;
 
+    [SerializeField] private GameObject         _death, _attack;
 
+    [SerializeField] private Transform          _attackPoint; 
     // Reference to the state machine
     private StateMachine                        stateMachine;
 
@@ -587,7 +589,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             print("special ability");
 
+            
             _Player.TakeDamage(specialDamage);
+
 
             currentAbilityValue = 0;
             _AbilitySlider.value = currentAbilityValue;
@@ -596,6 +600,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         else if (Time.time > nextAttack)
         {
             //float randomPercentage = UnityEngine.Random.Range(0f, 100f);
+
+            Instantiate(_attack, _attackPoint.transform.position, Quaternion.identity);
+
             _Player.TakeDamage(damage);
             print("DAMAGE DONE BY CHASE AI");
 
@@ -792,6 +799,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         StartCoroutine(DamageTextDisappear());
 
+
         if (_health <= 0)
         {
             Die();
@@ -830,6 +838,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 //StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
             }
+            else if (_Type == WeaponType.Thunder)
+            {
+                _health -= _damage + damageBoost;
+
+                StartCoroutine(HitFlash());
+            }
             else if (_Type == WeaponType.Dash)
             {
                 _health -= _damage + damageBoost;
@@ -846,6 +860,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Die()
     {
+        Instantiate(_death, transform.position, Quaternion.identity);
 
         if (gemSpawnOnDeath)
             Instantiate(gemPrefab, transform.position, Quaternion.identity);

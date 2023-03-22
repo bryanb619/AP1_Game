@@ -30,6 +30,8 @@ public class EnemyBehaviour : MonoBehaviour
     // Reference to the Outline component
     [SerializeField] private Outline outlineDeactivation;
 
+    [SerializeField] private GameObject _death;
+
     // AI Set states
     private enum AI {_GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE}
 
@@ -57,7 +59,6 @@ public class EnemyBehaviour : MonoBehaviour
     private PlayerMovement _player; 
 
     private float minDist = 5f;
-
 
     // AI SPEED
     private float curSpeed;
@@ -826,6 +827,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
+        Instantiate(_death, transform.position, Quaternion.identity);   
+
         if(gemSpawnOnDeath)
         { 
             Instantiate(gemPrefab, transform.position, Quaternion.identity);

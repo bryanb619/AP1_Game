@@ -3651,6 +3651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 738d4912b6204b647ade59f70fd96a91, type: 2}
   outlineDeactivation: {fileID: 3580100482103403493}
+  _death: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
   _agentAI: {fileID: 0}
   damageBoost: 20
   PlayerObject: {fileID: 0}
@@ -3729,14 +3730,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2107a526c0e924f8e295af17a56062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activateGizmo: 1
+  _activateGizmo: 0
   targetLayer:
     serializedVersion: 2
     m_Bits: 2048
   aiLayer:
     serializedVersion: 2
     m_Bits: 128
-  AIradius: 7
+  AIradius: 4
 --- !u!114 &3580100482103403493
 MonoBehaviour:
   m_ObjectHideFlags: 0
