@@ -790,6 +790,14 @@ public class EnemyBehaviour : MonoBehaviour
                 StartCoroutine(STFS(5F));
 
             }
+            else if (_Type == WeaponType.Thunder)
+            {
+                health -= _damage + damageBoost;
+
+                //QuickCover();
+                StartCoroutine(HitFlash());
+            }
+
             else if (_Type == WeaponType.Fire)
             {
                 StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
