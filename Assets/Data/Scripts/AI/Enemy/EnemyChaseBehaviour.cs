@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using LibGameAI.FSMs;
 using TMPro;
 
-//using UnityEditor; // comment this before build
+using UnityEditor; // comment this before build
 
 
 public class EnemyChaseBehaviour : MonoBehaviour
 {
+    
     #region Variables
 
     private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _GLORYKILL, _NONE }
@@ -288,34 +289,35 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region  States Sync 
     private void GetStates()
     {
+
         #region States
         // Non Combat states
         State onGuardState = new State("GUARD",
-            () => Debug.Log("Enter On Guard state"),
-            null,
-            () => Debug.Log(""));
+            //() => Debug.Log("Enter On Guard state"),
+            null);//,
+            //() => Debug.Log(""));
 
         State PatrolState = new State("Patrol",
-            () => Debug.Log(""),
-            Patrol,
-            () => Debug.Log(""));
+            //() => Debug.Log(""),
+            Patrol);//,
+            //() => Debug.Log(""));
 
         // Combat states
 
         State ChaseState = new State("",
-            () => Debug.Log("Chase"),
-            ChasePlayer,
-            () => Debug.Log(""));
+            //() => Debug.Log("Chase"),
+            ChasePlayer);//,
+            //() => Debug.Log(""));
 
         State FindCover = new State("Cover",
-            () => Debug.Log(""),
-            Cover,
-            () => Debug.Log(""));
+            //() => Debug.Log(""),
+            Cover);//,
+            //() => Debug.Log(""));
 
         State GloryKillState = new State("Glory Kill State",
-            () => Debug.Log("Entered glory kill state"),
-            null,
-            () => Debug.Log("Left Glory Kill State"));
+            //() => Debug.Log("Entered glory kill state"),
+            null);//,
+            //() => Debug.Log("Left Glory Kill State"));
 
         #endregion
 
@@ -328,7 +330,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             new Transition(
                 //canSeePlayer == true
                 () => _stateAI == AI._ATTACK,
-                () => Debug.Log("GUARD -> CHASE"),
+                //() => Debug.Log("GUARD -> CHASE"),
                 ChaseState));
 
         // CHASE -> COVER
@@ -336,14 +338,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
            new Transition(
                //InCoverState == true
                () => _stateAI == AI._COVER,
-               () => Debug.Log("CHASE -> COVER"),
+               //() => Debug.Log("CHASE -> COVER"),
                FindCover));
 
         // COVER -> CHASE
         FindCover.AddTransition(
            new Transition(
                () => _stateAI == AI._ATTACK,
-               () => Debug.Log("COVER -> CHASE"),
+               //() => Debug.Log("COVER -> CHASE"),
                ChaseState));
 
 
@@ -351,14 +353,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
         PatrolState.AddTransition(
            new Transition(
                () => _stateAI == AI._ATTACK, // SEEK SOLUTION
-               () => Debug.Log("PATROL -> CHASE"),
+               //() => Debug.Log("PATROL -> CHASE"),
                ChaseState));
 
         // CHASE -> PATROL
         ChaseState.AddTransition(
            new Transition(
                () => _stateAI == AI._PATROL, // SEEK SOLUTION
-               () => Debug.Log("CHASE -> PATROL"),
+               //() => Debug.Log("CHASE -> PATROL"),
                PatrolState));
 
 
@@ -366,7 +368,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         #endregion
 
         stateMachine = new StateMachine(PatrolState);
-
+        
     }
     #endregion
 
@@ -768,7 +770,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         agent.speed = attackSpeed;
         agent.stoppingDistance = 3.9f;
         //agent.angularSpeed = 120f;
-
+        transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
         //StartAttacking();
         _stateAI = AI._ATTACK;
 
@@ -967,20 +969,30 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #endregion
 
     #region Camera rendering
-   /* private void OnBecameVisible()
+
+
+    private void  PerformanceHandler()
+    {
+        Renderer renderer = GetComponent<Renderer>();
+
+        if(renderer.isVisible) { }
+    }
+    
+    private void OnBecameVisible()
     {
         //ResumeAgent();
-        print("triggered"); 
-        this.gameObject.SetActive(true);
+        print("triggered on"); 
+        //this.gameObject.SetActive(true);
     }
     private void OnBecameInvisible() 
     {
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
         print("triggered off");
         //PauseAgent();
     }
-   */
-    #endregion
+    
+
+#endregion
 
     #region Script destroy actions 
     private void OnDestroy()
@@ -989,12 +1001,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
-    /*
+    
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
 
         //Vector3 namePosition = new Vector3(transform.position.x, transform.position.y, 2f);
 
@@ -1015,7 +1027,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
         #region AI State Label 
-
         switch (_stateAI)
         {
             case AI._GUARD:
@@ -1030,10 +1041,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
             case AI._ATTACK:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: " , red);
+                    Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: ", red);
                     break;
                 }
-  
+
             case AI._COVER:
                 {
                     Handles.Label(FOV.transform.position + Vector3.up, "Cover" + "  Gameplay: ", cyan);
@@ -1055,10 +1066,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break;
                 }
         }
+
         #endregion
 #endif
     }
     #endregion
-    */
 
+    
 }
+

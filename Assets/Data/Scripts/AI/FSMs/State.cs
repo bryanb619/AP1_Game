@@ -57,13 +57,14 @@ namespace LibGameAI.FSMs
         /// <param name="exitActions">
         /// Actions to perform when exiting this state.
         /// </param>
-        public State(string name,
-            Action entryActions, Action stateActions, Action exitActions)
+        public State(string name, Action stateActions)
+            //Action entryActions, Action stateActions, Action exitActions)
+            //Action entryActions)
         {
             Name = name;
-            EntryActions = entryActions;
+            //EntryActions = entryActions;
             StateActions = stateActions;
-            ExitActions = exitActions;
+            //ExitActions = exitActions;
             transitions = new List<Transition>();
         }
 

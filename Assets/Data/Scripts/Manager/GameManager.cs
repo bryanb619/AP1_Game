@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour
     {
         ambientVolume = newVolume;
         
-        print("ambient " + ambientVolume);
+        //print("ambient " + ambientVolume);
 
         foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
         {
@@ -163,7 +163,7 @@ public class GameManager : MonoBehaviour
     {
         sfxVolume = newVolume;
 
-        print("ambient " + sfxVolume);
+        //print("ambient " + sfxVolume);
 
         foreach (FMODUnity.StudioEventEmitter emitter in sfxSounds)
         {

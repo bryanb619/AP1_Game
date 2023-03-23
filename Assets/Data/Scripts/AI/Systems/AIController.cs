@@ -11,7 +11,7 @@ public class AIController : MonoBehaviour
 
     public void AgentStartedAttacking(Agents agent)
     {
-        print(AttakingAI); 
+        //print(AttakingAI); 
 
         if (AttakingAI.Count >= maxAttackingAgents)
         {
@@ -27,7 +27,7 @@ public class AIController : MonoBehaviour
 
     public void AgentStoppedAttacking(Agents agent)
     {
-        print(AttakingAI);
+        //print(AttakingAI);
 
         AttakingAI.Remove(agent);
     }

@@ -36,7 +36,7 @@ public class Agents : MonoBehaviour
 
         if(_enemyBehaviour != null)
         {
-            _enemyBehaviour.StopAttacking(); 
+            //_enemyBehaviour.StopAttacking(); 
         }
 
         if( _enemyChaseBehaviour != null) 

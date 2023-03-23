@@ -121,10 +121,10 @@ public class Dashing : MonoBehaviour
     IEnumerator DeactivateNavMesh(float time)
     {
         navmeshAgent.enabled = false;
-        Debug.Log("Deactivated NavMeshAgent");
+        //Debug.Log("Deactivated NavMeshAgent");
         yield return new WaitForSeconds(time);
         navmeshAgent.enabled = true;
-        Debug.Log("Activated NavMeshAgent");
+        //Debug.Log("Activated NavMeshAgent");
     }
 
 }

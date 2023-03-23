@@ -16,8 +16,10 @@ public class CompanionBehaviour : MonoBehaviour
 
     public float closeEnoughMeters = 3f;
     #region Variables
-    private enum CompanionState { _idle, _follow, _rotate}
-    private CompanionState _StateAI;  
+    public enum CompanionState { _idle, _follow, _rotate}
+    
+    public CompanionState _StateAI;  
+
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     //private mini _MiniMapCollor;
@@ -49,6 +51,7 @@ public class CompanionBehaviour : MonoBehaviour
     public bool canSee => _enemyIS;
 
     private bool _gameplay; 
+    public bool gameplay => _gameplay;  
 
     private GameState _gameState;
 
@@ -86,6 +89,9 @@ public class CompanionBehaviour : MonoBehaviour
         Target = point.transform;
 
 
+       
+
+
         switch (_gameState)
         {
             case GameState.Paused:
@@ -108,15 +114,11 @@ public class CompanionBehaviour : MonoBehaviour
         
       
         // Create the states
-        State IdleState = new State("",
-            () => Debug.Log("Idle state"),
-            Idle,
-            () => Debug.Log(""));
 
-        State FollowState = new State("",
-            () => Debug.Log(""),
-            Follow,
-            () => Debug.Log(""));
+        State IdleState = new State("Companion Idle",Idle);
+
+        State FollowState = new State(("Companion Follow"), Follow); 
+            
 
         /*
         State RotateState = new State("",
@@ -133,14 +135,14 @@ public class CompanionBehaviour : MonoBehaviour
         IdleState.AddTransition(
             new Transition(
                 () => _StateAI == CompanionState._follow,
-                () => Debug.Log("Idle -> Follow"),
+                //() => Debug.Log("Idle -> Follow"),
                 FollowState));
 
         // Follow -> Idle
         FollowState.AddTransition(
            new Transition(
                () => _StateAI == CompanionState._idle,
-               () => Debug.Log("Follow -> Idle"),
+               //() => Debug.Log("Follow -> Idle"),
                IdleState));
 
         // Create the state machine

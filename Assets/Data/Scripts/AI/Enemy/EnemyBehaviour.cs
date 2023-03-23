@@ -5,17 +5,19 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
-//using UnityEditor.ShaderGraph.Internal;
 
-//using UnityEditor; // comment this on build
+
+using UnityEditor; // comment this on build
 
 #endregion
+
 
 #region Ranged AI Brain Script
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
+    
     #region  Variables
 
     // Reference to AI data
@@ -260,33 +262,24 @@ public class EnemyBehaviour : MonoBehaviour
     #region States
     private void GetStates()
     {
+        
         // Create the states
-        State onGuardState = new State("On Guard",
-            () => Debug.Log("Enter On Guard state"),
-            null,
-            () => Debug.Log("Left Guard state"));
+        State onGuardState = new State(("Guard"),
+            null);
 
-        State PatrolState = new State("On Patrol",
-           () => Debug.Log("Entered Patrol state"),
-           Patrol,
-           () => Debug.Log("Left Patrol state"));
+        State PatrolState = new State("On Patrol", 
+            Patrol);
 
         State ChaseState = new State("Fight",
-            () => Debug.Log("Enter Fight state"),
-            ChasePlayer,
-            () => Debug.Log("LeFT Fight state"));
+            ChasePlayer);
 
-        State CoverState = new State("Cover State",
-           () => Debug.Log("Entered Cover state"),
-           Cover,
-           () => Debug.Log("Left Cover State"));
+        State CoverState = new State("Cover",
+           Cover);
 
-        State GloryKillState = new State("Glory Kill State",
-            () => Debug.Log("Entered glory kill state"),
-            GloryKill,
-            () => Debug.Log("Left Glory Kill State"));
+        State GloryKillState = new State("Glory Kill",
+       GloryKill);
 
-
+   
 
         // Add the transitions
 
@@ -295,28 +288,28 @@ public class EnemyBehaviour : MonoBehaviour
         onGuardState.AddTransition(
             new Transition(
                 () => canSeePlayer == true,
-                () => Debug.Log(" GUARD -> CHASE"),
+                //() => Debug.Log(" GUARD -> CHASE"),
                 ChaseState));
 
         // CHASE->PATROL
         ChaseState.AddTransition(
             new Transition(
                 () => _stateAI == AI._PATROL,
-                () => Debug.Log("CHASE -> PATROL"),
+                //() => Debug.Log("CHASE -> PATROL"),
                 PatrolState));
 
        // CHASE -> GLORY KILL
         ChaseState.AddTransition(
             new Transition(
                 () => _canGloryKill == true,
-                () => Debug.Log("CHASE -> GLORY KILL"),
+               // () => Debug.Log("CHASE -> GLORY KILL"),
                 GloryKillState));
 
         //  PATROL -> CHASE 
         PatrolState.AddTransition(
            new Transition(
                () => _stateAI == AI._ATTACK,
-               () => Debug.Log("PATROL -> CHASE"),
+               //() => Debug.Log("PATROL -> CHASE"),
                ChaseState));
 
         //CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == false, ()=> Debug.Log("Cover State"), PatrolState));
@@ -326,6 +319,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         // Create the state machine
         stateMachine = new StateMachine(PatrolState);
+
     }
     #endregion
 
@@ -441,7 +435,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         agent.speed = 4f;
 
-        print(_canSpecialAttack);
+        //print(_canSpecialAttack);
 
         if (_canSpecialAttack)
         {
@@ -457,8 +451,9 @@ public class EnemyBehaviour : MonoBehaviour
 
             if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
             {
-                transform.LookAt(_playerTarget.position);
+                //transform.LookAt(_playerTarget.position);
 
+                transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
                 agent.speed = 0;
                 StartAttacking();
 
@@ -752,11 +747,9 @@ public class EnemyBehaviour : MonoBehaviour
     #endregion
 
     #region Health
-    public void TakeDamage(int _damage, WeaponType _Type)
+    public void TakeDamage(int _damage, WeaponType _type)
     {
-        health -= (_damage + damageBoost);
-
-        
+        //health -= (_damage + damageBoost);
 
         if (health <= 0)
         {
@@ -774,13 +767,63 @@ public class EnemyBehaviour : MonoBehaviour
                 SetAttack(); 
             }
 
-            if (_Type == WeaponType.Normal)
+            switch (_type)
+            {
+                case WeaponType.Normal:
+                    {
+
+                        health -= _damage + damageBoost;
+
+                        StartCoroutine(HitFlash());
+                        break;
+                    }
+                case WeaponType.Ice:
+                    {
+
+                        health -= _damage + damageBoost;
+
+                        StartCoroutine(STFS(5F));
+                        break;
+                    }
+                case WeaponType.Fire:
+                    {
+
+                        health -= _damage + damageBoost;
+
+                        StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
+                        break;
+                    }
+                case WeaponType.Thunder: 
+                    {
+                        health -= _damage + damageBoost;
+                        StartCoroutine(HitFlash());
+
+                        break; 
+                    }
+
+                case WeaponType.Dash: 
+                    {
+                        health -= _damage + damageBoost;
+                        StartCoroutine(HitFlash());
+
+                        break; 
+                    }
+
+                default : { break; }
+            }
+
+            _healthSlider.value = health;
+            HealthCheck();
+            
+            /*
+            if (_Type == WeaponType.Normal)           
             {
   
                 health -= _damage + damageBoost;
                
                 //QuickCover();
                 StartCoroutine(HitFlash());
+
 
             }
             else if (_Type == WeaponType.Ice)
@@ -808,9 +851,10 @@ public class EnemyBehaviour : MonoBehaviour
 
                 StartCoroutine(HitFlash());
             }
+            */
+            
         }
-        _healthSlider.value = health;
-        HealthCheck();
+        
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
     }
 
@@ -934,19 +978,19 @@ public class EnemyBehaviour : MonoBehaviour
 
     #region Camera rendering
 
-    /*
+    
     private void OnBecameInvisible()
     {
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
      
     }
 
     private void OnBecameVisible()
     {
-        this.gameObject.SetActive(true);
+        //this.gameObject.SetActive(true);
         
     }
-    */
+    
     #endregion
 
     #region GameState
@@ -978,7 +1022,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
-    /*
+    
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
@@ -1052,6 +1096,7 @@ public class EnemyBehaviour : MonoBehaviour
 #endif
     }
     #endregion
-    */
+    
 }
 #endregion
+

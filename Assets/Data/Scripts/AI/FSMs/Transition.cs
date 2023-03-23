@@ -51,10 +51,11 @@ namespace LibGameAI.FSMs
         /// Target state for this transition.
         /// </param>
         public Transition(
-            Func<bool> condition, Action actions, State targetState)
+            //Func<bool> condition, Action actions, State targetState)
+            Func<bool> condition, State targetState)
         {
             this.condition = condition;
-            Actions = actions;
+            //Actions = actions;
             TargetState = targetState;
         }
     }

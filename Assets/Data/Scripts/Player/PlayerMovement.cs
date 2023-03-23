@@ -80,7 +80,12 @@ public class PlayerMovement : MonoBehaviour
 
     private NavMeshAgent agent;
 
-    private LayerMask _layerMask; 
+    private LayerMask _layerMask;
+
+    public float acceleration = 2f;
+    public float deceleration = 60f;
+
+    public float closeEnoughMeters = 3f;
 
 
     private enum MovementState
@@ -295,14 +300,21 @@ public class PlayerMovement : MonoBehaviour
 
                         if (hit.transform.CompareTag("Walk"))
                         {
+                            transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+
                             //agent.destination = hit.point;
-                            if(agent.enabled) 
+                            if (agent.enabled) 
                             {
                                 agent.isStopped = false;
                                 agent.SetDestination(hit.point);
+
+                                if (agent.hasPath)
+                                {
+                                    agent.acceleration = (agent.remainingDistance < closeEnoughMeters) ? deceleration : acceleration;
+                                }
                             }
                             
-                            transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                            
                         }
                         else
                         {
@@ -417,7 +429,7 @@ public class PlayerMovement : MonoBehaviour
             enemyRB.AddForce(pushDirection * explosionForce * 0.05f, ForceMode.Impulse);
 
             //explosion damage
-            enemyHealth.TakeDamage((int)explosionDamage, WeaponType.Dash);
+            //enemyHealth.TakeDamage((int)explosionDamage, WeaponType.Dash);
         }
     }
 

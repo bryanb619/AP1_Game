@@ -30,13 +30,13 @@ public class DoorHandler : MonoBehaviour
     {
         if (state == DoorState.Opening)
         {
-            print("opening");
+            //print("opening");
             DoorOpen();
         }
 
         else if (state == DoorState.Closing)
         {
-            print("closing");
+            //print("closing");
             DoorClose();
         }
 

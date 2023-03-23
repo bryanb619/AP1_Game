@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 using LibGameAI.FSMs;
-using UnityEngine.AI; 
+using UnityEngine.AI;
 
-
+/*
 public class PlayerAnimationState : MonoBehaviour
 {
     private StateMachine stateMachine;
@@ -13,6 +13,7 @@ public class PlayerAnimationState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /
         // Create the states
         State IdleState = new State("",
             () => Debug.Log("Idle state"),
@@ -46,4 +47,4 @@ public class PlayerAnimationState : MonoBehaviour
     {
 
     }
-}
+}*/
