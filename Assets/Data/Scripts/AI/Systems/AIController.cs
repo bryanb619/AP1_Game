@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class AIController : MonoBehaviour
 {
-    public int maxAttackingAgents = 3;
+    private int maxAttackingAgents = 3;
 
+
+    //[SerializeField] privat
     // CHANGE TO DIFERENT SCRIPT
-    public List<Agents> AttakingAI = new List<Agents>(); 
+    private List<Agents> AttakingAI = new List<Agents>(); 
 
 
     public void AgentStartedAttacking(Agents agent)

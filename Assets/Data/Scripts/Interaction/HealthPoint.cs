@@ -72,6 +72,7 @@ public class HealthPoint : MonoBehaviour
         {
             case true: 
                 {
+                    //Debug.Log("In use");
                     _audioState = false;
                     UpdateSound();
                     break; 

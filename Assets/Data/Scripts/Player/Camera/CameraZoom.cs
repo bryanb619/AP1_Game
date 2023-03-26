@@ -4,7 +4,6 @@ using Cinemachine;
 
 public class CameraZoom : MonoBehaviour
 {
-
 /*
 
     [Header("Zoom Settings")]
@@ -20,7 +19,6 @@ public class CameraZoom : MonoBehaviour
     private float targetFOV; 
 
 */
-
 
     private Vector3 followOffset; 
 

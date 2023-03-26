@@ -8,11 +8,22 @@ using UnityEngine.Events;
 public class GameManager : MonoBehaviour
 {
     #region Variables
+
+    public static GameManager Instance;
+
+    public static event Action<GameState> OnGameStateChanged;
+
+    //[HideInInspector]
+    [Header("Game state")]
+    public GameState State;
+
     //private
     [SerializeField]
     private StudioEventEmitter[]               ambientSounds;
+
     [SerializeField]
     private StudioEventEmitter[]               sfxSounds;
+
     [SerializeField]
     private StudioEventEmitter[]               musicSounds;
 
@@ -23,18 +34,10 @@ public class GameManager : MonoBehaviour
 
     private bool                                _audioState; 
 
-    // Testing New Game Manager
-    public static GameManager                   Instance;
 
-    //[HideInInspector]
-    public GameState                            State;
+    //public class SFXSound : UnityEvent<float> {}
 
-    public static event Action<GameState>       OnGameStateChanged;
-
-
-    public class SFXSound : UnityEvent<float> {}
-
-    public static SFXSound OnSFXValueChange = new SFXSound();
+    //public static SFXSound OnSFXValueChange = new SFXSound();
 
 
     //[SerializeField] private Slider _ambientSlider;
@@ -45,6 +48,7 @@ public class GameManager : MonoBehaviour
     #region Awake & Start
     private void Awake()
     {
+        DontDestroyOnLoad(this);
         Instance = this;
         
     }
@@ -106,6 +110,17 @@ public class GameManager : MonoBehaviour
         HandleEventEmitterState();
 
     }
+
+    private void HandleMenus()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+
+        Time.timeScale = 1f;
+    
+    }
+
 
     public void ExitToMainMenu()
     {

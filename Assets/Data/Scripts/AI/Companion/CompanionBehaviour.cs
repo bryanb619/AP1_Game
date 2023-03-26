@@ -159,14 +159,14 @@ public class CompanionBehaviour : MonoBehaviour
         {
             ResumeAgent();
             Companion.angularSpeed = 0;
-            StartCoroutine(FOVRoutine());
+            //StartCoroutine(FOVRoutine());
 
             CheckDist(); 
 
             Aim();
 
-            CheckMoveBool();
-            CheckEnemy();
+            //CheckMoveBool();
+            //CheckEnemy();
             //AlphaUpdate();
             //RotateTimer();
 
@@ -176,6 +176,7 @@ public class CompanionBehaviour : MonoBehaviour
         else if(!_gameplay)
         {
             AgentPause();
+            return;
         }
     }
     #endregion
@@ -185,10 +186,12 @@ public class CompanionBehaviour : MonoBehaviour
         if ((Target.position - transform.position).magnitude >= 1f)
         {
             _StateAI = CompanionState._follow;
+            return; 
         }
         else
         {
             _StateAI = CompanionState._idle;
+            return; 
         }
     }
 
@@ -415,6 +418,8 @@ if (Physics.Raycast(ray, out RaycastHit hit))
             Companion.acceleration = (Companion.remainingDistance < closeEnoughMeters) ? deceleration : acceleration;
         }
 
+        return;
+
     }
 
     /*
@@ -461,6 +466,9 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         {
             SlowDown(); 
         }
+
+        return;
+       
     }
 
     #endregion
@@ -470,8 +478,6 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void Follow()
     {
         PosUpdate();
-
-       
     }
     
 
@@ -484,42 +490,9 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     #endregion
 
     #region Enemy detection
-    private IEnumerator FOVRoutine()
-    {
-        WaitForSeconds wait = new WaitForSeconds(0.2f);
+   
 
-        while (true)
-        {
-            yield return wait;
-            FieldOfViewCheck();
-        }
-    }
-
-    private void FieldOfViewCheck()
-    {
-        Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
-
-        if (rangeChecks.Length != 0)
-        {
-            Transform target = rangeChecks[0].transform;
-            Vector3 directionToTarget = (target.position - FOV.position).normalized;
-
-            if (Vector3.Angle(FOV.forward, directionToTarget) < angle / 2)
-            {
-                float distanceToTarget = Vector3.Distance(FOV.position, target.position);
-
-                if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
-                    _enemyIS = true;
-                else
-                    _enemyIS = false;
-            }
-            else
-                _enemyIS = false;
-        }
-        else if (_enemyIS)
-            _enemyIS = false;
-    }
-
+   
     private void CheckEnemy()
     {
 
@@ -597,16 +570,19 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         if(_StateAI == CompanionState._follow) 
         {
            Companion.isStopped = true;
+           return;
         }
         else 
         {
-            Companion.isStopped = false;    
+            Companion.isStopped = false;
+            return;
         }
     }
 
     private void AgentPause()
     {
         Companion.isStopped = true;
+        return;
     }
     #endregion
 

@@ -47,7 +47,7 @@ public class DoorHandler : MonoBehaviour
         if (state == DoorState.Opening)
         {
             float minDist = 0.1f;
-            bool Open = false;
+            //bool Open = false;
 
 
             //CheatBarrier.DeactivateColl();
@@ -56,7 +56,7 @@ public class DoorHandler : MonoBehaviour
             {
                 door.transform.position = startPos.transform.position;
 
-                Open = true;
+                return;
 
             }
         }
@@ -65,7 +65,7 @@ public class DoorHandler : MonoBehaviour
         {
             float CloseDist = 0.1f;
 
-            bool Closed = false;
+            //bool Closed = false;
 
 
             //CheatBarrier.ActivateColl();
@@ -73,7 +73,7 @@ public class DoorHandler : MonoBehaviour
             if ((Endpos.transform.position - door.transform.position).magnitude < CloseDist)
             {
                 door.transform.position = Endpos.transform.position;
-                Closed = true;
+                return; 
             }
 
 
@@ -100,10 +100,12 @@ public class DoorHandler : MonoBehaviour
         {
             case DoorState.Opening:
                 {
+
                     break;
                 }
             case DoorState.Closing:
                 {
+                    
                     break; 
                 }
         }

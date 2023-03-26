@@ -384,8 +384,8 @@ public class EnemyBehaviour : MonoBehaviour
         //Agent.speed = 0f; 
         //Agent.Stop();
         agent.isStopped = true;
-         
-        //StopAllCoroutines();
+        return;
+     
     }
 
     private void MinimalCheck()
@@ -396,7 +396,8 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
                 //transform.LookAt(playerTarget.position);
-                SetAttack(); 
+                SetAttack();
+                return;
             }
         }
        
@@ -408,6 +409,7 @@ public class EnemyBehaviour : MonoBehaviour
         if(_canAttack) 
         {
             SetAttack();
+            return;
         }
         
     }
@@ -454,6 +456,7 @@ public class EnemyBehaviour : MonoBehaviour
                 //transform.LookAt(_playerTarget.position);
 
                 transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
+
                 agent.speed = 0;
                 StartAttacking();
 
@@ -496,6 +499,8 @@ public class EnemyBehaviour : MonoBehaviour
             currentAbilityValue = 0;
             _abilitySlider.value = currentAbilityValue;
             _canSpecialAttack = false;
+
+            return; 
         }
     }
 
@@ -507,11 +512,12 @@ public class EnemyBehaviour : MonoBehaviour
         if (currentAbilityValue == ABILITY_MAX_VALUE)
         {
             _canSpecialAttack = true;
-            
+            return;
         }
         else
         {
             _canSpecialAttack = false;
+            return;
         }
 
         
@@ -532,12 +538,15 @@ public class EnemyBehaviour : MonoBehaviour
             if(randomPercentage <= 10f) 
             {
                 Instantiate(specialBullet, _shootPos.position, _shootPos.rotation);
+                return;
             }
             else 
             {
                 Instantiate(bullet, _shootPos.position, _shootPos.rotation);
             }
             nextFire = Time.time + fireRate;
+
+            return;
         }
         else
         {
@@ -555,8 +564,9 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (curSpeed <= 1 && canSee)          
         {
-            transform.LookAt(_playerTarget.position);
+            //transform.LookAt(_playerTarget.position);
             Attack();
+            return;
         }
 
         HandleGainSight(PlayerTarget);
@@ -697,6 +707,7 @@ public class EnemyBehaviour : MonoBehaviour
         StopAttacking();
         agent.radius = 1f;
         agent.isStopped = true;
+        return;
     }
 
     #endregion
@@ -814,7 +825,9 @@ public class EnemyBehaviour : MonoBehaviour
 
             _healthSlider.value = health;
             HealthCheck();
-            
+
+            return;
+
             /*
             if (_Type == WeaponType.Normal)           
             {
@@ -852,7 +865,7 @@ public class EnemyBehaviour : MonoBehaviour
                 StartCoroutine(HitFlash());
             }
             */
-            
+
         }
         
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
@@ -863,17 +876,19 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(health >= 15)
         {
-            SetAttack(); 
-
+            SetAttack();
+            return;
         }
         else if(health <20 )
         {
             _canSpecialAttack = false;
+            return;
         }
 
         else if(health <= 14)
         {
             SetGloryKill();
+            return;
         }
     }
 
@@ -934,23 +949,28 @@ public class EnemyBehaviour : MonoBehaviour
     private void SetGuard()
     {
         _stateAI = AI._GUARD;
+        return;
     }
     private void SetPatrol()
     {
         _stateAI = AI._PATROL;
+        return;
 
     }
     private void SetAttack()
     {
         _stateAI = AI._ATTACK;
+        return;
     }
     private void SetCover()
     {
         _stateAI = AI._COVER;
+        return;
     }
     private void SetGloryKill()
     {
         _stateAI = AI._GLORYKILL;
+        return;
     }
 
     #endregion
@@ -962,7 +982,8 @@ public class EnemyBehaviour : MonoBehaviour
        if(!_isAttacking) 
        {
             _agentAI.StartAttacking();
-       }
+            return;
+        }
     }
 
     public void StopAttacking()
@@ -971,6 +992,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             _agentAI.StopAttacking();
             _canAttack = false;
+            return;
         }
         
     }

@@ -27,6 +27,7 @@ public class Shooter : MonoBehaviour
 
     private bool _gameplay;
 
+
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
@@ -36,7 +37,6 @@ public class Shooter : MonoBehaviour
     {
         _magicType = WeaponType.Fire;
     }
-
 
     private void GameManager_OnGameStateChanged(GameState state)
     {
