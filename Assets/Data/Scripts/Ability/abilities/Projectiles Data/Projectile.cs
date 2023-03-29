@@ -230,9 +230,9 @@ public class Projectile : MonoBehaviour
             {
                 transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
-                elapsed += Time.deltaTime;
-                print(elapsed); 
+                elapsed += Time.deltaTime; 
                 //Debug.Log(elapsed);
+
                 if (elapsed >= _destroyTime)
                 {
                     DestroyOnDistance();

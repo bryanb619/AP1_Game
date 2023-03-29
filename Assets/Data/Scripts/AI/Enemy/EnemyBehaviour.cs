@@ -8,7 +8,6 @@ using LibGameAI.FSMs;
 
 
 using UnityEditor; // comment this on build
-
 #endregion
 
 
@@ -17,7 +16,6 @@ using UnityEditor; // comment this on build
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
-    
     #region  Variables
 
     // Reference to AI data
@@ -102,6 +100,8 @@ public class EnemyBehaviour : MonoBehaviour
     private float fireRate = 2f;
     private float nextFire = 0f;
 
+    private float percentage; 
+
 
     // special ability 
 
@@ -112,6 +112,9 @@ public class EnemyBehaviour : MonoBehaviour
     private float abilityIncreasePerFrame;
 
     private int specialDamage;
+
+
+    private GameObject s_damageEffect; 
 
 
     // hide code
@@ -159,6 +162,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _isAttacking;
 
+    private bool _canPeformAttack = true; 
+
 
     #endregion
 
@@ -184,7 +189,6 @@ public class EnemyBehaviour : MonoBehaviour
         _canMove = true;
         _canAttack = true;
         _isAttacking = false;
-        _canAttack = false;
     }
 
     #region Components Sync
@@ -216,23 +220,25 @@ public class EnemyBehaviour : MonoBehaviour
         // HEALTH //
         health = data.Health;
        
-
         // ATTACK //
         fireRate = data.AttackRate;
 
         minDist = data.MinDist;
 
+        percentage = data.Percentage; 
 
         // Special attack Ability
 
         currentAbilityValue = data.CurrentAbilityValue;
 
-        abilityIncreasePerFrame = data.AbilityIncreasePerFrame; 
+        abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
+
+        s_damageEffect = data.S_damageEffect;
 
         // projectiles //
 
-        bullet = data.projectile;
-        specialBullet = data.specialProjectile;
+        bullet = data.N_projectile;
+        specialBullet = data.S_projectile;
 
         // cover //
         fleeDistance = data.FleeDistance; 
@@ -350,7 +356,6 @@ public class EnemyBehaviour : MonoBehaviour
                     break;
                 }  
         }
-        
     }
 
     private void ResumeAgent()
@@ -388,14 +393,18 @@ public class EnemyBehaviour : MonoBehaviour
      
     }
 
+    private void StopAgent()
+    {
+        agent.enabled = false;
+        return;
+    }
+
     private void MinimalCheck()
     {
         if (!_canGloryKill)
         {
             if ((_playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
             {
-                //transform.LookAt(new Vector3(0, playerTarget.position.y, 0));
-                //transform.LookAt(playerTarget.position);
                 SetAttack();
                 return;
             }
@@ -439,46 +448,46 @@ public class EnemyBehaviour : MonoBehaviour
 
         //print(_canSpecialAttack);
 
-        if (_canSpecialAttack)
+
+        switch(_canSpecialAttack)
         {
-
-            if (currentAbilityValue >= ABILITY_MAX_VALUE)
-            {
-                SpecialAttack();
-            }
-        }
-
-        else if(!_canSpecialAttack)
-        {
-
-            if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
-            {
-                //transform.LookAt(_playerTarget.position);
-
-                transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
-
-                agent.speed = 0;
-                StartAttacking();
-
-                Attack();
-                // se estiver atacando por x tempo
-
-
-                // mudar posição 
-
-            }
-
-            else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance || currentAbilityValue < ABILITY_MAX_VALUE)
-            {
-                GetDistance();
-
-                if (!_canSpecialAttack)
+            case true:
                 {
-                    CoolDoownPower();
-                    //HandleGainSight(playerTarget);
+                    SpecialAttack();
+                    break;
                 }
+            case false:
+                {
+                    
+                    if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
+                    {
+                        //transform.LookAt(_playerTarget.position);
+                       
 
-            }
+                        transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
+
+                        agent.speed = 0;
+                        StartAttacking();
+
+
+                        Attack();
+                        
+                        // se estiver atacando por x tempo
+
+
+                        // mudar posição 
+
+                    }
+
+                    else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
+                    {
+                        GetDistance();
+
+                    }
+
+                    CoolDoownPower();
+                    break; 
+                }
         }
         //print("ATTACK");
     }
@@ -487,76 +496,92 @@ public class EnemyBehaviour : MonoBehaviour
     {
         agent.SetDestination(_playerTarget.position);
 
-        agent.stoppingDistance = 4f; 
+        agent.stoppingDistance = 3.8f; 
 
 
-        if((_playerTarget.transform.position - transform.position).magnitude <=4.3f)
+        if((_playerTarget.transform.position - transform.position).magnitude <= 4f)
         {
-            transform.LookAt(_playerTarget.position);
+            transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z)); // look at ignoring player Y AXIS
 
             print("SPECIAL DAMAGE");
+            //print(currentAbilityValue);
+
             _player.TakeDamage(specialDamage);
 
             currentAbilityValue = 0;
             _abilitySlider.value = currentAbilityValue;
             _canSpecialAttack = false;
-
+            StartCoroutine(SpecialAttackTimer());
             return; 
         }
     }
 
     private void CoolDoownPower()
     {
-        currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
-
-        _abilitySlider.value = currentAbilityValue;
-        if (currentAbilityValue == ABILITY_MAX_VALUE)
+        
+        if (currentAbilityValue >= ABILITY_MAX_VALUE)
         {
             _canSpecialAttack = true;
-            return;
         }
         else
         {
             _canSpecialAttack = false;
-            return;
         }
 
-        
+        currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
+
+        _abilitySlider.value = currentAbilityValue;
+        print(currentAbilityValue);
     }
 
     private void Attack()
     {
-        if (Time.time > nextFire)
+        if (Time.time > nextFire && _canAttack && !_canSpecialAttack)
         {
-            float randomPercentage;
+            //float randomPercentage;
 
-            randomPercentage = UnityEngine.Random.Range(0f, 100f);
+            //randomPercentage = UnityEngine.Random.Range(0f, 100f);
+            float randomFloat = UnityEngine.Random.value;
 
             //print("percentage is: "+randomPercentage);
 
             _animator.SetBool("isAttacking", true);
 
-            if(randomPercentage <= 10f) 
+            if(UnityEngine.Random.value < percentage)
             {
                 Instantiate(specialBullet, _shootPos.position, _shootPos.rotation);
-                return;
+                StartCoroutine(AttackTimer()); 
             }
-            else 
+            else if(_canPeformAttack)
             {
                 Instantiate(bullet, _shootPos.position, _shootPos.rotation);
             }
             nextFire = Time.time + fireRate;
-
-            return;
         }
         else
         {
             _animator.SetBool("isAttacking", false);
-            //
+            return; 
         }
     }
 
-   
+    private IEnumerator SpecialAttackTimer()
+    {
+        _canAttack = false;
+        yield return new WaitForSeconds(3f);
+        _canAttack = true;
+    }
+
+    private IEnumerator AttackTimer()
+    {
+        _canPeformAttack = false;
+         yield return new WaitForSeconds(2f);
+        _canPeformAttack = true;
+
+
+    }
+
+
     private void GetDistance()
     {
         agent.speed = 5f;
@@ -984,7 +1009,7 @@ public class EnemyBehaviour : MonoBehaviour
        {
             _agentAI.StartAttacking();
             return;
-        }
+       }
     }
 
     public void StopAttacking()

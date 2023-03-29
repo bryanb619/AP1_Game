@@ -13,10 +13,16 @@ MonoBehaviour:
   m_Name: AI Ranged Data
   m_EditorClassIdentifier: 
   minDist: 7
+  n_projectile: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
   attackRate: 2
-  currentAbilityValue: 50
-  abilityIncreasePerFrame: 3
+  _percentage: 0.3
+  s_projectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
+  attackTimeOut: 2
+  currentAbilityValue: 80
+  abilityIncreasePerFrame: 5
   specialDamage: 25
+  s_damageEffect: {fileID: 1687118924408352, guid: 77c69ec12208c4c4380d15e30b6f8f68, type: 3}
+  specialTimeOut: 3
   radius: 12
   angle: 90
   targetMask:
@@ -38,8 +44,6 @@ MonoBehaviour:
   _ice: 0
   fire: 0
   thunder: 0
-  projectile: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
-  specialProjectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
   gemSpawnOnDeath: 0
   gem: {fileID: 0}
   spawnChance: 0
