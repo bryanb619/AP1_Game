@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
-using UnityEngine.Events;
+
 //using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -19,20 +19,20 @@ public class GameManager : MonoBehaviour
 
     //private
     [SerializeField]
-    private StudioEventEmitter[]               ambientSounds;
+    private StudioEventEmitter[] ambientSounds;
 
     [SerializeField]
-    private StudioEventEmitter[]               sfxSounds;
+    private StudioEventEmitter[] sfxSounds;
 
     [SerializeField]
-    private StudioEventEmitter[]               musicSounds;
+    private StudioEventEmitter[] musicSounds;
 
     //[SerializeField]
-    private float                               ambientVolume;
-    private float                               sfxVolume;
-    private float                               musicVolume;
+    private float ambientVolume;
+    private float sfxVolume;
+    private float musicVolume;
 
-    private bool                                _audioState; 
+    private bool _audioState;
 
 
     //public class SFXSound : UnityEvent<float> {}
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         Instance = this;
-        
+
     }
 
     private void Start()
@@ -69,20 +69,20 @@ public class GameManager : MonoBehaviour
         {
             case GameState.Gameplay:
                 {
-                    HandleGameplay(); // set Gameplay
-                    break; 
+                    HandleGameplay(); 
+                    break;
                 }
             case GameState.Paused:
                 {
-                    HandlePaused(); // set paused
+                    HandlePaused(); 
                     break;
                 }
-            default: {throw new ArgumentOutOfRangeException(nameof(newGamestate), newGamestate, null);}
+            default: { throw new ArgumentOutOfRangeException(nameof(newGamestate), newGamestate, null); }
         }
         OnGameStateChanged?.Invoke(newGamestate);
     }
 
-   
+
 
     private void HandleGameplay()
     {
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
 
         _audioState = true;
-        
+
         Time.timeScale = 0f;
 
         HandleEventEmitterState();
@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
 
 
         Time.timeScale = 1f;
-    
+
     }
 
 

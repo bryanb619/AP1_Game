@@ -194,8 +194,11 @@ public class EnemyBullet : MonoBehaviour
 
     private void DestroyBullet()
     {
-        Instantiate(impactObject, transform.position, transform.rotation);
-
+        if(_useRb) 
+        {
+            Instantiate(impactObject, transform.position, transform.rotation);
+        }
+       
         Destroy(this.gameObject);
     }
 

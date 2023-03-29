@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69da3450e8414484097d26f23813f943, type: 3}
   m_Name: Normal Data
   m_EditorClassIdentifier: 
-  _magic: 0
-  _projectileParticles: {fileID: 0}
   _useRBPhysics: 0
-  speed: 15
-  enemyRangedDamage: 10
-  enemyChaseDamage: 10
-  enemybossDamage: 0
-  _useImpact: 0
-  impactEffect: {fileID: 0}
+  _speed: 12
+  _destroyTime: 0.55
+  _enemyRangedDamage: 10
+  _enemyChaseDamage: 10
+  _enemyBossDamage: 10
+  _useImpact: 1
+  impactEffect: {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
   fmodSound: 

@@ -489,6 +489,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         agent.stoppingDistance = 4f; 
 
+
         if((_playerTarget.transform.position - transform.position).magnitude <=4.3f)
         {
             transform.LookAt(_playerTarget.position);
@@ -996,23 +997,6 @@ public class EnemyBehaviour : MonoBehaviour
         }
         
     }
-    #endregion
-
-    #region Camera rendering
-
-    
-    private void OnBecameInvisible()
-    {
-        //this.gameObject.SetActive(false);
-     
-    }
-
-    private void OnBecameVisible()
-    {
-        //this.gameObject.SetActive(true);
-        
-    }
-    
     #endregion
 
     #region GameState

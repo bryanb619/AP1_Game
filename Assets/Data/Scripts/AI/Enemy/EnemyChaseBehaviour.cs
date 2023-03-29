@@ -11,7 +11,6 @@ using UnityEditor; // comment this before build
 
 public class EnemyChaseBehaviour : MonoBehaviour
 {
-    
     #region Variables
 
     private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _GLORYKILL, _NONE }
@@ -200,7 +199,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _canAttack = true; 
         
 
-        _AbilitySlider.value = currentAbilityValue; 
+       
     }
 
     #region Components Sync
@@ -268,7 +267,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _healthSlider.value = _health;
 
         healthInCreasePerFrame = data.HealthRegen;
-        
+
+        _AbilitySlider.value = currentAbilityValue;
+
 
         // Weakness
         _iceWeak = data.Ice;
@@ -533,8 +534,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             _animator.SetBool("walk", false);
             return;
         }
-
-        return;
     }
     #endregion
 
@@ -571,20 +570,22 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
+        transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z)); // look at ignoring player Y AXIS
         
+        // attack player
         if ((playerTarget.transform.position - transform.position).magnitude < attackDistanceOfsset)
         {
             agent.speed = 3.0f;
             Attack();
-            
         }
+
         else
         {
             agent.speed = 4.0f;
             agent.SetDestination(playerTarget.position);
             
-            
         }
+
 
 
         if (currentAbilityValue <= ABILITY_MAX_VALUE)
@@ -592,8 +593,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
             _AbilitySlider.value = currentAbilityValue;
+            return;
         }
-        
 
     }
     private void Attack()
@@ -633,10 +634,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Cover
     private void Cover()
     {
-        agent.speed = 5f;
-        agent.stoppingDistance = 1f;
-        agent.radius = 1f;
-
+      
         HandleGainSight(PlayerTarget);
 
         //print(curSpeed); 
@@ -800,8 +798,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _canAttack = false;
         _stateAI = AI._COVER;
 
+        agent.speed = 5f;
+        agent.stoppingDistance = 1f;
+        agent.radius = 1f;
+
         return;
-      
     }
 
     private void SetGloryKill()
@@ -827,64 +828,63 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             Die();
         }
+
         else if (_health > 0)
         {
-            // ALERT AI OF player presence
 
-            _warn.canAlertAI = true;
-
-            if(_canAttack) 
+            switch (_Type)
             {
+                case WeaponType.Normal:
+                    {
+                        _health -= _damage + damageBoost;
+
+                        StartCoroutine(HitFlash());
+
+                        break;
+                    }
+                case WeaponType.Ice:
+                    {
+                        StartCoroutine(STFS(5F));
+
+                        break;
+                    }
+                case WeaponType.Fire:
+                    {
+                        _health -= _damage + damageBoost;
+
+                        StartCoroutine(HitFlash());
+
+                        break;
+                    }
+                case WeaponType.Thunder:
+                    {
+
+                        break;
+                    }
+                case WeaponType.Dash:
+                    {
+                        _health -= _damage + damageBoost;
+
+                        StartCoroutine(HitFlash());
+
+                        break;
+                    }
+
+            }
+
+            if (_canAttack)
+            {
+                _warn.canAlertAI = true;
                 SetAttack();
                 return;
             }
 
-            if (_Type == WeaponType.Normal)
-            {
-                //if (_Health <= 20)
-                //{
-                //_canGloryKill = true;
-                //}
-                _health -= _damage + damageBoost;
+            _healthSlider.value = _health;
 
-                StartCoroutine(HitFlash());
-                return;
+            Debug.Log("enemy shot" + _health);
 
-            }
-            else if (_Type == WeaponType.Ice)
-            {
-
-                // STOP FOR 5 seconds
-                StartCoroutine(STFS(5F));
-                return;
-
-            }
-            else if (_Type == WeaponType.Fire)
-            {
-                //StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
-            }
-            else if (_Type == WeaponType.Thunder)
-            {
-                _health -= _damage + damageBoost;
-
-                StartCoroutine(HitFlash());
-                return;
-            }
-            else if (_Type == WeaponType.Dash)
-            {
-                _health -= _damage + damageBoost;
-
-                StartCoroutine(HitFlash());
-
-                return;
-            }
         }
-
-        print(_health); 
-        _healthSlider.value = _health; 
-
-        Debug.Log("enemy shot" + _health);
-        
+  
     }
 
     private void Die()
@@ -899,6 +899,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
+    #region Receive Warning
     void OnPlayerWarning(Vector3 Target)
     {
         if (_canAttack)
@@ -909,6 +910,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
 
     }
+    #endregion
 
     #region Visual Coroutines
     IEnumerator DamageTextDisappear()
@@ -1006,7 +1008,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
-    
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
@@ -1076,7 +1077,5 @@ public class EnemyChaseBehaviour : MonoBehaviour
 #endif
     }
     #endregion
-
-    
 }
 

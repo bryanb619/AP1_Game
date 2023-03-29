@@ -1,7 +1,6 @@
 #region Library
 using UnityEngine;
 using FMODUnity;
-using UnityEditor;
 
 #endregion
 
@@ -11,6 +10,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] ProjectileData     data;
 
     private bool                        _gamePlay;
+    public bool                         gamePlay => _gamePlay;
 
     private GameState                   _state; 
 
@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
     private float                       thrust; 
     private bool                        _useRb;
 
-    private float                       elapsed;
+    private float                       elapsed = 0F;
     private int                         speed;
 
     private int                         rangedDamage, chaseDamage, bossDamage;
@@ -32,7 +32,10 @@ public class Projectile : MonoBehaviour
     //[SerializeField]
     private StudioEventEmitter          _emitter;
 
-    private float                       volume; 
+    private float                       volume;
+
+    private float                       _destroyTime; 
+
     #endregion
 
     #region Awake
@@ -80,24 +83,26 @@ public class Projectile : MonoBehaviour
 
         #region Scriptable object data
         // speed 
-        speed = data.speed;
+        speed = data.Speed;
+
+        _destroyTime = data.DestroyTime; 
 
         // sound
         // playShootSound = data.MagicSound;
 
         // rigidbody 
-        _useRb = data._useRBPhysics;
+        _useRb = data.UseRBPhysics;
         //  weapon type
-        _weaponType = data._magic;
+        _weaponType = data.weapon;
 
         // enemies damage
-        rangedDamage = data.enemyRangedDamage;
-        chaseDamage = data.enemyChaseDamage;
-        bossDamage = data.enemybossDamage;
+        rangedDamage = data.EnemyRangedDamage;
+        chaseDamage = data.EnemyChaseDamage;
+        bossDamage = data.EnemybossDamage;
 
         // impact
-        _impactEffet = data._useImpact;
-        impactObject = data.impactEffect;
+        _impactEffet = data.UseImpact;
+        impactObject = data.ImpactEffect;
 
         //effectSound = RuntimeManager.CreateInstance("event:/path/to/your/sound");
         //effectSound.start();
@@ -137,6 +142,7 @@ public class Projectile : MonoBehaviour
     {
         EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
+
         //PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
 
         if (enemy != null)
@@ -167,16 +173,17 @@ public class Projectile : MonoBehaviour
         }
         */
     }
-
+    /*
     private void OnCollisionEnter(Collision collision)
     {
-        /*
+        
         if (collision.gameObject.tag == "Default" || collision.gameObject.tag == "Wall")
         {
             DestroyBullet();
         }
-        */
-    }
+        
+}
+    */
     #endregion
 
     #region Physics, Movement, Time and sound
@@ -187,22 +194,26 @@ public class Projectile : MonoBehaviour
             if (_gamePlay)
             {
                 //_rb.constraints = RigidbodyConstraints.None;
+                return; 
             }
             else if (!_gamePlay && _useRb)
             {
                 //_rb.constraints = RigidbodyConstraints.FreezeAll;
+                return; 
             }
         }
     }
 
     private void UpdatePhysicstTime()
     {
+       
+
         if (_gamePlay && _useRb)
         {
             elapsed += Time.deltaTime;
 
             //Debug.Log(elapsed);
-            if (elapsed >= 6.5f)
+            if (elapsed >= _destroyTime)
             {
                 DestroyOnDistance();
             }
@@ -213,14 +224,16 @@ public class Projectile : MonoBehaviour
     {
         if (!_useRb)
         {
+            
+
             if (_gamePlay)
             {
                 transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
                 elapsed += Time.deltaTime;
-
+                print(elapsed); 
                 //Debug.Log(elapsed);
-                if (elapsed >= 6.5f)
+                if (elapsed >= _destroyTime)
                 {
                     DestroyOnDistance();
                 }
@@ -280,7 +293,7 @@ public class Projectile : MonoBehaviour
        {
             ImpactEffect();
        }
-        Destroy(this.gameObject);
+       Destroy(this.gameObject);
     }
 
     private void DestroyOnDistance()
@@ -311,30 +324,5 @@ public class Projectile : MonoBehaviour
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged; 
     }
-    #endregion
-
-    /*
-    #region Editor Gizmos
-    private void OnDrawGizmos()
-    {
-#if UNITY_EDITOR
-
-        switch(_gamePlay)
-        {
-            case true:
-                {
-                    Handles.Label(transform.position + Vector3.up, "Gameplay");
-                    break; 
-                }
-            case false:
-                {
-                    Handles.Label(transform.position + Vector3.up, "Pause");
-                    break;
-                }
-        }
-
-#endif
-    }
-    #endregion
-    */
+    #endregion    
 }

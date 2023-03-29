@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class OptionMenu : MonoBehaviour
 {
     //[SerializeField] private Audio audio ;
-    [SerializeField] private Dropdown resDropdown;
-    Resolution[] resolutions;
+    [SerializeField] private Dropdown _resDropdown;
+    Resolution[] _resolutions;
 
     private void Start()
     {
@@ -15,33 +15,34 @@ public class OptionMenu : MonoBehaviour
         Screen.fullScreen = true;
     }
 
-/// <summary>
-/// Resolution set up 
-/// </summary>
+    #region Resolution & Quality 
     private void ResolutionSetup()
     {
-        resolutions = Screen.resolutions;
+        // get resolution
+        _resolutions = Screen.resolutions; 
 
-        resDropdown.ClearOptions();
+        // clear
+        _resDropdown.ClearOptions(); 
 
-        List<string> options = new List<string>();
+        // create list of resolution
+        List<string> resOptions = new List<string>();  
 
-        int currentResIndex = 0;
+        int currentResolutionIndex = 0; 
 
-        for (int i = 0; i < resolutions.Length; i++)
+        for (int x = 0; x < _resolutions.Length; x++)
         {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
-            options.Add(option);
+            string option = _resolutions[x].width + " x " + _resolutions[x].height;
 
-            if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height)
+            resOptions.Add(option);
+
+            if (_resolutions[x].width == Screen.currentResolution.width && _resolutions[x].height == Screen.currentResolution.height)
             {
-                currentResIndex = i;
+                currentResolutionIndex = x;
             }
         }
-        resDropdown.AddOptions(options);
-        resDropdown.value = currentResIndex;
-        resDropdown.RefreshShownValue();
+        _resDropdown.AddOptions(resOptions);
+        _resDropdown.value = currentResolutionIndex;
+        _resDropdown.RefreshShownValue();
     }
 
     public void SetVolume(float volume)
@@ -61,9 +62,11 @@ public class OptionMenu : MonoBehaviour
 
     public void SetResolution(int resIndex)
     {
-        Resolution resolution = resolutions[resIndex];
+        Resolution resolution = _resolutions[resIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
+
+    #endregion
 
     public void BackToMainMenu()
     {
