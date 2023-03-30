@@ -63,7 +63,7 @@ public class LightFlick : MonoBehaviour
             // Calculate new smoothed average
             light.intensity = lastSum / (float)smoothQueue.Count;
 
-            Debug.Log("Light active");
+            //Debug.Log("Light active");
         }
         
     }
