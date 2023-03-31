@@ -39,6 +39,9 @@ public class HealthBar : MonoBehaviour
     {
         time += Time.deltaTime * criticalSliderVelocity;
 
-        criticalSlider.value = Mathf.Lerp(criticalSlider.value, _slider.value, time);
+        if (criticalSlider.value < _slider.value)
+            criticalSlider.value = _slider.value;
+        else
+            criticalSlider.value = Mathf.Lerp(criticalSlider.value, _slider.value, time);
     }
 }
