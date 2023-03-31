@@ -12,7 +12,7 @@ public class AbilityHolder : MonoBehaviour
 
     // used variables from "Ability script"
 
-    private float cooldownTime;
+    [SerializeField]private float cooldownTime;
     private float activeTime;
     
     [SerializeField]
@@ -64,6 +64,7 @@ public class AbilityHolder : MonoBehaviour
     private void Update()
     {
         FindAbilityStateInput();
+        PowerDisabled();
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -120,9 +121,6 @@ public class AbilityHolder : MonoBehaviour
                         abilityNEW.BeginCooldown(gameObject);
                         state = Ability_State.cooldown;
                         cooldownTime = abilityNEW.cooldownTime;
-
-                        PowerDisabled();
-                        //Debug.Log("Cooldown: " + cooldownTime);
                     }
 
                     break;
@@ -134,7 +132,6 @@ public class AbilityHolder : MonoBehaviour
                     if (cooldownTime > 0)
                     {
                         cooldownTime -= Time.deltaTime;
-                        PowerDisabled();
                     }
 
                     else
@@ -155,9 +152,12 @@ public class AbilityHolder : MonoBehaviour
         uISlider.value = 0f;
     }
 
-    internal void PowerDisabled()
+    private void PowerDisabled()
     {
-        uISlider.value = Mathf.Lerp(1f, 0f, cooldownTime * Time.deltaTime);
+        if(state == Ability_State.cooldown)
+        {   
+            uISlider.value = Mathf.Lerp(0f, 1f, cooldownTime);
+        }
     }
 
     private void OnDestroy()
