@@ -470,7 +470,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     {
                         ResumeAgent();
 
-                        if(_useFOV) { CanFOV(); }
+                        if(_useFOV) 
+                        { CanFOV(); }
                         
                         MinimalCheck();
 
@@ -548,7 +549,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void FieldOfViewCheck()
     {
-        print("FOV IN USE");
+        
         // collider check
         Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
 

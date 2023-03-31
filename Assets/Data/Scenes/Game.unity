@@ -27050,7 +27050,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!1001 &913124739
 PrefabInstance:
@@ -27345,6 +27345,10 @@ PrefabInstance:
     - target: {fileID: 1466132357346547584, guid: d1c27e34c1744be47b9981302ffa2f13, type: 3}
       propertyPath: m_ReferenceResolution.y
       value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 1466132357346547585, guid: d1c27e34c1744be47b9981302ffa2f13, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1466132357346547587, guid: d1c27e34c1744be47b9981302ffa2f13, type: 3}
       propertyPath: m_IgnoreReversedGraphics
@@ -49097,6 +49101,10 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0.5019608
       objectReference: {fileID: 0}
+    - target: {fileID: 5200182609196994221, guid: 98569d3689a44bc4eaf2d1b2766235f2, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5200182609196994222, guid: 98569d3689a44bc4eaf2d1b2766235f2, type: 3}
       propertyPath: m_Name
       value: Abilities UI
@@ -61256,6 +61264,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1859903518}
     m_Modifications:
+    - target: {fileID: 413366954563772781, guid: 413036439a5e50e4abd3a47236a737fd, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 413366954563772784, guid: 413036439a5e50e4abd3a47236a737fd, type: 3}
       propertyPath: m_Name
       value: Mana UI
@@ -61573,13 +61585,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4428502045232544583, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4428502045232544586, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
       propertyPath: m_Name
       value: Canvas Pause
       objectReference: {fileID: 0}
     - target: {fileID: 4428502045426788042, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5242099819009193923, guid: 47ec024acf28d484a95d3fa52ad714ca, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -62238,9 +62254,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Objectives UI
       objectReference: {fileID: 0}
+    - target: {fileID: 6136644122345752611, guid: cb0d278605ad9b4429c9a2065dc0129e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6136644122345752615, guid: cb0d278605ad9b4429c9a2065dc0129e, type: 3}
       propertyPath: m_PixelPerfect
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6136644122345752615, guid: cb0d278605ad9b4429c9a2065dc0129e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb0d278605ad9b4429c9a2065dc0129e, type: 3}
@@ -67268,7 +67292,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &8549523203974470533
 RectTransform:
