@@ -39,8 +39,6 @@ public class ProjectileData : ScriptableObject
 
     public int                                                              EnemyRangedDamage => _enemyRangedDamage;
 
-
-
     [Tooltip("Value for Chase damage")]
     [SerializeField]
     private int                                                             _enemyChaseDamage;
@@ -49,7 +47,7 @@ public class ProjectileData : ScriptableObject
 
     [Tooltip("Value for Booss damage")]
     [SerializeField]
-    private int _enemyBossDamage;
+    private int                                                             _enemyBossDamage;
 
     public int                                                              EnemybossDamage => _enemyBossDamage;
 

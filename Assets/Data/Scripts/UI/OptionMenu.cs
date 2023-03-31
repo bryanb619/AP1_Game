@@ -3,26 +3,37 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using TMPro;
+
 public class OptionMenu : MonoBehaviour
 {
+    #region Variables
     //[SerializeField] private Audio audio ;
     [SerializeField] private Dropdown _resDropdown;
     Resolution[] _resolutions;
 
+    [SerializeField] private TMP_Dropdown _resDropdown2;
+
+    #endregion
+
+    #region Start
     private void Start()
     {
         ResolutionSetup();
         Screen.fullScreen = true;
     }
+    #endregion
 
     #region Resolution & Quality 
+
+    #region Resoltion 
     private void ResolutionSetup()
     {
         // get resolution
         _resolutions = Screen.resolutions; 
 
         // clear
-        _resDropdown.ClearOptions(); 
+        _resDropdown2.ClearOptions(); 
 
         // create list of resolution
         List<string> resOptions = new List<string>();  
@@ -40,20 +51,23 @@ public class OptionMenu : MonoBehaviour
                 currentResolutionIndex = x;
             }
         }
-        _resDropdown.AddOptions(resOptions);
-        _resDropdown.value = currentResolutionIndex;
-        _resDropdown.RefreshShownValue();
+        _resDropdown2.AddOptions(resOptions);
+        _resDropdown2.value = currentResolutionIndex;
+        _resDropdown2.RefreshShownValue();
     }
 
+    #endregion
     public void SetVolume(float volume)
     {
         //audio.SetFloat("Master", volume);
     }
 
+    #region Quality
     public void SetQuality(int index)
     {
         QualitySettings.SetQualityLevel(index);
     }
+    #endregion
 
     public void SetFullscreen(bool isFullscreen)
     {
@@ -68,8 +82,11 @@ public class OptionMenu : MonoBehaviour
 
     #endregion
 
+    #region Buttons
     public void BackToMainMenu()
     {
         SceneManager.LoadScene("Main Menu");
     }
+
+    #endregion
 }

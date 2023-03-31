@@ -6,12 +6,9 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
 
-
 using UnityEditor; // comment this on build
+
 #endregion
-
-
-#region Ranged AI Brain Script
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
@@ -162,7 +159,14 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool _isAttacking;
 
-    private bool _canPeformAttack = true; 
+    private bool _canPeformAttack;
+
+
+    // performance
+
+    private AIHandler _handlerAI;
+
+    private bool _deactivateAI; 
 
 
     #endregion
@@ -195,14 +199,17 @@ public class EnemyBehaviour : MonoBehaviour
     private void GetComponents()
     {
         agent = GetComponent<NavMeshAgent>();
+        _warn = GetComponent<WarningSystemAI>();
+        _handlerAI = GetComponent<AIHandler>();
 
         _agentAI = GetComponentInChildren<Agents>();
         _animator = GetComponentInChildren<Animator>();
         _healthSlider = GetComponentInChildren<Slider>();
 
+
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
-        _warn = GetComponentInChildren<WarningSystemAI>();
+        
 
        
         _player = FindObjectOfType<PlayerMovement>();
@@ -234,6 +241,8 @@ public class EnemyBehaviour : MonoBehaviour
         abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
 
         s_damageEffect = data.S_damageEffect;
+
+        specialDamage = data.SpecialDamage;
 
         // projectiles //
 
@@ -342,62 +351,73 @@ public class EnemyBehaviour : MonoBehaviour
     #region AI update
     private void UpdateAI()
     {
-        switch(_gamePlay)
+        switch(_handlerAI.AgentOperate)
         {
             case true:
                 {
-                    outlineDeactivation.enabled = false;
-                    ResumeAgent();
+                    StopAgent(); 
                     break;
                 }
             case false:
                 {
-                    PauseAgent();
+                    switch (_gamePlay)
+                    {
+                        case true:
+                            {
+                                outlineDeactivation.enabled = false;
+                                ResumeAgent();
+
+                                MinimalCheck(); // Tester
+
+                                StartCoroutine(FOVRoutine());
+
+                                AISpeed();
+
+                                Action actions = stateMachine.Update();
+                                actions?.Invoke();
+
+
+                             
+
+                                break;
+                            }
+                        case false:
+                            {
+                                PauseAgent();
+                                break;
+                            }
+                    }
+
                     break;
-                }  
+                }
         }
     }
 
+
+    #region Agent State
     private void ResumeAgent()
     {
-        //Agent.Resume();
         agent.isStopped = false;
-
-        if(curSpeed > 0.3) 
-        {
-            _animator.SetBool("isWalking", true); 
-        }
-        else
-        {
-            _animator.SetBool("isWalking", false);
-        }
-
-        MinimalCheck(); // Tester
-
-        StartCoroutine(FOVRoutine());
-
-        Action actions = stateMachine.Update();
-        actions?.Invoke();
-
-        Vector3 curMove = transform.position - previousPos;
-        curSpeed = curMove.magnitude / Time.deltaTime;
-        previousPos = transform.position;
+        return;
     }
 
     private void PauseAgent()
     {
         //Agent.speed = 0f; 
-        //Agent.Stop();
+        //Agent.Stop(); 
         agent.isStopped = true;
         return;
-     
     }
 
     private void StopAgent()
     {
-        agent.enabled = false;
+        agent.isStopped = true;
+
+        StopAllCoroutines();
         return;
     }
+
+    #endregion
 
     private void MinimalCheck()
     {
@@ -410,6 +430,23 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
        
+    }
+
+    private void AISpeed()
+    {
+        Vector3 curMove = transform.position - previousPos;
+        curSpeed = curMove.magnitude / Time.deltaTime;
+        previousPos = transform.position;
+
+        if (curSpeed > 0.3)
+        {
+            _animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            _animator.SetBool("isWalking", false);
+        }
+
     }
 
 
@@ -442,6 +479,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //StartAttacking();
 
+
         SetAttack(); 
 
         agent.speed = 4f;
@@ -464,13 +502,11 @@ public class EnemyBehaviour : MonoBehaviour
                         //transform.LookAt(_playerTarget.position);
                        
 
-                        transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
+                        //transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
 
                         agent.speed = 0;
                         StartAttacking();
-
-
-                        Attack();
+                        if(_canAttack) { Attack(); }
                         
                         // se estiver atacando por x tempo
 
@@ -494,6 +530,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void SpecialAttack()
     {
+        transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
         agent.SetDestination(_playerTarget.position);
 
         agent.stoppingDistance = 3.8f; 
@@ -501,10 +538,14 @@ public class EnemyBehaviour : MonoBehaviour
 
         if((_playerTarget.transform.position - transform.position).magnitude <= 4f)
         {
-            transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z)); // look at ignoring player Y AXIS
+             // look at ignoring player Y AXIS
 
-            print("SPECIAL DAMAGE");
+            //Debug.Log(DebugColor + "Special attack" + closeColor);
             //print(currentAbilityValue);
+
+            string DebugColor = "<size=14><color=orange>";
+            string closeColor = "</color></size>";
+            Debug.Log(DebugColor + "Special Attack" + closeColor);
 
             _player.TakeDamage(specialDamage);
 
@@ -531,29 +572,44 @@ public class EnemyBehaviour : MonoBehaviour
         currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
 
         _abilitySlider.value = currentAbilityValue;
-        print(currentAbilityValue);
+        //print(currentAbilityValue);
     }
 
     private void Attack()
     {
-        if (Time.time > nextFire && _canAttack && !_canSpecialAttack)
-        {
-            //float randomPercentage;
+        
 
-            //randomPercentage = UnityEngine.Random.Range(0f, 100f);
+        if (Time.time > nextFire)
+        {
+            transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
+
             float randomFloat = UnityEngine.Random.value;
 
             //print("percentage is: "+randomPercentage);
 
-            _animator.SetBool("isAttacking", true);
+            
 
             if(UnityEngine.Random.value < percentage)
             {
+                _animator.SetBool("isAttacking", true);
+
+                string DebugAttack = "<size=12><color=yellow>";
+                string closeAttack = "</color></size>";
+                Debug.Log(DebugAttack + "Attack 2: " + closeAttack + gameObject);
+
                 Instantiate(specialBullet, _shootPos.position, _shootPos.rotation);
+                
+
                 StartCoroutine(AttackTimer()); 
             }
             else if(_canPeformAttack)
             {
+                _animator.SetBool("isAttacking", true);
+
+                string DebugAttack = "<size=12><color=green>";
+                string closeAttack = "</color></size>";
+                Debug.Log(DebugAttack + "Attack: " + closeAttack + gameObject);
+
                 Instantiate(bullet, _shootPos.position, _shootPos.rotation);
             }
             nextFire = Time.time + fireRate;
@@ -561,7 +617,7 @@ public class EnemyBehaviour : MonoBehaviour
         else
         {
             _animator.SetBool("isAttacking", false);
-            return; 
+            
         }
     }
 
@@ -580,8 +636,6 @@ public class EnemyBehaviour : MonoBehaviour
 
 
     }
-
-
     private void GetDistance()
     {
         agent.speed = 5f;
@@ -1053,7 +1107,6 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
-    
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
@@ -1127,7 +1180,6 @@ public class EnemyBehaviour : MonoBehaviour
 #endif
     }
     #endregion
-    
 }
-#endregion
+
 

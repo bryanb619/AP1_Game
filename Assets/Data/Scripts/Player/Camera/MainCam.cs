@@ -37,8 +37,6 @@ public class MainCam : MonoBehaviour
         UpdateRaycast();
     }
 
-    
-
     /// <summary>
     /// Raycast Update of player visibility
     /// This code manages other Game Objects mesh renderes alpha and will lower and reset according to player visibilty between camera and player

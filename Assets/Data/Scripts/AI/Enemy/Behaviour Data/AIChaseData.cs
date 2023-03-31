@@ -35,6 +35,13 @@ public class AIChaseData : ScriptableObject
     private float attackSpeed = 4F;
     public float AttackSpeed => attackSpeed;
 
+    [Tooltip("Set this value so attacks are not duplicated")]
+    [SerializeField]
+    private float               _attackTimer = 2f;
+    public float AttackTimer => _attackTimer;
+
+
+
     // ATTACK 2 //
     [Header("Attack Nº2")]
     [Tooltip("Higher the number, more possible it is to use attack nº2")]
@@ -128,7 +135,7 @@ public class AIChaseData : ScriptableObject
     [SerializeField] private float maxHealthRegen;
     public float MaxHealthRegen => maxHealthRegen;
 
-    [Header("AI Weakness")]
+   /* [Header("AI Weakness")]
     [Tooltip("Set AI weaknesses")]
     [SerializeField] private bool _ice;
     public bool Ice => _ice;
@@ -139,7 +146,7 @@ public class AIChaseData : ScriptableObject
     [SerializeField] private bool thunder;
     public bool Thunder => thunder;
 
-
+    */
     // GEM // 
     [Header("Gem")]
     [Tooltip("Set true to spawn Gem")]
