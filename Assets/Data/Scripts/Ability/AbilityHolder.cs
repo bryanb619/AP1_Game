@@ -1,6 +1,6 @@
 //using DG.Tweening;
 using UnityEngine;
-//using UnityEngine.UI;
+using UnityEngine.UI;
 
 public class AbilityHolder : MonoBehaviour
 {
@@ -12,12 +12,16 @@ public class AbilityHolder : MonoBehaviour
 
     // used variables from "Ability script"
 
-    private float cooldownTime;
+    [SerializeField]private float cooldownTime;
     private float activeTime;
+    
+    [SerializeField]
+    private Slider uISlider;
 
     //[SerializeField] private SpriteRenderer CoolDownSprite, ReadySprite;
 
-    [SerializeField] private GameObject ActiveSprite, CooldownSprite;
+    [SerializeField] 
+    private GameObject ActiveSprite, CooldownSprite;
 
     private bool _isPaused;
 
@@ -59,7 +63,8 @@ public class AbilityHolder : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        FindAbilityStateInput(); //
+        FindAbilityStateInput();
+        PowerDisabled();
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -116,19 +121,17 @@ public class AbilityHolder : MonoBehaviour
                         abilityNEW.BeginCooldown(gameObject);
                         state = Ability_State.cooldown;
                         cooldownTime = abilityNEW.cooldownTime;
-
-                        PowerDisabled();
-                        //Debug.Log("Cooldown: " + cooldownTime);
                     }
 
                     break;
 
                 case Ability_State.cooldown:
 
+                    Debug.Log("Entered Ability cooldown");
+                    
                     if (cooldownTime > 0)
                     {
                         cooldownTime -= Time.deltaTime;
-                        PowerDisabled();
                     }
 
                     else
@@ -146,14 +149,15 @@ public class AbilityHolder : MonoBehaviour
 
     private void PowerReady()
     {
-        ActiveSprite.SetActive(true);
-        CooldownSprite.SetActive(false);
+        uISlider.value = 0f;
     }
 
     private void PowerDisabled()
     {
-        ActiveSprite.SetActive(false);
-        CooldownSprite.SetActive(true);
+        if(state == Ability_State.cooldown)
+        {   
+            uISlider.value = Mathf.Lerp(0f, 1f, cooldownTime);
+        }
     }
 
     private void OnDestroy()

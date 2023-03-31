@@ -27,7 +27,6 @@ public class Shooter : MonoBehaviour
 
     private bool _gameplay;
 
-
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
