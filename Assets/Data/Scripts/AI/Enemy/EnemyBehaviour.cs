@@ -131,10 +131,11 @@ public class EnemyBehaviour : MonoBehaviour
 
     private Coroutine MovementCoroutine;
 
-    private float fleeDistance; 
+    private float fleeDistance;
 
 
     // UI
+    [Header("UI ")]
     [SerializeField] private Slider _healthSlider;
 
     [SerializeField] private Slider _abilitySlider;
@@ -210,8 +211,6 @@ public class EnemyBehaviour : MonoBehaviour
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
         
-
-       
         _player = FindObjectOfType<PlayerMovement>();
         PlayerObject = GameObject.Find("Player");
 
@@ -355,11 +354,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case true:
                 {
-                    StopAgent(); 
-                    break;
-                }
-            case false:
-                {
+                    //
                     switch (_gamePlay)
                     {
                         case true:
@@ -377,8 +372,6 @@ public class EnemyBehaviour : MonoBehaviour
                                 actions?.Invoke();
 
 
-                             
-
                                 break;
                             }
                         case false:
@@ -388,6 +381,12 @@ public class EnemyBehaviour : MonoBehaviour
                             }
                     }
 
+                    break;
+                    
+                }
+            case false:
+                {
+                    StopAgent();
                     break;
                 }
         }

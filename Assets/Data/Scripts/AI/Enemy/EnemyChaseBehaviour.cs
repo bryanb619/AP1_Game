@@ -471,7 +471,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         ResumeAgent();
 
                         if(_useFOV) 
-                        { CanFOV(); }
+                        { 
+                            CanFOV(); 
+                        }
                         
                         MinimalCheck();
 
