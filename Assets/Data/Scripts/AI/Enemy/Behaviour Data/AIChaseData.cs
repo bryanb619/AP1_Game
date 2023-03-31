@@ -5,7 +5,18 @@ using UnityEngine;
 public class AIChaseData : ScriptableObject
 {
     // ATTACK //
+
+    
+
     [Header("Attack")]
+
+    [SerializeField]
+    private float _attackDist = 2.5f;
+    public float AttackDist => _attackDist;
+
+
+    [SerializeField] private GameObject _attackEffect;
+    public GameObject AttackEffect => _attackEffect;
 
     [Tooltip("Minimum distance to detect player or projectiles")]
     [Range(0f, 10f)]
@@ -19,8 +30,8 @@ public class AIChaseData : ScriptableObject
 
     [Tooltip("Attack damage")]
     [Range(0, 30)]
-    [SerializeField] private int damage = 10;
-    public int Damage => damage;
+    [SerializeField] private int a_damage = 10;
+    public int Damage => a_damage;
 
     [Tooltip("Agent Stop distance from player position")]
     [SerializeField]
@@ -31,9 +42,10 @@ public class AIChaseData : ScriptableObject
     [SerializeField] private float attackDistOffset = 4F; 
     public float AttackDistOffset => attackDistOffset;
 
-    [SerializeField]
-    private float attackSpeed = 4F;
-    public float AttackSpeed => attackSpeed;
+
+    //[SerializeField]
+    //private float attackSpeed = 4F;
+    //public float AttackSpeed => attackSpeed;
 
     [Tooltip("Set this value so attacks are not duplicated")]
     [SerializeField]
@@ -50,6 +62,10 @@ public class AIChaseData : ScriptableObject
     private float _percentage;
     public float Percentage => _percentage;
 
+    [SerializeField]
+    private int b_damage;
+    public int B_damage => b_damage;
+
 
     //[SerializeField]
     //private float cooldownSpeed = 3F;
@@ -60,8 +76,8 @@ public class AIChaseData : ScriptableObject
     [Tooltip("Special attack damage on hit")]
     [Range(0, 50)]
     [SerializeField]
-    private int specialDamage = 20;
-    public int SpecialDamage => specialDamage;
+    private int s_damage = 20;
+    public int S_damage => s_damage;
 
     [Range(0, 100)]
     [SerializeField]
@@ -135,19 +151,26 @@ public class AIChaseData : ScriptableObject
     [SerializeField] private float maxHealthRegen;
     public float MaxHealthRegen => maxHealthRegen;
 
-   /* [Header("AI Weakness")]
-    [Tooltip("Set AI weaknesses")]
-    [SerializeField] private bool _ice;
-    public bool Ice => _ice;
+    /* [Header("AI Weakness")]
+     [Tooltip("Set AI weaknesses")]
+     [SerializeField] private bool _ice;
+     public bool Ice => _ice;
 
-    [SerializeField] private bool fire;
-    public bool Fire => fire;
+     [SerializeField] private bool fire;
+     public bool Fire => fire;
 
-    [SerializeField] private bool thunder;
-    public bool Thunder => thunder;
+     [SerializeField] private bool thunder;
+     public bool Thunder => thunder;
 
-    */
+
+
+     */
     // GEM // 
+    [Header("Death")]
+    [SerializeField] private GameObject _deathEffect; 
+    public GameObject DeathEffect => _deathEffect;  
+
+
     [Header("Gem")]
     [Tooltip("Set true to spawn Gem")]
     [SerializeField] private bool gemSpawnOnDeath;
@@ -160,5 +183,8 @@ public class AIChaseData : ScriptableObject
     [Tooltip("Select Spawn chance")]
     [Range(0f,100f)]
     [SerializeField] private float spawnChance;
-    public float SpawnChance => spawnChance;    
+    public float SpawnChance => spawnChance;
+    
+
+
 }

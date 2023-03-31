@@ -8,6 +8,7 @@ using LibGameAI.FSMs;
 using TMPro;
 
 using UnityEditor; // comment this before build
+using System.Runtime.CompilerServices;
 #endregion
 
 public class EnemyChaseBehaviour : MonoBehaviour
@@ -30,15 +31,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool                                gemSpawnOnDeath = true;
     private GameObject                          gemPrefab;
 
-    [SerializeField] private GameObject         _death, _attack;
+    
 
-    [SerializeField] private Transform          _attackPoint; 
+
     // Reference to the state machine
     
 
     // Reference to the NAV MESH AGENT
     private NavMeshAgent                        agent;
 
+    [Header("AI List")]
     [SerializeField] private Agents             _agentAI; 
 
 
@@ -58,6 +60,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField] private Transform[]        _patrolPoints;
 
     // FOV
+    private bool                                _useFOV; 
+
     private float                               radius;
     public float                                Radius => radius;
 
@@ -101,7 +105,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     // damage
-    private float                               damagePerSecondFire = 2f;
+    //private float                               damagePerSecondFire = 2f;
     private float                               durationOfFireDamage = 10f;
 
     private int                                 damage; 
@@ -112,12 +116,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
     // weakness
-    private bool                                _iceWeak, _fireWeak, _thunderWeak;
+    //private bool                                _iceWeak, _fireWeak, _thunderWeak;
 
 
-    // attack
-    private float                               attackSpeed = 4F;
-    private float                               cooldownSpeed = 3F;
+    // Combat //
+
+    [Header("Attack")]
+    [SerializeField] private Transform          _attackPoint;
+
+    private GameObject                          _death;
+
+    private GameObject                          _attackEffect;
+
+    private float                               _attackRange; 
 
     private float                               attackDistanceOfsset;
     private float                               stopDistance; 
@@ -132,13 +143,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool                                _isAttacking;
 
     private float                               minDist;
-    private float                               attackDistForFinalCheck;
+
 
     private float                               _attackTimer; 
 
     // Attack 2 //
 
-    private float                               percentage; 
+    private float                               percentage;
+
+    private int                                 b_damage; 
 
     // special ability 
 
@@ -172,7 +185,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private AIHandler                           _hanlderAI;
 
-    private bool                                _deactivateAI; 
+    private bool                                _deactivateAI;
+
+    [Header("Debug")]
+    [SerializeField] private bool               showExtraGizmos; 
 
 
     #endregion
@@ -219,7 +235,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetProfile();
         GetStates();
 
-        _canAttack = true; 
+        _canAttack = true;
+        _useFOV = true; 
 
         if(currentAbilityValue > ABILITY_MAX_VALUE) { _canSpecialAttack = true;}
 
@@ -266,6 +283,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         // COMBAT //
 
+        _death = data.DeathEffect;
+
+        _attackEffect = data.AttackEffect;    
+
+         _attackRange = data.AttackDist;
+
         _attackTimer = data.AttackTimer; 
 
             // attack
@@ -275,19 +298,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
         attackDistanceOfsset = data.AttackDistOffset;
         stopDistance = data.StopDistance;
 
-        attackSpeed = data.AttackSpeed;
+  
+        damage = data.Damage;
         //cooldownSpeed = data.CooldownSpeed;
 
 
             // atack N2
         percentage = data.Percentage;   
 
+        b_damage = data.B_damage;   
         
         // special attack
         abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
         currentAbilityValue = data.CurrentAbilityValue; 
 
-        specialDamage = data.SpecialDamage; 
+        specialDamage = data.S_damage; 
 
         // FOV
         radius = data.Radius;
@@ -445,8 +470,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     {
                         ResumeAgent();
 
-                        CanFOV();
-
+                        if(_useFOV) { CanFOV(); }
+                        
                         MinimalCheck();
 
                         HealthCheck();
@@ -523,7 +548,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void FieldOfViewCheck()
     {
-
+        print("FOV IN USE");
         // collider check
         Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
 
@@ -540,6 +565,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
                 {
                     canSeePlayer = true;
+                    SetAttack(); 
                 }
 
                 else
@@ -687,12 +713,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         //_canPerformAttack = true;
 
+        transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
+
         switch (_canPerformAttack)
         {
             case true:
                 {
-                    transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
-
                     //agent.speed = 2.5f;
                     if (Time.time > nextAttack)
                     {
@@ -710,10 +736,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                             Debug.Log(DebugColor + "Attack 2" + closeColor);
 
-                            _Player.TakeDamage(damage);
+                            
+                            Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
 
-                            Instantiate(_attack, _attackPoint.transform.position, Quaternion.identity);
+                            foreach (Collider collider in hitEnemies)
+                            {
+                                _Player.TakeDamage(b_damage);
+                            }
 
+                            Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
                             //StartCoroutine(AttackTimer());
                         }
 
@@ -725,7 +756,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             string closeColor = "</color></size>";
                             Debug.Log(DebugColor + "Attack" + closeColor);
 
-                            _Player.TakeDamage(damage);
+
+                            Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
+
+                            foreach (Collider collider in hitEnemies)
+                            {
+                                _Player.TakeDamage(damage);
+                            }
+
+                            Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
 
                             //StartCoroutine(AttackTimer());
 
@@ -744,10 +783,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break; 
                 }
         }
-
-       
-
-        
     }
 
     private void HabilityAttack()
@@ -777,10 +812,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private IEnumerator AttackTimer()
     {
-        agent.isStopped = true;
+
         _canPerformAttack = false;
         yield return new WaitForSeconds(_attackTimer);
-        agent.isStopped = false; 
+ 
         _canPerformAttack = true;
     }
     #endregion
@@ -927,6 +962,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         agent.stoppingDistance = 0.1f;
         agent.speed = 1f;
+
+        _useFOV = true;
         return;
     }
 
@@ -941,6 +978,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //StartAttacking();
         _canAttack = true;
         _stateAI = AI._ATTACK;
+        _useFOV = false;
         return;
     }
     private void SetCover()
@@ -952,14 +990,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
         agent.radius = 1f;
         agent.speed = 5f;
         agent.stoppingDistance = 1.3f;
-       
+
+        _useFOV = true;
+
         return;
     }
 
     private void SetGloryKill()
     {
         _stateAI = AI._GLORYKILL;
-
+        _useFOV = false;
         return;
     }
 
@@ -1165,61 +1205,68 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         //Vector3 namePosition = new Vector3(transform.position.x, transform.position.y, 2f);
 
-        GUIStyle red = new GUIStyle();
-        red.normal.textColor = Color.red;
-
-        GUIStyle yellow = new GUIStyle();
-        yellow.normal.textColor = Color.yellow;
-
-        GUIStyle blue = new GUIStyle();
-        blue.normal.textColor = Color.blue;
-
-        GUIStyle green = new GUIStyle();
-        green.normal.textColor = Color.green;
-
-        GUIStyle cyan = new GUIStyle();
-        cyan.normal.textColor = Color.cyan;
-
-
-        #region AI State Label 
-        switch (_stateAI)
+        if(showExtraGizmos)
         {
-            case AI._GUARD:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Guard" + "  Gameplay: ", green);
-                    break;
-                }
-            case AI._PATROL:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Patrol" + "  Gameplay: ", blue);
-                    break;
-                }
-            case AI._ATTACK:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: ", red);
-                    break;
-                }
+            GUIStyle red = new GUIStyle();
+            red.normal.textColor = Color.red;
 
-            case AI._COVER:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Cover" + "  Gameplay: ", cyan);
-                    break;
-                }
-            case AI._GLORYKILL:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: ");
-                    break;
-                }
-            case AI._NONE:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "NONE" + "  Gameplay: ");
-                    break;
-                }
-            default:
-                {
-                    Handles.Label(FOV.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: ");
-                    break;
-                }
+            GUIStyle yellow = new GUIStyle();
+            yellow.normal.textColor = Color.yellow;
+
+            GUIStyle blue = new GUIStyle();
+            blue.normal.textColor = Color.blue;
+
+            GUIStyle green = new GUIStyle();
+            green.normal.textColor = Color.green;
+
+            GUIStyle cyan = new GUIStyle();
+            cyan.normal.textColor = Color.cyan;
+
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(_attackPoint.position, 1.3f);
+
+
+            #region AI State Label 
+            switch (_stateAI)
+            {
+                case AI._GUARD:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "Guard" + "  Gameplay: ", green);
+                        break;
+                    }
+                case AI._PATROL:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "Patrol" + "  Gameplay: ", blue);
+                        break;
+                    }
+                case AI._ATTACK:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: ", red);
+                        break;
+                    }
+
+                case AI._COVER:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "Cover" + "  Gameplay: ", cyan);
+                        break;
+                    }
+                case AI._GLORYKILL:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: ");
+                        break;
+                    }
+                case AI._NONE:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "NONE" + "  Gameplay: ");
+                        break;
+                    }
+                default:
+                    {
+                        Handles.Label(FOV.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: ");
+                        break;
+                    }
+            }
         }
 
         #endregion

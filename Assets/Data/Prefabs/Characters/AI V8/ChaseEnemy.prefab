@@ -600,14 +600,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 9c72e6fe0b220ad409222f3f9792cabd, type: 2}
-  _death: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
-  _attack: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
-  _attackPoint: {fileID: 3331569744526991545}
   _agentAI: {fileID: 5597625317583555008}
   _patrolPoints: []
   FOV: {fileID: 1831208982663463918}
+  _attackPoint: {fileID: 3331569744526991545}
   _healthSlider: {fileID: 8963490514696597323}
   _AbilitySlider: {fileID: 5430720324937001575}
+  showExtraGizmos: 0
 --- !u!114 &8322705189930119540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1780,7 +1779,7 @@ GameObject:
   m_Layer: 0
   m_Name: PointAttack
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

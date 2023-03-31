@@ -12,20 +12,17 @@ public class AIHandler : MonoBehaviour
     {
         CheckVisiblity();
     }
-
     private void CheckVisiblity()
     {
         switch (_skinnedMeshRenderer.isVisible)
         {
             case true:
                 {
-                    
                     Visable();
                     break;
                 }
             case false:
                 {
-                    
                     Invisble();
                     break;
                 }
@@ -35,14 +32,12 @@ public class AIHandler : MonoBehaviour
     private void Visable()
     {
         _agentOperate = true;
-        _skinnedMeshRenderer.enabled = true;
         return;
     }
 
     private void Invisble()
     {
         _agentOperate = false;
-        _skinnedMeshRenderer.enabled = true;
         return; 
     }
 }

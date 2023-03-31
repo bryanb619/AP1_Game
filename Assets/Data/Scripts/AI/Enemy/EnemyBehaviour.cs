@@ -1071,7 +1071,7 @@ public class EnemyBehaviour : MonoBehaviour
         if(_isAttacking)
         {
             _agentAI.StopAttacking();
-            _canAttack = false;
+            SetPatrol();
             return;
         }
         
