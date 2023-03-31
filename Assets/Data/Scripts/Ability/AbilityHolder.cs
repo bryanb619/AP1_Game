@@ -1,6 +1,6 @@
 //using DG.Tweening;
 using UnityEngine;
-//using UnityEngine.UI;
+using UnityEngine.UI;
 
 public class AbilityHolder : MonoBehaviour
 {
@@ -14,10 +14,14 @@ public class AbilityHolder : MonoBehaviour
 
     private float cooldownTime;
     private float activeTime;
+    
+    [SerializeField]
+    private Slider uISlider;
 
     //[SerializeField] private SpriteRenderer CoolDownSprite, ReadySprite;
 
-    [SerializeField] private GameObject ActiveSprite, CooldownSprite;
+    [SerializeField] 
+    private GameObject ActiveSprite, CooldownSprite;
 
     private bool _isPaused;
 
@@ -59,7 +63,7 @@ public class AbilityHolder : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        FindAbilityStateInput(); //
+        FindAbilityStateInput();
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -125,6 +129,8 @@ public class AbilityHolder : MonoBehaviour
 
                 case Ability_State.cooldown:
 
+                    Debug.Log("Entered Ability cooldown");
+                    
                     if (cooldownTime > 0)
                     {
                         cooldownTime -= Time.deltaTime;
@@ -146,14 +152,12 @@ public class AbilityHolder : MonoBehaviour
 
     private void PowerReady()
     {
-        ActiveSprite.SetActive(true);
-        CooldownSprite.SetActive(false);
+        uISlider.value = 0f;
     }
 
-    private void PowerDisabled()
+    internal void PowerDisabled()
     {
-        ActiveSprite.SetActive(false);
-        CooldownSprite.SetActive(true);
+        uISlider.value = Mathf.Lerp(1f, 0f, cooldownTime * Time.deltaTime);
     }
 
     private void OnDestroy()

@@ -21,17 +21,18 @@ public class Shooter : MonoBehaviour
     [Header("Script References")]
     private ManaManager manaManager;
     [SerializeField] private ObjectiveUI objectiveUI;
+    private AbilityHolder abilityHolder;
 
     private RaycastHit hit;
     private Vector3 enemyPosition;
 
     private bool _gameplay;
 
-
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
         manaManager = GetComponent<ManaManager>();
+        abilityHolder = GetComponent<AbilityHolder>();
     }
     private void Start()
     {
@@ -228,6 +229,7 @@ public class Shooter : MonoBehaviour
     IEnumerator FireAttackCooldown()
     {
         fireCooldown = true;
+        //abilityHolder.PowerDisabled();
         yield return new WaitForSecondsRealtime(fireTimer);
         fireCooldown = false;
     }

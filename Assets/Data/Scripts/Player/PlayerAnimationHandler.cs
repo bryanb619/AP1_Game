@@ -4,6 +4,8 @@ using UnityEngine;
 public class PlayerAnimationHandler : MonoBehaviour
 {
     private Vector3 previousPosition;
+    
+    [HideInInspector]
     public float speed;
 
     private float crossFadeTime = 0.2f; 
@@ -12,9 +14,15 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private AnimatorStateInfo stateInfo;
 
+    [HideInInspector] 
     public bool CANMOVE;
 
-    private bool _gamePlay; 
+    private bool _gamePlay;
+
+    [SerializeField]
+    private float velocityChanger;
+
+    private float velocity;
 
 
     private void Awake()
@@ -37,6 +45,7 @@ public class PlayerAnimationHandler : MonoBehaviour
 
          stateInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
 
+        velocity = 0f;
     }
     // Update is called once per frame
     void Update()
@@ -73,45 +82,17 @@ public class PlayerAnimationHandler : MonoBehaviour
     {
         if (CANMOVE)
         {
-            playerAnimator.SetBool("_canRun", true);
+            BlendTreeStartup();
             return;
         }
         else
         {
-            playerAnimator.SetBool("_canRun", false);
+            BlendTreeSlowdown();
             return;
         }
-
-
-        /*if (stateInfo.IsName("idle"))
-        {
-            playerAnimator.SetFloat("Blend", 0.2f);
-
-            playerAnimator.CrossFade("run", crossFadeTime);
-
-
-        }
-
-    }
-    else
-    {
-
-        if (stateInfo.IsName("run"))
-        {
-            playerAnimator.SetFloat("Blend", 0.0f);
-
-            playerAnimator.CrossFade("idle", crossFadeTime);
-
-            playerAnimator.SetBool("_canRun", false);
-        }
-
-
-    }
-         */
     }
     private void GameManager_OnGameStateChanged(GameState state)
     {
-
         switch (state)
         {
             case GameState.Gameplay:
@@ -125,8 +106,6 @@ public class PlayerAnimationHandler : MonoBehaviour
                     break;
                 }
         }
-
-        //throw new NotImplementedException();
     }
 
     private void OnDestroy()
@@ -134,6 +113,23 @@ public class PlayerAnimationHandler : MonoBehaviour
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
-
+    private void BlendTreeStartup()
+    {
+        if(velocity < 1f)
+        {
+            velocity += velocityChanger * Time.deltaTime;
+            playerAnimator.SetFloat("Velocity", velocity);
+        }
+    }
+    private void BlendTreeSlowdown()
+    {
+        if (velocity > 0)
+        {
+            velocity -= velocityChanger * Time.deltaTime;
+            playerAnimator.SetFloat("Velocity", velocity);
+        }
+        else
+            velocity = 0f;
+    }
 
 }
