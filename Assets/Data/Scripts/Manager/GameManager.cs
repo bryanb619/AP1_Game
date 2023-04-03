@@ -58,7 +58,6 @@ public class GameManager : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         Instance = this;
-
     }
 
     private void Start()
@@ -173,8 +172,6 @@ public class GameManager : MonoBehaviour
         _audioState = true;
 
         Time.timeScale = 0f;
-
-        
 
         HandleEventEmitterState();
         return;
