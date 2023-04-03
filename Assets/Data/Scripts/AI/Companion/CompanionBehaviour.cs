@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using System.Collections;
 
 //using UnityEngine.Animations;
 
@@ -11,10 +11,6 @@ using UnityEngine.AI;
 public class CompanionBehaviour : MonoBehaviour
 {
 
-    public float acceleration = 2f;
-    public float deceleration = 60f;
-
-    public float closeEnoughMeters = 3f;
     #region Variables
     public enum CompanionState { _idle, _follow, _rotate}
     
@@ -24,12 +20,21 @@ public class CompanionBehaviour : MonoBehaviour
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     //private mini _MiniMapCollor;
 
-    [SerializeField] internal NavMeshAgent Companion;
+    internal NavMeshAgent Companion;
+
+    // NEW CODE
+    [SerializeField]
+    private float followsRadius = 2f;
+
+    private PlayerMovement player; 
+
 
     private Transform Target;
     public Transform playerTarget => Target;
 
-    private CompanionSpawn point; 
+    private CompanionSpawn point;
+
+   
 
     //[HideInInspector] public bool _playerIsMoving;
 
@@ -47,23 +52,23 @@ public class CompanionBehaviour : MonoBehaviour
     // Reference to the state machine
     private StateMachine stateMachine;
 
-    private bool _enemyIS;
-    public bool canSee => _enemyIS;
+    //private bool _enemyIS;
+    //public bool canSee => _enemyIS;
 
     private bool _gameplay; 
     public bool gameplay => _gameplay;  
 
     private GameState _gameState;
 
-    [Range(10, 150)]
-    public float radius;
-    [Range(50, 360)]
-    public float angle;
+    //[Range(10, 150)]
+    //public float radius;
+    //[Range(50, 360)]
+    //public float angle;
 
-    public LayerMask targetMask;
-    public LayerMask obstructionMask;
-    [SerializeField] private Transform FOV;
-    public Transform EEFOV => FOV; // Enemy Editor FOV
+    //public LayerMask targetMask;
+    //public LayerMask obstructionMask;
+    //[SerializeField] private Transform FOV;
+    //public Transform EEFOV => FOV; // Enemy Editor FOV
 
     [SerializeField] private LayerMask _attackLayers;
 
@@ -82,15 +87,16 @@ public class CompanionBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
+        Companion = GetComponent<NavMeshAgent>();
+
+        Companion.angularSpeed = 0;
+
         mainCamera = FindObjectOfType<Camera>();
 
-        point = FindObjectOfType<CompanionSpawn>(); 
+        point = FindObjectOfType<CompanionSpawn>();
+
 
         Target = point.transform;
-
-
-       
-
 
         switch (_gameState)
         {
@@ -158,12 +164,16 @@ public class CompanionBehaviour : MonoBehaviour
         if(_gameplay) 
         {
             ResumeAgent();
-            Companion.angularSpeed = 0;
+            
             //StartCoroutine(FOVRoutine());
 
             CheckDist(); 
 
             Aim();
+            
+            // print(Companion.velocity +" Companion Velocity");
+            //print(Companion.speed + " Companion Speed");
+            //print(Companion.acceleration + " Companion Acceleration");
 
             //CheckMoveBool();
             //CheckEnemy();
@@ -183,7 +193,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void CheckDist()
     {
-        if ((Target.position - transform.position).magnitude >= 1f)
+        if ((Target.position - transform.position).magnitude >= 0.2f)
         {
             _StateAI = CompanionState._follow;
             return; 
@@ -411,12 +421,10 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     // Chase the small enemy
     private void Idle()
     {
-        PosUpdate();
 
-        if (Companion.hasPath)
-        {
-            Companion.acceleration = (Companion.remainingDistance < closeEnoughMeters) ? deceleration : acceleration;
-        }
+        Companion.velocity = Vector3.zero;
+
+        Companion.isStopped = true;
 
         return;
 
@@ -440,7 +448,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         
     }
 
-     private void RotateAroundPlayer()
+    private void RotateAroundPlayer()
     {
         //transform.RotateAround(target.transform.position, Vector3.forward, degreesPerSecond * Time.deltaTime);
     }
@@ -448,27 +456,46 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
     private void PosUpdate()
     {
+
+
         Companion.isStopped = false;
+
+        
         Companion.SetDestination(Target.position);
 
-        Companion.speed = 3.4f;
+        //Companion.speed = 3.4f;
 
+        Companion.speed = 3f;
 
-        if ((Target.position - transform.position).magnitude >= 3f)
+        
+        
+      
+
+        if ((Target.position - transform.position).magnitude >= 2f)
         {
-            Companion.speed = 12f; 
+            Companion.speed = 4f;
+            return;
         }
-        else if ((Target.position - transform.position).magnitude >= 6f)
+        else if ((Target.position - transform.position).magnitude >= 3.6f)
         {
-                transform.position = Target.position;   
-        }
-        else if((Target.position - transform.position).magnitude <= 1.7f)
-        {
-            SlowDown(); 
+            Companion.speed = 8f;
+            Companion.acceleration = 10f;
+            return; 
         }
 
+        else if ((Target.position - transform.position).magnitude <= 0.5f)
+        {
+            SlowDown();
+            return;
+        }
+        else if ((Target.position - transform.position).magnitude >= 8f)
+        {
+            transform.position = Target.position;
+            return;
+        }
+        
+        
         return;
-       
     }
 
     #endregion
@@ -477,14 +504,48 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     #region Follow State
     private void Follow()
     {
+       // Companion.Warp(transform.position); 
+
+        StartCoroutine(FollowPlayer());
+    }
+
+
+    private IEnumerator FollowPlayer()
+    {
+
+        yield return null;
+
         PosUpdate();
+
+
+        // add reference to player navmesh agent
+
+        /* CODE EXAMPLE 
+         * NavMeshAgent playerAgent = Player.GetComponentInChildren<NavMeshAgent>();
+            Vector3 playerDestination = playerAgent.destination;
+            Vector3 positionOffset = FollowRadius * new Vector3(
+            Mathf.Cos(2 * Mathf.PI * Random.value),
+            0,
+            Mathf.Sin(2 * Mathf.PI * Random.value)
+        ).normalized;
+
+        Agent.SetDestination(playerDestination + positionOffset);
+
+        */
+
+        //yield return null;
+
+        yield return new WaitUntil(()=> Companion.remainingDistance <=Companion.stoppingDistance);
     }
     
 
     private void SlowDown()
     {
         //Companion.acceleration = 8F;
-        Companion.speed = 3F;
+        //Companion.speed = 3F;
+        //Companion.velocity = Companion.velocity.normalized * 4f;
+
+        Companion.velocity =  Companion.velocity.normalized / 2; 
     }
 
     #endregion
@@ -496,16 +557,14 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void CheckEnemy()
     {
 
-        if (_enemyIS)
-        {
+       
             //_EPI.SetActive(true);
             //_MiniMapCollor.SetCollorRed();
-        }
-        else
-        {
+       
+        
             //_EPI.SetActive(false);
             //_MiniMapCollor.SetCollorDefault();
-        }
+        
     }
     #endregion
 
@@ -569,8 +628,9 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     {
         if(_StateAI == CompanionState._follow) 
         {
-           Companion.isStopped = true;
-           return;
+
+            Companion.isStopped = true;
+            return;
         }
         else 
         {
@@ -582,6 +642,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void AgentPause()
     {
         Companion.isStopped = true;
+        Companion.velocity = Vector3.zero;
         return;
     }
     #endregion

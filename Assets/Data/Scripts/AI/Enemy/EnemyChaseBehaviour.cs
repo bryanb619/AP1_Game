@@ -40,8 +40,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Reference to the NAV MESH AGENT
     private NavMeshAgent                        agent;
 
-    [Header("AI List")]
-    [SerializeField] private Agents             _agentAI; 
+
+    private AIController                        _controller;
+
+    //[Header("AI List")]
+    //[SerializeField] private Agents             _agentAI; 
 
 
     // References to player
@@ -262,6 +265,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         damageText = GetComponentInChildren<TextMeshProUGUI>();
 
+        _controller = GetComponentInParent<AIController>();
+
 
         playerObject = GameObject.Find("Player");
         playerTarget = playerObject.transform;
@@ -447,7 +452,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        // Get bool value from AI performance manager
         switch(_hanlderAI.AgentOperate)
         {
             case true:
@@ -470,11 +475,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     {
                         ResumeAgent();
 
-                        if(_useFOV) 
-                        { 
-                            CanFOV(); 
-                        }
-                        
                         MinimalCheck();
 
                         HealthCheck();
@@ -483,6 +483,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         Action actions = stateMachine.Update();
                         actions?.Invoke();
+
+                        if (_useFOV)
+                        {
+                           StartFOV();
+                        }
+
+                        if (_stateAI == AI._ATTACK)
+                        {
+                            AddAttacker();
+                            return;
+                        }
+                        else
+                        {
+                            RemoveAttacker();
+                            return; 
+                        }
+
+                        
                     }
                     else if (_gameState == GameState.Paused)
                     {
@@ -496,12 +514,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     StopAgent();
                     break; 
                 }
-        }
-
-
-
-
-        
+        } 
     }
     #endregion
 
@@ -531,7 +544,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #endregion
 
     #region FOV
-    private void CanFOV()
+    private void StartFOV()
     {
         StartCoroutine(FOVRoutine());
     }
@@ -1171,25 +1184,27 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     #region Agents Info Exchange
 
-    public void StartAttacking()
+    // 
+    private void AddAttacker()
     {
-        if (!_isAttacking)
-        {
-            _agentAI.StartAttacking();
-            return;
-        }
+        _controller.AgentStartedAttacking(gameObject); // Add agent to list
+        return; 
     }
 
-    public void StopAttacking()
+    private void RemoveAttacker() 
     {
-        if (_isAttacking)
-        {
-            _agentAI.StopAttacking();
-            return;
-            // _canAttack = false;
-        }
-
+        _controller.AgentStoppedAttacking(gameObject);
+        return;
     }
+
+    // orders from AI Controller
+    public void StopAttack()
+    {
+        //SetPatrol();
+        PauseAgent();
+        return;
+    }
+
     #endregion
 
     #region Script destroy actions 

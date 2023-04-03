@@ -26,14 +26,15 @@ public class Agents : MonoBehaviour
 
     public void StartAttacking()
     {
-        _controller.AgentStartedAttacking(this);
+        //_controller.AgentStartedAttacking(this);
 
     }
 
     public void StopAttacking()
     {
-        _controller.AgentStoppedAttacking(this);
+        //_controller.AgentStoppedAttacking(this);
 
+        /*
         if(_enemyBehaviour != null)
         {
             _enemyBehaviour.StopAttacking(); 
@@ -43,6 +44,6 @@ public class Agents : MonoBehaviour
         {
 
         }
-
+        */
     }
 }

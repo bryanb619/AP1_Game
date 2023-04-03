@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
+//using UnityEngine.UI;
 
 //using UnityEngine.UI;
 
@@ -16,6 +17,13 @@ public class GameManager : MonoBehaviour
     //[HideInInspector]
     [Header("Game state")]
     public GameState State;
+
+    private GameState _state;
+
+
+    [SerializeField] private GameObject _outOfFocus;
+
+    private bool _inApp; 
 
     //private
     [SerializeField]
@@ -56,10 +64,18 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         UpdateGameState(GameState.Gameplay);
+        _outOfFocus.SetActive(false);
     }
     #endregion
 
     #region Game State
+
+    private void FixedUpdate()
+    {
+
+        CheckAppFocus();
+        
+    }
 
     public void UpdateGameState(GameState newGamestate)
     {
@@ -92,8 +108,57 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1f;
         _audioState = false;
+        _state = GameState.Gameplay;
 
         HandleEventEmitterState();
+
+        return; 
+ 
+    }
+
+    private void CheckAppFocus()
+    {
+
+        if (Application.isFocused) //&& _state == GameState.Gameplay) 
+        {
+            _inApp = true;
+            HandleUnfocussedApp(_inApp);
+            return; 
+        }
+
+        else if (!Application.isFocused) 
+        {
+            _inApp = false;
+            HandleUnfocussedApp(_inApp);
+            return; 
+        }
+         
+        
+    }
+
+    
+
+    private void HandleUnfocussedApp(bool Focused)
+    {
+        //_state = GameState.Paused;
+       switch(Focused)
+        {
+            case true:
+                {
+                    _outOfFocus.SetActive(false);
+                    UpdateGameState(GameState.Gameplay);
+
+
+                    break; 
+                }
+            case false:
+                {
+                    _outOfFocus.SetActive(true);
+                    UpdateGameState(GameState.Paused);
+                    break; 
+                }
+       }
+        return; 
     }
 
 
@@ -103,11 +168,16 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
+        _state = GameState.Paused;
+
         _audioState = true;
 
         Time.timeScale = 0f;
 
+        
+
         HandleEventEmitterState();
+        return;
 
     }
 
@@ -145,6 +215,7 @@ public class GameManager : MonoBehaviour
             // Set according to bool value
             emitter.EventInstance.setPaused(_audioState);
         }
+        return;
     }
     #region Volume change
 

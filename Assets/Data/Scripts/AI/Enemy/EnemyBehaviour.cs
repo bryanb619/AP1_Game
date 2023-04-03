@@ -16,23 +16,23 @@ public class EnemyBehaviour : MonoBehaviour
     #region  Variables
 
     // Reference to AI data
-    [SerializeField] private AIRangedData data;
+    [SerializeField] private AIRangedData                                   data;
 
     // Reference to the state machine
-    private StateMachine stateMachine;
+    private StateMachine                                                stateMachine;
 
     // Reference to the NavMeshAgent
     internal NavMeshAgent agent;
 
     // Reference to the Outline component
-    [SerializeField] private Outline outlineDeactivation;
+    [SerializeField] private Outline                                    outlineDeactivation;
 
-    [SerializeField] private GameObject _death;
+    [SerializeField] private GameObject                                 _death;
 
     // AI Set states
-    private enum AI {_GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE}
+    private enum AI                                                     {_GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE}
 
-    private AI _stateAI;
+    private AI                                                          _stateAI;
 
     private WarningSystemAI _warn; 
 

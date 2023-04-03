@@ -4,9 +4,10 @@ using UnityEngine;
 [CustomEditor(typeof(CompanionBehaviour))]
 public class EditorFOV : Editor
 {
-
+    /*
     private void OnSceneGUI()
     {
+        
         CompanionBehaviour fov = (CompanionBehaviour)target;
         Handles.color = Color.green;
         Handles.DrawWireArc(fov.EEFOV.position, Vector3.up, Vector3.forward, 360, fov.radius);
@@ -33,4 +34,5 @@ public class EditorFOV : Editor
 
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
+    */
 }

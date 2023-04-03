@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
     private NavMeshPath path;
     private float elapsed = 0.0f;
 
-    private NavMeshAgent agent;
+    internal NavMeshAgent agent;
 
     private LayerMask _layerMask;
 
@@ -86,6 +86,9 @@ public class PlayerMovement : MonoBehaviour
     public float deceleration = 60f;
 
     public float closeEnoughMeters = 3f;
+
+
+    private Vector3 currentDest; 
 
 
     private enum MovementState
@@ -151,6 +154,9 @@ public class PlayerMovement : MonoBehaviour
 
         path = new NavMeshPath();
         elapsed = 0.0f;
+
+        currentDest = transform.position;
+
     }
 
     private void Update()
@@ -300,31 +306,51 @@ public class PlayerMovement : MonoBehaviour
 
                         if (hit.transform.CompareTag("Walk"))
                         {
-                            transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
-
                             //agent.destination = hit.point;
                             if (agent.enabled) 
                             {
-                                agent.isStopped = false;
+
+                                transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
                                 agent.SetDestination(hit.point);
 
-                                if (agent.hasPath)
+
+                                if (!agent.pathPending &&  agent.remainingDistance <= agent.stoppingDistance) 
                                 {
-                                    agent.acceleration = (agent.remainingDistance < closeEnoughMeters) ? deceleration : acceleration;
+                                    
+                                    agent.velocity = Vector3.zero;
+                                    agent.isStopped = true;
+                                    return;
+
                                 }
+                                else
+                                {
+                                    agent.isStopped = false;
+                                    return; 
+                                }
+
+
+                                //agent.isStopped = true;
+
+                                
+                               /* if (agent.remainingDistance <= 0.1f)
+                                {
+                                    agent.isStopped = true;
+                                }
+
+                                */
                             }
-                            
                             
                         }
                         else
                         {
                             agent.isStopped = true; 
-                        }
-                        
-                        
+                            return;
+                        }  
                         
                     }
+                    return; 
                 }
+                return; 
             }
         }
         else if(!_gamePlay) 
@@ -442,11 +468,11 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(VisualFeedbackDamage());
 
         _healthBar.SetHealth(_currentHealth);
-        Debug.Log("Player Health: " + _currentHealth);
+        //Debug.Log("Player Health: " + _currentHealth);
 
         if (_currentHealth <= 0)
         {
-            Debug.Log("DEAD");
+            //Debug.Log("DEAD");
             //restartMenu.LoadRestart();
             SceneManager.LoadScene("RestartScene");
             //RestarMenu.SetActive(true);
@@ -512,7 +538,7 @@ public class PlayerMovement : MonoBehaviour
         // Debug.Log("+ 15 health");
         _currentHealth += _health;
 
-        Debug.Log("Player health is: " + _currentHealth);
+        //Debug.Log("Player health is: " + _currentHealth);
 
         StartCoroutine(VisualFeedbackHeal());
 
@@ -524,7 +550,7 @@ public class PlayerMovement : MonoBehaviour
             // how to variables equal?
             _currentHealth = _MaxHealth;
             _healthBar.SetHealth(_currentHealth);
-            Debug.Log("Player health: " + _currentHealth);
+            //Debug.Log("Player health: " + _currentHealth);
         }
 
         VisualFeedbackHeal();

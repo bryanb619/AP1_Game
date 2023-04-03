@@ -35,6 +35,8 @@ public class Shooter : MonoBehaviour
     private void Start()
     {
         _magicType = WeaponType.Fire;
+
+        firePoint = GameObject.Find("CompanionShootPos").transform;
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -61,38 +63,40 @@ public class Shooter : MonoBehaviour
         {
             ShootInput();
             HoverHighlight();
-            firePoint = GameObject.Find("CompanionShootPos").transform;
             
-            
+         
         }
 
     }
 
     private void ShootInput()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (firePoint != null)
         {
-            _magicType = WeaponType.Normal;
-            //print("Ability is set to normal");
-            Shoot();
-        }
-        else if (Input.GetKeyDown(KeyCode.Q))
-        {
-            _magicType = WeaponType.Fire;
-            //print("Ability is set to fire");
-            Shoot();
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {
-            _magicType = WeaponType.Ice;
-            //print("Ability is set to Ice");
-            Shoot();
-        }
-        else if (Input.GetKeyDown(KeyCode.R))
-        {
-            _magicType = WeaponType.Thunder;
-            //print("Ability is set to Thunder");
-            Shoot();
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                _magicType = WeaponType.Normal;
+                //print("Ability is set to normal");
+                Shoot();
+            }
+            else if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _magicType = WeaponType.Fire;
+                //print("Ability is set to fire");
+                Shoot();
+            }
+            else if (Input.GetKeyDown(KeyCode.W))
+            {
+                _magicType = WeaponType.Ice;
+                //print("Ability is set to Ice");
+                Shoot();
+            }
+            else if (Input.GetKeyDown(KeyCode.R))
+            {
+                _magicType = WeaponType.Thunder;
+                //print("Ability is set to Thunder");
+                Shoot();
+            }
         }
     }
 
