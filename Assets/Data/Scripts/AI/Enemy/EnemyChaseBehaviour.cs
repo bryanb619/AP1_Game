@@ -521,16 +521,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Agent State
     private void ResumeAgent()
     {
-        agent.isStopped = false;
-        return; 
+        if(agent.enabled)
+        {
+            agent.isStopped = false;
+            return;
+        }
+       
     }
 
     private void PauseAgent()
     {
-        //Agent.speed = 0f; 
-        //Agent.Stop(); 
-        agent.isStopped = true;
-        return; 
+        if (agent.enabled)
+        {
+            agent.isStopped = true;
+            return;
+        }
+            //Agent.speed = 0f; 
+            //Agent.Stop(); 
+            
     }
 
     private void StopAgent()
@@ -655,12 +663,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region PATROL
     private void Patrol()
     {
-       
-        if (!agent.pathPending && agent.remainingDistance < 0.5f && !canSeePlayer)
-        {
-            SetPatrol(); 
-            GotoNetPoint();
+       if(agent.enabled) 
+       {
+
+            if (!agent.pathPending && agent.remainingDistance < 0.5f && !canSeePlayer)
+            {
+                SetPatrol();
+                GotoNetPoint();
+            }
         }
+        
     }
 
     private void GotoNetPoint()
@@ -683,10 +695,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase the small enemy
     private void ChasePlayer()
     {
-        switch(_canSpecialAttack)
+
+        transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
+
+
+        switch (_canSpecialAttack)
         {
             case false:
                 {
+
                     
                     if ((playerTarget.transform.position - transform.position).magnitude < attackDistanceOfsset)
                     {
@@ -729,7 +746,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         //_canPerformAttack = true;
 
-        transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
+        
 
         switch (_canPerformAttack)
         {
@@ -987,15 +1004,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         // Agent configuration
       
-        //agent.speed = attackSpeed;
-        agent.stoppingDistance = 3.9f;
+        if(agent.enabled) 
+        {
+            //agent.speed = attackSpeed;
+            agent.stoppingDistance = 3.9f;
 
+
+            //StartAttacking();
+            _canAttack = true;
+            _stateAI = AI._ATTACK;
+            _useFOV = false;
+            return;
+        }
         
-        //StartAttacking();
-        _canAttack = true;
-        _stateAI = AI._ATTACK;
-        _useFOV = false;
-        return;
     }
     private void SetCover()
     {
@@ -1032,14 +1053,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         else if (_health > 0)
         {
+            
             switch (_Type)
             {
+
                 case WeaponType.Normal:
                     {
                         _health -= _damage + damageBoost;
 
                         StartCoroutine(HitFlash());
-
+                      
+                        print("damage"); 
                         break;
                     }
                 case WeaponType.Ice:
@@ -1071,6 +1095,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                  
             }
+            
 
             //_health -= _damage + damageBoost;
 
@@ -1082,14 +1107,39 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             Debug.Log("enemy shot" + _health);
 
+           
+
             if (_canAttack)
             {
+                StartCoroutine(DamageEffect());
                 _warn.canAlertAI = true;
+                
                 SetAttack();
                 return;
             }
         }
     }
+
+    
+    private IEnumerator DamageEffect() 
+    {
+        //yield return null;
+
+        print("damage 2");
+        agent.velocity = Vector3.zero; 
+        agent.isStopped = true;
+
+        ///agent.enabled = false;
+        yield return new WaitForSeconds(2F);
+
+        //agent.enabled = true;   
+
+        agent.isStopped = false;
+
+        print("damage 3");
+
+    }
+
 
     private void Die()
     {
@@ -1242,7 +1292,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(_attackPoint.position, 1.3f);
+            Gizmos.DrawWireSphere(_attackPoint.position, 1.3f);
 
 
             #region AI State Label 

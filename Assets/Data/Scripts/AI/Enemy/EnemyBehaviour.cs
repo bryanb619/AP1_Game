@@ -16,13 +16,13 @@ public class EnemyBehaviour : MonoBehaviour
     #region  Variables
 
     // Reference to AI data
-    [SerializeField] private AIRangedData                                   data;
+    [SerializeField] private AIRangedData                               data;
 
     // Reference to the state machine
     private StateMachine                                                stateMachine;
 
     // Reference to the NavMeshAgent
-    internal NavMeshAgent agent;
+    internal NavMeshAgent                                               agent;
 
     // Reference to the Outline component
     [SerializeField] private Outline                                    outlineDeactivation;
@@ -34,140 +34,140 @@ public class EnemyBehaviour : MonoBehaviour
 
     private AI                                                          _stateAI;
 
-    private WarningSystemAI _warn; 
+    private WarningSystemAI                                             _warn; 
 
-    [SerializeField] private Agents _agentAI;
+    [SerializeField] private Agents                                     _agentAI;
 
-    private Color originalColor;
-    public int damageBoost = 0;
+    private Color                                                       originalColor;
+    public int                                                          damageBoost = 0;
 
-    GemManager gemManager;
+    GemManager                                                          gemManager;
 
-    private bool gemSpawnOnDeath;
+    private bool                                                        gemSpawnOnDeath;
 
-    private float health;
+    private float                                                       health;
 
     // References to enemies
-    public GameObject PlayerObject;
+    public GameObject                                                   PlayerObject;
 
-    private Transform _playerTarget;
-    public Transform PlayerTarget => _playerTarget;
+    private Transform                                                   _playerTarget;
+    public Transform                                                    PlayerTarget => _playerTarget;
 
-    private PlayerMovement _player; 
+    private PlayerMovement                                              _player; 
 
-    private float minDist = 5f;
+    private float                                                       minDist = 5f;
 
     // AI SPEED
-    private float curSpeed;
-    private Vector3 previousPos;
+    private float                                                       curSpeed;
+    private Vector3                                                     previousPos;
 
-    private float AttackRequiredDistance = 8f;
+    private float                                                       AttackRequiredDistance = 8f;
 
     // Patrol Points
 
     private int destPoint = 0;
-    [SerializeField] private Transform[] _PatrolPoints;
+    [SerializeField] private Transform[]                                _PatrolPoints;
 
 
     //[Range(10, 150)]
-    private float radius;
-    public float Radius => radius;
+    private float                                                       radius;
+    public float                                                        Radius => radius;
     //[Range(50, 360)]
-    private float angle;
-    public float Angle => angle;
+    private float                                                       angle;
+    public float                                                        Angle => angle;
 
-    private LayerMask targetMask;
-    private LayerMask obstructionMask;
-    [SerializeField] private Transform FOV;
-    public Transform EEFOV => FOV; // Enemy Editor FOV
+    private LayerMask                                                   targetMask;
+    private LayerMask                                                   obstructionMask;
+    [SerializeField] private Transform                                  FOV;
+    public Transform                                                    EEFOV => FOV; // Enemy Editor FOV
 
-    private bool canSeePlayer;
-    public bool canSee => canSeePlayer;
+    private bool                                                        canSeePlayer;
+    public bool                                                         canSee => canSeePlayer;
 
 
     // Attack 
 
     [SerializeField]
-    private Transform _shootPos;
+    private Transform                                                   _shootPos;
 
-    private GameObject gemPrefab;
+    private GameObject                                                  gemPrefab;
 
-    private GameObject bullet, specialBullet; 
+    private GameObject                                                  bullet, specialBullet; 
 
-    private float fireRate = 2f;
-    private float nextFire = 0f;
+    private float                                                       fireRate = 2f;
+    private float                                                       nextFire = 0f;
 
-    private float percentage; 
+    private float                                                       percentage; 
 
 
     // special ability 
 
-    private const float ABILITY_MAX_VALUE = 100F;
+    private const float                                                 ABILITY_MAX_VALUE = 100F;
 
-    private float currentAbilityValue;
+    private float                                                       currentAbilityValue;
 
-    private float abilityIncreasePerFrame;
+    private float                                                       abilityIncreasePerFrame;
 
-    private int specialDamage;
+    private int                                                         specialDamage;
 
 
-    private GameObject s_damageEffect; 
+    private GameObject                                                  s_damageEffect; 
 
 
     // hide code
     [Header("Hide config")]
-    private Collider[] Colliders = new Collider[10];
+    private Collider[]                                                  Colliders = new Collider[10];
 
     [Range(-1, 1)]
     public float HideSensitivity = 0;
-    [Range(0.01f, 1f)][SerializeField] private float UpdateFrequency = 0.65f;
+    [Range(0.01f, 1f)][SerializeField] private float                    UpdateFrequency = 0.65f;
 
-    [SerializeField] private LayerMask HidableLayers;
+    [SerializeField] private LayerMask                                  HidableLayers;
 
     [Range(0, 5f)]
-    private float MinObstacleHeight = 0f;
+    private float                                                       MinObstacleHeight = 0f;
 
-    public SceneChecker LineOfSightChecker;
+    public SceneChecker                                                 LineOfSightChecker;
 
-    private Coroutine MovementCoroutine;
-
-    private float fleeDistance;
+    private Coroutine                                                   MovementCoroutine;
+            
+    private float                                                       fleeDistance;
 
 
     // UI
     [Header("UI ")]
-    [SerializeField] private Slider _healthSlider;
+    [SerializeField] private Slider                                     _healthSlider;
 
-    [SerializeField] private Slider _abilitySlider;
+    [SerializeField] private Slider                                     _abilitySlider;
 
     // animation
-    private Animator _animator;
+    private Animator                                                    _animator;
 
     // fire damage variables
-    private float damagePerSecondFire = 2f;
-    private float durationOfFireDamage = 10f; 
+    private float                                                       damagePerSecondFire = 2f;
+    private float                                                       durationOfFireDamage = 10f; 
 
     // states & actions
-    private bool _canGloryKill;
+    private bool                                                        _canGloryKill;
 
-    private bool _gamePlay;
+    private bool                                                        _gamePlay;
 
-    private bool _canMove;
+    private bool                                                        _canMove;
 
-    private bool _canSpecialAttack = false; 
+    private bool                                                        _canSpecialAttack = false; 
+        
+    private bool                                                        _canAttack;
 
-    private bool _canAttack;
+    private bool                                                        _isAttacking;
 
-    private bool _isAttacking;
-
-    private bool _canPeformAttack;
+    private bool                                                        _canPeformAttack;
 
 
     // performance
 
-    private AIHandler _handlerAI;
+    private AIHandler                                                   _handlerAI;
 
-    private bool _deactivateAI; 
+    private bool                                                        _deactivateAI; 
 
 
     #endregion
@@ -903,7 +903,7 @@ public class EnemyBehaviour : MonoBehaviour
             }
 
             _healthSlider.value = health;
-            HealthCheck();
+            //HealthCheck();
 
             return;
 

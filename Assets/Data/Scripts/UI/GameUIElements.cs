@@ -16,7 +16,7 @@ public class GameUIElements : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.LookAt(_camTransform.position);   
     }
