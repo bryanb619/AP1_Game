@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     private GameState _state;
 
 
-    [SerializeField] private GameObject _outOfFocus;
+    [SerializeField] private GameObject _outOfFocus, _pauseMenu;
 
     private bool _inApp; 
 
@@ -107,33 +107,15 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1f;
         _audioState = false;
-        _state = GameState.Gameplay;
 
+        _state = GameState.Gameplay;
         HandleEventEmitterState();
 
         return; 
  
     }
 
-    private void CheckAppFocus()
-    {
-
-        if (Application.isFocused) //&& _state == GameState.Gameplay) 
-        {
-            _inApp = true;
-            HandleUnfocussedApp(_inApp);
-            return; 
-        }
-
-        else if (!Application.isFocused) 
-        {
-            _inApp = false;
-            HandleUnfocussedApp(_inApp);
-            return; 
-        }
-         
-        
-    }
+    
 
     
 
@@ -146,8 +128,6 @@ public class GameManager : MonoBehaviour
                 {
                     _outOfFocus.SetActive(false);
                     UpdateGameState(GameState.Gameplay);
-
-
                     break; 
                 }
             case false:
@@ -167,11 +147,10 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        _state = GameState.Paused;
-
         _audioState = true;
 
         Time.timeScale = 0f;
+        _state = GameState.Paused;
 
         HandleEventEmitterState();
         return;
@@ -186,6 +165,31 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1f;
 
+    }
+
+
+    private void CheckAppFocus()
+    {
+
+        if (_state == GameState.Gameplay)
+        {
+            if (!Application.isFocused)
+            {
+                _inApp = false;
+                //HandleUnfocussedApp(_inApp);
+                return;
+            }
+        }
+        else if (_state == GameState.Paused)
+        {
+            if (!_pauseMenu && Application.isFocused)
+            {
+                _inApp = true;
+                //HandleUnfocussedApp(_inApp);
+                return;
+            }
+            //else if()
+        }
     }
 
 

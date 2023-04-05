@@ -1,4 +1,9 @@
-﻿#region Libs
+﻿/*Authors 
+ * Steven Hall & Diogo Freire 
+ * 
+ * */
+
+#region Libs
 using System;
 using System.Collections;
 using UnityEngine;
@@ -61,7 +66,7 @@ public class EnemyBehaviour : MonoBehaviour
     private float                                                       curSpeed;
     private Vector3                                                     previousPos;
 
-    private float                                                       AttackRequiredDistance = 8f;
+    private float                                                       AttackRequiredDistance = 6f;
 
     // Patrol Points
 
@@ -83,6 +88,10 @@ public class EnemyBehaviour : MonoBehaviour
 
     private bool                                                        canSeePlayer;
     public bool                                                         canSee => canSeePlayer;
+
+    // COMBAT //
+
+    private float                                                       damageEffectTime;
 
 
     // Attack 
@@ -167,7 +176,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     private AIHandler                                                   _handlerAI;
 
-    private bool                                                        _deactivateAI; 
+    private bool                                                        _deactivateAI;
+
+
+    // Debug // 
+
+    [SerializeField] private bool                                       _showExtraGizmos; 
 
 
     #endregion
@@ -278,25 +292,17 @@ public class EnemyBehaviour : MonoBehaviour
     {
         
         // Create the states
-        State onGuardState = new State(("Guard"),
-            null);
+        State onGuardState = new State("Guard" ,null);
 
-        State PatrolState = new State("On Patrol", 
-            Patrol);
+        State PatrolState = new State("On Patrol", Patrol);
 
-        State ChaseState = new State("Fight",
-            ChasePlayer);
+        State ChaseState = new State("Fight",ChasePlayer);
 
-        State CoverState = new State("Cover",
-           Cover);
+        State CoverState = new State("Cover",Cover);
 
-        State GloryKillState = new State("Glory Kill",
-       GloryKill);
-
-   
+        State GloryKillState = new State("Glory Kill",GloryKill);
 
         // Add the transitions
-
 
         // GUARD -> CHASE
         onGuardState.AddTransition(
@@ -326,14 +332,14 @@ public class EnemyBehaviour : MonoBehaviour
                //() => Debug.Log("PATROL -> CHASE"),
                ChaseState));
 
+        //state machine
+        stateMachine = new StateMachine(PatrolState);
+
+
         //CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == false, ()=> Debug.Log("Cover State"), PatrolState));
         //CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == true, () => Debug.Log("Cover State"), ChaseState));
 
         //ChaseState.AddTransition(new Transition(() => _canAttack == false, () => Debug.Log("Cover State"), CoverState));
-
-        // Create the state machine
-        stateMachine = new StateMachine(PatrolState);
-
     }
     #endregion
 
@@ -354,7 +360,6 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case true:
                 {
-                    //
                     switch (_gamePlay)
                     {
                         case true:
@@ -382,7 +387,6 @@ public class EnemyBehaviour : MonoBehaviour
                     }
 
                     break;
-                    
                 }
             case false:
                 {
@@ -529,24 +533,51 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void SpecialAttack()
     {
+        float _attackRange = 3f; 
+
         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
         agent.SetDestination(_playerTarget.position);
 
-        agent.stoppingDistance = 3.8f; 
+        agent.stoppingDistance = 3.8f;
 
+        Collider[] hitEnemies = Physics.OverlapSphere(_shootPos.position, _attackRange, targetMask);
 
-        if((_playerTarget.transform.position - transform.position).magnitude <= 4f)
+        foreach (Collider collider in hitEnemies)
         {
-             // look at ignoring player Y AXIS
-
             //Debug.Log(DebugColor + "Special attack" + closeColor);
             //print(currentAbilityValue);
+
+
 
             string DebugColor = "<size=14><color=orange>";
             string closeColor = "</color></size>";
             Debug.Log(DebugColor + "Special Attack" + closeColor);
 
             _player.TakeDamage(specialDamage);
+            Instantiate(s_damageEffect, _shootPos.position, Quaternion.identity);
+
+            currentAbilityValue = 0;
+            _abilitySlider.value = currentAbilityValue;
+            _canSpecialAttack = false;
+            StartCoroutine(SpecialAttackTimer());
+        }
+
+        /*
+        if ((_playerTarget.transform.position - transform.position).magnitude <= 4f)
+        {
+             // look at ignoring player Y AXIS
+
+            //Debug.Log(DebugColor + "Special attack" + closeColor);
+            //print(currentAbilityValue);
+
+
+
+            string DebugColor = "<size=14><color=orange>";
+            string closeColor = "</color></size>";
+            Debug.Log(DebugColor + "Special Attack" + closeColor);
+
+            _player.TakeDamage(specialDamage);
+            Instantiate(s_damageEffect, _shootPos.position, Quaternion.identity);   
 
             currentAbilityValue = 0;
             _abilitySlider.value = currentAbilityValue;
@@ -554,6 +585,7 @@ public class EnemyBehaviour : MonoBehaviour
             StartCoroutine(SpecialAttackTimer());
             return; 
         }
+        */
     }
 
     private void CoolDoownPower()
@@ -586,8 +618,6 @@ public class EnemyBehaviour : MonoBehaviour
 
             //print("percentage is: "+randomPercentage);
 
-            
-
             if(UnityEngine.Random.value < percentage)
             {
                 _animator.SetBool("isAttacking", true);
@@ -607,7 +637,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                 string DebugAttack = "<size=12><color=green>";
                 string closeAttack = "</color></size>";
-                Debug.Log(DebugAttack + "Attack: " + closeAttack + gameObject);
+                Debug.Log(DebugAttack + "Attack: " + closeAttack);
 
                 Instantiate(bullet, _shootPos.position, _shootPos.rotation);
             }
@@ -761,8 +791,6 @@ public class EnemyBehaviour : MonoBehaviour
                 GotoNetPoint();
             }
         }
-        
-
     }
 
     private void GotoNetPoint()
@@ -840,7 +868,7 @@ public class EnemyBehaviour : MonoBehaviour
     public void TakeDamage(int _damage, WeaponType _type)
     {
         //health -= (_damage + damageBoost);
-
+       
         if (health <= 0)
         {
             Die();
@@ -848,22 +876,17 @@ public class EnemyBehaviour : MonoBehaviour
 
         else if (health > 0)
         {
-            // ALERT AI OF player presence
-            _warn.canAlertAI = true;
-            SetAttack(); 
+            
             //GetPlayer();
-            if(_canAttack) 
-            {
-                SetAttack(); 
-            }
-
             switch (_type)
             {
                 case WeaponType.Normal:
                     {
+                        
 
                         health -= _damage + damageBoost;
 
+                        damageEffectTime = 0.5f; 
                         StartCoroutine(HitFlash());
                         break;
                     }
@@ -877,7 +900,7 @@ public class EnemyBehaviour : MonoBehaviour
                     }
                 case WeaponType.Fire:
                     {
-
+                        damageEffectTime = 1f;
                         health -= _damage + damageBoost;
 
                         StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
@@ -886,14 +909,15 @@ public class EnemyBehaviour : MonoBehaviour
                 case WeaponType.Thunder: 
                     {
                         health -= _damage + damageBoost;
+
                         StartCoroutine(HitFlash());
 
                         break; 
                     }
-
                 case WeaponType.Dash: 
                     {
                         health -= _damage + damageBoost;
+
                         StartCoroutine(HitFlash());
 
                         break; 
@@ -902,51 +926,20 @@ public class EnemyBehaviour : MonoBehaviour
                 default : { break; }
             }
 
+            StartCoroutine(DamageEffect()); 
+
             _healthSlider.value = health;
-            //HealthCheck();
+            HealthCheck();
 
+           // print("damage :" + health);
+
+            if (_canAttack) 
+            {
+                _warn.canAlertAI = true;
+                SetAttack();
+            }
             return;
-
-            /*
-            if (_Type == WeaponType.Normal)           
-            {
-  
-                health -= _damage + damageBoost;
-               
-                //QuickCover();
-                StartCoroutine(HitFlash());
-
-
-            }
-            else if (_Type == WeaponType.Ice)
-            {
-
-                // STOP FOR 5 seconds
-                StartCoroutine(STFS(5F));
-
-            }
-            else if (_Type == WeaponType.Thunder)
-            {
-                health -= _damage + damageBoost;
-
-                //QuickCover();
-                StartCoroutine(HitFlash());
-            }
-
-            else if (_Type == WeaponType.Fire)
-            {
-                StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
-            }
-            else if (_Type == WeaponType.Dash)
-            {
-                health -= _damage + damageBoost;
-
-                StartCoroutine(HitFlash());
-            }
-            */
-
         }
-        
         // Debug.Log("enemy shot with " + (_damage + damageBoost) + " damage");
     }
 
@@ -970,6 +963,42 @@ public class EnemyBehaviour : MonoBehaviour
             return;
         }
     }
+
+    private IEnumerator DamageEffect()
+    {
+        bool damageEffect = false;
+
+        if (!damageEffect)
+        {
+            // control effect & stop
+            damageEffect = true;
+
+            //print("suffered hit");
+
+            // STOP AGENT
+            PauseAgent();
+
+            // STOP ATTACK 
+            _canAttack = false;
+
+            yield return new WaitForSeconds(damageEffectTime);
+
+            // RESUME AGENT
+            ResumeAgent();
+
+            // Start || resume Attack 
+            SetAttack();
+
+            // control effect & stop
+            damageEffect = false;
+
+            //print("in coroutine 2");
+        }
+
+
+        //print("out of if");
+    }
+
 
     private void Die()
     {

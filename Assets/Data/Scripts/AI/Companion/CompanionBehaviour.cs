@@ -34,7 +34,10 @@ public class CompanionBehaviour : MonoBehaviour
 
     private CompanionSpawn point;
 
-   
+    private MeshRenderer CompanionMesh;
+
+    [SerializeField] private Material AlphaLow, normal;
+
 
     //[HideInInspector] public bool _playerIsMoving;
 
@@ -90,6 +93,8 @@ public class CompanionBehaviour : MonoBehaviour
         Companion = GetComponent<NavMeshAgent>();
 
         Companion.angularSpeed = 0;
+
+        CompanionMesh = GetComponent<MeshRenderer>();   
 
         mainCamera = FindObjectOfType<Camera>();
 
@@ -465,37 +470,27 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
         //Companion.speed = 3.4f;
 
-        Companion.speed = 3f;
+        Companion.speed = 8f;
 
-        
-        
-      
 
-        if ((Target.position - transform.position).magnitude >= 2f)
+        if ((Target.position - transform.position).magnitude <= 2f)
         {
-            Companion.speed = 4f;
-            return;
+            Companion.speed = 3.5f;
         }
-        else if ((Target.position - transform.position).magnitude >= 3.6f)
-        {
-            Companion.speed = 8f;
-            Companion.acceleration = 10f;
-            return; 
-        }
-
-        else if ((Target.position - transform.position).magnitude <= 0.5f)
+       
+        else if ((Target.position - transform.position).magnitude <= 1f)
         {
             SlowDown();
             return;
         }
         else if ((Target.position - transform.position).magnitude >= 8f)
         {
-            transform.position = Target.position;
+               
+            
+            StartCoroutine(CatchPlayer());
             return;
         }
-        
-        
-        return;
+       
     }
 
     #endregion
@@ -533,9 +528,22 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
         */
 
-        //yield return null;
+        yield return null;
 
         yield return new WaitUntil(()=> Companion.remainingDistance <=Companion.stoppingDistance);
+    }
+
+
+    private IEnumerator CatchPlayer() 
+    {
+        Setlow();
+        transform.position = Target.position;
+        yield return new WaitForSeconds(0.3f);
+        SetHigh();
+        yield return new WaitForSeconds(0.3f);
+        Setlow();
+        yield return new WaitForSeconds(0.3f);
+        SetHigh();
     }
     
 
@@ -545,7 +553,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         //Companion.speed = 3F;
         //Companion.velocity = Companion.velocity.normalized * 4f;
 
-        Companion.velocity =  Companion.velocity.normalized / 2; 
+        Companion.velocity =  Companion.velocity.normalized / 1.4f; 
     }
 
     #endregion
@@ -557,13 +565,11 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void CheckEnemy()
     {
 
-       
-            //_EPI.SetActive(true);
-            //_MiniMapCollor.SetCollorRed();
-       
-        
-            //_EPI.SetActive(false);
-            //_MiniMapCollor.SetCollorDefault();
+        //_EPI.SetActive(true);
+        //_MiniMapCollor.SetCollorRed();
+
+        //_EPI.SetActive(false);
+        //_MiniMapCollor.SetCollorDefault();
         
     }
     #endregion
@@ -596,14 +602,14 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void Setlow()
     {
         // change to transparent material version
-        //CompanionMesh.material = AlphaLow;
+        CompanionMesh.material = AlphaLow;
 
     }
 
     private void SetHigh()
     {
         // change to normal material
-        //CompanionMesh.material = normal;
+        CompanionMesh.material = normal;
     }
     #endregion
 
