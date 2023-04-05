@@ -104,7 +104,6 @@ public class AbilityHolder : MonoBehaviour
                         state = Ability_State.active;
 
                         PowerReady();
-                        //Debug.Log("Active: " + activeTime);
                     }
                     break;
 
@@ -156,7 +155,7 @@ public class AbilityHolder : MonoBehaviour
     {
         if(state == Ability_State.cooldown)
         {   
-            uISlider.value = Mathf.Lerp(0f, 1f, cooldownTime);
+            uISlider.value = Mathf.Lerp(0f, cooldownTime, cooldownTime);
         }
     }
 
