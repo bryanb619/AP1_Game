@@ -19570,6 +19570,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   State: 0
   _outOfFocus: {fileID: 2241633}
+  _pauseMenu: {fileID: 0}
   ambientSounds:
   - {fileID: 1381462584}
   sfxSounds:
@@ -53700,7 +53701,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -65510,6 +65511,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1859903518}
     m_Modifications:
+    - target: {fileID: 2259382031703366728, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2259382031723774392, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -65619,6 +65624,30 @@ PrefabInstance:
       propertyPath: Crystals.Array.data[0]
       value: 
       objectReference: {fileID: 1339711858}
+    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2508626532989662794, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -75676,6 +75705,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main UI Bar
       objectReference: {fileID: 0}
+    - target: {fileID: 4014373005550095785, guid: 433ecaebb4091dc4a8c207777e86cedc, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 433ecaebb4091dc4a8c207777e86cedc, type: 3}
 --- !u!1001 &4156783784391588680
@@ -80993,6 +81026,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas Inventory
       objectReference: {fileID: 0}
+    - target: {fileID: 5335071217244628617, guid: 7d4df6fc2f8937a47b2ba02391e9eb13, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d4df6fc2f8937a47b2ba02391e9eb13, type: 3}
 --- !u!1 &7077012399878629933
@@ -81137,6 +81174,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'Health UI '
       objectReference: {fileID: 0}
+    - target: {fileID: 1821193679210172284, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1821193679210172287, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -81227,6 +81268,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8061491772066701096, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8061491773580078406, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
+      propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
