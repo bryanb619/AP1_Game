@@ -285,11 +285,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
+        bool canMoveL = false;
+
         if(_gamePlay)
         {
             //agent.isStopped = false;
            
-            if (CanMove)
+            if (canMoveL)
             {
                 if(Input.GetMouseButtonDown(1)) 
                 {
@@ -306,11 +308,13 @@ public class PlayerMovement : MonoBehaviour
 
                         if (hit.transform.CompareTag("Walk"))
                         {
+                            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(hit.point), 2f);
                             //agent.destination = hit.point;
                             if (agent.enabled) 
                             {
 
-                                transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                                //transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                                
                                 agent.SetDestination(hit.point);
 
 
@@ -355,7 +359,8 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(!_gamePlay) 
         {
-            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+            //agent.isStopped = true;
         }
     }
 

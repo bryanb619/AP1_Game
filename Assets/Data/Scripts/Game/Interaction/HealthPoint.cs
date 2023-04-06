@@ -1,25 +1,48 @@
 using UnityEngine;
 using FMODUnity;
+using System.Security.Cryptography;
 
 
-[RequireComponent(typeof(BoxCollider))]
+//[RequireComponent(typeof(BoxCollider))]
 public class HealthPoint : MonoBehaviour
 {
+    // Data
     [SerializeField] private HealthPointData data;
     private BoxCollider m_BoxCollider;
 
-    private int m_Health;
-    public int Health => m_Health;
+    // Health
+    private int health;
+    public int Health => health;
 
-    [SerializeField] private GameObject m_prefab;
+    [SerializeField] private GameObject         m_prefab;
+    private Rigidbody                           _rb;
 
-    private GameState                   _state; 
+    // Game State
+    private GameState                           _state; 
+    private bool                                _gamePlay; 
 
-    private bool                        _gamePlay; 
+    // FMOD & Sound Handling
+    private StudioEventEmitter                  m_Emitter;
+    private bool                                _audioState;
+    private bool                                _usesAudioAmbient;
 
-    private StudioEventEmitter          m_Emitter;
+    // Atraction 
+    private bool                                _canUseForce;
+    private float                               startForce; 
+    private bool                                _canBeDrawned;
+    private int                                 attractionSpeed;
+    private float                               maxDistance;
+    private bool                                _canIgnorePlayerMaHealth;
 
-    private bool                        _audioState;
+
+    // managing
+    private float                               elapsed = 0f;
+
+    float height = 4f;
+
+    private PlayerMovement                      player; 
+
+
 
     private void Awake()
     {
@@ -28,10 +51,17 @@ public class HealthPoint : MonoBehaviour
 
     private void Start()
     {
-        m_BoxCollider = GetComponent<BoxCollider>();
-        m_Emitter = GetComponent<StudioEventEmitter>(); 
-       
-        m_Health = data.Health;
+        GetComponents();
+        GetProfile();
+
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit))
+        {
+            // If the ray hits the terrain, set the floating height to be slightly above the terrain height
+            height = hit.point.y + 0.5f;
+        }
+
 
         switch (_state)
         {
@@ -46,6 +76,34 @@ public class HealthPoint : MonoBehaviour
                     break;
                 }
         }
+
+        float RANDOMNUMBER = UnityEngine.Random.Range(1,3);
+
+        startForce = RANDOMNUMBER;  
+
+      
+            
+                //{ _rb.velocity = transform.forward * startForce; }
+
+    }
+
+    private void GetComponents()
+    {
+        m_BoxCollider = GetComponent<BoxCollider>();
+        m_Emitter = GetComponent<StudioEventEmitter>();
+        _rb = GetComponent<Rigidbody>();
+        player = FindObjectOfType<PlayerMovement>();
+    }
+
+    private void GetProfile()
+    {
+        health = data.Health;
+        _canUseForce = data.UseStartForce;
+        _canIgnorePlayerMaHealth = data.CanIgnoreHealth;
+        _usesAudioAmbient = data.UseAudioAmbient;
+        _canBeDrawned = data.CanBeattracted;
+        attractionSpeed = data.AtractionSpeed;
+        maxDistance = data.MaxDistance;
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -66,21 +124,58 @@ public class HealthPoint : MonoBehaviour
         }
     }
 
+    private void FixedUpdate() 
+    {
+        if (_canUseForce && _gamePlay)
+        {
+
+            //_rb.AddForce(transform.forward * startForce);
+            //_canUseForce = false;
+
+            //_rb.Sleep(); 
+
+        }
+    }
     private void Update()
     {
         switch (_gamePlay) 
         {
             case true: 
                 {
+
+                    transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
+
                     //Debug.Log("In use");
-                    _audioState = false;
-                    UpdateSound();
+                    if (_usesAudioAmbient) 
+                    {
+                        _audioState = false;
+                        UpdateSound();
+                        
+                        return; 
+                    }
+
+                    if(_canBeDrawned)
+                    {
+                        OnDraw();
+                    }
+
+                    
+
                     break; 
                 }
             case false: 
                 {
-                    _audioState = true;
-                    UpdateSound();
+                    if (_usesAudioAmbient)
+                    {
+                        _audioState = true;
+
+                        if(_canBeDrawned)
+                        {
+                            _rb.Sleep();
+                        }
+                        UpdateSound();
+                        return;
+                    }
                     break; 
                 }
                 
@@ -92,10 +187,10 @@ public class HealthPoint : MonoBehaviour
         PlayerMovement player = other.GetComponent<PlayerMovement>();
         if (player != null)
         {
-            if (player._playerHealthState == PlayerMovement._PlayerHealth.NotMax)
+            if (player._playerHealthState == PlayerMovement._PlayerHealth.NotMax || _canIgnorePlayerMaHealth)
             {
-                m_BoxCollider.enabled = false;
-                
+                //m_BoxCollider.enabled = false;
+
                 player.Takehealth(Health);
 
                 Instantiate(m_prefab, transform.position, Quaternion.identity);
@@ -109,7 +204,33 @@ public class HealthPoint : MonoBehaviour
 
     private void UpdateSound()
     {
-        m_Emitter.EventInstance.setPaused(_audioState); // set play
+        m_Emitter.EventInstance.setPaused(_audioState); // set audio
     }
 
+
+    private void OnDraw()
+    {
+        var step = attractionSpeed * Time.deltaTime;
+        if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
+        {
+            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
+        } 
+
+
+        elapsed += Time.deltaTime;
+
+        print(elapsed);
+
+        if(elapsed >= 1f)
+        {
+            _rb.Sleep();
+           
+        }
+    }
+
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+    }
 }

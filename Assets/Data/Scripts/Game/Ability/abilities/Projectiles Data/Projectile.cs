@@ -112,11 +112,11 @@ public class Projectile : MonoBehaviour
 
     private void UseRB()
     {
-        if (_useRb && _rb != null)
+        if (_useRb)
         {
             _rb = GetComponent<Rigidbody>();
 
-            _rb.velocity = transform.forward * speed;
+            //_rb.velocity = transform.forward * speed;
         }
     }
 
@@ -191,13 +191,14 @@ public class Projectile : MonoBehaviour
     {
         if (_useRb)
         {
-            if (_gamePlay)
+            if(gamePlay)
             {
-                //_rb.constraints = RigidbodyConstraints.None;
+                _rb.velocity = transform.forward * speed;
                 return; 
             }
-            else if (!_gamePlay && _useRb)
+            else if (!_gamePlay)
             {
+                _rb.Sleep(); 
                 //_rb.constraints = RigidbodyConstraints.FreezeAll;
                 return; 
             }

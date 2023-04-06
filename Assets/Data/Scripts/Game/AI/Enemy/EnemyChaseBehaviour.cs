@@ -8,6 +8,8 @@ using LibGameAI.FSMs;
 using TMPro;
 
 using UnityEditor; // comment this before build
+using NUnit.Framework;
+using System.Collections.Generic;
 #endregion
 
 public class EnemyChaseBehaviour : MonoBehaviour
@@ -96,6 +98,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float                               _health;
     private int                                 MAXHEALTH = 100;
 
+
+    // Death // 
+
+    bool                                        canSpawnHealth = true;
+
+    int                                         demns = 4;
+
+    private List<GameObject>                     _instances = new List<GameObject>();
+
+    [SerializeField] private GameObject         _demns; 
+
+
     private float                               healthInCreasePerFrame;
     internal int                                damageBoost;
 
@@ -103,10 +117,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private Color                               originalColor;
 
     // damage
-    //private float                               damagePerSecondFire = 2f;
+    //private float                             damagePerSecondFire = 2f;
     private float                               durationOfFireDamage = 10f;
 
     private int                                 damage; 
+
+
 
     // GET AI Speed
     private Vector3                             previousPos;
@@ -131,6 +147,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float                               stopDistance; 
 
     private float                               attackRate;
+
     private float                               nextAttack;
 
     private float                               _attackSpeed;
@@ -294,9 +311,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         _attackTimer = data.AttackTimer;
 
-        _attackSpeed = data.AttackSpeed; 
+        _attackSpeed = data.AttackSpeed;
 
-            // attack
+        damageEffectTime = data.DamageTime; 
+
+         // attack
         minDist = data.MinDist;
         attackRate = data.AttackRate;
 
@@ -487,6 +506,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
             if (_useFOV)
             {
                 StartFOV();
+            }
+
+
+            if (canSpawnHealth && _stateAI == AI._NONE)
+            {
+                // int
+                
             }
             /*
             if (_stateAI == AI._ATTACK)
@@ -1060,6 +1086,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         if (_health <= 0)
         {
+            _stateAI = AI._NONE; 
             Die();
         }
 
@@ -1073,12 +1100,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     {
                         _health -= _damage + damageBoost;
 
-                        print("normal damage");
+                        //print("normal damage");
                         StartCoroutine(HitFlash());
 
-                        damageEffectTime = 2f; 
-
-                        
+                        //damageEffectTime = 2f; 
                         break;
                     }
                 case WeaponType.Ice:
@@ -1093,7 +1118,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         StartCoroutine(HitFlash());
 
-                        damageEffectTime = 2.3f;
+                        //damageEffectTime = 2.3f;
 
                         break;
                     }
@@ -1156,7 +1181,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             // STOP ATTACK 
             _canAttack = false;
-           
             
             yield return new WaitForSeconds(damageEffectTime);
 
@@ -1178,13 +1202,28 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void Die()
     {
-        Instantiate(_death, transform.position, Quaternion.identity);
+
+        for (int i = 0; i < demns; i++)
+        {
+
+            float RANDOMNUMBER = UnityEngine.Random.Range(0,360);
+
+            Vector3 temp = transform.rotation.eulerAngles;
+
+            temp.y = RANDOMNUMBER; 
+
+            GameObject instance = Instantiate(_demns, transform.position,Quaternion.Euler(temp));
+
+            _instances.Add(instance);
+        }
 
         if (gemSpawnOnDeath)
         {
             Instantiate(gemPrefab, transform.position, Quaternion.identity);
         }
-            
+
+        Instantiate(_death, transform.position, Quaternion.identity);
+
         Destroy(this.gameObject);
     }
     #endregion
@@ -1246,8 +1285,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
-
-#region Game state reception
+    #region Game state reception
 
     private void GameManager_OnGameStateChanged(GameState state)
     {

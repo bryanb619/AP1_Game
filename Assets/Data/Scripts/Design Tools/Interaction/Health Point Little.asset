@@ -9,16 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69da3450e8414484097d26f23813f943, type: 3}
-  m_Name: Normal Data
+  m_Script: {fileID: 11500000, guid: 6e5a345555aec1641b3b35a7c27f1d34, type: 3}
+  m_Name: Health Point Little
   m_EditorClassIdentifier: 
-  _magic: 0
-  _useRBPhysics: 1
-  _speed: 12
-  _destroyTime: 1.5
-  _enemyRangedDamage: 10
-  _enemyChaseDamage: 10
-  _enemyBossDamage: 10
-  _useImpact: 0
-  _impactEffect: {fileID: 0}
-  fmodSound: 
+  _health: 3
+  _canIgnoreMaxHealth: 1
+  _usesAudioAmbient: 1
+  _canBeAttracted: 1
+  _useStartForce: 1
+  atractionSpeed: 3
+  maxDistance: 3

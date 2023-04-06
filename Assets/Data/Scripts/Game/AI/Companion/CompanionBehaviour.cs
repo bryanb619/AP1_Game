@@ -11,6 +11,24 @@ using System.Collections;
 public class CompanionBehaviour : MonoBehaviour
 {
 
+    //public float floatStrength = 1f;
+    //public float targetHeight = 1f;
+
+
+    //public float damping = 9.99f;
+    //public float floatSpeed = 1f;
+
+    //public float minY = 1.6f;
+    //public float maxY = 2.1f;
+    public float speed = 0.8f;
+
+    private float t = 0f;
+
+    public Transform pointA;
+    public Transform pointB;
+
+    private Vector3 targetPosition;
+
     #region Variables
     public enum CompanionState { _idle, _follow, _rotate}
     
@@ -26,17 +44,20 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField]
     private float followsRadius = 2f;
 
-    private PlayerMovement player; 
-
+    private _PLAYERTESTMOVEMENT player;
 
     private Transform Target;
     public Transform playerTarget => Target;
+
+    [SerializeField] private Transform floatPos; 
 
     private CompanionSpawn point;
 
     private MeshRenderer CompanionMesh;
 
     [SerializeField] private Material AlphaLow, normal;
+
+
 
 
     //[HideInInspector] public bool _playerIsMoving;
@@ -61,7 +82,7 @@ public class CompanionBehaviour : MonoBehaviour
     private bool _gameplay; 
     public bool gameplay => _gameplay;  
 
-    private GameState _gameState;
+    protected private GameState _gameState;
 
     //[Range(10, 150)]
     //public float radius;
@@ -79,6 +100,16 @@ public class CompanionBehaviour : MonoBehaviour
 
     #endregion
 
+    //public float floatingHeight = 0.5f;
+    //public float floatingSpeed = 1.0f;
+
+    private Rigidbody _rb;
+
+
+
+    //private Vector3 startingPosition;
+    //public float floatingMagnitude = 0.5f;
+
     #region Awake
     private void Awake()
     {
@@ -90,7 +121,13 @@ public class CompanionBehaviour : MonoBehaviour
     // Create the FSM
     private void Start()
     {
+
+
+        _StateAI = CompanionState._idle;
+
         Companion = GetComponent<NavMeshAgent>();
+
+        //_rb = GetComponent<Rigidbody>();
 
         Companion.angularSpeed = 0;
 
@@ -100,8 +137,15 @@ public class CompanionBehaviour : MonoBehaviour
 
         point = FindObjectOfType<CompanionSpawn>();
 
-
         Target = point.transform;
+
+
+        player = FindObjectOfType<_PLAYERTESTMOVEMENT>();
+
+        targetPosition = transform.position;
+
+
+        //startingPosition = transform.position;
 
         switch (_gameState)
         {
@@ -122,8 +166,7 @@ public class CompanionBehaviour : MonoBehaviour
         //mainCamera = Camera.main;
         //_playerIsMoving = false;
 
-        
-      
+       
         // Create the states
 
         State IdleState = new State("Companion Idle",Idle);
@@ -162,6 +205,25 @@ public class CompanionBehaviour : MonoBehaviour
 
     #endregion
 
+    private void FixedUpdate()
+    {
+        if (_gameplay) //&& _StateAI == CompanionState._idle) 
+        {
+
+            //_rb.AddForce(Vector3.up * floatStrength);
+            //_rb.AddForce(-_rb.velocity * damping);
+            //Vector3 upForce = Vector3.up * _rb.mass * Physics.gravity.magnitude * (floatingHeight / 2 - transform.position.y);
+
+            //_rb.AddForce(upForce, ForceMode.Acceleration);
+            //float distance = targetHeight - transform.position.y;
+            //_rb.AddForce(Vector3.up * distance * floatStrength);
+        }
+        else
+        {
+            //_rb.Sleep();
+        }
+    }
+
     #region Update
     // Request actions to the FSM and perform them
     private void Update()
@@ -172,7 +234,7 @@ public class CompanionBehaviour : MonoBehaviour
             
             //StartCoroutine(FOVRoutine());
 
-            CheckDist(); 
+            //CheckDist(); 
 
             Aim();
             
@@ -180,13 +242,14 @@ public class CompanionBehaviour : MonoBehaviour
             //print(Companion.speed + " Companion Speed");
             //print(Companion.acceleration + " Companion Acceleration");
 
-            //CheckMoveBool();
+            CheckMoveBool();
             //CheckEnemy();
             //AlphaUpdate();
             //RotateTimer();
 
             Action actions = stateMachine.Update();
             actions?.Invoke();
+
         }
         else if(!_gameplay)
         {
@@ -198,14 +261,14 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void CheckDist()
     {
-        if ((Target.position - transform.position).magnitude >= 0.2f)
+        if ((Target.position - transform.position).magnitude >= 1f)
         {
-            _StateAI = CompanionState._follow;
+            //_StateAI = CompanionState._follow;
             return; 
         }
         else
         {
-            _StateAI = CompanionState._idle;
+            //_StateAI = CompanionState._idle;
             return; 
         }
     }
@@ -407,20 +470,21 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void CheckMoveBool()
     {
         //print(_playerIsMoving); 
-        /*
-        if (_playerIsMoving)
+        
+        if (player.IsMoving)
         {
             //_StartFollow = true;
             _StateAI = CompanionState._follow;
+            return;
         }
-        else if(!_playerIsMoving)
+        else if(!player.IsMoving && (Target.position - transform.position).magnitude <= 0.8f)
         {
             // _StartFollow = false;
             _StateAI = CompanionState._idle;
+            return; 
         }
-        */
+        
     }
-
 
     #region Idle State
     // Chase the small enemy
@@ -431,10 +495,51 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
         Companion.isStopped = true;
 
-        return;
+        //Companion.updatePosition = false;
+
+        FloatCompanion();
+        //float floatingOffset = Mathf.Sin(Time.time * floatingSpeed) * floatingMagnitude;
+        //Vector3 newPosition = startingPosition + new Vector3(0f, floatingOffset, 0f);
+        //transform.position = newPosition;
 
     }
 
+    private void FloatCompanion()
+    {
+        //float newY = UnityEngine.Random.Range(minY, maxY);
+        //Vector3 newPosition = new Vector3(transform.position.x, newY, transform.position.z);
+        //transform.position = Vector3.MoveTowards(transform.position, newPosition, speed * Time.deltaTime);
+
+
+        t += Time.deltaTime * speed;
+        float newY = Mathf.SmoothStep(pointA.position.y, pointB.position.y, t);
+        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+
+
+        if (t >= 1f)
+        {
+            t = 0f;
+            Transform temp = pointA;
+            pointA = pointB;
+            pointB = temp;
+        }
+
+
+        /*
+        if (Vector3.Distance(transform.position, floatPos.position) < 0.1f)
+        {
+            float newY = UnityEngine.Random.Range(minY, maxY);
+            floatPos.position = new Vector3(transform.position.x, newY, transform.position.z);
+        }
+        transform.position = Vector3.Lerp(transform.position, floatPos.position, speed * Time.deltaTime);
+
+        //Vector3 pos = transform.position;
+        //pos.y = Mathf.Sin(Time.time * floatingSpeed) * floatingHeight;
+        //transform.position = pos;
+
+        //transform.position = new Vector3(transform.position.x, startingPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatStrength, transform.position.z);
+        */
+    }
     /*
     private void RotateTimer()
     {
@@ -461,13 +566,14 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
     private void PosUpdate()
     {
+        //FloatCompanion();
 
-
+        //Companion.updatePosition = true;
         Companion.isStopped = false;
 
-        
-        Companion.SetDestination(Target.position);
 
+
+        Companion.SetDestination(Target.position); 
         //Companion.speed = 3.4f;
 
         Companion.speed = 8f;
@@ -490,25 +596,25 @@ if (Physics.Raycast(ray, out RaycastHit hit))
             StartCoroutine(CatchPlayer());
             return;
         }
-       
+
     }
 
-    #endregion
     #endregion
 
     #region Follow State
     private void Follow()
     {
-       // Companion.Warp(transform.position); 
-
-        StartCoroutine(FollowPlayer());
+        // Companion.Warp(transform.position); 
+        //FloatCompanion();
+        PosUpdate();
+       // StartCoroutine(FollowPlayer());
     }
 
 
     private IEnumerator FollowPlayer()
     {
 
-        yield return null;
+        //yield return null;
 
         PosUpdate();
 
@@ -528,24 +634,24 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
         */
 
-        yield return null;
+        //yield return null;
 
-        yield return new WaitUntil(()=> Companion.remainingDistance <=Companion.stoppingDistance);
+        yield return new WaitUntil(() => Companion.remainingDistance <= Companion.stoppingDistance);
     }
 
 
-    private IEnumerator CatchPlayer() 
+    private IEnumerator CatchPlayer()
     {
         Setlow();
         transform.position = Target.position;
         yield return new WaitForSeconds(0.3f);
         SetHigh();
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
         Setlow();
         yield return new WaitForSeconds(0.3f);
         SetHigh();
     }
-    
+
 
     private void SlowDown()
     {
@@ -553,15 +659,19 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         //Companion.speed = 3F;
         //Companion.velocity = Companion.velocity.normalized * 4f;
 
-        Companion.velocity =  Companion.velocity.normalized / 1.4f; 
+        Companion.velocity = Companion.velocity.normalized / 1.4f;
     }
 
     #endregion
 
-    #region Enemy detection
-   
+    #endregion
 
-   
+
+
+    #region Enemy detection
+
+
+
     private void CheckEnemy()
     {
 
