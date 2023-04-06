@@ -6,42 +6,49 @@ using System.Security.Cryptography;
 //[RequireComponent(typeof(BoxCollider))]
 public class HealthPoint : MonoBehaviour
 {
-    // Data
-    [SerializeField] private HealthPointData data;
-    private BoxCollider m_BoxCollider;
+    // Data //
+    [SerializeField] private HealthPointData    data;
 
-    // Health
-    private int health;
-    public int Health => health;
+    //private BoxCollider                         m_BoxCollider;
+
+    // Health //
+    private int                                 _health;
+    public int                                  Health => _health;
 
     [SerializeField] private GameObject         m_prefab;
     private Rigidbody                           _rb;
 
-    // Game State
+    // Game State //
     private GameState                           _state; 
     private bool                                _gamePlay; 
 
-    // FMOD & Sound Handling
+    // FMOD & Sound Handling //
     private StudioEventEmitter                  m_Emitter;
     private bool                                _audioState;
     private bool                                _usesAudioAmbient;
 
-    // Atraction 
+    // Atraction //
     private bool                                _canUseForce;
-    private float                               startForce; 
+    //private float                               startForce; 
     private bool                                _canBeDrawned;
     private int                                 attractionSpeed;
     private float                               maxDistance;
     private bool                                _canIgnorePlayerMaHealth;
 
+    private bool                                _canFloat;
 
-    // managing
-    private float                               elapsed = 0f;
+    private LayerMask                           _layerMask;
+    public float                                avoidanceForce = 5f;
+    public float                                avoidanceDuration = 1.8f;
 
-    float height = 4f;
+
+
+    // managing // 
+
+    // height of float
+    private float                               height;
 
     private PlayerMovement                      player; 
-
 
 
     private void Awake()
@@ -51,16 +58,11 @@ public class HealthPoint : MonoBehaviour
 
     private void Start()
     {
+
+        _canFloat = true;
         GetComponents();
         GetProfile();
-
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit))
-        {
-            // If the ray hits the terrain, set the floating height to be slightly above the terrain height
-            height = hit.point.y + 0.5f;
-        }
+        DetectGround(); 
 
 
         switch (_state)
@@ -77,33 +79,49 @@ public class HealthPoint : MonoBehaviour
                 }
         }
 
-        float RANDOMNUMBER = UnityEngine.Random.Range(1,3);
+        //float RANDOMNUMBER = UnityEngine.Random.Range(1,3);
 
-        startForce = RANDOMNUMBER;  
+        //startForce = RANDOMNUMBER;  
 
-      
-            
-                //{ _rb.velocity = transform.forward * startForce; }
+        //{ _rb.velocity = transform.forward * startForce; }
 
     }
-
+    #region Components, profile & Raycast
     private void GetComponents()
     {
-        m_BoxCollider = GetComponent<BoxCollider>();
+        //m_BoxCollider = GetComponent<BoxCollider>();
         m_Emitter = GetComponent<StudioEventEmitter>();
         _rb = GetComponent<Rigidbody>();
+
         player = FindObjectOfType<PlayerMovement>();
     }
 
     private void GetProfile()
     {
-        health = data.Health;
+        _health = data.Health;
         _canUseForce = data.UseStartForce;
         _canIgnorePlayerMaHealth = data.CanIgnoreHealth;
+        height = data.HeightFloat; 
         _usesAudioAmbient = data.UseAudioAmbient;
         _canBeDrawned = data.CanBeattracted;
         attractionSpeed = data.AtractionSpeed;
         maxDistance = data.MaxDistance;
+        _layerMask = data.LayerMask;    
+    }
+
+    private void DetectGround()
+    {
+       if(_canBeDrawned) 
+       {
+            RaycastHit groundHit;
+
+            if (Physics.Raycast(transform.position, Vector3.down, out groundHit))
+            {
+
+                height = groundHit.point.y + 1f;
+            }
+       }
+        
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -123,12 +141,14 @@ public class HealthPoint : MonoBehaviour
                 }
         }
     }
+    #endregion
 
     private void FixedUpdate() 
     {
         if (_canUseForce && _gamePlay)
         {
 
+            
             //_rb.AddForce(transform.forward * startForce);
             //_canUseForce = false;
 
@@ -138,12 +158,19 @@ public class HealthPoint : MonoBehaviour
     }
     private void Update()
     {
+
+        
         switch (_gamePlay) 
         {
+           
             case true: 
                 {
 
-                    transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
+                    if (_canFloat) 
+                    {
+                        transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
+                    }
+                    
 
                     //Debug.Log("In use");
                     if (_usesAudioAmbient) 
@@ -199,6 +226,32 @@ public class HealthPoint : MonoBehaviour
             }
             //player
         }
+
+        // Check if the other collider is on the layer we want to avoid
+        if (other.gameObject.layer == LayerMask.NameToLayer("InteractiveZone"))
+        {
+            print("detected"); 
+            //_canFloat = false; 
+
+            // Calculate the direction to move away from the other collider
+            Vector3 avoidanceDirection = transform.position - other.transform.position;
+
+            // Apply a force to move away from the other collider
+            _rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
+
+            Invoke("StopForce", avoidanceDuration);
+        }
+    }
+
+
+
+    private void StopForce()
+    {
+        print("no one found");
+        _rb.velocity = Vector3.zero;
+        _rb.Sleep();
+
+        //_canFloat = true;
     }
 
 
@@ -213,20 +266,54 @@ public class HealthPoint : MonoBehaviour
         var step = attractionSpeed * Time.deltaTime;
         if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
         {
+
+            _canFloat = false; 
             transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
-        } 
+            print("player"); 
+        }
+        else { _canFloat = true; return;  }
 
 
-        elapsed += Time.deltaTime;
+        //elapsed += Time.deltaTime;
 
-        print(elapsed);
+        //print(elapsed);
 
-        if(elapsed >= 1f)
+        /*if(elapsed >= 1f)
         {
             _rb.Sleep();
-           
+
+
+
+
+
+
+
+        using UnityEngine;
+
+public class ExampleScript : MonoBehaviour
+{
+    public float avoidanceForce = 10f;
+
+    void OnTriggerEnter(Collider other)
+    {
+        // Check if the other collider is on the layer we want to avoid
+        if (other.gameObject.layer == LayerMask.NameToLayer("LayerToAvoid"))
+        {
+            // Calculate the direction to move away from the other collider
+            Vector3 avoidanceDirection = transform.position - other.transform.position;
+
+            // Apply a force to move away from the other collider
+            GetComponent<Rigidbody>().AddForce(avoidanceDirection.normalized * avoidanceForce);
         }
     }
+}
+           
+        }
+        */
+    }
+
+
+
 
 
     private void OnDestroy()

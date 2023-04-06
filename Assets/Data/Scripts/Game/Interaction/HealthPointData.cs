@@ -16,7 +16,11 @@ public class HealthPointData : ScriptableObject
 
     [SerializeField] 
     private bool _usesAudioAmbient;
-    public bool UseAudioAmbient => _usesAudioAmbient;   
+    public bool UseAudioAmbient => _usesAudioAmbient;
+
+    [SerializeField]
+    private float _heightFloat = 4f; 
+    public float HeightFloat => _heightFloat;
 
     [SerializeField] 
     private bool _canBeAttracted;
@@ -30,6 +34,13 @@ public class HealthPointData : ScriptableObject
     public int AtractionSpeed => atractionSpeed;    
 
     [SerializeField]
-    private float maxDistance = 1.2f;
-    public float MaxDistance => maxDistance;    
+    private float maxDistance = 3f;
+    public float MaxDistance => maxDistance;
+
+
+    [SerializeField] private LayerMask _layerMask;
+    public LayerMask LayerMask => _layerMask;
+
+    [SerializeField] private float _PushForce;
+    public float PushForce => _PushForce;   
 }

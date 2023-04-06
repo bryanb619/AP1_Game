@@ -1,6 +1,7 @@
 #region Library
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -8,8 +9,7 @@ using LibGameAI.FSMs;
 using TMPro;
 
 using UnityEditor; // comment this before build
-using NUnit.Framework;
-using System.Collections.Generic;
+
 #endregion
 
 public class EnemyChaseBehaviour : MonoBehaviour
@@ -105,9 +105,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     int                                         demns = 4;
 
-    private List<GameObject>                     _instances = new List<GameObject>();
+    private List<GameObject>                    _instances = new List<GameObject>();
 
-    [SerializeField] private GameObject         _demns; 
+    [SerializeField] private GameObject         _demns;
+
+    [SerializeField] private float dropRadius = 3f; 
 
 
     private float                               healthInCreasePerFrame;
@@ -1206,15 +1208,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
         for (int i = 0; i < demns; i++)
         {
 
-            float RANDOMNUMBER = UnityEngine.Random.Range(0,360);
+            //float RANDOMNUMBER = UnityEngine.Random.Range(0,360);
 
-            Vector3 temp = transform.rotation.eulerAngles;
+            //Vector3 temp = transform.rotation.eulerAngles;
 
-            temp.y = RANDOMNUMBER; 
+            //temp.y = RANDOMNUMBER;
 
-            GameObject instance = Instantiate(_demns, transform.position,Quaternion.Euler(temp));
+            // GameObject instance = Instantiate(_demns, SelectRandomPosition(), Quaternion.Euler(temp));
 
-            _instances.Add(instance);
+            Vector3 spawnPosition = transform.position + 
+                new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
+                UnityEngine.Random.Range(-dropRadius, dropRadius));
+
+            Instantiate(_demns, spawnPosition, Quaternion.identity);
+            //_instances.Add(instance);
+
+
+
         }
 
         if (gemSpawnOnDeath)
@@ -1225,6 +1235,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Instantiate(_death, transform.position, Quaternion.identity);
 
         Destroy(this.gameObject);
+    }
+
+    private Vector3 SelectRandomPosition()
+    {
+        Vector3 pos = transform.position;
+
+        pos += Vector3.forward * UnityEngine.Random.Range(-dropRadius, dropRadius);  
+
+        return pos;
     }
     #endregion
 
