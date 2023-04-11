@@ -1,10 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI; 
 
 public class _PLAYERTESTMOVEMENT : MonoBehaviour
 {
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;
+
+    private NavMeshAgent agent;
 
     [SerializeField] private float _playerSpeed;
 
@@ -30,6 +33,7 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
     void Start()
     {
         mainCamera = FindObjectOfType<Camera>();
+        agent = GetComponent<NavMeshAgent>();
 
         //targetEulerAngles = new Vector3(_turnSpeed, 0, 0);
     }
@@ -51,9 +55,10 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
             if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~seeThroughLayer))
             //if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, NavMesh.GetAreaFromName("Walkable")))
             {
-              
+
                 if (hit.transform.CompareTag("Walk"))
                 {
+                    agent.enabled = false;
                     //direction = hit.point - transform.position;
                     //Instantiate(effect, hit.point, Quaternion.identity);
 
@@ -62,8 +67,18 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
 
                     //targetPosition = hit.point;
                     //isMoving = true;
+                    float height = 0f; 
+                    height = hit.point.y + 0.3f;
 
-                    Instantiate(effect, hit.point, Quaternion.identity);
+
+                    //(effect, hit.point, Quaternion.identity);
+
+                    GameObject spawnedObject = Instantiate(effect, hit.point, Quaternion.identity);
+
+                    spawnedObject.transform.position = 
+                        new Vector3(spawnedObject.transform.position.x, height, spawnedObject.transform.position.z);
+
+
 
                     if (_isMoving)
                     {
@@ -72,18 +87,44 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
                     }
                     else
                     {
-                        targetPosition = hit.point; 
+                        targetPosition = hit.point;
                         _isMoving = true;
 
                     }
 
+                }
+                else if (hit.transform.CompareTag("NavmeshWalk"))
+                {
+                    if (agent.enabled)
+                    {
+                        agent.enabled = true;
+                        //transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                        StartCoroutine(StartToWalkTimer());
+
+                        Instantiate(effect, hit.point, Quaternion.identity);
+                        agent.SetDestination(hit.point);
+
+
+                        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                        {
+
+                            agent.velocity = Vector3.zero;
+                            agent.isStopped = true;
+                            return;
+
+                        }
+                        else
+                        {
+                            agent.isStopped = false;
+                            return;
+                        }
+                    }
                 }
 
             }
         }
         if (_isMoving)
         {
-
 
             direction = targetPosition - transform.position;
 
@@ -99,16 +140,18 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
             Vector3 movement = direction.normalized * _playerSpeed * Time.deltaTime;
             transform.Translate(movement, Space.World);
 
+
+
             // Stop moving if the player is close enough to the target position
             if (Vector3.Distance(transform.position, targetPosition) < 0.3f) //&& speed <= 0.3f)
             {
                 _isMoving = false;
-                return; 
+                return;
             }
         }
-    }
 
-   
+    }
+    
 
     private IEnumerator StartToWalkTimer()
     {

@@ -44,7 +44,7 @@ public class CompanionBehaviour : MonoBehaviour
     [SerializeField]
     private float followsRadius = 2f;
 
-    private _PLAYERTESTMOVEMENT player;
+    private PlayerMovement player;
 
     private Transform Target;
     public Transform playerTarget => Target;
@@ -140,7 +140,7 @@ public class CompanionBehaviour : MonoBehaviour
         Target = point.transform;
 
 
-        player = FindObjectOfType<_PLAYERTESTMOVEMENT>();
+        player = FindObjectOfType<PlayerMovement>();
 
         targetPosition = transform.position;
 

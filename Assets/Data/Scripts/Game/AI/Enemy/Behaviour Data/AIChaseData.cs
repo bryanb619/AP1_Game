@@ -101,7 +101,7 @@ public class AIChaseData : ScriptableObject
     [Tooltip("Increase value per frame")]
     [Range(0, 20)]
     [SerializeField]
-    private float abilityIncreasePerFrame = 4f;
+    private float abilityIncreasePerFrame = 5f;
     public float AbilityIncreasePerFrame => abilityIncreasePerFrame;
 
     // FOV //
@@ -197,4 +197,20 @@ public class AIChaseData : ScriptableObject
     [Range(0f,1f)]
     [SerializeField] private float spawnChance;
     public float SpawnChance => spawnChance;
+
+
+    // Sound refs
+
+    [SerializeField]
+    private string _grunt;
+    public string grunt => _grunt;  
+
+    [SerializeField]
+    private string _scream;
+    public string Scream => _scream;
+
+    [SerializeField]
+    private string _etc;
+    public string Etc => _etc;  
+
 }

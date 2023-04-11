@@ -88,7 +88,10 @@ public class PlayerMovement : MonoBehaviour
     public float closeEnoughMeters = 3f;
 
 
-    private Vector3 currentDest; 
+    private Vector3 currentDest;
+
+    private bool _isMoving; 
+    public bool IsMoving => _isMoving;
 
 
     private enum MovementState
@@ -425,19 +428,21 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerSpeed()
     {
-       // speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
-        //lastPosition = transform.position;
-        /*
-        if(speed >= 2f)
+        speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        lastPosition = transform.position;
+        
+        if(speed >= 1f)
         {
-            _CompanionMovement._playerIsMoving = true;
+           _isMoving = true;
+            //_CompanionMovement._playerIsMoving = true;
 
         }
         else
         {
-            _CompanionMovement._playerIsMoving = false;
+            _isMoving = false;
+            //_CompanionMovement._playerIsMoving = false;
         }
-        */
+        
     }
 
     void OnCollisionEnter(Collision other) 

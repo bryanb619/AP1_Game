@@ -247,7 +247,7 @@ public class HealthPoint : MonoBehaviour
 
     private void StopForce()
     {
-        print("no one found");
+        //print("no one found");
         _rb.velocity = Vector3.zero;
         _rb.Sleep();
 
@@ -269,7 +269,7 @@ public class HealthPoint : MonoBehaviour
 
             _canFloat = false; 
             transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
-            print("player"); 
+            //print("player"); 
         }
         else { _canFloat = true; return;  }
 

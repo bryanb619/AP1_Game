@@ -17,13 +17,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Variables
 
     private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _GLORYKILL, _NONE }
-
     private AI                                  _stateAI;
 
     private GameState                           _gameState;
-
     private StateMachine                        stateMachine;
-
 
 
     [Header("AI Profile")]
@@ -32,18 +29,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private bool                                gemSpawnOnDeath = true;
     private GameObject                          gemPrefab;
 
-    
-
-
-    // Reference to the state machine
-    
-
     // Reference to the NAV MESH AGENT
     private NavMeshAgent                        agent;
-
-
     private AIController                        _controller;
-
 
     // References to player
     private GameObject                          playerObject;
@@ -62,50 +50,36 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // FOV
     private bool                                _useFOV; 
-
     private float                               radius;
     public float                                Radius => radius;
-
     private float                               angle;
     public float                                Angle => angle;
-
     private LayerMask                           targetMask;
     private LayerMask                           obstructionMask;
-
     [SerializeField] private Transform          FOV;
     public Transform                            EEFOV => FOV; // Enemy Editor FOV
-
     private bool                                canSeePlayer;
     public bool                                 canSee => canSeePlayer;
         
     // Cover
     private Collider[]                          Colliders = new Collider[10];
-
     //Lower is a better hiding spot
     private float                               HideSensitivity = 0;
-
     private float                               UpdateFrequency =  0.25f;
-
     private float                               minDistInCover;
-
     private LayerMask                           HidableLayers;
-
     private SceneChecker                        LineOfSightChecker;
-
     private Coroutine                           MovementCoroutine;
 
     // Health
     private float                               _health;
     private int                                 MAXHEALTH = 100;
 
-
     // Death // 
 
     bool                                        canSpawnHealth = true;
-
     int                                         demns = 4;
-
-    private List<GameObject>                    _instances = new List<GameObject>();
+    
 
     [SerializeField] private GameObject         _demns;
 
@@ -115,8 +89,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private float                               healthInCreasePerFrame;
     internal int                                damageBoost;
 
-    // Get collor
+    // Mesh & Color //
     private Color                               originalColor;
+    // reference to AI model mesh 
+    [SerializeField]
+    private SkinnedMeshRenderer                 enemyMesh; 
 
     // damage
     //private float                             damagePerSecondFire = 2f;
@@ -139,50 +116,34 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [Header("Attack")]
     [SerializeField] private Transform          _attackPoint;
-
     private GameObject                          _death;
-
     private GameObject                          _attackEffect, _s_attackEffect, _specialAttackEffect;
-
     private float                               _attackRange; 
-
     private float                               stopDistance; 
-
     private float                               attackRate;
-
     private float                               nextAttack;
-
     private float                               _attackSpeed;
-
     private bool                                _canAttack;
-
     private bool                                _canPerformAttack = true; 
-
     private bool                                _isAttacking;
-
     private float                               minDist;
+    private float                               damageEffectTime = 0.5f; 
+    private float                               _attackTimer;
 
-    private float                               damageEffectTime; 
-
-
-    private float                               _attackTimer; 
+    private Vector3 targetPosition;
+    Vector3 direction;
 
     // Attack 2 //
 
     private float                               percentage;
-
     private int                                 b_damage; 
 
     // special ability 
 
     private const float                         ABILITY_MAX_VALUE = 100F;
-
     private float                               currentAbilityValue;
-
     private float                               abilityIncreasePerFrame;
-
     private int                                 specialDamage;
-
     private bool                                _canSpecialAttack; 
 
 
@@ -199,12 +160,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private Animator                            _animator;
 
-
     // Performance 
-
-
     private AIHandler                           _hanlderAI;
-
     private bool                                _deactivateAI;
 
     [Header("Debug")]
@@ -254,13 +211,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _canAttack = true;
         _useFOV = true;
 
+        
+
 
         GetComponents();
         GetProfile();
         GetStates();
 
-       
-        if(currentAbilityValue >= ABILITY_MAX_VALUE) { _canSpecialAttack = true;}
+        StartCoroutine(SpecialAttackCollor());
+        
+
+
+
+        if (currentAbilityValue >= ABILITY_MAX_VALUE) { _canSpecialAttack = true;}
     }
 
     #region Components Sync
@@ -287,6 +250,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         playerObject = GameObject.Find("Player");
         playerTarget = playerObject.transform;
+
+        targetPosition = playerTarget.position;
 
         //playerTarget = GetComponent<Transform>();
 
@@ -379,6 +344,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         angle = data.Angle;
         targetMask = data.TargetMask;
         obstructionMask = data.ObstructionMask;
+
+
+       
 
     }
 
@@ -677,14 +645,30 @@ public class EnemyChaseBehaviour : MonoBehaviour
         curSpeed = curMove.magnitude / Time.deltaTime;
         previousPos = transform.position;
 
-        if(curSpeed >= 0.01f)
+        if(curSpeed >= 0.8f)
         {
+
             _animator.SetBool("walk", true);
+
+            /*
+            if (this._animator.GetCurrentAnimatorStateInfo(0).IsName("AngryAnimation"))
+            {
+                _animator.SetBool("walk", false);
+            }
+            else
+            {
+                _animator.SetBool("walk", true);
+                return; 
+            }
+            */
+            
             return;
         }
         else
         {
+            
             _animator.SetBool("walk", false);
+             
             return;
         }
     }
@@ -731,6 +715,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if(_canAttack) 
         {
             transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
+            //float _turnSpeed = 10f; 
+
+            //direction = targetPosition - transform.position;
+
+            //direction.y = 0;
+
+            // Rotate player towards the target position
+            //Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
 
             switch (_canSpecialAttack)
             {
@@ -759,82 +753,174 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     }
                 case true:
                     {
-                        agent.speed = 4.0f;
-                        agent.SetDestination(playerTarget.position);
-                        transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
+                        //agent.acceleration = 14f;
+                        //agent.SetDestination(playerTarget.position);
+                        //HabilityAttack();
 
-                       
-                        HabilityAttack();
-                       
+                        if ((playerTarget.transform.position - transform.position).magnitude <= 12F)
+                        {
+                            //_animator.SetBool("specialAttack", true);
+                            /*
+                            if (this._animator.GetCurrentAnimatorStateInfo(0).IsName("AngryAnimation"))
+                            {
+                                agent.velocity = Vector3.zero;
+                                agent.isStopped = true;
+                                StartCoroutine(timeToSpecialAttack());
+
+                                print("animation playing");
+
+
+
+                                return;
+                            }
+                            else if (this._animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                            {
+                                //_animator.SetBool("specialAttack", false);
+
+                                print("MADE IT HERE");
+                                
+                                HabilityAttack();
+                            }
+                            */
+                        }
+
+                        //transform.LookAt(new Vector3(playerTarget.position.x, 0, playerTarget.position.z));
                         break;
                     }
             }
         }
     }
+
+    public void HabilityAttack()
+    {
+        agent.speed = 25f;
+        agent.acceleration = 14f;
+        agent.SetDestination(playerTarget.position);
+
+        if ((playerTarget.transform.position - transform.position).magnitude <= 6.5F)
+        {
+            agent.speed = 0;
+
+            Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
+
+            foreach (Collider collider in hitEnemies)
+            {
+                string DebugColor = "<size=14><color=orange>";
+                string closeColor = "</color></size>";
+                Debug.Log(DebugColor + "Special attack" + closeColor);
+
+
+                currentAbilityValue = 0;
+                _AbilitySlider.value = currentAbilityValue;
+
+                _Player.TakeDamage(specialDamage);
+
+                Instantiate(_specialAttackEffect, _attackPoint.transform.position, Quaternion.identity);
+
+                //_animator.SetBool("specialAttack", false);
+                _canSpecialAttack = false;
+
+
+
+            }
+        }
+
+
+    }
+
+
+    private void Cooldown()
+    {
+        currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
+        _AbilitySlider.value = currentAbilityValue;
+
+
+
+        if (currentAbilityValue >= ABILITY_MAX_VALUE) { _canSpecialAttack = true; return; }
+
+        //else { _canSpecialAttack = false; return; }
+    }
+
+
+    private IEnumerator timeToSpecialAttack()
+    {
+
+        yield return new WaitForSeconds(0.4f);
+
+        _animator.SetBool("specialAttack", false);
+        _animator.SetBool("walk", true);
+
+    }
+
+
     private void Attack()
     {
         switch (_canPerformAttack)
         {
+
             case true:
                 {
-                    //agent.speed = 2.5f;
-                    if (Time.time > nextAttack)
+                    if ((playerTarget.transform.position - transform.position).magnitude <= 6.5F)
                     {
-
-                        //print("2nd step");
-                        float randomFloat = UnityEngine.Random.value;
-
-
-                        if (UnityEngine.Random.value < percentage && _canPerformAttack)
-                        {
-                            //print("chose random");
-
-                            Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
-
-                            foreach (Collider collider in hitEnemies)
-                            {
-                                string DebugColor = "<size=12><color=yellow>";
-                                string closeColor = "</color></size>";
-
-                                Debug.Log(DebugColor + "Attack 2" + closeColor);
-
-                                _Player.TakeDamage(b_damage);
-                                Instantiate(_s_attackEffect, _attackPoint.transform.position, Quaternion.identity);
-                            }
-
-                            
-                            //StartCoroutine(AttackTimer());
-                        }
-
-                        else
-                        {
-
-                            //print("chose normal");
                         
+                        //agent.speed = 2.5f;
+                        if (Time.time > nextAttack)
+                        {
+                            agent.speed = 0;
+                            //print("2nd step");
+                            float randomFloat = UnityEngine.Random.value;
 
 
-                            Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
-
-                            foreach (Collider collider in hitEnemies)
+                            if (UnityEngine.Random.value < percentage && _canPerformAttack)
                             {
-                                string DebugColor = "<size=12><color=green>";
-                                string closeColor = "</color></size>";
-                                Debug.Log(DebugColor + "Attack" + closeColor);
-                                _Player.TakeDamage(damage);
+                                //print("chose random");
 
-                                Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+                                Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
+
+                                foreach (Collider collider in hitEnemies)
+                                {
+                                    string DebugColor = "<size=12><color=yellow>";
+                                    string closeColor = "</color></size>";
+
+                                    Debug.Log(DebugColor + "Attack 2" + closeColor);
+
+                                    _Player.TakeDamage(b_damage);
+                                    Instantiate(_s_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+                                }
+
+
+                                //StartCoroutine(AttackTimer());
                             }
 
-                            
+                            else
+                            {
 
-                            //StartCoroutine(AttackTimer());
+                                //print("chose normal");
 
+
+
+                                Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
+
+                                foreach (Collider collider in hitEnemies)
+                                {
+                                    string DebugColor = "<size=12><color=green>";
+                                    string closeColor = "</color></size>";
+                                    Debug.Log(DebugColor + "Attack" + closeColor);
+                                    _Player.TakeDamage(damage);
+
+                                    Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+                                }
+
+
+
+                                //StartCoroutine(AttackTimer());
+
+                            }
+
+                            _canPerformAttack = false;
+                            nextAttack = Time.time + attackRate;
                         }
-
-                        _canPerformAttack = false;
-                        nextAttack = Time.time + attackRate;
                     }
-
                     break; 
                 }
 
@@ -847,38 +933,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         return; 
     }
 
-    private void HabilityAttack()
-    {
-        Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
-
-        foreach (Collider collider in hitEnemies)
-        {
-            string DebugColor = "<size=14><color=orange>";
-            string closeColor = "</color></size>";
-            Debug.Log(DebugColor + "Special attack" + closeColor);
-
-
-            currentAbilityValue = 0;
-            _AbilitySlider.value = currentAbilityValue;
-
-            _Player.TakeDamage(specialDamage);
-
-            Instantiate(_specialAttackEffect, _attackPoint.transform.position, Quaternion.identity);
-            _canSpecialAttack = false;
-
-
-        }
-    }
-    
-
-    private void Cooldown()
-    {
-        currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
-        _AbilitySlider.value = currentAbilityValue;
-
-        if(currentAbilityValue >= ABILITY_MAX_VALUE) { _canSpecialAttack = true; return;}
-        else {_canSpecialAttack = false;  return;}
-    }
+   
 
 
     private IEnumerator AttackTimer()
@@ -1208,23 +1263,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
         for (int i = 0; i < demns; i++)
         {
 
-            //float RANDOMNUMBER = UnityEngine.Random.Range(0,360);
-
-            //Vector3 temp = transform.rotation.eulerAngles;
-
-            //temp.y = RANDOMNUMBER;
-
-            // GameObject instance = Instantiate(_demns, SelectRandomPosition(), Quaternion.Euler(temp));
-
             Vector3 spawnPosition = transform.position + 
                 new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
                 UnityEngine.Random.Range(-dropRadius, dropRadius));
 
             Instantiate(_demns, spawnPosition, Quaternion.identity);
-            //_instances.Add(instance);
-
-
-
         }
 
         if (gemSpawnOnDeath)
@@ -1235,15 +1278,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Instantiate(_death, transform.position, Quaternion.identity);
 
         Destroy(this.gameObject);
-    }
-
-    private Vector3 SelectRandomPosition()
-    {
-        Vector3 pos = transform.position;
-
-        pos += Vector3.forward * UnityEngine.Random.Range(-dropRadius, dropRadius);  
-
-        return pos;
     }
     #endregion
 
@@ -1301,6 +1335,31 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetComponent<Renderer>().material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
         GetComponent<Renderer>().material.color = originalColor;
+    }
+
+    IEnumerator SpecialAttackCollor()
+    {
+
+        originalColor = enemyMesh.material.color;
+
+
+        enemyMesh.material.color = Color.red;
+        yield return new WaitForSeconds(1);
+        enemyMesh.material.color = originalColor;
+
+        enemyMesh.material.color = Color.red;
+        yield return new WaitForSeconds(1.2f);
+        enemyMesh.material.color = originalColor;
+
+        enemyMesh.material.color = Color.red;
+        yield return new WaitForSeconds(1.5f);
+        enemyMesh.material.color = originalColor;
+
+        enemyMesh.material.color = Color.red;
+        yield return new WaitForSeconds(2f);
+        enemyMesh.material.color = originalColor;
+
+        enemyMesh.material.color = Color.red;
     }
     #endregion
 
