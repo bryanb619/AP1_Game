@@ -601,15 +601,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 9c72e6fe0b220ad409222f3f9792cabd, type: 2}
-  _patrolPoints: []
-  FOV: {fileID: 1831208982663463918}
-  _demns: {fileID: 6342344941788914745, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
-  dropRadius: 2
   enemyMesh: {fileID: 3110441228081096987}
+  _patrolPoints: []
   _attackPoint: {fileID: 3331569744526991545}
+  _fov: {fileID: 1831208982663463918}
   _healthSlider: {fileID: 8963490514696597323}
   _AbilitySlider: {fileID: 5430720324937001575}
-  showExtraGizmos: 0
+  _showExtraGizmos: 0
 --- !u!114 &8322705189930119540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,7 +808,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1831208983068165615}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.6
+  m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 10
   avoidancePriority: 50
@@ -831,12 +829,12 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1831208983068165615}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
+  m_Radius: 0.7
+  m_Height: 3.16
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  m_Center: {x: 0, y: 0.47, z: 0}
 --- !u!54 &9018942400106031180
 Rigidbody:
   m_ObjectHideFlags: 0
