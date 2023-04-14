@@ -20,7 +20,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     //public float minY = 1.6f;
     //public float maxY = 2.1f;
-    public float speed = 0.8f;
+    public float speed = 0.3f;
 
     private float t = 0f;
 
@@ -471,7 +471,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     {
         //print(_playerIsMoving); 
         
-        if (player.IsMoving)
+        if (player.IsMoving && (Target.position - transform.position).magnitude >= 1f)
         {
             //_StartFollow = true;
             _StateAI = CompanionState._follow;
@@ -491,17 +491,27 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     private void Idle()
     {
 
-        Companion.velocity = Vector3.zero;
-
-        Companion.isStopped = true;
 
         //Companion.updatePosition = false;
+        StartCoroutine((floatStart()));
 
         FloatCompanion();
+
         //float floatingOffset = Mathf.Sin(Time.time * floatingSpeed) * floatingMagnitude;
         //Vector3 newPosition = startingPosition + new Vector3(0f, floatingOffset, 0f);
         //transform.position = newPosition;
 
+    }
+
+
+    private IEnumerator floatStart()
+    {
+        Companion.velocity = Vector3.zero;
+
+        Companion.isStopped = true;
+
+        yield return new WaitForSeconds(2f);
+        
     }
 
     private void FloatCompanion()
@@ -577,6 +587,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         //Companion.speed = 3.4f;
 
         Companion.speed = 8f;
+        Companion.acceleration = 10f; 
 
 
         if ((Target.position - transform.position).magnitude <= 2f)
@@ -584,15 +595,13 @@ if (Physics.Raycast(ray, out RaycastHit hit))
             Companion.speed = 3.5f;
         }
        
-        else if ((Target.position - transform.position).magnitude <= 1f)
+        else if ((Target.position - transform.position).magnitude <= 0.8f)
         {
             SlowDown();
             return;
         }
-        else if ((Target.position - transform.position).magnitude >= 8f)
+        else if ((Target.position - transform.position).magnitude >= 7f)
         {
-               
-            
             StartCoroutine(CatchPlayer());
             return;
         }
@@ -606,6 +615,8 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     {
         // Companion.Warp(transform.position); 
         //FloatCompanion();
+        //StopCoroutine(floatStart());
+
         PosUpdate();
        // StartCoroutine(FollowPlayer());
     }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using FMODUnity;
-using System.Security.Cryptography;
 
 
 //[RequireComponent(typeof(BoxCollider))]
@@ -230,13 +229,10 @@ public class HealthPoint : MonoBehaviour
         // Check if the other collider is on the layer we want to avoid
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractiveZone"))
         {
-            print("detected"); 
-            //_canFloat = false; 
-
-            // Calculate the direction to move away from the other collider
+            //print("detected"); 
+           
             Vector3 avoidanceDirection = transform.position - other.transform.position;
 
-            // Apply a force to move away from the other collider
             _rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
 
             Invoke("StopForce", avoidanceDuration);
@@ -271,50 +267,8 @@ public class HealthPoint : MonoBehaviour
             transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
             //print("player"); 
         }
-        else { _canFloat = true; return;  }
-
-
-        //elapsed += Time.deltaTime;
-
-        //print(elapsed);
-
-        /*if(elapsed >= 1f)
-        {
-            _rb.Sleep();
-
-
-
-
-
-
-
-        using UnityEngine;
-
-public class ExampleScript : MonoBehaviour
-{
-    public float avoidanceForce = 10f;
-
-    void OnTriggerEnter(Collider other)
-    {
-        // Check if the other collider is on the layer we want to avoid
-        if (other.gameObject.layer == LayerMask.NameToLayer("LayerToAvoid"))
-        {
-            // Calculate the direction to move away from the other collider
-            Vector3 avoidanceDirection = transform.position - other.transform.position;
-
-            // Apply a force to move away from the other collider
-            GetComponent<Rigidbody>().AddForce(avoidanceDirection.normalized * avoidanceForce);
-        }
+        else { _canFloat = true; return;}
     }
-}
-           
-        }
-        */
-    }
-
-
-
-
 
     private void OnDestroy()
     {

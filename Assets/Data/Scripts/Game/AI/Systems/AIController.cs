@@ -15,9 +15,10 @@ public class AIController : MonoBehaviour
 
     [SerializeField] private List<GameObject> _enemies = new List<GameObject>();
 
+
     private void Start()
     {
-        c_enemy = GetComponentInChildren<EnemyChaseBehaviour>();
+        //c_enemy = GetComponentInChildren<EnemyChaseBehaviour>();
     }
 
     public void AgentStartedAttacking(GameObject enemy)
@@ -52,29 +53,6 @@ public class AIController : MonoBehaviour
         return; 
     }
 
-    /*
-    public void AgentStartedAttacking(Agents agent)
-    {
-        //print(AttakingAI); 
-
-        if (AttakingAI.Count >= maxAttackingAgents)
-        {
-            // Stop the agent from attacking
-            agent.StopAttacking();
-        }
-        else if(!AttakingAI.Contains(agent))
-        {
-            // Add the agent to the list of attacking agents
-            AttakingAI.Add(agent);
-        }
-    }
-
-    public void AgentStoppedAttacking(Agents agent)
-    {
-        //print(AttakingAI);
-
-        AttakingAI.Remove(agent);
-    }
-    */
+   
 }
 

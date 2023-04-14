@@ -19,7 +19,7 @@ MonoBehaviour:
   minDist: 3
   attackRate: 4
   a_damage: 4
-  stopDistance: 6.5
+  stopDistance: 6
   attackDistOffset: 4
   _attackTimer: 2
   _percentage: 0.3
@@ -28,7 +28,7 @@ MonoBehaviour:
   specialAttackEffect: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
   s_damage: 20
   currentAbilityValue: 91.7
-  abilityIncreasePerFrame: 7.3
+  abilityIncreasePerFrame: 2
   radius: 10
   angle: 90
   targetMask:
@@ -37,16 +37,23 @@ MonoBehaviour:
   obstructionMask:
     serializedVersion: 2
     m_Bits: 8769
+  health: 100
+  healthRegen: 4
+  maxHealthRegen: 70
+  _stunnedTime: 2.5
+  _deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
+  gemSpawnOnDeath: 1
+  gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
+  spawnChance: 0.317
+  _spawnHealth: 1
+  _healthDrop: {fileID: 6342344941788914745, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
+  _healthUnits: 4
+  _grunt: 
+  _scream: 
+  _etc: 
   hidableLayers:
     serializedVersion: 2
     m_Bits: 64
   minDistInCover: 12
   coverMoveSpeed: 5
   fleeDistance: 15
-  health: 100
-  healthRegen: 4
-  maxHealthRegen: 70
-  _deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
-  gemSpawnOnDeath: 1
-  gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
-  spawnChance: 0

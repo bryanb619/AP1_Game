@@ -22,7 +22,7 @@ public class CameraZoom : MonoBehaviour
 
     private Vector3 followOffset; 
 
-    private float followMin = 5f; 
+    private float followMin = 8f; 
 
     private float followMax = 15f; 
 
@@ -104,7 +104,7 @@ public class CameraZoom : MonoBehaviour
             Vector3 ZOOMDIR = followOffset.normalized;
 
 
-            float ZoomSpeed = 2F;
+            float ZoomSpeed = 1.5F;
 
             if (Input.mouseScrollDelta.y > 0)
             {

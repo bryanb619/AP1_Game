@@ -624,7 +624,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                 string DebugAttack = "<size=12><color=yellow>";
                 string closeAttack = "</color></size>";
-                Debug.Log(DebugAttack + "Attack 2: " + closeAttack + gameObject);
+                Debug.Log(DebugAttack + "Attack 2: " + closeAttack);
 
                 Instantiate(specialBullet, _shootPos.position, _shootPos.rotation);
                 
