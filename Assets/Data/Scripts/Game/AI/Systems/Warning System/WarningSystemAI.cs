@@ -13,7 +13,7 @@ public class WarningSystemAI : MonoBehaviour
     [SerializeField] private LayerMask aiLayer;
 
     // Set this to the radius in which the AI game objects should be warned
-    [Range(0, 30)][SerializeField] private float AIradius = 20.0f;
+    [Range(0, 30)][SerializeField] private float AiRadius = 20.0f;
 
     private EnemyChaseBehaviour enemy;
     private EnemyBehaviour enemy2;
@@ -75,7 +75,7 @@ public class WarningSystemAI : MonoBehaviour
     private void AlertAI()
     {
         // Check if the player is within the warning radius
-        Collider[] aiHits = Physics.OverlapSphere(transform.position, AIradius, aiLayer);
+        Collider[] aiHits = Physics.OverlapSphere(transform.position, AiRadius, aiLayer);
         if (aiHits.Length > 0)
         {
             
@@ -94,7 +94,7 @@ public class WarningSystemAI : MonoBehaviour
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position,
-            AIradius);
+            AiRadius);
         }
       
     }

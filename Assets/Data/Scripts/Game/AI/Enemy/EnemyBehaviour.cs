@@ -149,6 +149,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     [SerializeField] private Slider                                     _abilitySlider;
 
+    private ValuesTextsScript                                           valuesTexts;
+
     // animation
     private Animator                                                    _animator;
 
@@ -230,6 +232,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         _playerTarget = PlayerObject.transform;
 
+        valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
     #endregion
 
@@ -1010,6 +1013,8 @@ public class EnemyBehaviour : MonoBehaviour
             Debug.Log("Spawned Gem");
         }
         Destroy(gameObject);
+
+        valuesTexts.GetKill();
 
         Debug.Log("Enemy died");
     }

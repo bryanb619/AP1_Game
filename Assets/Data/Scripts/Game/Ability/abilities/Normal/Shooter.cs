@@ -15,12 +15,16 @@ public class Shooter : MonoBehaviour
 
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
-    [SerializeField] private float normalTimer, fireTimer, iceTimer, thunderTimer;
+
+    [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
+
     internal bool normalCooldown, fireCooldown, iceCooldown, thunderCooldown = false;
 
     [Header("Script References")]
     private ManaManager manaManager;
     [SerializeField] private ObjectiveUI objectiveUI;
+    private ValuesTextsScript valuesTexts;
+    [SerializeField] private AbilityHolder targetedAttackAbilityHolder;
 
     private RaycastHit hit;
     private Vector3 enemyPosition;
@@ -37,6 +41,8 @@ public class Shooter : MonoBehaviour
         _magicType = WeaponType.Fire;
 
         firePoint = GameObject.Find("CompanionShootPos").transform;
+
+        valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -54,7 +60,6 @@ public class Shooter : MonoBehaviour
                     break;
                 }
         }
-
     }
 
     private void Update()
@@ -114,6 +119,7 @@ public class Shooter : MonoBehaviour
                             hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                             hit.collider.GetComponent<Outline>().enabled = false;
                             objectiveUI.passedSecondObjective = true;
+                            valuesTexts.GetCrystal();
                             break;
                         }
                         else
@@ -199,6 +205,7 @@ public class Shooter : MonoBehaviour
                     {
                         StartCoroutine(IceAttackCooldown());
                         Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
+                        targetedAttackAbilityHolder.TargetedAttackCooldownUI();
                         Debug.Log("Enemy Hit with Ice");
                     }
                 else
@@ -225,27 +232,27 @@ public class Shooter : MonoBehaviour
     IEnumerator NormalAttackCooldown()
     {
         normalCooldown = true;
-        yield return new WaitForSecondsRealtime(normalTimer);
+        yield return new WaitForSecondsRealtime(normalTimer.cooldownTime);
         normalCooldown = false;
     }   
     IEnumerator FireAttackCooldown()
     {
         fireCooldown = true;
-        yield return new WaitForSecondsRealtime(fireTimer);
+        yield return new WaitForSecondsRealtime(fireTimer.cooldownTime);
         fireCooldown = false;
     }
 
     IEnumerator IceAttackCooldown()
     {
         iceCooldown = true;
-        yield return new WaitForSecondsRealtime(iceTimer);
+        yield return new WaitForSecondsRealtime(iceTimer.cooldownTime);
         iceCooldown = false;
     }
 
     IEnumerator ThunderAttackCooldown()
     {
         thunderCooldown = true;
-        yield return new WaitForSecondsRealtime(thunderTimer);
+        yield return new WaitForSecondsRealtime(thunderTimer.cooldownTime);
         thunderCooldown = false;
     }
 
