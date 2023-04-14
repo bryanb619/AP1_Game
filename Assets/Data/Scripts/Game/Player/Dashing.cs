@@ -18,7 +18,7 @@ public class Dashing : MonoBehaviour
     [SerializeField] private float dashUpwardForce, dashDuration;
 
     [Header("Cooldown"), SerializeField]
-    private float dashCd;
+    internal float dashCd;
     private float dashCdTimer;
 
     [Header("Settings"), SerializeField]

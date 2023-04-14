@@ -8,20 +8,16 @@ public class AbilityHolder : MonoBehaviour
     //[SerializeField] private Image coolDownImage = default;
 
   
-    public Ability abilityNEW;
+    [SerializeField]private Ability abilityNEW;
+    private Dashing dashCooldownVariable;
 
     // used variables from "Ability script"
 
-    [SerializeField]private float cooldownTime;
+    private float cooldownTime;
     private float activeTime;
     
     [SerializeField]
     private Slider uISlider;
-
-    //[SerializeField] private SpriteRenderer CoolDownSprite, ReadySprite;
-
-    [SerializeField] 
-    private GameObject ActiveSprite, CooldownSprite;
 
     private bool _isPaused;
 
@@ -58,6 +54,7 @@ public class AbilityHolder : MonoBehaviour
     {
         shooter = FindObjectOfType<Shooter>();
         PowerReady();
+        dashCooldownVariable = GameObject.FindGameObjectWithTag("Player").GetComponent<Dashing>();
     }
 
     // Update is called once per frame
@@ -98,11 +95,14 @@ public class AbilityHolder : MonoBehaviour
                 case Ability_State.ready:
                     if (Input.GetKeyDown(key))
                     {
+                        if(abilityNEW)
+                        {
                         // change name
                         abilityNEW.Activate(gameObject);
                         activeTime = abilityNEW.activeTime;
-                        state = Ability_State.active;
+                        }
 
+                        state = Ability_State.active;
                         PowerReady();
                     }
                     break;
@@ -116,10 +116,20 @@ public class AbilityHolder : MonoBehaviour
                     }
                     else
                     {
+                        if (abilityNEW)
+                        {
+                            cooldownTime = abilityNEW.cooldownTime;
+                            abilityNEW.BeginCooldown(gameObject);
+                        }
+                        else
+                        {
+                            cooldownTime = dashCooldownVariable.dashCd;
+                            Debug.Log("Cooldown Time = " + cooldownTime);
+                        }
+                        
                         // call ability cooldown
-                        abilityNEW.BeginCooldown(gameObject);
                         state = Ability_State.cooldown;
-                        cooldownTime = abilityNEW.cooldownTime;
+                        uISlider.maxValue = cooldownTime;
                     }
 
                     break;

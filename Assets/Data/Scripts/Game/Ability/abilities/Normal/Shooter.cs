@@ -15,7 +15,9 @@ public class Shooter : MonoBehaviour
 
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
-    [SerializeField] private float normalTimer, fireTimer, iceTimer, thunderTimer;
+
+    [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
+
     internal bool normalCooldown, fireCooldown, iceCooldown, thunderCooldown = false;
 
     [Header("Script References")]
@@ -54,7 +56,6 @@ public class Shooter : MonoBehaviour
                     break;
                 }
         }
-
     }
 
     private void Update()
@@ -225,27 +226,27 @@ public class Shooter : MonoBehaviour
     IEnumerator NormalAttackCooldown()
     {
         normalCooldown = true;
-        yield return new WaitForSecondsRealtime(normalTimer);
+        yield return new WaitForSecondsRealtime(normalTimer.cooldownTime);
         normalCooldown = false;
     }   
     IEnumerator FireAttackCooldown()
     {
         fireCooldown = true;
-        yield return new WaitForSecondsRealtime(fireTimer);
+        yield return new WaitForSecondsRealtime(fireTimer.cooldownTime);
         fireCooldown = false;
     }
 
     IEnumerator IceAttackCooldown()
     {
         iceCooldown = true;
-        yield return new WaitForSecondsRealtime(iceTimer);
+        yield return new WaitForSecondsRealtime(iceTimer.cooldownTime);
         iceCooldown = false;
     }
 
     IEnumerator ThunderAttackCooldown()
     {
         thunderCooldown = true;
-        yield return new WaitForSecondsRealtime(thunderTimer);
+        yield return new WaitForSecondsRealtime(thunderTimer.cooldownTime);
         thunderCooldown = false;
     }
 
