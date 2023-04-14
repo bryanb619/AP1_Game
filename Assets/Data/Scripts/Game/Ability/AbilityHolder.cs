@@ -169,6 +169,21 @@ public class AbilityHolder : MonoBehaviour
         }
     }
 
+    #region special condition
+    internal void TargetedAttackCooldownUI()
+    {
+        if (abilityNEW)
+        {
+            // change name
+            abilityNEW.Activate(gameObject);
+            activeTime = abilityNEW.activeTime;
+        }
+
+        state = Ability_State.active;
+        PowerReady();
+    }
+    #endregion
+    
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;

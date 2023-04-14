@@ -24,6 +24,7 @@ public class Shooter : MonoBehaviour
     private ManaManager manaManager;
     [SerializeField] private ObjectiveUI objectiveUI;
     private ValuesTextsScript valuesTexts;
+    [SerializeField] private AbilityHolder targetedAttackAbilityHolder;
 
     private RaycastHit hit;
     private Vector3 enemyPosition;
@@ -204,6 +205,7 @@ public class Shooter : MonoBehaviour
                     {
                         StartCoroutine(IceAttackCooldown());
                         Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
+                        targetedAttackAbilityHolder.TargetedAttackCooldownUI();
                         Debug.Log("Enemy Hit with Ice");
                     }
                 else
