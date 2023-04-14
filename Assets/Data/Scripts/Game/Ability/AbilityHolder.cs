@@ -126,7 +126,7 @@ public class AbilityHolder : MonoBehaviour
 
                 case Ability_State.cooldown:
 
-                    Debug.Log("Entered Ability cooldown");
+                    //Debug.Log("Entered Ability cooldown");
                     
                     if (cooldownTime > 0)
                     {

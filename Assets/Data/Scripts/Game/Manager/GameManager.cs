@@ -71,9 +71,10 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-        CheckAppFocus();
-        
+        if(_state == GameState.Gameplay)
+        {
+            //CheckAppFocus();
+        }
     }
 
     public void UpdateGameState(GameState newGamestate)
@@ -110,14 +111,8 @@ public class GameManager : MonoBehaviour
 
         _state = GameState.Gameplay;
         HandleEventEmitterState();
-
-        return; 
- 
     }
 
-    
-
-    
 
     private void HandleUnfocussedApp(bool Focused)
     {
@@ -153,7 +148,6 @@ public class GameManager : MonoBehaviour
         _state = GameState.Paused;
 
         HandleEventEmitterState();
-        return;
 
     }
 

@@ -19,9 +19,9 @@ MonoBehaviour:
   minDist: 3
   attackRate: 4
   a_damage: 4
-  stopDistance: 6
+  stopDistance: 4
   attackDistOffset: 4
-  _attackTimer: 2
+  _attackTimer: 1.5
   _percentage: 0.3
   b_damage: 8
   s_attackEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
@@ -38,9 +38,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8769
   health: 100
-  healthRegen: 4
+  healthRegen: 2
   maxHealthRegen: 70
-  _stunnedTime: 2.5
+  _stunnedTime: 3
   _deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
   gemSpawnOnDeath: 1
   gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
@@ -48,9 +48,27 @@ MonoBehaviour:
   _spawnHealth: 1
   _healthDrop: {fileID: 6342344941788914745, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
   _healthUnits: 4
-  _grunt: 
-  _scream: 
-  _etc: 
+  _grunt:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _scream:
+    Guid:
+      Data1: -1275480890
+      Data2: 1130123641
+      Data3: -370192724
+      Data4: 668594108
+    Path: event:/Enemy/Chase/Scream
+  _etc:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   hidableLayers:
     serializedVersion: 2
     m_Bits: 64

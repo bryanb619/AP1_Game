@@ -1,4 +1,5 @@
 using UnityEngine;
+using FMODUnity; 
 
 [CreateAssetMenu(menuName = "Akarya/AI/Chase Data")]
 public class AIChaseData : ScriptableObject
@@ -42,7 +43,7 @@ public class AIChaseData : ScriptableObject
 
         [Tooltip("Agent Stop distance from player position")]
         [SerializeField]
-            private float               stopDistance = 6F;
+            private float               stopDistance = 5F;
             public float                StopDistance => stopDistance; 
 
         [Tooltip("attack value is set to previuos option, use this option to allow some more space so action can be completed succesfuly")]
@@ -57,7 +58,7 @@ public class AIChaseData : ScriptableObject
 
         [Tooltip("Set this value so attacks are not duplicated")]
         [SerializeField]
-            private float               _attackTimer = 2f;
+            private float               _attackTimer = 0.7f;
             public float                AttackTimer => _attackTimer;
 
         // Chance attack //
@@ -217,18 +218,19 @@ public class AIChaseData : ScriptableObject
 
 
     // Sound -------------------------------------------------------------------->
-    [Header("Sound")]
-    [SerializeField]
-            private string              _grunt;
-            public string               grunt => _grunt;  
+        [Header("Sound")]
+       
+        [SerializeField]
+            private EventReference      _grunt;
+            public EventReference       grunt => _grunt;  
 
         [SerializeField]
-            private string              _scream;
-            public string               Scream => _scream;
+            private EventReference      _scream;
+            public EventReference       Scream => _scream;
 
         [SerializeField]
-            private string              _etc;
-            public string               Etc => _etc;
+            private EventReference      _etc;
+            public EventReference       Etc => _etc;
 
 
 
