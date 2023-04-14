@@ -23,6 +23,7 @@ public class Shooter : MonoBehaviour
     [Header("Script References")]
     private ManaManager manaManager;
     [SerializeField] private ObjectiveUI objectiveUI;
+    private ValuesTextsScript valuesTexts;
 
     private RaycastHit hit;
     private Vector3 enemyPosition;
@@ -39,6 +40,8 @@ public class Shooter : MonoBehaviour
         _magicType = WeaponType.Fire;
 
         firePoint = GameObject.Find("CompanionShootPos").transform;
+
+        valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -115,6 +118,7 @@ public class Shooter : MonoBehaviour
                             hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                             hit.collider.GetComponent<Outline>().enabled = false;
                             objectiveUI.passedSecondObjective = true;
+                            valuesTexts.GetCrystal();
                             break;
                         }
                         else

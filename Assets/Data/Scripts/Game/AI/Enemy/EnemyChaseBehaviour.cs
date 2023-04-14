@@ -190,6 +190,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             private TextMeshProUGUI             damageText;
 
+            private ValuesTextsScript           valuesTexts;
+
 
     // Animator --------------------------------------------------------------------------------->
             private Animator                    _animator;
@@ -279,8 +281,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         //playerTarget = GetComponent<Transform>();
 
-
         _Player = FindObjectOfType<PlayerMovement>();
+
+        valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
     #endregion
 
@@ -1229,6 +1232,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
 
         Instantiate(_death, transform.position, Quaternion.identity);
+
+        valuesTexts.GetKill();
 
         Destroy(this.gameObject);
     }
