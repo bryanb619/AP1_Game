@@ -8,8 +8,8 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
     private Camera mainCamera; 
     private NavMeshAgent agent; 
-    private bool _isMoving;
-    private float _turnSpeed = 10f; 
+    //private bool _isMoving;
+    //private float _turnSpeed = 10f; 
     [SerializeField]private LayerMask seeThroughLayer;
 
     private float maxAngle = 90f;

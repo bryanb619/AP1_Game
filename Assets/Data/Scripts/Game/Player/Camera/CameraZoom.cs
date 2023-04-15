@@ -33,6 +33,7 @@ public class CameraZoom : MonoBehaviour
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
         followOffset = cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset; 
     }
 
@@ -48,11 +49,14 @@ public class CameraZoom : MonoBehaviour
 
         switch(_state)
         {
-            case GameState.Gameplay:
+            case GameState.Gameplay: 
                 {
                     _state = GameState.Gameplay; break;
                 }
-            case GameState.Paused: { _state = GameState.Paused; break;}
+            case GameState.Paused: 
+                {
+                    _state = GameState.Paused; break;
+                }
         }
 
     }

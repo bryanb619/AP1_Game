@@ -8,7 +8,7 @@ using LibGameAI.FSMs;
 [RequireComponent(typeof(NavMeshAgent))]
 public class BossBehaviour : MonoBehaviour
 {
-
+    /*
 
     // References //
     [SerializeField] private AIBossData _data; 
@@ -102,4 +102,5 @@ public class BossBehaviour : MonoBehaviour
     {
         
     }
+    */
 }

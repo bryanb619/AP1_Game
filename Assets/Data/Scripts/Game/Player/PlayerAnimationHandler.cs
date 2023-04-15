@@ -8,7 +8,7 @@ public class PlayerAnimationHandler : MonoBehaviour
     [HideInInspector]
     public float speed;
 
-    private float crossFadeTime = 0.2f; 
+    //private float crossFadeTime = 0.2f; 
 
     private Animator playerAnimator;
 

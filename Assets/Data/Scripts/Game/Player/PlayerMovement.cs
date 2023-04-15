@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Dash Explosion"), SerializeField]
                      private float explosionForce = 10f;
-    [SerializeField] private float explosionDamage = 20f;  
+    //[SerializeField] private float explosionDamage = 20f;  
                      public int shield = 0;
 
     [Header("References"), SerializeField]
@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     private NavMeshPath path;
-    private float elapsed = 0.0f;
+    //private float elapsed = 0.0f;
 
     internal NavMeshAgent agent;
 
@@ -156,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
         _currentHealth = 100;
 
         path = new NavMeshPath();
-        elapsed = 0.0f;
+        //elapsed = 0.0f;
 
         currentDest = transform.position;
 

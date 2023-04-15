@@ -2,45 +2,43 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
-//using UnityEngine.UI;
-
-//using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     #region Variables
 
-    public static GameManager Instance;
-
-    public static event Action<GameState> OnGameStateChanged;
-
-    //[HideInInspector]
+    // GAME STATE -------------------------------------------------->
     [Header("Game state")]
-    public GameState State;
+        public GameState                        State;
 
-    private GameState _state;
+        private GameState                       _state;
+
+        public static GameManager               Instance;
+
+        public static event Action<GameState>   OnGameStateChanged;
+
+    [SerializeField] 
+        private GameObject                      _outOfFocus, _pauseMenu;
 
 
-    [SerializeField] private GameObject _outOfFocus, _pauseMenu;
-
-    private bool _inApp; 
-
-    //private
+    // GAME SOUND -------------------------------------------------->
     [SerializeField]
-    private StudioEventEmitter[] ambientSounds;
+        private StudioEventEmitter[]            ambientSounds;
 
     [SerializeField]
-    private StudioEventEmitter[] sfxSounds;
+        private StudioEventEmitter[]            sfxSounds;
 
     [SerializeField]
-    private StudioEventEmitter[] musicSounds;
+        private StudioEventEmitter[]            musicSounds;
 
     //[SerializeField]
-    private float ambientVolume;
-    private float sfxVolume;
-    private float musicVolume;
+        // VOLUME
+        private float                           ambientVolume;
+        private float                           sfxVolume;
+        private float                           musicVolume;
 
-    private bool _audioState;
+        // AUDIO STATE
+        private bool                            _audioState;
 
 
     //public class SFXSound : UnityEvent<float> {}
@@ -67,15 +65,15 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region Game State
-
-    private void FixedUpdate()
+    private void Update()
     {
         if(_state == GameState.Gameplay)
         {
-            //CheckAppFocus();
+           //CheckAppFocus();
         }
     }
+
+    #region Game State
 
     public void UpdateGameState(GameState newGamestate)
     {
@@ -93,11 +91,17 @@ public class GameManager : MonoBehaviour
                     HandlePaused(); 
                     break;
                 }
+            case GameState.Unfocussed:
+                {
+                    print("UNFOCUSSED");
+                    HandlePaused();
+                    break; 
+                }
+
             default: { throw new ArgumentOutOfRangeException(nameof(newGamestate), newGamestate, null); }
         }
         OnGameStateChanged?.Invoke(newGamestate);
     }
-
 
 
     private void HandleGameplay()
@@ -165,24 +169,15 @@ public class GameManager : MonoBehaviour
     private void CheckAppFocus()
     {
 
-        if (_state == GameState.Gameplay)
+        if (!Application.isFocused)
         {
-            if (!Application.isFocused)
-            {
-                _inApp = false;
-                //HandleUnfocussedApp(_inApp);
-                return;
-            }
+          
+            //HandleUnfocussedApp(_inApp);
+            return;
         }
-        else if (_state == GameState.Paused)
+        else 
         {
-            if (!_pauseMenu && Application.isFocused)
-            {
-                _inApp = true;
-                //HandleUnfocussedApp(_inApp);
-                return;
-            }
-            //else if()
+        
         }
     }
 

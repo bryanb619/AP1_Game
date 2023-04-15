@@ -27,10 +27,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             private enum HandleState            {_STOPED, _NONE}
             private HandleState                 _currentState;
 
-            
             // Game State
             private GameState                   _gameState;
-            private bool _gamePlay; 
 
     // Components --------------------------------------------------------------------------------->
 
@@ -91,8 +89,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Combat // --------------------------------------------------------------------------------->
 
     [Header("Attack")]
-
-            
+          
         [SerializeField]
             // attack position
             private Transform                   _attackPoint;
@@ -162,13 +159,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
             private bool                        _spawnHealth;
             private int                         demns = 4;
             private GameObject                  _demns;
-            private float                       dropRadius = 3f;
+            private float                       dropRadius = 2f;
 
             private bool                        gemSpawnOnDeath;
             private GameObject                  gemPrefab;
 
             // damage //
-            //private float                 damagePerSecondFire = 2f;
+            private float                       damagePerSecondFire = 2f;
             private float                       durationOfFireDamage = 10f;
 
             private int                         damage;
@@ -181,19 +178,27 @@ public class EnemyChaseBehaviour : MonoBehaviour
             private float                       stunedChance;
 
     // Sound FMOD --------------------------------------------------------------------------------->
+            
+            // grunt sounds
+            private EventReference              _gruntSound_a;
+            private EventReference              _soundGrunt_b;
 
-            private EventReference              _gruntSound;
+            // special attack sound
+            private EventReference              _screamSound;
 
-            private EventReference              _screamSound; 
+            // attack sounds
+            private EventReference              soundAttack_a;
+            private EventReference              soundAttack_b;
+
 
     // UI --------------------------------------------------------------------------------->
 
     [Header("UI Sliders")]
 
-    [SerializeField] 
+        [SerializeField] 
             private Slider                      _healthSlider;
 
-    [SerializeField] 
+        [SerializeField] 
             private Slider                      _AbilitySlider; 
 
             private TextMeshProUGUI             damageText;
@@ -215,11 +220,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             private Vector3 previousPos;
             private float curSpeed;
 
-
-
     // weakness
     //private bool                      _iceWeak, _fireWeak, _thunderWeak;
-
     #endregion
 
     #region Awake 
@@ -1191,7 +1193,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     }
                 case WeaponType.Ice:
                     {
-                        //StartCoroutine(STFS(5F));
+                        //StartCoroutine(STFS(3F));
+                        StartCoroutine(DamageOverTime(0.5f, 3f));
 
                         break;
                     }
@@ -1298,7 +1301,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
-    #region Visual & Control Coroutines
+    #region Control & Visual Coroutines
     IEnumerator DamageTextDisappear()
     {
         yield return new WaitForSeconds(2f);
@@ -1499,73 +1502,80 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 #if UNITY_EDITOR
 
+        GUIStyle red = new GUIStyle();
+        red.normal.textColor = Color.red;
+
+        GUIStyle yellow = new GUIStyle();
+        yellow.normal.textColor = Color.yellow;
+
+        GUIStyle blue = new GUIStyle();
+        blue.normal.textColor = Color.blue;
+
+        GUIStyle green = new GUIStyle();
+        green.normal.textColor = Color.green;
+
+        GUIStyle cyan = new GUIStyle();
+        cyan.normal.textColor = Color.cyan;
+
+
+
         #region Gizmos code
+
         if (_showExtraGizmos)
         {
-            GUIStyle red = new GUIStyle();
-            red.normal.textColor = Color.red;
-
-            GUIStyle yellow = new GUIStyle();
-            yellow.normal.textColor = Color.yellow;
-
-            GUIStyle blue = new GUIStyle();
-            blue.normal.textColor = Color.blue;
-
-            GUIStyle green = new GUIStyle();
-            green.normal.textColor = Color.green;
-
-            GUIStyle cyan = new GUIStyle();
-            cyan.normal.textColor = Color.cyan;
-
-
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, minDist);
 
+        }
 
-            #region AI State Label 
+        #region AI State Label 
+        if (_showLabelGizmos)
+        {
             switch (_stateAI)
             {
                 case AI._GUARD:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "Guard" + "  Gameplay: " + _gameState , green);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Guard" + "  Gameplay: " + _gameState, green);
                         break;
                     }
                 case AI._PATROL:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "Patrol" + "  Gameplay: " + _gameState, blue);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Patrol" + "  Gameplay: " + _gameState, blue);
                         break;
                     }
                 case AI._ATTACK:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "Attack" + "  Gameplay: " + _gameState + _currentState, red);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Attack" + "  Gameplay: " + _gameState + _currentState, red);
                         break;
                     }
 
                 case AI._COVER:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "Cover" + "  Gameplay: " + _gameState, cyan);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Cover" + "  Gameplay: " + _gameState, cyan);
                         break;
                     }
                 case AI._GLORYKILL:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: " + _gameState);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Glory Kill" + "  Gameplay: " + _gameState);
                         break;
                     }
                 case AI._NONE:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "NONE" + "  Gameplay: " + _gameState);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "NONE" + "  Gameplay: " + _gameState);
                         break;
                     }
                 default:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: " + _gameState);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "NO STATE FOUND" + "  Gameplay: " + _gameState);
                         break;
                     }
             }
         }
+
+        
 
         #endregion
 

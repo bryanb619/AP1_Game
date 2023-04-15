@@ -41,8 +41,8 @@ public class CompanionBehaviour : MonoBehaviour
     internal NavMeshAgent Companion;
 
     // NEW CODE
-    [SerializeField]
-    private float followsRadius = 2f;
+    //[SerializeField]
+    //private float followsRadius = 2f;
 
     private PlayerMovement player;
 

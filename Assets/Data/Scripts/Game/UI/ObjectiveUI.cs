@@ -12,7 +12,7 @@ public class ObjectiveUI : MonoBehaviour
     [SerializeField] private string secondObjective;
     [SerializeField] private string thirdObjective;
     [SerializeField] private string fourthObjective;
-    [SerializeField] private float radius = 20f;
+    //[SerializeField] private float radius = 20f;
     [SerializeField] private LayerMask AILayer;
 
     [Header("Crystal")]

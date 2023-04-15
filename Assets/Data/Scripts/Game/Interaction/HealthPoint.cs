@@ -24,6 +24,7 @@ public class HealthPoint : MonoBehaviour
     // FMOD & Sound Handling //
     private StudioEventEmitter                  m_Emitter;
     private bool                                _audioState;
+    private bool                                _useAudio;
     private bool                                _usesAudioAmbient;
 
     // Atraction //
@@ -36,7 +37,7 @@ public class HealthPoint : MonoBehaviour
 
     private bool                                _canFloat;
 
-    private LayerMask                           _layerMask;
+    private LayerMask                           _ignoreMask;
     public float                                avoidanceForce = 5f;
     public float                                avoidanceDuration = 1.8f;
 
@@ -58,7 +59,7 @@ public class HealthPoint : MonoBehaviour
     private void Start()
     {
 
-        _canFloat = true;
+        
         GetComponents();
         GetProfile();
         DetectGround(); 
@@ -97,24 +98,25 @@ public class HealthPoint : MonoBehaviour
 
     private void GetProfile()
     {
-        _health = data.Health;
-        _canUseForce = data.UseStartForce;
-        _canIgnorePlayerMaHealth = data.CanIgnoreHealth;
-        height = data.HeightFloat; 
-        _usesAudioAmbient = data.UseAudioAmbient;
-        _canBeDrawned = data.CanBeattracted;
-        attractionSpeed = data.AtractionSpeed;
-        maxDistance = data.MaxDistance;
-        _layerMask = data.LayerMask;    
+        _health                     = data.Health;
+        _canFloat                   = data.Float; 
+        _canUseForce                = data.UseStartForce;
+        _canIgnorePlayerMaHealth    = data.CanIgnoreHealth;
+        height                      = data.HeightFloat; 
+        _usesAudioAmbient           = data.UseAudioAmbient;
+        _canBeDrawned               = data.CanBeattracted;
+        attractionSpeed             = data.AtractionSpeed;
+        maxDistance                 = data.MaxDistance;
+        _ignoreMask                 = data.LayerMask;    
     }
 
     private void DetectGround()
     {
-       if(_canBeDrawned) 
+       if(_canFloat) 
        {
             RaycastHit groundHit;
 
-            if (Physics.Raycast(transform.position, Vector3.down, out groundHit))
+            if (Physics.Raycast(transform.position, Vector3.down, out groundHit, ~_ignoreMask))
             {
 
                 height = groundHit.point.y + 1f;
@@ -219,7 +221,11 @@ public class HealthPoint : MonoBehaviour
 
                 player.Takehealth(Health);
 
-                Instantiate(m_prefab, transform.position, Quaternion.identity);
+                if(_useAudio)
+                { 
+                    Instantiate(m_prefab, transform.position, Quaternion.identity);
+                }
+                
                 //Destroy(m_BoxCollider);
                 Destroy(gameObject);
             }

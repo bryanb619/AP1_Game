@@ -1,6 +1,7 @@
 #region Library
 using UnityEngine;
 using FMODUnity;
+using System.Collections;
 
 #endregion
 
@@ -225,19 +226,19 @@ public class Projectile : MonoBehaviour
     {
         if (!_useRb)
         {
-            
-
             if (_gamePlay)
             {
                 transform.Translate(Vector3.forward * speed * Time.deltaTime);
 
-                elapsed += Time.deltaTime; 
+                StartCoroutine(DestroyOnDistanceV());
+                
+                //elapsed += Time.deltaTime; 
                 //Debug.Log(elapsed);
 
-                if (elapsed >= _destroyTime)
-                {
-                    DestroyOnDistance();
-                }
+                //if (elapsed >= _destroyTime)
+                //{
+                // DestroyOnDistance();
+                //}
 
                 //Debug.Log(speed + " gameplay ");
             }
@@ -295,6 +296,12 @@ public class Projectile : MonoBehaviour
             ImpactEffect();
        }
        Destroy(this.gameObject);
+    }
+
+    private IEnumerator DestroyOnDistanceV()
+    {
+        yield return new WaitForSeconds(_destroyTime);
+        DestroyOnDistance();
     }
 
     private void DestroyOnDistance()
