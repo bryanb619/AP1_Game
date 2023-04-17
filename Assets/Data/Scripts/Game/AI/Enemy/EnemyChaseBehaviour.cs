@@ -59,6 +59,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     
             private Transform                   playerTarget;
             public Transform                    PlayerTarget => playerTarget;
+            private Shooter                     shooterScript;
 
     // Handling --------------------------------------------------------------------------------->
 
@@ -165,8 +166,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             private GameObject                  gemPrefab;
 
             // damage //
-            private float                       damagePerSecondFire = 2f;
-            private float                       durationOfFireDamage = 10f;
+            private float                       damageOverTime = 2f;
+            private float                       durationOfDOT = 10f;
 
             private int                         damage;
             internal int                        damageBoost;
@@ -294,6 +295,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         playerTarget = playerObject.transform;
 
         targetPosition = playerTarget.position;
+
+        shooterScript = playerObject.GetComponent<Shooter>();
 
         //playerTarget = GetComponent<Transform>();
 
@@ -1185,19 +1188,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     {
                         _health -= _damage + damageBoost;
 
-                        //print("normal damage");
                         StartCoroutine(HitFlash());
 
                         //damageEffectTime = 2f; 
                         break;
                     }
+
                 case WeaponType.Ice:
                     {
-                        //StartCoroutine(STFS(3F));
-                        StartCoroutine(DamageOverTime(0.5f, 3f));
-
+                        if (shooterScript.wUpgraded == true)
+                        {
+                            StartCoroutine(DamageOverTime(damageOverTime, durationOfDOT));
+                        } 
+                        else
+                            StartCoroutine(HitFlash());
                         break;
                     }
+
                 case WeaponType.Fire:
                     {
                         _health -= _damage + damageBoost;
@@ -1208,11 +1215,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         break;
                     }
+
                 case WeaponType.Thunder:
                     {
                         _health -= _damage + damageBoost;
+
+                        if (shooterScript.rUpgraded == true)
+                            StartCoroutine(STFS(stunnedTime));
+                        else
+                            StartCoroutine(HitFlash());
                         break;
                     }
+
                 case WeaponType.Dash:
                     {
                         _health -= _damage + damageBoost;
@@ -1353,8 +1367,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Damage over time
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
     {
+        Debug.Log("Started DOT coroutine");
         float elapsedTime = 0f;
-        while (elapsedTime < durationOfFireDamage)
+        while (elapsedTime < durationOfdamage)
         {
             _health -= damagePerSecond;
             StartCoroutine(HitFlash());

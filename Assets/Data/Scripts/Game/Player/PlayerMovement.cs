@@ -41,23 +41,23 @@ public class PlayerMovement : MonoBehaviour
                      private float speed;
                      
                      // player health
-                     private const int _MaxHealth = 100;
                      
-                     internal int _currentHealth;
-                     public int CurretHealth => _currentHealth;
 
     [Header("Health bar")]
+    [SerializeField] internal int _currentHealth;
     [SerializeField] private int regenAmount;
     [SerializeField] private float regenTimer;
     [SerializeField] private bool regenOn;
     [SerializeField] private LayerMask aiLayer;
                      private HealthBar _healthBar;
                      public bool HealthSetAtMax;
+                     private int _MaxHealth = 100;
+    public int CurretHealth => _currentHealth;
 
     [Header("Dash Explosion"), SerializeField]
                      private float explosionForce = 10f;
     //[SerializeField] private float explosionDamage = 20f;  
-                     public int shield = 0;
+                     public int currentShield = 0;
 
     [Header("References"), SerializeField]
                      private MeshRenderer playerMaterial;
@@ -66,33 +66,34 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask SeeThroughLayer; 
     [SerializeField] private GameObject playerMesh;
 
-    private SkinnedMeshRenderer[] skinnedMeshRenderers;
-    private Color[] originalColors;
-    private bool _gamePlay;
+                     private SkinnedMeshRenderer[] skinnedMeshRenderers;
+                     private Color[] originalColors;
+                     private bool _gamePlay;
 
-    public enum _PlayerHealth {_Max, NotMax}
+                     private NavMeshPath path;
+                     //private float elapsed = 0.0f;
+                     
+                     internal NavMeshAgent agent;
+                     
+                     private LayerMask _layerMask;
+                     
+                     public float acceleration = 2f;
+                     public float deceleration = 60f;
+                     
+                     public float closeEnoughMeters = 3f;
+                     
+                     private Vector3 currentDest;
+                     
+                     private bool _isMoving; 
+                     public bool IsMoving => _isMoving;
 
-    public _PlayerHealth _playerHealthState;
+                     public _PlayerHealth _playerHealthState;
 
-
-    private NavMeshPath path;
-    //private float elapsed = 0.0f;
-
-    internal NavMeshAgent agent;
-
-    private LayerMask _layerMask;
-
-    public float acceleration = 2f;
-    public float deceleration = 60f;
-
-    public float closeEnoughMeters = 3f;
-
-
-    private Vector3 currentDest;
-
-    private bool _isMoving; 
-    public bool IsMoving => _isMoving;
-
+    public enum _PlayerHealth 
+    {
+        _Max, 
+        NotMax
+    }
 
     private enum MovementState
     {
@@ -471,9 +472,20 @@ public class PlayerMovement : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if(currentShield < damage)
+        {
+            damage -= currentShield;
+            currentShield = 0;
+            _currentHealth -= (damage - currentShield);
+        }
+        else if (currentShield >= damage)
+        {
+            currentShield -= damage;
+        }
+        _healthBar.SetMaxHealth(_MaxHealth, currentShield);
+
         regenOn = false;
         HealthSetAtMax = false;
-        _currentHealth -= (damage - shield);
 
         StartCoroutine(VisualFeedbackDamage());
 
@@ -501,6 +513,14 @@ public class PlayerMovement : MonoBehaviour
         Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
         // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
     }
+
+    internal void GiveShield(int shieldAmount)
+    {
+        this.currentShield = shieldAmount;
+        _healthBar.SetMaxHealth(_MaxHealth, this.currentShield);
+    }
+
+    #region Enumerators
 
     IEnumerator VisualFeedbackDamage()
     {
@@ -541,6 +561,8 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
         }
     }
+
+    #endregion
 
     #region Cheats
     public void GiveHealth(int _health)

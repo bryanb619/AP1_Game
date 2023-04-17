@@ -18,11 +18,16 @@ public class Dashing : MonoBehaviour
     [SerializeField] private float dashUpwardForce, dashDuration;
 
     [Header("Cooldown"), SerializeField]
-    internal float dashCd;
-    private float dashCdTimer;
+                     internal float dashCd;
+                     private float dashCdTimer;
 
     [Header("Settings"), SerializeField]
-    private bool allowAllDirections = true, disableGravity = false, resetVel = true;
+                     private bool allowAllDirections = true; 
+                     private bool shieldUpgrade = false;
+    [SerializeField] private bool disableGravity = true, resetVel = true;
+    [SerializeField] private bool dashUpgraded;
+    [SerializeField] private int shieldAmount = 50;
+
 
     private void Start()
     {
@@ -51,7 +56,14 @@ public class Dashing : MonoBehaviour
                 playerNavMesh.ResetPath();
                 StartCoroutine(DeactivateNavMesh(0.4f));
                 Dash(hit);
+                
+                if(dashUpgraded)
+                {
+                    pm.GiveShield(shieldAmount);
+                }
             }
+
+            
         }
 
         if (dashCdTimer > 0)
@@ -125,6 +137,11 @@ public class Dashing : MonoBehaviour
         yield return new WaitForSeconds(time);
         navmeshAgent.enabled = true;
         //Debug.Log("Activated NavMeshAgent");
+    }
+
+    internal void EnableUpgrade()
+    {
+        dashUpgraded = true;
     }
 
 }

@@ -7,11 +7,18 @@ public class Shooter : MonoBehaviour
     private Transform firePoint;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Material cleansedCrystal;
-    
-    [Header("Prefabs")]
-    [SerializeField] private GameObject normalPrefab;
-    [SerializeField] private GameObject firePrefab, icePrefab, thunderPrefab;
-    public WeaponType _magicType;
+
+    private GameObject firePrefab, icePrefab, thunderPrefab;
+    internal WeaponType _magicType;
+
+    [Header("Default Ability Prefabs")]
+    [SerializeField] private GameObject defaultFirePrefab;
+    [SerializeField] private GameObject defaultIcePrefab, defaultThunderPrefab, normalPrefab;
+
+    [Header("Upgraded Ability Prefabs")]
+    [SerializeField] private GameObject upgradedFirePrefab;
+    [SerializeField] private GameObject upgradedIcePrefab, upgradedThunderPrefab;
+                     internal bool wUpgraded = false, rUpgraded = false;
 
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
@@ -43,6 +50,10 @@ public class Shooter : MonoBehaviour
         firePoint = GameObject.Find("CompanionShootPos").transform;
 
         valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
+
+        firePrefab = defaultFirePrefab;
+        icePrefab = defaultIcePrefab;
+        thunderPrefab = defaultThunderPrefab;
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -68,8 +79,6 @@ public class Shooter : MonoBehaviour
         {
             ShootInput();
             HoverHighlight();
-            
-         
         }
 
     }
@@ -228,7 +237,33 @@ public class Shooter : MonoBehaviour
         }
         StartCoroutine(ThunderAttackCooldown());
     }
-    
+  
+    internal void UpgradeChecker(int abilityNumber)
+    {
+        switch (abilityNumber)
+        {
+            
+            case 1:
+                firePrefab = upgradedFirePrefab;
+                break;
+            
+            case 2:
+                icePrefab = upgradedIcePrefab;
+                wUpgraded = true;
+                break;
+            
+            case 3:
+                thunderPrefab = upgradedThunderPrefab;
+                rUpgraded = true;
+                break;
+            
+            default:
+                break;
+        }
+    }
+
+    #region Enumerators
+
     IEnumerator NormalAttackCooldown()
     {
         normalCooldown = true;
@@ -255,6 +290,8 @@ public class Shooter : MonoBehaviour
         yield return new WaitForSecondsRealtime(thunderTimer.cooldownTime);
         thunderCooldown = false;
     }
+
+    #endregion
 
     private void OnDestroy()
     {
