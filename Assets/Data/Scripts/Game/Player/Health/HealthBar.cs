@@ -1,5 +1,3 @@
-//using System.Collections;
-//using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,6 +32,23 @@ public class HealthBar : MonoBehaviour
         _slider.value = health;
         //_fill.color = _gradient.Evaluate(_slider.normalizedValue);
     }
+
+    public void TakeDamageUI(int damage)
+    {
+
+    }
+
+    public void TakeHealthUI(int heal)
+    {
+
+    }
+
+    public void HealthEmpower(int powerUp)
+    {
+        //_slider.maxValue = 
+    }
+
+
 
     private void  SetCriticalHealth()
     {

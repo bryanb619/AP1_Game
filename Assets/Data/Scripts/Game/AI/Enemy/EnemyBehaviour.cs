@@ -20,6 +20,12 @@ public class EnemyBehaviour : MonoBehaviour
 {
     #region  Variables
 
+    // AI Set states
+        private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE }
+
+        private AI                                  _stateAI;
+
+
     // Reference to AI data
     [SerializeField] private AIRangedData                               data;
 
@@ -34,10 +40,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     [SerializeField] private GameObject                                 _death;
 
-    // AI Set states
-    private enum AI                                                     {_GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE}
-
-    private AI                                                          _stateAI;
+    
 
     private WarningSystemAI                                             _warn; 
 
