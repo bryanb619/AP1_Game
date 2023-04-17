@@ -148,6 +148,7 @@ public class AbilityHolder : MonoBehaviour
                         //cooldownTime = abilityNEW.cooldownTime;
 
                         PowerReady();
+                        ReadyFlash();
                     }
                     break;
             }
@@ -180,13 +181,14 @@ public class AbilityHolder : MonoBehaviour
 
         state = Ability_State.active;
         PowerReady();
+        ReadyFlash();
     }
     #endregion
     
-    /*private IEnumerator ReadyFlash()
+    private void ReadyFlash()
     {
-        
-    }*/
+        uISlider.GetComponent<Animation>().Play("QReady");
+    }
 
     private void OnDestroy()
     {

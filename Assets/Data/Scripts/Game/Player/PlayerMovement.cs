@@ -517,7 +517,7 @@ public class PlayerMovement : MonoBehaviour
     internal void GiveShield(int shieldAmount)
     {
         this.currentShield = shieldAmount;
-        _healthBar.SetMaxHealth(_MaxHealth, this.currentShield);
+        _healthBar.SetMaxHealth(_MaxHealth, currentShield);
     }
 
     #region Enumerators
