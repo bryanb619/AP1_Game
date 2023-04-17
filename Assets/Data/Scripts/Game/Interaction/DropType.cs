@@ -1,0 +1,1 @@
+internal enum DropType { _HP, _MANA }

@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e5a345555aec1641b3b35a7c27f1d34, type: 3}
-  m_Name: Health Point Little
+  m_Name: Drop
   m_EditorClassIdentifier: 
+  _dropType: 0
   _health: 3
+  _mana: 10
   _canIgnoreMaxHealth: 1
-  _float: 0
+  _float: 1
   _heightFloat: 4
   _canBeAttracted: 1
   _useStartForce: 1
@@ -24,4 +26,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4
   _pushForce: 0
+  _useAudio: 0
   _usesAudioAmbient: 0
