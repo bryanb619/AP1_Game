@@ -1,4 +1,5 @@
 //using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,11 +34,9 @@ public class AbilityHolder : MonoBehaviour
         cooldown
     }
 
-    // Ability state // INITIAL???
+    // Ability state
 
     private Ability_State state = Ability_State.ready;
-
-    // Player INPUT
 
     // key input
     [SerializeField]
@@ -184,6 +183,11 @@ public class AbilityHolder : MonoBehaviour
     }
     #endregion
     
+    /*private IEnumerator ReadyFlash()
+    {
+        
+    }*/
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;

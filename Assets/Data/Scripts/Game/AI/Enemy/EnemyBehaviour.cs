@@ -62,6 +62,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float                                                       minDist = 5f;
 
+    private Shooter                                                     shooterScript;
+
     // AI SPEED
     private float                                                       curSpeed;
     private Vector3                                                     previousPos;
@@ -154,9 +156,12 @@ public class EnemyBehaviour : MonoBehaviour
     // animation
     private Animator                                                    _animator;
 
-    // fire damage variables
-    private float                                                       damagePerSecondFire = 2f;
-    private float                                                       durationOfFireDamage = 10f; 
+    // damage over time variables
+    private float                                                       damageOverTime = 2f;
+    private float                                                       durationOfDOT = 10f;
+
+    // stunned variables
+    private float                                                       stunnedTime = 5f;
 
     // states & actions
     private bool                                                        _canGloryKill;
@@ -229,7 +234,7 @@ public class EnemyBehaviour : MonoBehaviour
         
         _player = FindObjectOfType<PlayerMovement>();
         PlayerObject = GameObject.Find("Player");
-
+        shooterScript = PlayerObject.GetComponent<Shooter>();
         _playerTarget = PlayerObject.transform;
 
         valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
@@ -885,31 +890,37 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 case WeaponType.Normal:
                     {
-                        
-
                         health -= _damage + damageBoost;
 
                         damageEffectTime = 0.5f; 
                         StartCoroutine(HitFlash());
                         break;
                     }
-                case WeaponType.Ice:
-                    {
 
+                case WeaponType.Fire: //Q ability
+                    {
                         health -= _damage + damageBoost;
 
-                        StartCoroutine(STFS(5F));
+                        StartCoroutine(HitFlash());
                         break;
                     }
-                case WeaponType.Fire:
-                    {
-                        damageEffectTime = 1f;
-                        health -= _damage + damageBoost;
 
-                        StartCoroutine(DamageOverTime(damagePerSecondFire, durationOfFireDamage));
+                case WeaponType.Ice: //W ability
+                    {
+                        health -= _damage + damageBoost;
+                        
+                        if(shooterScript.wUpgraded == true)
+                        {
+                            damageEffectTime = 1f;
+                            StartCoroutine(DamageOverTime(damageOverTime, durationOfDOT));
+                        }
+                        else
+                            StartCoroutine(HitFlash());
+
                         break;
                     }
-                case WeaponType.Thunder: 
+
+                case WeaponType.Dash: //E ability
                     {
                         health -= _damage + damageBoost;
 
@@ -917,16 +928,22 @@ public class EnemyBehaviour : MonoBehaviour
 
                         break; 
                     }
-                case WeaponType.Dash: 
+
+                case WeaponType.Thunder: //R ability
                     {
                         health -= _damage + damageBoost;
 
-                        StartCoroutine(HitFlash());
+                        if(shooterScript.rUpgraded == true)
+                        {
+                            StartCoroutine(STFS(stunnedTime));
+                        }
+                        else
+                            StartCoroutine(HitFlash());
 
                         break; 
                     }
 
-                default : { break; }
+                default: break;
             }
 
             StartCoroutine(DamageEffect()); 
@@ -1045,7 +1062,7 @@ public class EnemyBehaviour : MonoBehaviour
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
     {
         float elapsedTime = 0f;
-        while (elapsedTime < durationOfFireDamage)
+        while (elapsedTime < durationOfDOT)
         {
             health -= damagePerSecond;
             StartCoroutine(HitFlash());
@@ -1214,5 +1231,3 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 }
-
-

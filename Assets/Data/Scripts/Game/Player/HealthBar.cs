@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public Slider _slider, criticalSlider;
+    public Slider healthSlider, criticalSlider, shieldSlider;
 
     [SerializeField]
     private float criticalSliderVelocity;
@@ -20,18 +20,18 @@ public class HealthBar : MonoBehaviour
         SetCriticalHealth();
     }
 
-    public void SetMaxHealth(int health)
+    internal void SetMaxHealth(int health, int shield)
     {
-        _slider.maxValue = health;
-        _slider.value = health;
-
+        healthSlider.maxValue = health + shield;
+        criticalSlider.maxValue = health + shield;
+        shieldSlider.value = shield;
         //_fill.color = _gradient.Evaluate(1f);
     }
 
-    public void SetHealth(int health)
+    internal void SetHealth(int health)
     {
         time = 0f;
-        _slider.value = health;
+        healthSlider.value = health;
         //_fill.color = _gradient.Evaluate(_slider.normalizedValue);
     }
 
@@ -39,9 +39,9 @@ public class HealthBar : MonoBehaviour
     {
         time += Time.deltaTime * criticalSliderVelocity;
 
-        if (criticalSlider.value < _slider.value)
-            criticalSlider.value = _slider.value;
+        if (criticalSlider.value < healthSlider.value)
+            criticalSlider.value = healthSlider.value;
         else
-            criticalSlider.value = Mathf.Lerp(criticalSlider.value, _slider.value, time);
+            criticalSlider.value = Mathf.Lerp(criticalSlider.value, healthSlider.value, time);
     }
 }
