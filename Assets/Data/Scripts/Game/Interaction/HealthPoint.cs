@@ -10,6 +10,8 @@ public class HealthPoint : MonoBehaviour
 
     //private BoxCollider                         m_BoxCollider;
 
+   
+
     // Health //
     private int                                 _health;
     public int                                  Health => _health;
