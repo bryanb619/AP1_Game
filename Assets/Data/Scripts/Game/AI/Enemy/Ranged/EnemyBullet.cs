@@ -160,7 +160,7 @@ public class EnemyBullet : MonoBehaviour
     {
         //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         //EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
-        PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
+        PlayerHealth player = hitInfo.GetComponent<PlayerHealth>();
 
 /*
         if (enemy != null)

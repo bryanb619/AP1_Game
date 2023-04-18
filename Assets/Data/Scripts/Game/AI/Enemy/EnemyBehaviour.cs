@@ -61,7 +61,7 @@ public class EnemyBehaviour : MonoBehaviour
     private Transform                                                   _playerTarget;
     public Transform                                                    PlayerTarget => _playerTarget;
 
-    private PlayerMovement                                              _player; 
+    private PlayerHealth                                                _player; 
 
     private float                                                       minDist = 5f;
 
@@ -235,7 +235,7 @@ public class EnemyBehaviour : MonoBehaviour
         LineOfSightChecker = GetComponentInChildren<SceneChecker>();
 
         
-        _player = FindObjectOfType<PlayerMovement>();
+        _player = FindObjectOfType<PlayerHealth>();
         PlayerObject = GameObject.Find("Player");
         shooterScript = PlayerObject.GetComponent<Shooter>();
         _playerTarget = PlayerObject.transform;

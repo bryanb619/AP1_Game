@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI; 
-using UnityEngine.SceneManagement;
 
 
 public class PlayerMovement : MonoBehaviour
@@ -16,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     
     [SerializeField] private Transform orientation;
                      private MovementState state;
+
+    [SerializeField] private LayerMask aiLayer;
 
 
     [Header("Slope Handling")]
@@ -43,21 +44,12 @@ public class PlayerMovement : MonoBehaviour
                      // player health
                      
 
-    [Header("Health bar")]
-    [SerializeField] internal int _currentHealth;
-    [SerializeField] private int regenAmount;
-    [SerializeField] private float regenTimer;
-    [SerializeField] private bool regenOn;
-    [SerializeField] private LayerMask aiLayer;
-                     private HealthBar _healthBar;
-                     public bool HealthSetAtMax;
-                     private int _MaxHealth = 100;
-    public int CurretHealth => _currentHealth;
+    
 
     [Header("Dash Explosion"), SerializeField]
                      private float explosionForce = 10f;
     //[SerializeField] private float explosionDamage = 20f;  
-                     public int currentShield = 0;
+                     
 
     [Header("References"), SerializeField]
                      private MeshRenderer playerMaterial;
@@ -86,14 +78,6 @@ public class PlayerMovement : MonoBehaviour
                      
                      private bool _isMoving; 
                      public bool IsMoving => _isMoving;
-
-                     public _PlayerHealth _playerHealthState;
-
-    public enum _PlayerHealth 
-    {
-        _Max, 
-        NotMax
-    }
 
     private enum MovementState
     {
@@ -135,8 +119,6 @@ public class PlayerMovement : MonoBehaviour
         // Make a list of all SkinnedMeshRender in the character
         skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
 
-        _healthBar = FindObjectOfType<HealthBar>();
-
         // Create an array to store the original colors
         originalColors = new Color[skinnedMeshRenderers.Length];
         for (int i = 0; i < skinnedMeshRenderers.Length; i++)
@@ -153,8 +135,7 @@ public class PlayerMovement : MonoBehaviour
 
         _CompanionMovement = FindObjectOfType<CompanionBehaviour>();
         restartMenu = FindObjectOfType<RestartMenu>();
-        HealthSetAtMax = true;
-        _currentHealth = 100;
+        
 
         path = new NavMeshPath();
         //elapsed = 0.0f;
@@ -164,31 +145,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Update()
-    {
-        switch(HealthSetAtMax)
-        {
-            case true:
-                {
-                    _playerHealthState = _PlayerHealth._Max;
-                    break;
-                }
-            case false:
-                {
-                    _playerHealthState = _PlayerHealth.NotMax;
-                    break;
-                }
-        }
-
-       
-            
-       
+    {    
 
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
         SpeedControl();
         StateHandler();
-        CheatCheck();
         EnemiesAround();
 
         if (state == MovementState.walking /*|| state == MovementState.crouching*/)
@@ -200,11 +163,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (regenOn == true)
-        {
-            Invoke("Regen", regenTimer);
-        }
-
+        
         MovePlayer();
         PlayerSpeed();     
     }
@@ -470,59 +429,16 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
-    {
-        if(currentShield < damage)
-        {
-            damage -= currentShield;
-            currentShield = 0;
-            _currentHealth -= (damage - currentShield);
-        }
-        else if (currentShield >= damage)
-        {
-            currentShield -= damage;
-        }
-        _healthBar.SetMaxHealth(_MaxHealth, currentShield);
-
-        regenOn = false;
-        HealthSetAtMax = false;
-
-        StartCoroutine(VisualFeedbackDamage());
-
-        _healthBar.SetHealth(_currentHealth);
-        //Debug.Log("Player Health: " + _currentHealth);
-
-        if (_currentHealth <= 0)
-        {
-            //Debug.Log("DEAD");
-            //restartMenu.LoadRestart();
-            SceneManager.LoadScene("RestartScene");
-            //RestarMenu.SetActive(true);
-
-            //Time.timeScale = 0f;
-        }
-    }
-    public void Takehealth(int health)
-    {
-        _currentHealth += health;
-        _healthBar.SetHealth(_currentHealth);
-    }
-
     private void EnemiesAround()
     {
         Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
         // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
     }
 
-    internal void GiveShield(int shieldAmount)
-    {
-        this.currentShield = shieldAmount;
-        _healthBar.SetMaxHealth(_MaxHealth, currentShield);
-    }
 
     #region Enumerators
 
-    IEnumerator VisualFeedbackDamage()
+    internal IEnumerator VisualFeedbackDamage()
     {
 
         //Change the material colors to red
@@ -540,7 +456,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    IEnumerator VisualFeedbackHeal()
+    internal IEnumerator VisualFeedbackHeal()
     {
         for (int i = 0; i <= 2; i++)
         {
@@ -564,47 +480,9 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
-    #region Cheats
-    public void GiveHealth(int _health)
-    {
-        // Debug.Log("+ 15 health");
-        _currentHealth += _health;
-
-        //Debug.Log("Player health is: " + _currentHealth);
-
-        StartCoroutine(VisualFeedbackHeal());
-
-        _healthBar.SetHealth(_currentHealth);
-
-        if (_currentHealth >= _MaxHealth)
-        {
-            HealthSetAtMax = true;
-            // how to variables equal?
-            _currentHealth = _MaxHealth;
-            _healthBar.SetHealth(_currentHealth);
-            //Debug.Log("Player health: " + _currentHealth);
-        }
-
-        VisualFeedbackHeal();
-    }
-
-    private void CheatCheck()
-    {
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            TakeDamage(20);
-        }
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            GiveHealth(20);
-        }
-    }
-
-
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
-    #endregion
 
 }

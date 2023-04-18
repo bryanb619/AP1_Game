@@ -3307,6 +3307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8544066703244059446}
   - component: {fileID: 8544066703244059449}
+  - component: {fileID: 6129633371386829095}
   - component: {fileID: 8544066703244059450}
   - component: {fileID: 4855835871993818476}
   - component: {fileID: 3408498664106022569}
@@ -3362,18 +3363,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   orientation: {fileID: 1581294079801274593}
-  CanMove: 0
-  dashing: 0
-  _currentHealth: 0
-  regenAmount: 10
-  regenTimer: 0.1
-  regenOn: 0
   aiLayer:
     serializedVersion: 2
     m_Bits: 128
-  HealthSetAtMax: 0
+  CanMove: 0
+  dashing: 0
   explosionForce: 100
-  currentShield: 0
   playerMaterial: {fileID: 0}
   mainCamera: {fileID: 0}
   effect: {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
@@ -3384,7 +3379,23 @@ MonoBehaviour:
   acceleration: 1000
   deceleration: 0
   closeEnoughMeters: 3
-  _playerHealthState: 0
+--- !u!114 &6129633371386829095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8544066703244059447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ae1ef74178c05b4fb94c06a5076709a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentHealth: 0
+  regenAmount: 10
+  regenTimer: 0.015
+  regenOn: 0
+  HealthSetAtMax: 0
 --- !u!114 &8544066703244059450
 MonoBehaviour:
   m_ObjectHideFlags: 0
