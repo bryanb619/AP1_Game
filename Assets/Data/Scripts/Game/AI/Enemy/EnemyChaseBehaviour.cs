@@ -158,7 +158,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             // Drops & Loot //
             private bool                        _spawnHealth;
-            private int                         demns = 4;
+            private int                         _healthDrop;
+            private int                         _manaDrop;
+
+        
             private GameObject                  _demns;
             private float                       dropRadius = 2f;
 
@@ -367,7 +370,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         gemPrefab                   = data.Gem;
 
         _spawnHealth                = data.SpawnHealth;
-        demns                       = data.HealthUnits;
+        _healthDrop                 = data.HealthUnits;
         _demns                      = data.HealthDrop;
 
         // Sound
@@ -1277,7 +1280,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if(_spawnHealth)
         {
-            for (int i = 0; i < demns; i++)
+            for (int i = 0; i < _healthDrop; i++)
             {
 
                 Vector3 spawnPosition = transform.position +
@@ -1285,6 +1288,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     UnityEngine.Random.Range(-dropRadius, dropRadius));
 
                 Instantiate(_demns, spawnPosition, Quaternion.identity);
+            }
+
+
+            for(int i = 0; i < _manaDrop; i++)
+            {
+
             }
         }
         
