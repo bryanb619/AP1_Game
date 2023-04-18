@@ -1,62 +1,55 @@
 using UnityEngine;
-using FMODUnity; 
+using FMODUnity;
 
 
-public class Drop : MonoBehaviour
+//[RequireComponent(typeof(BoxCollider))]
+public class SpecialItem : MonoBehaviour
 {
     // Data //
-    [SerializeField] private DropData data;
+    [SerializeField] private SpecialDropData    data;
 
-    private DropType _dropType;
-
-    //private BoxCollider m_BoxCollider;
+    //private BoxCollider                         m_BoxCollider;
+    private DropType                           _dropType; 
+   
 
     // Health //
-    private int _health;
-    public int Health => _health;
+    private int                                 _healthEmpower;
+    public int                                  Health => _healthEmpower;
 
-    // Mana //
-    private int _mana;
-    public int Mana => _mana;
-
-
-    [SerializeField] private GameObject m_prefab;
-    private Rigidbody _rb;
+    [SerializeField] private GameObject         m_prefab;
+    private Rigidbody                           _rb;
 
     // Game State //
-    private GameState _state;
-    private bool _gamePlay;
+    private GameState                           _state; 
+    private bool                                _gamePlay; 
 
     // FMOD & Sound Handling //
-    private StudioEventEmitter m_Emitter;
-    private bool _audioState;
-    private bool _useAudio;
-    private bool _usesAudioAmbient;
+    private StudioEventEmitter                  m_Emitter;
+    private bool                                _audioState;
+    private bool                                _useAudio;
+    private bool                                _usesAudioAmbient;
 
     // Atraction //
-    private bool _canUseForce;
+    private bool                                _canUseForce;
     //private float                               startForce; 
-    private bool _canBeDrawned;
-    private int attractionSpeed;
-    private float maxDistance;
-    private bool _canIgnorePlayerMaHealth;
+    private bool                                _canBeDrawned;
+    private int                                 attractionSpeed;
+    private float                               maxDistance;
 
-    private bool _canFloat;
+    private bool                                _canFloat;
 
-    private LayerMask _ignoreMask;
-    public float avoidanceForce = 5f;
-    public float avoidanceDuration = 1.8f;
+    private LayerMask                           _ignoreMask;
+    public float                                avoidanceForce = 5f;
+    public float                                avoidanceDuration = 1.8f;
 
 
 
     // managing // 
 
     // height of float
-    private float height;
+    private float                               height;
 
-    private PlayerMovement player;
-
-    //private ManaManager manaManager;
+    private PlayerMovement                      player; 
 
 
     private void Awake()
@@ -67,10 +60,10 @@ public class Drop : MonoBehaviour
     private void Start()
     {
 
-
+        
         GetComponents();
         GetProfile();
-        DetectGround();
+        DetectGround(); 
 
 
         switch (_state)
@@ -102,43 +95,36 @@ public class Drop : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
 
         player = FindObjectOfType<PlayerMovement>();
-        //manaManager = FindObjectOfType<ManaManager>();    
     }
 
     private void GetProfile()
     {
-        _dropType = data.Drop; 
+        _dropType                   = data.Drop;
+        _healthEmpower              = data.Health;
+        _canFloat                   = data.Float; 
+        _canUseForce                = data.UseStartForce;
 
-        _health = data.Health;
-        _mana = data.Mana;
-
-        _canFloat = data.Float;
-        _canUseForce = data.UseStartForce;
-        _canIgnorePlayerMaHealth = data.CanIgnoreHealth;
-        height = data.HeightFloat;
-        _usesAudioAmbient = data.UseAudioAmbient;
-       
-        _canBeDrawned = data.CanBeattracted;
-        attractionSpeed = data.AtractionSpeed;
-        maxDistance = data.MaxDistance;
-        _ignoreMask = data.LayerMask;
-
-
+        height                      = data.HeightFloat; 
+        _usesAudioAmbient           = data.UseAudioAmbient;
+        _canBeDrawned               = data.CanBeattracted;
+        attractionSpeed             = data.AtractionSpeed;
+        maxDistance                 = data.MaxDistance;
+        _ignoreMask                 = data.LayerMask;    
     }
 
     private void DetectGround()
     {
-        if (_canFloat)
-        {
+       if(_canFloat) 
+       {
             RaycastHit groundHit;
 
             if (Physics.Raycast(transform.position, Vector3.down, out groundHit, ~_ignoreMask))
             {
 
-                height = groundHit.point.y + 0.5f;
+                height = groundHit.point.y + 1f;
             }
-        }
-
+       }
+        
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -160,12 +146,12 @@ public class Drop : MonoBehaviour
     }
     #endregion
 
-    private void FixedUpdate()
+    private void FixedUpdate() 
     {
         if (_canUseForce && _gamePlay)
         {
 
-
+            
             //_rb.AddForce(transform.forward * startForce);
             //_canUseForce = false;
 
@@ -176,104 +162,100 @@ public class Drop : MonoBehaviour
     private void Update()
     {
 
-
-        switch (_gamePlay)
+        
+        switch (_gamePlay) 
         {
-
-            case true:
+           
+            case true: 
                 {
 
-                    if (_canFloat)
+                    if (_canFloat) 
                     {
                         transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
                     }
-
+                    
 
                     //Debug.Log("In use");
-                    if (_usesAudioAmbient)
+                    if (_usesAudioAmbient) 
                     {
                         _audioState = false;
                         UpdateSound();
-
-                        return;
+                        
+                        return; 
                     }
 
-                    if (_canBeDrawned)
+                    if(_canBeDrawned)
                     {
                         OnDraw();
                     }
 
+                    
 
-
-                    break;
+                    break; 
                 }
-            case false:
+            case false: 
                 {
                     if (_usesAudioAmbient)
                     {
                         _audioState = true;
 
-                        if (_canBeDrawned)
+                        if(_canBeDrawned)
                         {
                             _rb.Sleep();
                         }
                         UpdateSound();
                         return;
                     }
-                    break;
+                    break; 
                 }
-
+                
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
-        //ManaManager MANA = other.GetComponent<ManaManager>();   
+        ManaManager MANA = other.GetComponent<ManaManager>(); 
 
-        if (PLAYER != null)
+        if (player != null)
         {
-            if (PLAYER._playerHealthState == PlayerHealth._PlayerHealth.NotMax || _canIgnorePlayerMaHealth)
+            switch(_dropType)
             {
-                //m_BoxCollider.enabled = false;
-                switch(_dropType)
-                {
-                    case DropType._HP: 
-                        {
-                            //player.Takehealth(Health);
-                            //PLAYER.Takehealth(Health);
-                            string DebugColor = "<size=12><color=green>";
-                            string closeColor = "</color></size>";
+                case DropType._SPECIAL_HEALTH: 
+                    {
+                        string DebugColor = "<size=14><color=green>";
+                        string closeColor = "</color></size>";
 
-                            Debug.Log(DebugColor + "HP picked" + closeColor);
+                        Debug.Log(DebugColor + "HP Increased" + closeColor);
 
 
-                            break;  
-                        }
-                    case DropType._MANA: 
-                        {
-                            //print("NOT LINKED UP MANA");
-                            string DebugColor = "<size=12><color=lightblue>";
-                            string closeColor = "</color></size>";
+                        PLAYER.EmpowerHealth(_healthEmpower);
+                        break;  
+                    }
+                case DropType._SPECIAL_MANA: 
+                    {
+                        string DebugColor = "<size=14><color=lightblue>";
+                        string closeColor = "</color></size>";
 
-                            Debug.Log(DebugColor + "Mana picked" + closeColor);
+                        
+                        Debug.Log(DebugColor + "HP Increased" + closeColor);
 
-                            //MANA.RecoverMana(Mana);
-                            break; 
-                        }
-                    default: { break; }
-
-                }
-                
-
-                if (_useAudio && m_prefab != null)
-                {
-                    Instantiate(m_prefab, transform.position, Quaternion.identity);
-                }
-
-                //Destroy(m_BoxCollider);
-                Destroy(gameObject);
+                        MANA.ManaIncrease(10);
+                        break; 
+                    }
             }
+
+         
+            
+
+            if (_useAudio)
+            {
+                Instantiate(m_prefab, transform.position, Quaternion.identity);
+            }
+
+            //Destroy(m_BoxCollider);
+            Destroy(gameObject);
+
             //player
         }
 
@@ -281,7 +263,7 @@ public class Drop : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractiveZone"))
         {
             //print("detected"); 
-
+           
             Vector3 avoidanceDirection = transform.position - other.transform.position;
 
             _rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
@@ -314,15 +296,16 @@ public class Drop : MonoBehaviour
         if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
         {
 
-            _canFloat = false;
+            _canFloat = false; 
             transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
             //print("player"); 
         }
-        else { _canFloat = true; return; }
+        else { _canFloat = true; return;}
     }
 
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
+    
 }

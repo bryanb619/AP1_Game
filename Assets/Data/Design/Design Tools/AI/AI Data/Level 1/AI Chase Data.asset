@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f164e7accfd96c24bbae33016d80036f, type: 3}
+  m_Name: AI Chase Data
+  m_EditorClassIdentifier: 
+  _attackSpeed: 1.8
+  _attackDist: 2.5
+  _attackEffect: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
+  _damageEffectTime: 0.4
+  minDist: 3
+  attackRate: 4
+  a_damage: 4
+  stopDistance: 4
+  attackDistOffset: 4
+  _attackTimer: 1.5
+  _percentage: 0.3
+  b_damage: 8
+  s_attackEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
+  specialAttackEffect: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
+  s_damage: 20
+  currentAbilityValue: 91.7
+  abilityIncreasePerFrame: 2
+  radius: 10
+  angle: 90
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 6144
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 8769
+  health: 100
+  healthRegen: 2
+  maxHealthRegen: 70
+  _stunnedTime: 3
+  _stunnedChance: 0.35
+  _deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
+  gemSpawnOnDeath: 1
+  gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
+  spawnChance: 0.317
+  _spawnHealth: 1
+  _healthDrop: {fileID: 2109320882222824309, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
+  _healthUnits: 3
+  _spawnMana: 1
+  _manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
+  _manaItems: 1
+  _grunt:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _scream:
+    Guid:
+      Data1: -1275480890
+      Data2: 1130123641
+      Data3: -370192724
+      Data4: 668594108
+    Path: event:/Enemy/Chase/Scream
+  _etc:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  hidableLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  minDistInCover: 12
+  coverMoveSpeed: 5
+  fleeDistance: 15

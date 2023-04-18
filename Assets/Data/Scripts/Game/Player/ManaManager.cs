@@ -103,6 +103,11 @@ public class ManaManager : MonoBehaviour
         manaUI.SetMana(mana);
     }
 
+    internal void ManaIncrease(int add)
+    {
+        manaUI.SetNewMax(add);
+    }
+
     #endregion
 
     #region Abilities

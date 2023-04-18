@@ -158,12 +158,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             // Drops & Loot //
             private bool                        _spawnHealth;
-            private int                         _healthDrop;
-            private GameObject                  _manaObject;
-            private int                         _manaDrop;
 
-        
-            private GameObject                  _demns;
+            private int                         _healthItems;
+            private GameObject                  _healthDrop;
+
+            private bool                        _spawnMana; 
+
+            private int                         _manaItems;
+            private GameObject                  _manaDrop;
+
+
+            
             private float                       dropRadius = 2f;
 
             private bool                        gemSpawnOnDeath;
@@ -370,18 +375,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
         gemSpawnOnDeath             = data.GemSpawnOnDeath;
         gemPrefab                   = data.Gem;
 
-
-
         _spawnHealth                = data.SpawnHealth;
-        _healthDrop                 = data.HealthUnits;
-        _demns                      = data.HealthDrop;
+        _healthItems                = data.HealthUnits;
+        _healthDrop                 = data.HealthDrop;
+        
+        _spawnMana                  = data.SpawnMana;
+        _manaItems                  = data.ManaItems;
+        _manaDrop                   = data.ManaDrop;
 
-        _manaObject                 = data.ManaDrop; 
-
-
-        // Sound
-
-        _screamSound                 = data.Scream; 
+        // Sound ------------------------------------------------------->
+        _screamSound                = data.Scream; 
 
         // Weakness
         //_iceWeak = data.Ice;
@@ -1286,19 +1289,26 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if(_spawnHealth)
         {
-            for (int i = 0; i < _healthDrop; i++)
+            for (int i = 0; i < _healthItems; i++)
             {
 
                 Vector3 spawnPosition = transform.position +
                     new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
                     UnityEngine.Random.Range(-dropRadius, dropRadius));
 
-                Instantiate(_demns, spawnPosition, Quaternion.identity);
-            }
+                Instantiate(_healthDrop, spawnPosition, Quaternion.identity);
+            }   
+        }
 
-
-            for(int i = 0; i < _manaDrop; i++)
+        if(_spawnMana)
+        {
+            for (int i = 0; i < _manaItems; i++)
             {
+                Vector3 spawnPosition = transform.position +
+                      new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
+                      UnityEngine.Random.Range(-dropRadius, dropRadius));
+
+                Instantiate(_manaDrop, spawnPosition, Quaternion.identity);
 
             }
         }

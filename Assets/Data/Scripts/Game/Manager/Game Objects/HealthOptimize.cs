@@ -5,7 +5,7 @@ public class HealthOptimize : MonoBehaviour
 
     private MeshRenderer _mesh;
 
-    private HealthPoint _healthPoint;
+    private SpecialItem _healthPoint;
 
     private StudioEventEmitter _event; 
     
@@ -14,7 +14,7 @@ public class HealthOptimize : MonoBehaviour
     {
         _mesh = GetComponent<MeshRenderer>();
 
-        _healthPoint = GetComponent<HealthPoint>();
+        _healthPoint = GetComponent<SpecialItem>();
 
         _event = GetComponent<StudioEventEmitter>();  
     }
@@ -24,14 +24,14 @@ public class HealthOptimize : MonoBehaviour
     {
         if(_mesh.isVisible)
         {
-            _healthPoint.enabled = true; 
-            _event.enabled = true; 
+            //_healthPoint.enabled = true; 
+            //_event.enabled = true; 
             return;
         }
         else
         {
-            _healthPoint.enabled = false;
-            _event.enabled = false; 
+            //_healthPoint.enabled = false;
+            //_event.enabled = false; 
             return; 
         }
 

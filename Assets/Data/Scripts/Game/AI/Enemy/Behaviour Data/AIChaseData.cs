@@ -211,19 +211,28 @@ public class AIChaseData : ScriptableObject
             private GameObject          _healthDrop;
             public GameObject           HealthDrop => _healthDrop;
 
+        [Range(0, 10)]
+        [SerializeField]
+            private int                 _healthUnits; 
+            public int                  HealthUnits => _healthUnits;
+
+        [SerializeField]
+            private bool                _spawnMana;
+            internal bool               SpawnMana => _spawnMana;
+
         // Mana // 
-        [SerializeField] 
+        [SerializeField]
             private GameObject          _manaDrop;
-            public GameObject           ManaDrop => _manaDrop;    
+            public GameObject           ManaDrop => _manaDrop;
 
         [Range(0, 10)]
         [SerializeField]
-            private int                 _healthUnits = 4; 
-            public int                  HealthUnits => _healthUnits;
+            private int                 _manaItems;
+            internal int                ManaItems => _manaItems;
 
 
     // Sound -------------------------------------------------------------------->
-        [Header("Sound")]
+    [Header("Sound")]
        
         [SerializeField]
             private EventReference      _grunt;

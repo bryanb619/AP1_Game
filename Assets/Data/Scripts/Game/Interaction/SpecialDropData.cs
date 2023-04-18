@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Akarya/Interaction/Drop")]
-public class DropData : ScriptableObject
+[CreateAssetMenu(menuName = "Akarya/Interaction/SpecialDrop")]
+public class SpecialDropData : ScriptableObject
 {
 
     [SerializeField] 
@@ -13,8 +13,8 @@ public class DropData : ScriptableObject
 
         [Range(0f, 100f)]
         [SerializeField] 
-        private int                 _health;
-        internal int                Health => _health;
+        private int                 _healthEmpower;
+        internal int                Health => _healthEmpower;
 
     // Mana //
     [Header("Mana")]
@@ -22,16 +22,11 @@ public class DropData : ScriptableObject
 
         [Range(0f, 100f)]
         [SerializeField]
-        private int                 _mana;
-        internal int                Mana => _mana;
+        private int                 _manaEmpower;
+        internal int                Mana => _manaEmpower;
 
 
     [Header("Float")]
-
-        [SerializeField] 
-        private bool                _canIgnoreMaxHealth;
-        internal bool               CanIgnoreHealth => _canIgnoreMaxHealth;
-
 
     [Header("Float")]
 
@@ -40,7 +35,7 @@ public class DropData : ScriptableObject
         internal bool               Float => _float;
 
         [SerializeField]
-        private float               _heightFloat = 4f;
+        private float               _heightFloat = 1f;
         internal float              HeightFloat => _heightFloat;
 
         [SerializeField] 

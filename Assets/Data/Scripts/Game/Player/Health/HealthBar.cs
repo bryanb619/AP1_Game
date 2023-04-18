@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Rendering.DebugUI;
 
 public class HealthBar : MonoBehaviour
 {
@@ -47,7 +46,7 @@ public class HealthBar : MonoBehaviour
 
     public void HealthEmpower(int powerUp)
     {
-        //_slider.maxValue = 
+        healthSlider.maxValue += powerUp; 
     }
 
 
