@@ -211,6 +211,11 @@ public class AIChaseData : ScriptableObject
             private GameObject          _healthDrop;
             public GameObject           HealthDrop => _healthDrop;
 
+        // Mana // 
+        [SerializeField] 
+            private GameObject          _manaDrop;
+            public GameObject           ManaDrop => _manaDrop;    
+
         [Range(0, 10)]
         [SerializeField]
             private int                 _healthUnits = 4; 

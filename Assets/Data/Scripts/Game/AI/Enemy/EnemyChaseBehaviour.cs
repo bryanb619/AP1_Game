@@ -159,6 +159,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             // Drops & Loot //
             private bool                        _spawnHealth;
             private int                         _healthDrop;
+            private GameObject                  _manaObject;
             private int                         _manaDrop;
 
         
@@ -369,9 +370,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
         gemSpawnOnDeath             = data.GemSpawnOnDeath;
         gemPrefab                   = data.Gem;
 
+
+
         _spawnHealth                = data.SpawnHealth;
         _healthDrop                 = data.HealthUnits;
         _demns                      = data.HealthDrop;
+
+        _manaObject                 = data.ManaDrop; 
+
 
         // Sound
 
