@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class HealthBar : MonoBehaviour
 {
@@ -22,14 +23,15 @@ public class HealthBar : MonoBehaviour
     {
         healthSlider.maxValue = health + shield;
         criticalSlider.maxValue = health + shield;
-        shieldSlider.value = shield;
+        shieldSlider.maxValue = health + shield;    
         //_fill.color = _gradient.Evaluate(1f);
-    }
 
-    internal void SetHealth(int health)
+    }
+    internal void SetHealth(int health, int shield)
     {
         time = 0f;
         healthSlider.value = health;
+        shieldSlider.value = health + shield;
         //_fill.color = _gradient.Evaluate(_slider.normalizedValue);
     }
 

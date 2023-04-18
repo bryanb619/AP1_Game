@@ -223,11 +223,11 @@ public class Drop : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerMovement PLAYER = other.GetComponent<PlayerMovement>();
+        PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
         ManaManager MANA = other.GetComponent<ManaManager>();   
         if (PLAYER != null)
         {
-            if (PLAYER._playerHealthState == PlayerMovement._PlayerHealth.NotMax || _canIgnorePlayerMaHealth)
+            if (PLAYER._playerHealthState == PlayerHealth._PlayerHealth.NotMax || _canIgnorePlayerMaHealth)
             {
                 //m_BoxCollider.enabled = false;
                 switch(_dropType)

@@ -10,7 +10,8 @@ public class Dashing : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private LayerMask SeeThroughLayer;
                      private Rigidbody rb;
-                     private PlayerMovement pm;
+                     private PlayerHealth playerHealth;
+                     private PlayerMovement playerMovement;
                      private NavMeshAgent playerNavMesh;
 
     [Header("Dashing"), SerializeField]
@@ -33,7 +34,8 @@ public class Dashing : MonoBehaviour
     {
         navmeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
-        pm = GetComponent<PlayerMovement>();
+        playerHealth = GetComponent<PlayerHealth>();
+        playerMovement = GetComponent<PlayerMovement>();
         playerNavMesh = GetComponent<NavMeshAgent>();
     }
 
@@ -48,8 +50,6 @@ public class Dashing : MonoBehaviour
         {
             RaycastHit hit;
 
-            
-
             if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
             {
                 transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
@@ -59,7 +59,7 @@ public class Dashing : MonoBehaviour
                 
                 if(dashUpgraded)
                 {
-                    pm.GiveShield(shieldAmount);
+                    playerHealth.GiveShield(shieldAmount);
                 }
             }
 
@@ -77,7 +77,7 @@ public class Dashing : MonoBehaviour
         {
             dashCdTimer = dashCd;
         }
-        pm.dashing = true;
+        playerMovement.dashing = true;
 
         Transform forwardT = hit.transform;
          
@@ -106,7 +106,7 @@ public class Dashing : MonoBehaviour
 
     private void ResetDash()
     {
-        pm.dashing = false;
+        playerMovement.dashing = false;
 
         if (disableGravity)
             rb.useGravity = true;

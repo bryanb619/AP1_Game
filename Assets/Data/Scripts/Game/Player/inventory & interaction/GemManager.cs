@@ -9,7 +9,7 @@ using UnityEngine;
 public class GemManager : MonoBehaviour
 {
     [Header ("script references")]
-    private PlayerMovement playerScript;
+    private PlayerHealth playerScript;
     private ManaManager manaManager;
 
     private Gems gemType = new();
@@ -31,7 +31,7 @@ public class GemManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerScript = FindObjectOfType<PlayerMovement>();
+        playerScript = FindObjectOfType<PlayerHealth>();
         manaManager = FindObjectOfType<ManaManager>();
         player = GameObject.Find("Player");
     }
@@ -106,7 +106,7 @@ public class GemManager : MonoBehaviour
                 break;
 
             case Gems.Health:
-                playerScript.GiveHealth(healthGemRecovery);
+                playerScript.RegenerateHealth(healthGemRecovery);
                 break;
 
             default:

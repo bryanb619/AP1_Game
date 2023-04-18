@@ -187,7 +187,7 @@ public class AbilityHolder : MonoBehaviour
     
     private void ReadyFlash()
     {
-        uISlider.GetComponent<Animation>().Play("QReady");
+        uISlider.GetComponent<Animation>().Play();
     }
 
     private void OnDestroy()

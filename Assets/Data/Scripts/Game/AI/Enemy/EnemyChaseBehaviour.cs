@@ -55,7 +55,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // References to player //
             private GameObject                  playerObject;
-            private PlayerMovement              _Player;
+            private PlayerHealth                _Player;
     
             private Transform                   playerTarget;
             public Transform                    PlayerTarget => playerTarget;
@@ -303,7 +303,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         //playerTarget = GetComponent<Transform>();
 
-        _Player = FindObjectOfType<PlayerMovement>();
+        _Player = FindObjectOfType<PlayerHealth>();
 
         valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
