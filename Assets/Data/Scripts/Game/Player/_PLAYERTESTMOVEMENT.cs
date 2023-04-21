@@ -67,7 +67,7 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
 
                     //targetPosition = hit.point;
                     //isMoving = true;
-                    float height = 0f; 
+                    float height = 0f;
                     height = hit.point.y + 0.3f;
 
 
@@ -75,11 +75,11 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
 
                     GameObject spawnedObject = Instantiate(effect, hit.point, Quaternion.identity);
 
-                    spawnedObject.transform.position = 
+                    spawnedObject.transform.position =
                         new Vector3(spawnedObject.transform.position.x, height, spawnedObject.transform.position.z);
 
 
-
+                    /*
                     if (_isMoving)
                     {
                         targetPosition = hit.point;
@@ -92,35 +92,8 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
 
                     }
 
+                    */
                 }
-                else if (hit.transform.CompareTag("NavmeshWalk"))
-                {
-                    if (agent.enabled)
-                    {
-                        agent.enabled = true;
-                        //transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
-                        StartCoroutine(StartToWalkTimer());
-
-                        Instantiate(effect, hit.point, Quaternion.identity);
-                        agent.SetDestination(hit.point);
-
-
-                        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-                        {
-
-                            agent.velocity = Vector3.zero;
-                            agent.isStopped = true;
-                            return;
-
-                        }
-                        else
-                        {
-                            agent.isStopped = false;
-                            return;
-                        }
-                    }
-                }
-
             }
         }
         if (_isMoving)

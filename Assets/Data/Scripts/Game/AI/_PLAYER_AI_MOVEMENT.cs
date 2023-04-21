@@ -6,29 +6,42 @@ using UnityEngine.AI;
 public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 {
 
-    private Camera mainCamera; 
-    private NavMeshAgent agent; 
+    private Camera                              mainCamera; 
+    private NavMeshAgent                        agent; 
     //private bool _isMoving;
     //private float _turnSpeed = 10f; 
-    [SerializeField]private LayerMask seeThroughLayer;
+    [SerializeField]private LayerMask           seeThroughLayer;
 
-    private float maxAngle = 90f;
+    private float                               maxAngle = 30f;
 
 
-    private float playerSpeed = 3.5f; 
+    private float                               playerSpeed = 4f;
 
-    [SerializeField] private GameObject _clickEffect;
+    private float                               playerAcceleration = 2000f; 
 
-    private Vector3 direction; 
+    private float                               _turnSpeed = 13f;
+
+    private bool                                _isMoving; 
+
+    [SerializeField] 
+    private GameObject                          _clickEffect;
+
+    private Vector3                             targetPosition;
+    private Vector3                             direction; 
 
     float height = 0;
 
     private void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        mainCamera= FindObjectOfType<Camera>();
+        agent                   = GetComponent<NavMeshAgent>();
+        mainCamera              = FindObjectOfType<Camera>();
 
-        agent.speed = playerSpeed;
+        agent.speed             = playerSpeed;
+        agent.acceleration      = playerAcceleration;
+
+
+        agent.updateRotation    = false;
+        agent.angularSpeed      = 0;
         //agent.angularSpeed = 0f; 
 
     }
@@ -53,20 +66,33 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                         // set the new target position
                         Vector3 newDirection = (hit.point - transform.position).normalized;
                         float angle = Vector3.Angle(direction, newDirection);
+                        
 
-                        if (angle > maxAngle)
+                        if (angle > maxAngle && agent.remainingDistance >= 0.3f)
                         {
                             agent.velocity = Vector3.zero;
-                            agent.isStopped = true;
+                            //agent.isStopped = true;
+
                             agent.isStopped = false;
+
+                            targetPosition = hit.point;
                             agent.SetDestination(hit.point);
+                            
+                            //_isMoving = false;
+
                         }
-                    
+
                         else
                         {
+                            _isMoving = true;
+
                             agent.isStopped = false;
+                            targetPosition = hit.point;
                             agent.SetDestination(hit.point);
+                            
                         }
+
+                     
 
                         direction = newDirection;
 
@@ -75,110 +101,51 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                         spawnedObject.transform.position =
                             new Vector3(spawnedObject.transform.position.x, height, spawnedObject.transform.position.z);
 
-
-                        //agent.SetDestination(hit.point);
-
-
-                        
-
-
-
-                        //targetPosition = hit.point; 
                         /*
-                        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                        if (_isMoving)
                         {
-                            agent.velocity = Vector3.zero;
-                            agent.isStopped = true;
-                            return;
+                            targetPosition = hit.point;
+
                         }
                         else
                         {
-                            agent.isStopped = false;
-                            return;
+                            targetPosition = hit.point;
+                            _isMoving = true;
+
                         }
-                        */
+                     */
+
                     }
                 }
             }
         }
-        if(agent.enabled) 
+        
+        
+        
+        if (agent.enabled)
         {
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
             {
                 agent.velocity = Vector3.zero;
                 agent.isStopped = true;
             }
-        }
 
-        
-
-        /*
-        if (_isMoving)
-        {
-            float distance = Vector3.Distance(transform.position, targetPosition);
-            if (distance < agent.stoppingDistance)
+            if (_isMoving)
             {
-                agent.isStopped = true;
-                _isMoving = false;
-                return;
-            }
+                direction = targetPosition - transform.position;
 
-            //Vector3 direction = targetPosition - transform.position;
-            //direction.y = 0;
+                direction.y = 0;
 
-            // Smoothly rotate the player towards the target
-            //Quaternion targetRotation = Quaternion.LookRotation(direction);
-            //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
+                // Rotate player towards the target position
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
 
-            // Move the player towards the target position
-            agent.SetDestination(targetPosition);
-
-            if (agent.pathPending)
-            {
-                return;
-            }
-
-            if (agent.remainingDistance > agent.stoppingDistance)
-            {
-                agent.isStopped = false;
-            }
-            else
-            {
-                agent.isStopped = true;
             }
         }
-        /*
-        // Check if the NavMesh agent has a valid path
-        if (agent.enabled && agent.hasPath && agent.remainingDistance > agent.stoppingDistance)
-        {
-            // Calculate the direction and distance to the target
-            Vector3 direction = agent.steeringTarget - transform.position;
-            float distance = direction.magnitude;
 
-            // If the new path is more than 150 degrees in the other direction, stop the agent
-            float angle = Vector3.Angle(transform.forward, direction);
-            if (angle > 150f)
-            {
-                agent.isStopped = true;
-                return;
-            }
 
-            // Move the player using NavMesh
-            agent.isStopped = false;
-            agent.SetDestination(agent.steeringTarget);
 
-            // Smoothly rotate the player towards the target
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
 
-            // Stop moving if the player is close enough to the target position
-            if (distance < agent.stoppingDistance)
-            {
-                agent.isStopped = true;
-                _isMoving = false;
-                return;
-            }
-        }
-        */
     }
+      
 }

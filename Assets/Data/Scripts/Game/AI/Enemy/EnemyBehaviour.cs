@@ -596,8 +596,13 @@ public class EnemyBehaviour : MonoBehaviour
 
                     else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
                     {
-                        ResumeAgent(); 
-                        GetDistance(9F);
+                        if(_canAttack) 
+                        { 
+                            ResumeAgent();
+                            GetDistance(9F);
+                        }
+
+                        
                     }
 
                     break;
@@ -617,8 +622,12 @@ public class EnemyBehaviour : MonoBehaviour
 
                     else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
                     {
-                        ResumeAgent();
-                        GetDistance(3.5F);
+                        if (_canAttack)
+                        {
+                            ResumeAgent();
+                            GetDistance(3.5F);
+                        }
+                            
                     }
 
                     CoolDoownPower();
@@ -770,9 +779,11 @@ public class EnemyBehaviour : MonoBehaviour
         {
             ISRUNING = true;
             _canPeformAttack = false;
+            _canAttack = false;
             _activeDizzy = true; 
             yield return new WaitForSeconds(4f);
             _activeDizzy = false;
+            _canAttack = true;
             _canPeformAttack = true;
             ResumeAgent();  
             ISRUNING = false;
@@ -1182,10 +1193,10 @@ public class EnemyBehaviour : MonoBehaviour
     private IEnumerator STFS(float value)
     {
         bool STFS_EFFECT = false;
+
         if (!STFS_EFFECT)
         {
             STFS_EFFECT = true;
-
 
 
             print("STARTED STFS COROUTINE SUCCESFULLY");

@@ -8,7 +8,7 @@ public class SpecialItem : MonoBehaviour
     // Data //
     [SerializeField] private SpecialDropData    data;
 
-    //private BoxCollider                         m_BoxCollider;
+    private BoxCollider                         m_BoxCollider;
     private DropType                            _dropType;   
 
     // Health //
@@ -50,7 +50,8 @@ public class SpecialItem : MonoBehaviour
     public float                                avoidanceForce = 5f;
     public float                                avoidanceDuration = 1.8f;
 
-
+    private bool                                _canActivateCollider;
+    private float                               elapsed; 
 
     // managing // 
 
@@ -98,7 +99,7 @@ public class SpecialItem : MonoBehaviour
     #region Components, profile & Raycast
     private void GetComponents()
     {
-        //m_BoxCollider = GetComponent<BoxCollider>();   
+        m_BoxCollider = GetComponent<BoxCollider>();   
 
         m_Emitter = GetComponent<StudioEventEmitter>();
         _rb = GetComponent<Rigidbody>();
@@ -173,7 +174,6 @@ public class SpecialItem : MonoBehaviour
         if (_canUseForce && _gamePlay)
         {
 
-            
             //_rb.AddForce(transform.forward * startForce);
             //_canUseForce = false;
 
@@ -196,6 +196,9 @@ public class SpecialItem : MonoBehaviour
                         transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
                     }
 
+                   
+
+
                     //Debug.Log("In use");
                     if (_usesAudioAmbient) 
                     {
@@ -205,7 +208,7 @@ public class SpecialItem : MonoBehaviour
                         return; 
                     }
 
-                    if(_canBeDrawned)
+                    if(_canBeDrawned )
                     {
                         OnDraw();
                     }
@@ -236,13 +239,13 @@ public class SpecialItem : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
-        ManaManager MANA = other.GetComponent<ManaManager>(); 
+        ManaManager MANA = other.GetComponent<ManaManager>();
 
         if (player != null)
         {
-            switch(_dropType)
+            switch (_dropType)
             {
-                case DropType._SPECIAL_HEALTH: 
+                case DropType._SPECIAL_HEALTH:
                     {
                         string DebugColor = "<size=14><color=green>";
                         string closeColor = "</color></size>";
@@ -251,34 +254,33 @@ public class SpecialItem : MonoBehaviour
 
 
                         PLAYER.EmpowerHealth(Health);
-                        break;  
+                        break;
                     }
-                case DropType._SPECIAL_MANA: 
+                case DropType._SPECIAL_MANA:
                     {
                         string DebugColor = "<size=14><color=lightblue>";
                         string closeColor = "</color></size>";
 
-                        
+
                         Debug.Log(DebugColor + "Mana Increased" + closeColor);
 
                         MANA.ManaIncrease(Mana);
-                        break; 
+                        break;
                     }
             }
-
-         
-            
-
-            if (_useAudio)
-            {
-                Instantiate(m_prefab, transform.position, Quaternion.identity);
-            }
-
-            //Destroy(m_BoxCollider);
-            Destroy(gameObject);
-
-            //player
         }
+
+        if (_useAudio)
+        {
+            Instantiate(m_prefab, transform.position, Quaternion.identity);
+        }
+
+        //Destroy(m_BoxCollider);
+        Destroy(gameObject);
+
+
+        //player
+
 
         // Check if the other collider is on the layer we want to avoid
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractiveZone"))
