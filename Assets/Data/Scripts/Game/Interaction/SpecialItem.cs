@@ -110,6 +110,9 @@ public class SpecialItem : MonoBehaviour
     {
         _dropType                   = data.Drop;
         _healthEmpower              = data.Health;
+
+        _manaEmpower                = data.Mana;   
+        
         _canFloat                   = data.Float; 
         _canUseForce                = data.UseStartForce;
 

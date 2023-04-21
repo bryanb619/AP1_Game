@@ -229,52 +229,48 @@ public class Drop : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
-        //ManaManager MANA = other.GetComponent<ManaManager>();   
+        ManaManager MANA = other.GetComponent<ManaManager>();   
 
         if (PLAYER != null)
         {
-            if (PLAYER._playerHealthState == PlayerHealth._PlayerHealth.NotMax || _canIgnorePlayerMaHealth)
+            //m_BoxCollider.enabled = false;
+            switch (_dropType)
             {
-                //m_BoxCollider.enabled = false;
-                switch(_dropType)
-                {
-                    case DropType._HP: 
-                        {
-                            //player.Takehealth(Health);
-                            //PLAYER.Takehealth(Health);
-                            string DebugColor = "<size=12><color=green>";
-                            string closeColor = "</color></size>";
+                case DropType._HP:
+                    {
+                        //player.Takehealth(Health);
+                        //PLAYER.Takehealth(Health);
+                        string DebugColor = "<size=12><color=green>";
+                        string closeColor = "</color></size>";
 
-                            Debug.Log(DebugColor + "HP picked" + closeColor);
+                        Debug.Log(DebugColor + "HP picked" + closeColor);
+                        PLAYER.Takehealth(Health);
 
+                        break;
+                    }
+                case DropType._MANA:
+                    {
+                        //print("NOT LINKED UP MANA");
+                        string DebugColor = "<size=12><color=lightblue>";
+                        string closeColor = "</color></size>";
 
-                            break;  
-                        }
-                    case DropType._MANA: 
-                        {
-                            //print("NOT LINKED UP MANA");
-                            string DebugColor = "<size=12><color=lightblue>";
-                            string closeColor = "</color></size>";
+                        Debug.Log(DebugColor + "Mana picked" + closeColor);
 
-                            Debug.Log(DebugColor + "Mana picked" + closeColor);
+                       
+                        MANA.RecoverMana(Mana);
+                        break;
+                    }
+                default: { break; }
 
-                            //MANA.RecoverMana(Mana);
-                            break; 
-                        }
-                    default: { break; }
-
-                }
-                
-
-                if (_useAudio && m_prefab != null)
-                {
-                    Instantiate(m_prefab, transform.position, Quaternion.identity);
-                }
-
-                //Destroy(m_BoxCollider);
-                Destroy(gameObject);
             }
-            //player
+
+            if (_useAudio && m_prefab != null)
+            {
+                Instantiate(m_prefab, transform.position, Quaternion.identity);
+            }
+
+            //Destroy(m_BoxCollider);
+            Destroy(gameObject);
         }
 
         // Check if the other collider is on the layer we want to avoid
