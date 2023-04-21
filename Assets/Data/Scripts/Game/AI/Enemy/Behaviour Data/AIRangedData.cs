@@ -158,4 +158,32 @@ public class AIRangedData : ScriptableObject
     [Range(0f, 100f)]
     [SerializeField] private float      spawnChance;
     public float                        SpawnChance => spawnChance;
+
+    [SerializeField]
+    private bool                        _spawnHealth;
+    internal bool                       SpawnHealth => _spawnHealth; 
+    
+    [SerializeField]
+    private int                         _healthItems;
+    internal int                        HealthItems => _healthItems;   
+
+    [SerializeField]
+    private GameObject                  _healthDrop;
+    internal GameObject                 HealthDrop => _healthDrop; 
+    
+    [SerializeField]
+    private bool                        _spawnMana;
+    internal bool                       SpawnMana => _spawnMana;
+
+    [SerializeField]
+    private int                         _manaItems;
+    internal int                        ManaItems => _manaItems;
+
+    [SerializeField]
+    private GameObject                  _manaDrop;
+    internal GameObject                 ManaDrop => _manaDrop;
+
+    [SerializeField]
+    private int                         _dropRadius;
+    internal int                        DropRadius => _dropRadius; 
 }

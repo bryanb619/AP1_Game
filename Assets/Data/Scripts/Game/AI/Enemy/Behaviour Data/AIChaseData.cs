@@ -170,10 +170,10 @@ public class AIChaseData : ScriptableObject
     // Stunned //
         [Header("Stunned")]
         [SerializeField] 
-            private float               _stunnedTime = 3F;
+            private float               _stunnedTime;
             public float                StunnedTime => _stunnedTime;     
         [SerializeField]
-            private float               _stunnedChance = 0.35F;
+            private float               _stunnedChance;
             public float                SunnedChance => _stunnedChance;
 
 

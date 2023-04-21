@@ -35,6 +35,7 @@ public class CompanionBehaviour : MonoBehaviour
     public CompanionState _StateAI;  
 
 
+
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     //private mini _MiniMapCollor;
 
@@ -49,7 +50,9 @@ public class CompanionBehaviour : MonoBehaviour
     private Transform Target;
     public Transform playerTarget => Target;
 
-    [SerializeField] private Transform floatPos; 
+    [SerializeField] private Transform floatPos;
+
+    private float acceleration = 2000f; 
 
     private CompanionSpawn point;
 
@@ -122,7 +125,6 @@ public class CompanionBehaviour : MonoBehaviour
     private void Start()
     {
 
-
         _StateAI = CompanionState._idle;
 
         Companion = GetComponent<NavMeshAgent>();
@@ -130,6 +132,9 @@ public class CompanionBehaviour : MonoBehaviour
         //_rb = GetComponent<Rigidbody>();
 
         Companion.angularSpeed = 0;
+        Companion.updateRotation = false;
+
+        Companion.acceleration = acceleration;
 
         CompanionMesh = GetComponent<MeshRenderer>();   
 
@@ -230,8 +235,8 @@ public class CompanionBehaviour : MonoBehaviour
     {
         if(_gameplay) 
         {
+
             ResumeAgent();
-            
             //StartCoroutine(FOVRoutine());
 
             //CheckDist(); 
@@ -250,11 +255,10 @@ public class CompanionBehaviour : MonoBehaviour
             Action actions = stateMachine.Update();
             actions?.Invoke();
 
-        }
-        else if(!_gameplay)
+        }   
+        else
         {
             AgentPause();
-            return;
         }
     }
     #endregion
@@ -586,13 +590,15 @@ if (Physics.Raycast(ray, out RaycastHit hit))
         Companion.SetDestination(Target.position); 
         //Companion.speed = 3.4f;
 
+        //Companion.speed = 8f;
         Companion.speed = 8f;
-        Companion.acceleration = 10f; 
+        //Companion.acceleration = 10f; 
 
 
         if ((Target.position - transform.position).magnitude <= 2f)
         {
-            Companion.speed = 3.5f;
+            //Companion.speed = 3.5f;
+            Companion.speed = 4f;
         }
        
         else if ((Target.position - transform.position).magnitude <= 0.8f)
@@ -742,6 +748,7 @@ if (Physics.Raycast(ray, out RaycastHit hit))
             case GameState.Paused:
                 {
                     _gameplay = false;
+                    
                     break;
                 }
             case GameState.Gameplay:
@@ -753,23 +760,31 @@ if (Physics.Raycast(ray, out RaycastHit hit))
     }
     private void ResumeAgent()
     {
-        if(_StateAI == CompanionState._follow) 
+        if(Companion.enabled)
         {
+            if (_StateAI == CompanionState._follow)
+            {
 
-            Companion.isStopped = true;
-            return;
+                Companion.isStopped = true;
+                return;
+            }
+            else
+            {
+                Companion.isStopped = false;
+                return;
+            }
         }
-        else 
-        {
-            Companion.isStopped = false;
-            return;
-        }
+        
     }
 
     private void AgentPause()
     {
-        Companion.isStopped = true;
-        Companion.velocity = Vector3.zero;
+        if(Companion.enabled)
+        {
+            Companion.isStopped = true;
+            Companion.velocity = Vector3.zero;
+        }
+       
         return;
     }
     #endregion

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -19,7 +17,7 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
     private float                               playerAcceleration = 2000f; 
 
-    private float                               _turnSpeed = 13f;
+    private float                               _turnSpeed = 10f;
 
     private bool                                _isMoving; 
 

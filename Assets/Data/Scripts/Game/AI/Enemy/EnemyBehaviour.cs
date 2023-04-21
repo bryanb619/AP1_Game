@@ -13,6 +13,7 @@ using LibGameAI.FSMs;
 
 using UnityEditor; // comment this on build
 using TMPro;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -29,7 +30,7 @@ public class EnemyBehaviour : MonoBehaviour
         private enum HandleState                    { _STOPED, _NONE }
         private HandleState                         _currentState;
 
-        private bool                                _gamePlay;
+        private GameState                           _gamePlay;
 
 
     // Components ------------------------------------------------------------------------------------------------------------->
@@ -93,6 +94,16 @@ public class EnemyBehaviour : MonoBehaviour
         private bool                                gemSpawnOnDeath;
         private GameObject                          gemPrefab;
 
+        private bool                                _spawnHealth;
+        private int                                 _healthItems;
+        private GameObject                          _healthDrop;
+
+        private bool                                _spawnMana; 
+        private int                                 _manaItems;
+        private GameObject                          _manaDrop;
+
+        private int                                 _dropRadius; 
+
 
     // Health ------------------------------------------------------------------------------------------------------------->
 
@@ -118,7 +129,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private PlayerHealth                                                _player; 
 
-    private float                                                       minDist = 5f;
+    private float                                                       minDist = 3f;
 
     private Shooter                                                     shooterScript;
 
@@ -134,7 +145,7 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private Transform[]                                _PatrolPoints;
 
 
-    private bool                                                    _fov; 
+    private bool                                                        _fov; 
     //[Range(10, 150)]
     private float                                                       radius;
     public float                                                        Radius => radius;
@@ -303,9 +314,19 @@ public class EnemyBehaviour : MonoBehaviour
         //fleeDistance = data.FleeDistance; 
 
         
-        // GEM //
+        // Death & Loot //
 
         gemPrefab = data.Gem;
+
+        _spawnHealth = data.SpawnHealth;    
+        _healthDrop = data.HealthDrop;
+        _healthItems = data.HealthItems;    
+
+        _spawnMana = data.SpawnMana;
+        _manaDrop = data.ManaDrop;
+        _manaItems = data.ManaItems;  
+        
+        _dropRadius = data.DropRadius;  
 
         // FOV //
 
@@ -387,7 +408,13 @@ public class EnemyBehaviour : MonoBehaviour
     private void Update()
     {
         UpdateAI();
-         
+
+        print("can attack : " + _canAttack );
+        print("can Peform : " + _canPeformAttack);
+
+        print(agent.isStopped);
+     
+
     }
     #endregion
 
@@ -399,7 +426,7 @@ public class EnemyBehaviour : MonoBehaviour
             case true:
                 {
 
-                    if(_gamePlay)
+                    if(_gamePlay == GameState.Gameplay)
                     {
                         outlineDeactivation.enabled = false;
 
@@ -416,6 +443,11 @@ public class EnemyBehaviour : MonoBehaviour
 
                         Action actions = stateMachine.Update();
                         actions?.Invoke();
+
+                        if(_currentState == HandleState._NONE)
+                        {
+                            ResumeAgent(); 
+                        }
                     }
 
                     
@@ -433,6 +465,7 @@ public class EnemyBehaviour : MonoBehaviour
     #region Agent State
     private void ResumeAgent()
     {
+        
         agent.isStopped = false;
         return;
     }
@@ -441,6 +474,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         //Agent.speed = 0f; 
         //Agent.Stop(); 
+        
         agent.velocity = Vector3.zero; 
         agent.isStopped = true;
         return;
@@ -448,8 +482,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void StopAgent()
     {
-        agent.isStopped = true;
-
+        //_gamePlay = false;
+        //agent.isStopped = true;
+        PauseAgent();
         StopAllCoroutines();
         return;
     }
@@ -458,7 +493,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void MinimalCheck()
     {
-        if (!_canGloryKill)
+        if (!_canGloryKill && _canAttack)
         {
             if ((_playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
             {
@@ -475,7 +510,7 @@ public class EnemyBehaviour : MonoBehaviour
         curSpeed = curMove.magnitude / Time.deltaTime;
         previousPos = transform.position;
 
-        if (curSpeed > 0.3)
+        if (curSpeed > 0.2)
         {
             _animator.SetBool("isWalking", true);
         }
@@ -617,7 +652,7 @@ public class EnemyBehaviour : MonoBehaviour
                         //agent.speed = 0;
                         PauseAgent();
                         //StartAttacking();
-                        if(_canAttack) { Attack(); }
+                        if(_canAttack && !_canSpecialAttack) { Attack(); }
                     }
 
                     else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
@@ -1085,7 +1120,7 @@ public class EnemyBehaviour : MonoBehaviour
 
             float randomFloat = UnityEngine.Random.value;
 
-            if (randomFloat <= 0.3f)
+            if (randomFloat <= 0.1f)
             {
                 //print("STARTED CHANCE");
                 //print(randomFloat);
@@ -1166,9 +1201,36 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
-        Instantiate(_death, transform.position, Quaternion.identity);   
+        Instantiate(_death, transform.position, Quaternion.identity);
 
-        if(gemSpawnOnDeath)
+
+        if(_spawnHealth)
+        {
+            for (int i = 0; i < _healthItems; i++)
+            {
+
+                Vector3 spawnPosition = transform.position +
+                    new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
+                    UnityEngine.Random.Range(-_dropRadius, _dropRadius));
+
+                Instantiate(_healthDrop, spawnPosition, Quaternion.identity);
+            }
+        }
+
+        if (_spawnMana)
+        {
+            for (int i = 0; i < _manaItems; i++)
+            {
+                Vector3 spawnPosition = transform.position +
+                      new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
+                      UnityEngine.Random.Range(-_dropRadius, _dropRadius));
+
+                Instantiate(_manaDrop, spawnPosition, Quaternion.identity);
+
+            }
+        }
+
+        if (gemSpawnOnDeath)
         { 
             Instantiate(gemPrefab, transform.position, Quaternion.identity);
             Debug.Log("Spawned Gem");
@@ -1316,7 +1378,7 @@ public class EnemyBehaviour : MonoBehaviour
                     
                     if(_currentState == HandleState._NONE)
                     {
-                        _gamePlay = true;
+                        _gamePlay = GameState.Gameplay;
                         ResumeAgent();
                     }
                     
@@ -1324,10 +1386,10 @@ public class EnemyBehaviour : MonoBehaviour
                 }
             case GameState.Paused:
                 {
-
+                    
                     if (_currentState == HandleState._NONE)
                     {
-                        _gamePlay = false;
+                        _gamePlay = GameState.Paused;
                         PauseAgent();
                     }
                     break;
