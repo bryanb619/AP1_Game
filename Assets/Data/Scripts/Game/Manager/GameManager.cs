@@ -243,7 +243,7 @@ public class GameManager : MonoBehaviour
 
         foreach (FMODUnity.StudioEventEmitter emitter in sfxSounds)
         {
-            emitter.SetParameter("Volume", sfxVolume);
+            //emitter.SetParameter("Volume", sfxVolume);
         }
     }
     #endregion

@@ -28,8 +28,10 @@ public class AIRangedData : ScriptableObject
     public float                        Percentage => _percentage;
 
     [SerializeField]
-    private GameObject                  s_projectile;
-    public GameObject                   S_projectile => s_projectile;
+    private GameObject                  r_projectile, s_projectile;
+    public GameObject                   R_projectile => r_projectile;
+    internal GameObject                 S_Projectile => s_projectile;
+    
 
     [Range(0f, 10f)]
     [SerializeField]

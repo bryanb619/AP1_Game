@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6932023443711188520}
   - component: {fileID: 3279800617505920573}
   - component: {fileID: 8510024009223221019}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bullet 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6932023443711188527}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 386.32288, y: 3.0472953, z: 308.7445}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.44313, y: 0.44313, z: 0.44313}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ab723fec8f465424fac8651da5ef35e1, type: 2}
+  - {fileID: 2100000, guid: 608f7797e16bc6f40976d030e23e7c9f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03e02bedc0e1d5d488ceadd7fdb3baf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 11400000, guid: 94478e360c605a04cb7e439965618d1e, type: 2}
+  data: {fileID: 11400000, guid: cd76c227dc04adc4ca2c5dccefdf5d3f, type: 2}
 --- !u!54 &8510024009223221019
 Rigidbody:
   m_ObjectHideFlags: 0

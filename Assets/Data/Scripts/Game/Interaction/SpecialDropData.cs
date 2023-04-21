@@ -26,17 +26,26 @@ public class SpecialDropData : ScriptableObject
         internal int                Mana => _manaEmpower;
 
 
-    [Header("Float")]
+    [Header("Height")]
+        [SerializeField]
+            private float           _heightFloat = 1f;
+            internal float          HeightFloat => _heightFloat;
 
     [Header("Float")]
 
         [SerializeField]
-        private bool                _float;
-        internal bool               Float => _float;
+            private bool            _float;
+            internal bool           Float => _float;
+
+
+    [Header("Rotate")]
+        [SerializeField]
+            private bool            _rotate;
+            public bool             Rotate => _rotate;
 
         [SerializeField]
-        private float               _heightFloat = 1f;
-        internal float              HeightFloat => _heightFloat;
+            private float           rotateSpeed;
+            internal float          RotateSpeed; 
 
         [SerializeField] 
         private bool                _canBeAttracted;

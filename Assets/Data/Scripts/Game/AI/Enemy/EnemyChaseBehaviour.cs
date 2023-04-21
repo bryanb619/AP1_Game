@@ -801,7 +801,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         PauseAgent();
                         
 
-
                         if (Time.time > nextAttack)
                         {
 

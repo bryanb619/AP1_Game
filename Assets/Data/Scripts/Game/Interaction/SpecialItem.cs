@@ -9,19 +9,27 @@ public class SpecialItem : MonoBehaviour
     [SerializeField] private SpecialDropData    data;
 
     //private BoxCollider                         m_BoxCollider;
-    private DropType                           _dropType; 
-   
+    private DropType                            _dropType;   
 
     // Health //
     private int                                 _healthEmpower;
     public int                                  Health => _healthEmpower;
+
+    // Mana //
+
+    private int                                 _manaEmpower; 
+    internal int                                Mana => _manaEmpower;
+
 
     [SerializeField] private GameObject         m_prefab;
     private Rigidbody                           _rb;
 
     // Game State //
     private GameState                           _state; 
-    private bool                                _gamePlay; 
+    private bool                                _gamePlay;
+
+    private bool                                _rotate;
+    private float                               rotateSpeed; 
 
     // FMOD & Sound Handling //
     private StudioEventEmitter                  m_Emitter;
@@ -90,7 +98,8 @@ public class SpecialItem : MonoBehaviour
     #region Components, profile & Raycast
     private void GetComponents()
     {
-        //m_BoxCollider = GetComponent<BoxCollider>();
+        //m_BoxCollider = GetComponent<BoxCollider>();   
+
         m_Emitter = GetComponent<StudioEventEmitter>();
         _rb = GetComponent<Rigidbody>();
 
@@ -104,7 +113,12 @@ public class SpecialItem : MonoBehaviour
         _canFloat                   = data.Float; 
         _canUseForce                = data.UseStartForce;
 
-        height                      = data.HeightFloat; 
+        height                      = data.HeightFloat;
+
+
+        //_rotate                     = data.Rotate;
+        rotateSpeed                 = data.RotateSpeed;
+
         _usesAudioAmbient           = data.UseAudioAmbient;
         _canBeDrawned               = data.CanBeattracted;
         attractionSpeed             = data.AtractionSpeed;
@@ -125,6 +139,11 @@ public class SpecialItem : MonoBehaviour
             }
        }
         
+    }
+
+    internal bool CheckRotation()
+    {
+        return true; 
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -173,7 +192,6 @@ public class SpecialItem : MonoBehaviour
                     {
                         transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
                     }
-                    
 
                     //Debug.Log("In use");
                     if (_usesAudioAmbient) 
@@ -229,7 +247,7 @@ public class SpecialItem : MonoBehaviour
                         Debug.Log(DebugColor + "HP Increased" + closeColor);
 
 
-                        PLAYER.EmpowerHealth(_healthEmpower);
+                        PLAYER.EmpowerHealth(Health);
                         break;  
                     }
                 case DropType._SPECIAL_MANA: 
@@ -238,9 +256,9 @@ public class SpecialItem : MonoBehaviour
                         string closeColor = "</color></size>";
 
                         
-                        Debug.Log(DebugColor + "HP Increased" + closeColor);
+                        Debug.Log(DebugColor + "Mana Increased" + closeColor);
 
-                        MANA.ManaIncrease(10);
+                        MANA.ManaIncrease(Mana);
                         break; 
                     }
             }
@@ -306,6 +324,7 @@ public class SpecialItem : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+        
     }
     
 }
