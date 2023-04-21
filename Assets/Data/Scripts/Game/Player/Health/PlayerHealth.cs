@@ -6,15 +6,25 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField]        internal int            _currentHealth;
     [SerializeField]        private int             regenAmount;
     [SerializeField]        private float           regenTimer;
     [SerializeField]        private bool            regenOn;
+
+    // --------------------------Shield----------------------------------------
+    [Header ("Shield")]
+    [SerializeField]        private float           shieldDecayWaitTime;
+    [SerializeField]        private int             shieldDecayAmount;
+    [SerializeField]        private float           shieldDecayRate;
+    [SerializeField]        internal int            currentShield = 0;
+
+    // --------------------------Health----------------------------------------
+    [Header ("Health")]
+    [SerializeField]        internal int            _currentHealth;
                             private HealthBar       _healthBar;
-                            public bool             HealthSetAtMax;
+                            internal bool             HealthSetAtMax;
                             private int             _maxHealth = 100;
                             internal int            CurretHealth => _currentHealth;
-                            internal int            currentShield = 0;
+                           
                             private PlayerMovement  coroutineCaller;
                             internal _PlayerHealth _playerHealthState;
 
@@ -109,6 +119,9 @@ public class PlayerHealth : MonoBehaviour
         this.currentShield = shieldAmount;
         _healthBar.SetMaxHealth(_maxHealth, currentShield);
         _healthBar.SetHealth(_currentHealth, currentShield);
+
+        StopCoroutine(DecayTimer());
+        StartCoroutine(DecayTimer());
     }
 
     internal void Takehealth(int health)
@@ -145,6 +158,26 @@ public class PlayerHealth : MonoBehaviour
             Invoke("Regen", regenTimer);
         }
 
+    }
+
+    IEnumerator DecayTimer()
+    {
+        yield return new WaitForSecondsRealtime(shieldDecayWaitTime);
+        InvokeRepeating("ShieldDecay", 0f, shieldDecayRate);
+    }
+
+    private void ShieldDecay()
+    {
+        if (currentShield > 0)
+        { 
+            currentShield -= shieldDecayAmount;
+            _healthBar.SetMaxHealth(_maxHealth, currentShield);
+            _healthBar.SetHealth(_currentHealth, currentShield);
+        } 
+        else
+        {
+
+        }
     }
 
     private void Cheats()

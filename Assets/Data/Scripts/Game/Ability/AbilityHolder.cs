@@ -4,21 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AbilityHolder : MonoBehaviour
-{
-    //[SerializeField] private Image icon = default;
-    //[SerializeField] private Image coolDownImage = default;
-
-  
-    [SerializeField]private Ability abilityNEW;
+{  
+    [SerializeField] private Ability abilityNEW;
     private Dashing dashCooldownVariable;
 
     // used variables from "Ability script"
 
     private float cooldownTime;
     private float activeTime;
-    
-    [SerializeField]
-    private Slider uISlider;
+    [SerializeField] private float flashDelay;
+
+    [SerializeField] private Slider uISlider;
+    [SerializeField] private Transform handleRect;
 
     private bool _isPaused;
 
@@ -139,7 +136,11 @@ public class AbilityHolder : MonoBehaviour
                     
                     if (cooldownTime > 0)
                     {
+                        handleRect.GetComponent<Image>().enabled = true;
                         cooldownTime -= Time.deltaTime;
+                        
+                        if(cooldownTime <= 0 + flashDelay)
+                            ReadyFlash();
                     }
 
                     else
@@ -147,8 +148,8 @@ public class AbilityHolder : MonoBehaviour
                         state = Ability_State.ready;
                         //cooldownTime = abilityNEW.cooldownTime;
 
+                        handleRect.GetComponent<Image>().enabled = false;
                         PowerReady();
-                        ReadyFlash();
                     }
                     break;
             }
