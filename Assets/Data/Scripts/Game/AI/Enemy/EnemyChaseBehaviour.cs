@@ -135,8 +135,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
             public Transform                    EEFOV => _fov; // Enemy Editor FOV
 
             private bool                        _useFOV;
+
+    [SerializeField]
             private float                       radius;
             public float                        Radius => radius;
+
+    [SerializeField]
             private float                       angle;
             public float                        Angle => angle;
             private LayerMask                   targetMask;
@@ -345,8 +349,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         specialDamage               = data.S_damage;
 
         // FOV ------------------------------------------------------->
-        radius                      = data.Radius;
-        angle                       = data.Angle;
+        //radius                      = data.Radius;
+        //angle                       = data.Angle
         targetMask                  = data.TargetMask;
         obstructionMask             = data.ObstructionMask;
 
@@ -384,7 +388,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _manaDrop                   = data.ManaDrop;
 
         // Sound ------------------------------------------------------->
-        _screamSound                = data.Scream; 
+        _screamSound                = data.Scream;
+
+       
 
         // Weakness
         //_iceWeak = data.Ice;

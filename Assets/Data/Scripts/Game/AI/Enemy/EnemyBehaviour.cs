@@ -137,7 +137,7 @@ public class EnemyBehaviour : MonoBehaviour
     private float                                                       curSpeed;
     private Vector3                                                     previousPos;
 
-    private float                                                       AttackRequiredDistance = 6.5f;
+    private float                                                       AttackRequiredDistance = 6.5f; // 6.5
 
     // Patrol Points
 
@@ -408,13 +408,6 @@ public class EnemyBehaviour : MonoBehaviour
     private void Update()
     {
         UpdateAI();
-
-        print("can attack : " + _canAttack );
-        print("can Peform : " + _canPeformAttack);
-
-        print(agent.isStopped);
-     
-
     }
     #endregion
 
@@ -618,20 +611,20 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case true:
                 {
-                
-                    if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
+                    
+
+                    if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)  //
                     {
                         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
-             
-                        //agent.speed = 0;
                         PauseAgent();
+
                         //StartAttacking();
                         if (_canAttack) { SpecialAttack();}
                     }
 
                     else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
                     {
-                        if(_canAttack) 
+                        if(_canAttack && _currentState == HandleState._NONE) 
                         { 
                             ResumeAgent();
                             GetDistance(9F);
@@ -645,11 +638,10 @@ public class EnemyBehaviour : MonoBehaviour
             case false:
                 {
                     
+
                     if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
                     {
                         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
-                
-                        //agent.speed = 0;
                         PauseAgent();
                         //StartAttacking();
                         if(_canAttack && !_canSpecialAttack) { Attack(); }
@@ -657,7 +649,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                     else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
                     {
-                        if (_canAttack)
+                        if (_canAttack && _currentState == HandleState._NONE)
                         {
                             ResumeAgent();
                             GetDistance(3.5F);
@@ -721,7 +713,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         PauseAgent();
 
-        string DebugAttack = "<size=12><color=yellow>";
+        string DebugAttack = "<size=12><color=purple>";
         string closeAttack = "</color></size>";
         Debug.Log(DebugAttack + "Special Attack: " + closeAttack);
 

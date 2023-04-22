@@ -53,8 +53,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.3
-  pointA: {fileID: 0}
-  pointB: {fileID: 0}
+  _lowPos: {fileID: 0}
+  _highPos: {fileID: 0}
   _StateAI: 0
   floatPos: {fileID: 0}
   AlphaLow: {fileID: 2100000, guid: 9b9a335a9064f5c4db212ee5cddfcd21, type: 2}
@@ -80,7 +80,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 0.5
+  m_Height: 3.13
   m_BaseOffset: 2.72
   m_WalkableMask: 5
   m_ObstacleAvoidanceType: 4

@@ -4,15 +4,15 @@ using UnityEngine;
 public class MainCam : MonoBehaviour
 {
     #region Variables
-    private GameObject player;
+    private GameObject                  player;
 
-    private Transform playerTransform;
+    private Transform                   playerTransform;
 
-    [SerializeField] private LayerMask obstructionLayer;
+    [SerializeField] private LayerMask  obstructionLayer;
 
-    [SerializeField] private float alphaValue = 0.3f;
+    [SerializeField] private float      alphaValue = 0.3f;
 
-    private List<MeshRenderer> meshInObstruction = new List<MeshRenderer>();
+    private List<MeshRenderer>          _obstructedMesh = new List<MeshRenderer>();
 
 
     #endregion
@@ -66,15 +66,15 @@ public class MainCam : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             MeshRenderer renderer = hit.collider.GetComponent<MeshRenderer>();
-            if (renderer != null && !meshInObstruction.Contains(renderer))
+            if (renderer != null && !_obstructedMesh.Contains(renderer))
             {
                 renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, alphaValue);
-                meshInObstruction.Add(renderer);
+                _obstructedMesh.Add(renderer);
             }
         }
 
 
-        foreach (MeshRenderer renderer in meshInObstruction)
+        foreach (MeshRenderer renderer in _obstructedMesh)
         {
             bool isObstructed = false;
             foreach (RaycastHit hit in hits)
@@ -97,7 +97,9 @@ public class MainCam : MonoBehaviour
         {
             
             renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, 1f);
-            meshInObstruction.Remove(renderer);
+            
+            // remove renderer
+            _obstructedMesh.Remove(renderer);
         }
 
     }

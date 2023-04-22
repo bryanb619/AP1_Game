@@ -24,8 +24,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private float t = 0f;
 
-    public Transform pointA;
-    public Transform pointB;
+    public Transform _lowPos, _highPos;
 
     private Vector3 targetPosition;
 
@@ -125,29 +124,29 @@ public class CompanionBehaviour : MonoBehaviour
     private void Start()
     {
 
-        _StateAI = CompanionState._idle;
+        _StateAI                    = CompanionState._idle;
 
-        Companion = GetComponent<NavMeshAgent>();
+        Companion                   = GetComponent<NavMeshAgent>();
 
         //_rb = GetComponent<Rigidbody>();
 
-        Companion.angularSpeed = 0;
-        Companion.updateRotation = false;
+        Companion.angularSpeed      = 0;
+        Companion.updateRotation    = false;
 
-        Companion.acceleration = acceleration;
+        Companion.acceleration      = acceleration;
 
-        CompanionMesh = GetComponent<MeshRenderer>();   
+        CompanionMesh               = GetComponent<MeshRenderer>();   
 
-        mainCamera = FindObjectOfType<Camera>();
+        mainCamera                  = FindObjectOfType<Camera>();
 
-        point = FindObjectOfType<CompanionSpawn>();
+        point                       = FindObjectOfType<CompanionSpawn>();
 
-        Target = point.transform;
+        Target                      = point.transform;
 
 
-        player = FindObjectOfType<PlayerMovement>();
+        player                      = FindObjectOfType<PlayerMovement>();
 
-        targetPosition = transform.position;
+        targetPosition              = transform.position;
 
 
         //startingPosition = transform.position;
@@ -313,161 +312,6 @@ public class CompanionBehaviour : MonoBehaviour
             return (success: false, position: Vector3.zero);
         }
     }
-
-    /*
-// Get the cursor position in screen space
-//Vector3 cursorPosition = Input.mousePosition;
-
-// Convert the cursor position to world space
-//cursorPosition.z = mainCamera.transform.position.y;
-//cursorPosition = mainCamera.ScreenToWorldPoint(cursorPosition);
-
-// Make the object follow the cursor position
-//transform.position = cursorPosition;
-
-// Rotate the object in the y-axis based on the cursor position
-//Vector3 direction = cursorPosition - transform.position;
-//float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-//transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-float angle = Vector3.SignedAngle(transform.up, ray.direction, transform.forward);
-
-// Update the rotation of the transform
-Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-
-if (Physics.Raycast(ray, out RaycastHit hit))
-{
-    // Get the target position to rotate towards
-    Vector3 targetPos = hit.point;
-
-    // Ignore the y-axis to only rotate around the vertical axis
-    targetPos.y = transform.position.y;
-
-    // Calculate the direction to the target
-    Vector3 UpdateDirection = targetPos - transform.position;
-
-    // Calculate the rotation angle around the vertical axis
-    float Updateangle = Mathf.Atan2(UpdateDirection.x, UpdateDirection.z) * Mathf.Rad2Deg;
-
-    // Set the new rotation
-    transform.rotation = Quaternion.Euler(0f, Updateangle, 0f);
-
-    /*
-
-    //if (Input.GetMouseButton(0))
-    if(Input.GetMouseButton(0))
-    {
-
-        RaycastHit Mousehit;
-
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
-        {
-            Vector3 shootDirection = hit.transform.position - transform.position;
-            shootDirection.y = 0f;
-            shootDirection.Normalize();
-
-            // Calculate the angle between the companion's forward vector and the shoot direction
-            float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
-
-            // Rotate the companion towards the shoot direction
-            transform.Rotate(0f, shootAngle, 0f);
-        }
-
-        /*
-        // Get the direction from the companion to the mouse position
-        Vector3 shootDirection = targetPos - transform.position;
-        shootDirection.y = 0f;
-        shootDirection.Normalize();
-
-        // Calculate the angle between the companion's forward vector and the shoot direction
-        float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
-
-        // Rotate the companion towards the shoot direction
-        transform.Rotate(0f, shootAngle, 0f);
-
-
-    }
-     */
-    /*
-    private void NewAim()
-    {
-        Ray cameraRay = mainCamera.ScreenPointToRay(Input.mousePosition);
-        Plane ground = new Plane(Vector3.up, Vector3.zero);
-        float rayLength;
-
-        if (ground.Raycast(cameraRay, out rayLength))
-        {
-
-            Vector3 pointToLook = cameraRay.GetPoint(rayLength);
-            Debug.DrawLine(cameraRay.origin, pointToLook, Color.magenta);
-            transform.LookAt(new Vector3(pointToLook.x, transform.position.y, pointToLook.z));
-            companionAim.transform.position = pointToLook;
-        }
-    }
-
-    private void Aim()
-    {
-        var (success, position) = GetMousePosition();
-        if (success)
-        {
-            // Calculate the direction
-            var direction = position - transform.position;
-
-            // You might want to delete this line.
-            // Ignore the height difference.
-            direction.y = 0;
-
-            // Make the transform look in the direction.
-            transform.forward = direction;
-        }
-    }
-
-    private (bool success, Vector3 position) GetMousePosition()
-    {
-        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        
-        if(Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _attackLayers)) 
-        {
-            return(success: true, position: hitInfo.point); 
-        }
-        else
-        {
-            return (success: false, position: Vector3.zero);
-        }
-    }
-        
-        if (Input.GetMouseButton(0))
-        {
-            // Get the direction from the companion to the mouse position
-            Vector3 shootDirection = cursorPosition - transform.position;
-            shootDirection.y = 0f;
-            shootDirection.Normalize();
-
-            // Calculate the angle between the companion's forward vector and the shoot direction
-            float shootAngle = Vector3.SignedAngle(transform.forward, shootDirection, Vector3.up);
-
-            // Rotate the companion towards the shoot direction
-            transform.Rotate(0f, shootAngle, 0f);
-        }
-        */
-    /*        RaycastHit HitInfo;
-    Ray RayCast;
-
-    RayCast = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
-    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out HitInfo, 100.0f))
-    {
-        transform.LookAt(HitInfo.point);
-    }
-    else
-    {
-        transform.LookAt(transform.forward);
-    }
-    */
-
     #endregion
 
     #region AI Actions
@@ -520,72 +364,30 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 
     private void FloatCompanion()
     {
-        //float newY = UnityEngine.Random.Range(minY, maxY);
-        //Vector3 newPosition = new Vector3(transform.position.x, newY, transform.position.z);
-        //transform.position = Vector3.MoveTowards(transform.position, newPosition, speed * Time.deltaTime);
 
 
         t += Time.deltaTime * speed;
-        float newY = Mathf.SmoothStep(pointA.position.y, pointB.position.y, t);
-        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+        float NEWY = Mathf.SmoothStep
+            (_lowPos.position.y, _highPos.position.y, t);
+
+        transform.position = new Vector3
+            (transform.position.x, NEWY, transform.position.z);
 
 
         if (t >= 1f)
         {
             t = 0f;
-            Transform temp = pointA;
-            pointA = pointB;
-            pointB = temp;
+
+            Transform TEMPORARY = _lowPos;
+
+            _lowPos = _highPos;
+            _highPos = TEMPORARY;
         }
-
-
-        /*
-        if (Vector3.Distance(transform.position, floatPos.position) < 0.1f)
-        {
-            float newY = UnityEngine.Random.Range(minY, maxY);
-            floatPos.position = new Vector3(transform.position.x, newY, transform.position.z);
-        }
-        transform.position = Vector3.Lerp(transform.position, floatPos.position, speed * Time.deltaTime);
-
-        //Vector3 pos = transform.position;
-        //pos.y = Mathf.Sin(Time.time * floatingSpeed) * floatingHeight;
-        //transform.position = pos;
-
-        //transform.position = new Vector3(transform.position.x, startingPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatStrength, transform.position.z);
-        */
     }
-    /*
-    private void RotateTimer()
-    {
-        if(_canRotate) 
-        {
-            float elapsed = 0F;
-
-            elapsed += Time.deltaTime;
-            print(elapsed); 
-            if(elapsed >= 5f)
-            {
-                _StateAI = CompanionState._rotate; 
-            }
-
-        }
-        
-    }
-
-    private void RotateAroundPlayer()
-    {
-        //transform.RotateAround(target.transform.position, Vector3.forward, degreesPerSecond * Time.deltaTime);
-    }
-    */
-
     private void PosUpdate()
     {
-        //FloatCompanion();
 
-        //Companion.updatePosition = true;
         Companion.isStopped = false;
-
-
 
         Companion.SetDestination(Target.position); 
         //Companion.speed = 3.4f;
