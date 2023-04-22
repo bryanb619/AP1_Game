@@ -11,6 +11,8 @@ public class Shooter : MonoBehaviour
     private GameObject firePrefab, icePrefab, thunderPrefab;
     internal WeaponType _magicType;
 
+    [SerializeField] private GameObject _areaEffect;
+
     [Header("Default Ability Prefabs")]
     [SerializeField] private GameObject defaultFirePrefab;
     [SerializeField] private GameObject defaultIcePrefab, defaultThunderPrefab, normalPrefab;
@@ -233,6 +235,8 @@ public class Shooter : MonoBehaviour
             {
                 // Deal damage to the enemy
                 Instantiate(thunderPrefab, hitCollider.transform.position, firePoint.rotation);
+
+                Instantiate(_areaEffect, transform.position, Quaternion.identity);
             }
         }
         StartCoroutine(ThunderAttackCooldown());

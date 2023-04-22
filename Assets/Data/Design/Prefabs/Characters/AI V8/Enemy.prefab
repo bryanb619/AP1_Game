@@ -3691,10 +3691,10 @@ GameObject:
   - component: {fileID: 7207599054140134846}
   - component: {fileID: 7207599054140134845}
   - component: {fileID: 7207599054140134842}
+  - component: {fileID: 8509414447558435098}
   - component: {fileID: 7207599054140134843}
   - component: {fileID: 7207599054140134844}
   - component: {fileID: 374496529863674697}
-  - component: {fileID: 8509414447558435098}
   - component: {fileID: 3580100482103403493}
   - component: {fileID: 7104561059900989825}
   m_Layer: 7
@@ -3790,6 +3790,7 @@ MonoBehaviour:
   _agentAI: {fileID: 0}
   _dizzyText: {fileID: 4334578369805648240}
   _shootPos: {fileID: 7207599052140597720}
+  _targetEffect: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
   _death: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
   _healthSlider: {fileID: 8617100147548000472}
   damageBoost: 20
@@ -3804,6 +3805,26 @@ MonoBehaviour:
   LineOfSightChecker: {fileID: 1520560322554408967}
   _abilitySlider: {fileID: 2727053215894217272}
   _showExtraGizmos: 0
+--- !u!114 &8509414447558435098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7207599054140134840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e2107a526c0e924f8e295af17a56062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activateGizmo: 0
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  aiLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  AiRadius: 5.5
 --- !u!195 &7207599054140134843
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3856,26 +3877,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8509414447558435098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7207599054140134840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e2107a526c0e924f8e295af17a56062, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activateGizmo: 0
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 2048
-  aiLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  AiRadius: 20
 --- !u!114 &3580100482103403493
 MonoBehaviour:
   m_ObjectHideFlags: 0

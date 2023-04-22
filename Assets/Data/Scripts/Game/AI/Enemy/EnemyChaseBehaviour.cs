@@ -191,6 +191,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
             //private float                     stunnedFrequency;
             private float                       stunedChance;
 
+            [SerializeField]
+            private GameObject                  _targetEffect; 
+
     // Sound FMOD --------------------------------------------------------------------------------->
             
             // grunt sounds
@@ -1218,6 +1221,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             StartCoroutine(DamageOverTime(damageOverTime, durationOfDOT));
                         } 
                         else
+                            _health -= _damage + damageBoost;
+                            Instantiate(_targetEffect, transform.position, transform.rotation);
                             StartCoroutine(HitFlash());
                         break;
                     }
@@ -1260,7 +1265,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             float randomFloat = UnityEngine.Random.value;
 
-            if(randomFloat <= stunedChance) 
+            if(randomFloat <= stunedChance && _Type != WeaponType.Ice) 
             {
                 //print("STARTED CHANCE");
                 //print(randomFloat);

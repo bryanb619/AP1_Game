@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 {
-    private enum CursorState                    { _CLICKED, _RESET}
+    private enum CursorState                    { _CLICKED, _UNCLICKED }
     private CursorState                         _cursorState;
 
 
@@ -47,8 +47,8 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
         agent.updateRotation    = false;
         agent.angularSpeed      = 0;
 
-        _cursorState            = CursorState._RESET;
-        //agent.angularSpeed = 0f; 
+        _cursorState            = CursorState._UNCLICKED;
+
 
     }
     // Update is called once per frame
@@ -65,21 +65,27 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
         }
         else
         {
-            _cursorState = CursorState._RESET;
+            _cursorState = CursorState._UNCLICKED;
         }
+
+
 
         if (agent.enabled)
         {
 
             if (_isMoving)
             {
-                direction = targetPosition - transform.position;
+                // set direction
+                direction                           = targetPosition - transform.position;
 
-                direction.y = 0;
+                // Ignore Y position 
+                direction.y                         = 0;
 
                 // Rotate player towards the target position
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
+                Quaternion targetRotation           = Quaternion.LookRotation(direction);
+
+                // apply rotation with desired speed
+                transform.rotation                  = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
 
             }
 
@@ -89,11 +95,19 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                 Destination(false);
             }
 
+            if(agent.remainingDistance <= agent.stoppingDistance)
+            {
+                agent.velocity                      = Vector3.zero;
+                agent.isStopped                     = true;
+            }
+
+            /*
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
             {
-                agent.velocity = Vector3.zero;
-                agent.isStopped = true;
+                agent.velocity                      = Vector3.zero;
+                agent.isStopped                     = true;
             }
+            */
 
         }
     }
@@ -102,32 +116,25 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 150, ~seeThroughLayer))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~seeThroughLayer))
         {
             if (hit.transform.CompareTag("Walk"))
             {
                 if (agent.enabled)
                 {
-                    //agent.enabled = true;
-                    //Instantiate(_clickEffect, hit.point, Quaternion.identity);
-                    height = hit.point.y + 0.3f;
+                    //  target position
+                    Vector3 newDirection                    = (hit.point - transform.position).normalized;
+                    float angle                             = Vector3.Angle(direction, newDirection);
 
-                    // check if the angle between the current direction and the new direction is greater than maxAngle
+                    direction                               = newDirection;
 
-                    // set the new target position
-                    Vector3 newDirection = (hit.point - transform.position).normalized;
-                    float angle = Vector3.Angle(direction, newDirection);
-
-                    direction = newDirection;
 
                     if (angle > maxAngle && agent.remainingDistance >= 0.2f)
                     {
-                        agent.velocity = Vector3.zero;
-                        //agent.isStopped = true;
+                        agent.velocity                      = Vector3.zero;
 
-                        agent.isStopped = false;
+                        targetPosition                      = hit.point;
 
-                        targetPosition = hit.point;
                         agent.SetDestination(hit.point);
 
                         //_isMoving = false;
@@ -135,23 +142,22 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
                     else
                     {
-                        _isMoving = true;
+                        _isMoving                           = true;
+                        agent.isStopped                     = false;
+                        targetPosition                      = hit.point;
 
-                        agent.isStopped = false;
-                        targetPosition = hit.point;
                         agent.SetDestination(hit.point);
-
                     }
-
-
-                    
 
                     if(input) 
                     {
-                        GameObject spawnedObject = Instantiate(_clickEffect, hit.point, Quaternion.identity);
+                        height                              = hit.point.y + 0.3f;
 
-                        spawnedObject.transform.position =
-                            new Vector3(spawnedObject.transform.position.x, height, spawnedObject.transform.position.z);
+                        GameObject spawnedObject            = Instantiate(_clickEffect, hit.point, Quaternion.identity);
+                        spawnedObject.transform.position    = new Vector3
+                            (spawnedObject.transform.position.x, 
+                            height, 
+                            spawnedObject.transform.position.z);
                     }
 
                 }

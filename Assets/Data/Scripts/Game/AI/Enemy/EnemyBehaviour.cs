@@ -86,6 +86,11 @@ public class EnemyBehaviour : MonoBehaviour
 
         private float                               abilityIncreasePerFrame;
 
+        // Effects
+
+        [SerializeField]
+        private GameObject                          _targetEffect;
+
 
     // Drops & Death ------------------------------------------------------------------------------------------------------------->
         [SerializeField] 
@@ -1075,7 +1080,9 @@ public class EnemyBehaviour : MonoBehaviour
                             StartCoroutine(DamageOverTime(damageOverTime, durationOfDOT));
                         }
                         else
-                            StartCoroutine(HitFlash());
+                            health -= _damage + damageBoost;
+                            Instantiate(_targetEffect, transform.position, transform.rotation);
+                        StartCoroutine(HitFlash());
 
                         break;
                     }

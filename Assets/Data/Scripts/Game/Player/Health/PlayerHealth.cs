@@ -53,9 +53,14 @@ public class PlayerHealth : MonoBehaviour
         _maxHealth = _maxHealth + powerUp;
 
         //_healthBar._slider.maxValue = _maxHealth; 
-        _healthBar.HealthEmpower(powerUp); 
+        
+        _currentHealth += powerUp;
+        _healthBar.HealthEmpower(powerUp);
+
+
+
         //PlayerPrefs()
-        print(_maxHealth);
+        //print(_maxHealth);
     }
     
     internal void TakeDamage(int damage)
