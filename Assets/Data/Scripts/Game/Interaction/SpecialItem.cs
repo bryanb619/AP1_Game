@@ -241,7 +241,7 @@ public class SpecialItem : MonoBehaviour
         PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
         ManaManager MANA = other.GetComponent<ManaManager>();
 
-        if (player != null)
+        if (PLAYER != null)
         {
             switch (_dropType)
             {

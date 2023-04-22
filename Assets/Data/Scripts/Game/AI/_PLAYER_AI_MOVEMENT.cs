@@ -57,17 +57,17 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             Destination(true);
-
-            if(_cursorState == CursorState._CLICKED)
-            {
-                _cursorState = CursorState._RESET; 
-            }
-            else
-            {
-                _cursorState = CursorState._CLICKED;
-            }
         }
-           
+
+        else if(Input.GetMouseButton(1)) 
+        {
+            _cursorState = CursorState._CLICKED;
+        }
+        else
+        {
+            _cursorState = CursorState._RESET;
+        }
+
         if (agent.enabled)
         {
 
@@ -84,7 +84,7 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
             }
 
 
-            if(agent.velocity.magnitude > 0 && _cursorState == CursorState._CLICKED)
+            if(_cursorState == CursorState._CLICKED)
             {
                 Destination(false);
             }
@@ -157,22 +157,6 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                 }
             }
         }
-    }
-
-    private IEnumerator ResetClick()
-    {
-        bool ISRUNNING = false; 
-
-        if(!ISRUNNING) 
-        {
-            ISRUNNING = true;
-            _clickReset = true;
-            
-            yield return new WaitForSeconds(1);
-            _clickReset = false;
-            ISRUNNING = false; 
-        }
-        
     }
 }
      
