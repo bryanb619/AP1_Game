@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e5a345555aec1641b3b35a7c27f1d34, type: 3}
+  m_Name: Drop Mana enemy
+  m_EditorClassIdentifier: 
+  _dropType: 0
+  _health: 10
+  _mana: 10
+  _canIgnoreMaxHealth: 1
+  _float: 1
+  _heightFloat: 1.5
+  _canBeAttracted: 1
+  _useStartForce: 1
+  atractionSpeed: 2
+  maxDistance: 3
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 1857766
+  _pushForce: 0
+  _useAudio: 0
+  _usesAudioAmbient: 0

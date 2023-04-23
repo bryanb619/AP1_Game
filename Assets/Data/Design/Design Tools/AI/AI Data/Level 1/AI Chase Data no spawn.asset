@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f164e7accfd96c24bbae33016d80036f, type: 3}
-  m_Name: AI Chase Data
+  m_Name: AI Chase Data no spawn
   m_EditorClassIdentifier: 
   _canSpawnOthers: 0
-  quantity: 2
+  quantity: 0
   _attackSpeed: 1.8
   _attackDist: 2.5
   _attackEffect: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
   _damageEffectTime: 0.4
   minDist: 3
   attackRate: 4
-  a_damage: 2
+  a_damage: 4
   stopDistance: 4
   attackDistOffset: 4
   _attackTimer: 1.5
   _percentage: 0.3
-  b_damage: 3
+  b_damage: 5
   s_attackEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
   specialAttackEffect: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
-  s_damage: 15
-  currentAbilityValue: 32
-  abilityIncreasePerFrame: 2
+  s_damage: 20
+  currentAbilityValue: 5
+  abilityIncreasePerFrame: 1
   radius: 10
   angle: 90
   targetMask:

@@ -5,7 +5,14 @@ using FMODUnity;
 public class AIChaseData : ScriptableObject
 {
     // Combat -------------------------------------------------------------------->
+
     [Header("Combat")]
+        [SerializeField] 
+            private bool                _canSpawnOthers;
+            internal bool               CanSpawnOthers => _canSpawnOthers;
+    [SerializeField]
+            private int                 quantity; 
+            internal int                Quantity => quantity;
 
         [SerializeField]
             private float               _attackSpeed = 1.8f;

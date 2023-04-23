@@ -560,7 +560,7 @@ GameObject:
   - component: {fileID: 1831208983068165609}
   - component: {fileID: 9018942400106031180}
   m_Layer: 7
-  m_Name: ChaseEnemy
+  m_Name: ChaseEnemy_
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -600,17 +600,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04bfc16e516a8d74bb4625c9071639e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stateAI: 0
-  data: {fileID: 11400000, guid: 9c72e6fe0b220ad409222f3f9792cabd, type: 2}
+  _stateAI: 2
+  data: {fileID: 11400000, guid: 5cf2283a5d6dbc348a799dc4e969895a, type: 2}
   enemyMesh: {fileID: 3110441228081096987}
   _patrolPoints: []
   _attackPoint: {fileID: 3331569744526991545}
   _fov: {fileID: 1831208982663463918}
-  radius: 3.3
-  angle: 120
+  radius: 0
+  angle: 0
   _targetEffect: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
   _spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
-  _enemyChase: {fileID: 1831208983068165615, guid: bd37bf34c82166e4cbc542a9ea1102a6, type: 3}
+  _enemyChase: {fileID: 1831208983068165615}
   enemyRaged: {fileID: 0}
   _healthSlider: {fileID: 8963490514696597323}
   _AbilitySlider: {fileID: 5430720324937001575}

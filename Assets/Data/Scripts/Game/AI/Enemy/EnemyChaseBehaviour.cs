@@ -19,16 +19,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // States ------------------------------------------------------------------------------------->
 
-            // AI states
-            private enum AI                     {_GUARD, _PATROL, _ATTACK, _COVER, _GLORYKILL, _NONE}
-            private AI                          _stateAI;
+                        // AI states
+                        private enum AI                     {_GUARD, _PATROL, _ATTACK, _COVER, _GLORYKILL, _NONE}
+    [SerializeField]    private AI                          _stateAI;
             
-            // Handle state avoids conflict with _gameState variable
-            private enum HandleState            {_STOPED, _NONE}
-            private HandleState                 _currentState;
+                        // Handle state avoids conflict with _gameState variable
+                        private enum HandleState            {_STOPED, _NONE}
+                        private HandleState                 _currentState;
+
 
             // Game State
-            private GameState                   _gameState;
+            private GameState                               _gameState;
 
     // Components --------------------------------------------------------------------------------->
 
@@ -191,8 +192,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
             //private float                     stunnedFrequency;
             private float                       stunedChance;
 
+            private bool                        _spawnOtherAI;
+            private int                         quantityOfSpawn; 
             [SerializeField]
-            private GameObject                  _targetEffect; 
+            private GameObject                  _targetEffect, _spawnEffect;
+
+            [SerializeField]
+            private GameObject                  _enemyChase, enemyRaged;
+
+ 
 
     // Sound FMOD --------------------------------------------------------------------------------->
             
@@ -280,7 +288,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetStates();
         AbilityCheck();
 
-        _currentState = HandleState._NONE; 
+        _currentState = HandleState._NONE;
         _canAttack = true;
         //_useFOV = true;
     }
@@ -351,6 +359,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _specialAttackEffect        = data.SpecialAttackEffect;    
         specialDamage               = data.S_damage;
 
+
+
+        // combat events
+        _spawnOtherAI               = data.CanSpawnOthers;
+        quantityOfSpawn             = data.Quantity;
+
         // FOV ------------------------------------------------------->
         //radius                      = data.Radius;
         //angle                       = data.Angle
@@ -393,7 +407,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Sound ------------------------------------------------------->
         _screamSound                = data.Scream;
 
-       
+        //enemyMesh.material.color    = Color.red; 
 
         // Weakness
         //_iceWeak = data.Ice;
@@ -755,8 +769,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase enemy
     private void ChasePlayer()
     {
-        if(_canAttack) 
+        if (_canAttack) 
         {
+          
             // get player direction
             Vector3 DIRECTION = playerTarget.position - transform.position;
             //rotation 
@@ -794,12 +809,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         break; 
                     }
             }
+
+            _warn.canAlertAI = true;
         }
     }
 
     // * Attack & Chance Attack -------------------------------->
     private void Attack()
     {
+
+       
+
         switch (_canPerformAttack)
         {
             case true:
@@ -890,7 +910,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (agent.remainingDistance <= stopDistance)
         {
             PauseAgent();
-            
+
             Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
 
             foreach (Collider collider in hitEnemies)
@@ -923,6 +943,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
 
+    // Cooldown
     private void Cooldown()
     {
         currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
@@ -934,6 +955,49 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //else { _canSpecialAttack = false; return; }
     }
 
+    // * AI Spawn -------------------------------->
+    private IEnumerator SpawnAI()
+    {
+        bool running = false;
+
+        if (!running)
+        {
+            running = true;
+
+            _spawnOtherAI = false;
+            int i;
+        
+
+            //yield return new WaitForSeconds(0.5f);
+
+            for (i =0; i < 2; i++)
+            {
+
+                
+                Vector3 spawnPosition = transform.position +
+                    new Vector3(UnityEngine.Random.Range(2, 4), 0f,
+                    UnityEngine.Random.Range(2, 3));
+
+               
+                yield return new WaitForSeconds(1f);
+
+                Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
+
+
+                Instantiate(_enemyChase, spawnPosition, transform.rotation); 
+
+                StartCoroutine(STFS(2F));
+
+                print(i);
+            }
+
+            //ResumeAgent();
+            
+            running = false;
+        }
+    }
+
+    // * Attack time outs -------------------------------->
     private IEnumerator AttackTimer()
     {
         bool running = false;   
@@ -949,8 +1013,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         
     }
-
-
+    /*
     private IEnumerator timeBetweenAttack()
     {
 
@@ -960,25 +1023,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _animator.SetBool("walk", true);
 
     }
-
-    private void HandleStateAI(bool stop)
-    {
-        switch (stop)
-        {
-            case true:
-                {
-                    agent.velocity = Vector3.zero;
-                    agent.isStopped = true; 
-                    break;
-                }
-            case false:
-                {
-                    agent.isStopped = false;
-                    break;
-                }
-        }
-    }
-
+    */
     #endregion
 
     #region Cover
@@ -1195,7 +1240,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         if (_health <= 0)
         {
-            //_stateAI = AI._NONE; 
             Die();
         }
 
@@ -1256,36 +1300,31 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         StartCoroutine(HitFlash());
                         break;
                     }
-
-                 
             }
 
-
-            //_health -= _damage + damageBoost;
-
-            float randomFloat = UnityEngine.Random.value;
-
-            if(randomFloat <= stunedChance && _Type != WeaponType.Ice) 
+            if (_spawnHealth || _spawnMana && !_spawnOtherAI)
             {
-                //print("STARTED CHANCE");
-                //print(randomFloat);
-
-                StartCoroutine(STFS(stunnedTime)); 
+                DropSpawnCheck();
             }
+            /*
+            if (_spawnOtherAI)
+            {
+                float randomFloat = UnityEngine.Random.value;
 
+                if (randomFloat <= 0.1f)
+                {
+                    StartCoroutine(SpawnAI());
+                }
+                    
+            }
+            */
             damageText.text = _damage.ToString();
 
             StartCoroutine(DamageTextDisappear());
 
-            // ADD SPECIAL EFFECT WHEN WE SHOOT WE CAUSE THE 
-
-            //StartCoroutine(DamageEffect());
-
             _healthSlider.value = _health;
 
-            
-            //Debug.Log("enemy shot" + _health);
-
+           
             if (_canAttack)
             {
                 _warn.canAlertAI = true;
@@ -1295,18 +1334,33 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
 
+    private void DropSpawnCheck()
+    {
+        float randomFloat = UnityEngine.Random.value;
+
+        if (randomFloat <= 0.08f)
+        {
+            float randomPercent = UnityEngine.Random.value;
+
+            if (randomPercent <= 0.6f && _spawnHealth)
+            {
+                SpawnDrop(_healthDrop);
+            }
+            else if (randomPercent >= 0.61 && _spawnMana)
+            {
+                SpawnDrop(_manaDrop);
+            }
+
+        }
+    }
+
     private void Die()
     {
         if(_spawnHealth)
         {
             for (int i = 0; i < _healthItems; i++)
             {
-
-                Vector3 spawnPosition = transform.position +
-                    new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
-                    UnityEngine.Random.Range(-dropRadius, dropRadius));
-
-                Instantiate(_healthDrop, spawnPosition, Quaternion.identity);
+                SpawnDrop(_healthDrop);
             }   
         }
 
@@ -1314,12 +1368,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             for (int i = 0; i < _manaItems; i++)
             {
-                Vector3 spawnPosition = transform.position +
-                      new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
-                      UnityEngine.Random.Range(-dropRadius, dropRadius));
-
-                Instantiate(_manaDrop, spawnPosition, Quaternion.identity);
-
+                SpawnDrop(_manaDrop);
             }
         }
         
@@ -1335,6 +1384,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         Destroy(this.gameObject);
     }
+
+    private void SpawnDrop(GameObject DROP)
+    {
+        Vector3 spawnPosition = transform.position +
+                    new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius),
+                    0f,
+                    UnityEngine.Random.Range(-dropRadius, dropRadius));
+
+        Instantiate(DROP, spawnPosition, Quaternion.identity);
+    }
+
     #endregion
 
     #region Receive Warning
@@ -1351,6 +1411,35 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #endregion
 
     #region Control & Visual Coroutines
+
+    IEnumerator HitFlash()
+    {
+        bool ISRUNNING = false;
+
+        if (!ISRUNNING)
+        {
+            ISRUNNING = true;
+
+            enemyMesh.material.color = Color.red;
+            yield return new WaitForSeconds(0.2f);
+            enemyMesh.material.color = Color.white;
+
+            /*
+        originalColor = GetComponentInChildren <SkinnedMeshRenderer>().material.color;
+
+        //originalColor = enemyMesh.material.color;
+
+//enemyMesh.material.color = Color.red;
+GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.red;
+yield return new WaitForSeconds(0.2f);
+GetComponentInChildren<SkinnedMeshRenderer>().material.color = originalColor;
+//enemyMesh.material.color = originalColor;
+*/
+            ISRUNNING = false;
+        }
+
+    }
+
     IEnumerator DamageTextDisappear()
     {
         yield return new WaitForSeconds(2f);
@@ -1368,8 +1457,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case false:
                 {
                     STFS_EFFECT = true;
-
-                    
 
                     print("STARTED STFS COROUTINE SUCCESFULLY");
 
@@ -1408,84 +1495,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             _health -= damagePerSecond;
             StartCoroutine(HitFlash());
-            yield return new WaitForSeconds(2.5f);
+            yield return new WaitForSeconds(damagePerSecond);
             elapsedTime += 2.5f;
 
         }
 
     }
 
-    IEnumerator HitFlash()
-    {
-        //originalColor = GetComponent<Renderer>().material.color;
-        originalColor = enemyMesh.material.color;
-
-        enemyMesh.material.color = Color.red;
-        //GetComponent<Renderer>().material.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        //GetComponent<Renderer>().material.color = originalColor;
-        enemyMesh.material.color = originalColor;
-    }
-
-    IEnumerator SpecialAttackCollor()
-    {
-
-        originalColor = enemyMesh.material.color;
-
-
-        enemyMesh.material.color = Color.red;
-        yield return new WaitForSeconds(1);
-        enemyMesh.material.color = originalColor;
-
-        enemyMesh.material.color = Color.red;
-        yield return new WaitForSeconds(1.2f);
-        enemyMesh.material.color = originalColor;
-
-        enemyMesh.material.color = Color.red;
-        yield return new WaitForSeconds(1.5f);
-        enemyMesh.material.color = originalColor;
-
-        enemyMesh.material.color = Color.red;
-        yield return new WaitForSeconds(2f);
-        enemyMesh.material.color = originalColor;
-
-        enemyMesh.material.color = Color.red;
-    }
-
-    private IEnumerator DamageEffect()
-    {
-        bool damageEffect = false;
-
-
-        if (!damageEffect)
-        {
-            // control effect & stop
-            damageEffect = true;
-
-            //print("suffered hit");
-
-            // STOP AGENT
-            PauseAgent();
-
-            // STOP ATTACK 
-            _canAttack = false;
-
-            yield return new WaitForSeconds(damageEffectTime);
-
-            // RESUME AGENT
-            ResumeAgent();
-
-            // Start || resume Attack 
-            SetAttack();
-
-            // control effect & stop
-            damageEffect = false;
-            //print("in coroutine 2");
-        }
-
-
-        //print("out of if");
-    }
     #endregion
 
     #region Game state reception
@@ -1511,6 +1527,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
         }
         //throw new NotImplementedException();
+    }
+
+    private void HandleStateAI(bool stop)
+    {
+        switch (stop)
+        {
+            case true:
+                {
+                    agent.velocity = Vector3.zero;
+                    agent.isStopped = true;
+                    break;
+                }
+            case false:
+                {
+                    agent.isStopped = false;
+                    break;
+                }
+        }
     }
     #endregion
 

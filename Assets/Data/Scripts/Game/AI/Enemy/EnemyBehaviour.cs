@@ -1117,8 +1117,8 @@ public class EnemyBehaviour : MonoBehaviour
 
             _healthSlider.value = health;
 
-            float randomFloat = UnityEngine.Random.value;
-
+            //float randomFloat = UnityEngine.Random.value;
+            /*
             if (randomFloat <= 0.1f)
             {
                 //print("STARTED CHANCE");
@@ -1126,6 +1126,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                 StartCoroutine(STFS(stunnedTime));
             }
+            */
             //HealthCheck();
 
             // print("damage :" + health);
