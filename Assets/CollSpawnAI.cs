@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using FMODUnity;
 
 public class CollSpawnAI : MonoBehaviour
 {
@@ -13,7 +14,9 @@ public class CollSpawnAI : MonoBehaviour
 
                         private BoxCollider             _collider;
 
-    [SerializeField]    private Transform               _transform_a, _transform_b; 
+    [SerializeField]    private Transform               _transform_a, _transform_b;
+
+    [SerializeField] private EventReference             _soundAISpawn; 
 
 
     // Start is called before the first frame update
@@ -42,12 +45,14 @@ public class CollSpawnAI : MonoBehaviour
 
         if (!running)
         {
-             
+            
             running = true;
 
             _collider.enabled = false;
 
             int i;
+
+            RuntimeManager.PlayOneShot(_soundAISpawn);
 
             for (i = 0; i < _chaseCount; i++)
             {
@@ -58,9 +63,27 @@ public class CollSpawnAI : MonoBehaviour
 
 
                 Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
+                
 
-                yield return new WaitForSeconds(0.4f);
+                yield return new WaitForSeconds(0.5f);
                 Instantiate(_chase, spawnPosition, transform.rotation);
+
+
+                //print(i);
+            }
+
+            for (i = 0; i < _rangedCount; i++)
+            {
+
+                Vector3 spawnPosition = _transform_a.position +
+                    new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
+                    UnityEngine.Random.Range(-_dropRadius, _dropRadius));
+
+
+                Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
+
+                yield return new WaitForSeconds(0.5f);
+                Instantiate(_ranged, spawnPosition, transform.rotation);
 
 
                 //print(i);

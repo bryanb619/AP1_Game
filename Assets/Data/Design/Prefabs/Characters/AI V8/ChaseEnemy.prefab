@@ -271,6 +271,7 @@ GameObject:
   m_Component:
   - component: {fileID: 554273238514934917}
   - component: {fileID: 554273238514934918}
+  - component: {fileID: 8557553125150964295}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -315,6 +316,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8557553125150964295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935337217872657983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467e6e7040298ca48951571de489ff23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1033007762381302299
 GameObject:
   m_ObjectHideFlags: 0
@@ -3779,6 +3792,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1081896735654419423}
   - component: {fileID: 3110441228081096987}
+  - component: {fileID: 3029639011409299184}
   m_Layer: 0
   m_Name: Warrok
   m_TagString: Untagged
@@ -3935,6 +3949,26 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00000035762787, y: 0.19267201, z: -0.009812295}
     m_Extent: {x: 1.6450943, y: 1.2216783, z: 0.52426475}
   m_DirtyAABB: 0
+--- !u!95 &3029639011409299184
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8140330656553507748}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 35bf6298e1cf87f499805bf4781f4b47, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8478498770593860605
 GameObject:
   m_ObjectHideFlags: 0

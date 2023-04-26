@@ -24,43 +24,40 @@ public class EnemyBehaviour : MonoBehaviour
 
     // States ------------------------------------------------------------------------------------------------------------->
 
-        private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE }
-        private AI                                  _stateAI;
+                            private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE }
+        [SerializeField]    private AI                                  _stateAI;
 
-        private enum HandleState                    { _STOPED, _NONE }
-        private HandleState                         _currentState;
+                            private enum HandleState                    { _STOPED, _NONE }
+                            private HandleState                         _currentState;
 
-        private GameState                           _gamePlay;
+                            private GameState                           _gamePlay;
 
 
     // Components ------------------------------------------------------------------------------------------------------------->
         
-        // Reference to AI data
-        [SerializeField]
-        private AIRangedData                        data;
+                            // Reference to AI data
+        [SerializeField]    private AIRangedData                        data;
 
-        // Reference to the state machine
-        private StateMachine                        stateMachine;
+                            // Reference to the state machine
+                            private StateMachine                        stateMachine;
 
-        // Reference to the NavMeshAgent
-        internal NavMeshAgent                       agent;
+                            // Reference to the NavMeshAgent
+                            internal NavMeshAgent                       agent;
 
         // Reference to the Outline component
-        [SerializeField] 
-        private Outline                             outlineDeactivation;
+        [SerializeField]    private Outline                             outlineDeactivation;
 
-        private WarningSystemAI                     _warn;
+                            private WarningSystemAI                     _warn;
 
-        [SerializeField] 
-        private Agents                              _agentAI;
+        [SerializeField]    private Agents                              _agentAI;
 
-        private AIHandler                           _handlerAI;
-        private bool                                _deactivateAI;
+                            private AIHandler                           _handlerAI;
+                            private bool                                _deactivateAI;
 
-        public TMP_Text                             _dizzyText;
-        private bool                                _activeDizzy;
+                            public TMP_Text                             _dizzyText;
+                            private bool                                _activeDizzy;
 
-        private GemManager                          gemManager;
+                            private GemManager                          gemManager;
 
 
     // Combat  ------------------------------------------------------------------------------------------------------------->

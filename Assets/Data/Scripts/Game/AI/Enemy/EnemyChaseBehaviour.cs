@@ -817,9 +817,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // * Attack & Chance Attack -------------------------------->
     private void Attack()
     {
-
-       
-
         switch (_canPerformAttack)
         {
             case true:
@@ -835,11 +832,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                             //print("2nd step");
                             float randomFloat = UnityEngine.Random.value;
-
+                            
 
                             if (UnityEngine.Random.value < percentage && _canPerformAttack)
                             {
                                 //print("chose random");
+
+
+                                
 
                                 Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
 
@@ -848,10 +848,25 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                     string DebugColor = "<size=12><color=yellow>";
                                     string closeColor = "</color></size>";
 
-                                    Debug.Log(DebugColor + "Attack 2" + closeColor);
+                                    
 
-                                    _Player.TakeDamage(b_damage);
-                                    Instantiate(_s_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+                                    PlayerHealth PLAYER = collider.GetComponent<PlayerHealth>();    
+
+                                    if (PLAYER != null)
+                                    {
+
+                                        //AttackAnim();
+                                        PLAYER.TakeDamage(b_damage);
+
+                                        Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+  
+                                    }
+
+                                    Debug.Log(DebugColor + "Attack 2" + closeColor);
+                                    
+                                    //_Player.TakeDamage(b_damage);
+
+                                    //Instantiate(_s_attackEffect, _attackPoint.transform.position, Quaternion.identity);
                                 }
 
 
@@ -868,9 +883,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                     string DebugColor = "<size=12><color=green>";
                                     string closeColor = "</color></size>";
                                     Debug.Log(DebugColor + "Attack" + closeColor);
-                                    _Player.TakeDamage(damage);
+                                    //AttackAnim();
+                                    //_Player.TakeDamage(damage);
+                                   
 
-                                    Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+                                    PlayerHealth PLAYER = collider.GetComponent<PlayerHealth>();
+
+                                    if (PLAYER != null)
+                                    {
+                                        //AttackAnim();
+
+                                        PLAYER.TakeDamage(damage);
+
+                                        Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+
+                                    }
+
+
+                                    //Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
                                 }
 
                                 //StartCoroutine(AttackTimer());
@@ -895,6 +925,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
         }
         return;
+    }
+
+    private void AttackAnim()
+    {
+        _animator.SetBool("Attack", true);
+    }
+
+    internal void ReceiveAnim()
+    {
+        _animator.SetBool("Attack", false);
     }
 
     // * Special Attack -------------------------------->
@@ -1171,6 +1211,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         agent.stoppingDistance = 0.1f;
         agent.speed = 1f;
 
+        agent.radius = 0.5f;
+
         if(_hanlderAI.AgentOperate)
         {
             _useFOV = true;
@@ -1191,11 +1233,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             agent.angularSpeed = 0f;
             agent.updateRotation = false;
+            agent.radius = 2.5F; 
 
             //StartAttacking();
             _canAttack = true;
             _stateAI = AI._ATTACK;
+
             _useFOV = false;
+            StopCoroutine(FOVRoutine());
+
             return;
         }
         
@@ -1228,7 +1274,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetGloryKill()
     {
         _stateAI = AI._GLORYKILL;
+        agent.radius = 0.5f;
         _useFOV = false;
+        StopCoroutine(FOVRoutine());
         return;
     }
 
@@ -1306,6 +1354,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 DropSpawnCheck();
             }
+
             /*
             if (_spawnOtherAI)
             {
@@ -1318,6 +1367,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     
             }
             */
+
             damageText.text = _damage.ToString();
 
             StartCoroutine(DamageTextDisappear());
