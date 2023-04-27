@@ -252,8 +252,12 @@ public class SpecialItem : MonoBehaviour
 
                         Debug.Log(DebugColor + "HP Increased" + closeColor);
 
-
+                        // increase health bar
                         PLAYER.EmpowerHealth(Health);
+
+                        // take health
+                        PLAYER.Takehealth(Health);
+
                         break;
                     }
                 case DropType._SPECIAL_MANA:
@@ -263,8 +267,13 @@ public class SpecialItem : MonoBehaviour
 
 
                         Debug.Log(DebugColor + "Mana Increased" + closeColor);
-
+                        
+                        // Increase mana bar
                         MANA.ManaIncrease(Mana);
+
+                        // take aditional mana
+                        MANA.RecoverMana(Mana);
+
                         break;
                     }
             }

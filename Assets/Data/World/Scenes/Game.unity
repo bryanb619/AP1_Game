@@ -1735,6 +1735,9 @@ MonoBehaviour:
       Data3: 284616345
       Data4: -1006319745
     Path: event:/Enemy/EnemySpawn/AISpawn
+  _startWait: 0
+  _waitTime: 0
+  _spawnTime: 0.5
 --- !u!65 &108527002
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -94134,6 +94137,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 737739642}
     m_Modifications:
+    - target: {fileID: 1510856066898559164, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
+      propertyPath: avoidancePriority
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 1510856066898559165, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
       propertyPath: pointA
       value: 
@@ -95453,7 +95460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6032779154943327807, guid: 7e475904da838f142a4de44cb6159bf0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6032779154943327807, guid: 7e475904da838f142a4de44cb6159bf0, type: 3}
       propertyPath: m_AnchorMin.x

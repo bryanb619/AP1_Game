@@ -4,19 +4,36 @@ using FMODUnity;
 
 public class CollSpawnAI : MonoBehaviour
 {
+    // Enemies --------------------------------------------------------------------------->
+    [Header("AI")]
+
     [SerializeField]    private GameObject              _chase, _ranged;
 
     [SerializeField]    private GameObject              _spawnEffect;
 
     [SerializeField]    private int                     _chaseCount, _rangedCount;
 
-    [SerializeField]    private float                   _dropRadius; 
+    // Radius & Components ----------------------------------------------------------------->
+    [Header("Components")]
 
-                        private BoxCollider             _collider;
+    [SerializeField]    private float                   _dropRadius; 
 
     [SerializeField]    private Transform               _transform_a, _transform_b;
 
-    [SerializeField] private EventReference             _soundAISpawn; 
+                        private BoxCollider             _collider;
+
+    [SerializeField]    private EventReference          _soundAISpawn;
+
+    // Time -------------------------------------------------------------------------------->
+    [Header("Spawn")]
+
+    [Tooltip("Wait time to star spawn of AI")]
+    [SerializeField]    private bool                    _startWait;
+    [Tooltip("Wait time to star spawn of AI")]
+    [SerializeField]    private float                   _waitTime;
+
+    [Tooltip("spawn time out between each AI Spawn")]
+    [SerializeField]    private float                   _spawnTime;  
 
 
     // Start is called before the first frame update
@@ -56,7 +73,10 @@ public class CollSpawnAI : MonoBehaviour
 
             for (i = 0; i < _chaseCount; i++)
             {
-
+                if(_startWait) 
+                {
+                    yield return new WaitForSeconds(_waitTime);
+                }
                 Vector3 spawnPosition = _transform_a.position +
                     new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
                     UnityEngine.Random.Range(-_dropRadius, _dropRadius));
@@ -65,7 +85,7 @@ public class CollSpawnAI : MonoBehaviour
                 Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
                 
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(_spawnTime);
                 Instantiate(_chase, spawnPosition, transform.rotation);
 
 
@@ -74,6 +94,10 @@ public class CollSpawnAI : MonoBehaviour
 
             for (i = 0; i < _rangedCount; i++)
             {
+                if (_startWait)
+                {
+                    yield return new WaitForSeconds(_waitTime);
+                }
 
                 Vector3 spawnPosition = _transform_a.position +
                     new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
@@ -82,7 +106,7 @@ public class CollSpawnAI : MonoBehaviour
 
                 Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
 
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(_spawnTime);
                 Instantiate(_ranged, spawnPosition, transform.rotation);
 
 

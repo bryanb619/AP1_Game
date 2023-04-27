@@ -1233,7 +1233,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             agent.angularSpeed = 0f;
             agent.updateRotation = false;
-            agent.radius = 2.5F; 
+            agent.radius = 2F; 
 
             //StartAttacking();
             _canAttack = true;

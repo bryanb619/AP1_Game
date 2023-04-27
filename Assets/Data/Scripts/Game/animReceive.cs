@@ -14,6 +14,6 @@ public class animReceive : MonoBehaviour
 
     internal void ReceiveAttackComand()
     {
-        _chase.ReceiveAnim(); 
+        
     }
 }
