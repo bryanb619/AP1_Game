@@ -1013,7 +1013,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             for (i =0; i < 2; i++)
             {
 
-                
                 Vector3 spawnPosition = transform.position +
                     new Vector3(UnityEngine.Random.Range(2, 4), 0f,
                     UnityEngine.Random.Range(2, 3));
@@ -1474,17 +1473,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
             enemyMesh.material.color = Color.white;
 
-            /*
-        originalColor = GetComponentInChildren <SkinnedMeshRenderer>().material.color;
-
-        //originalColor = enemyMesh.material.color;
-
-//enemyMesh.material.color = Color.red;
-GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.red;
-yield return new WaitForSeconds(0.2f);
-GetComponentInChildren<SkinnedMeshRenderer>().material.color = originalColor;
-//enemyMesh.material.color = originalColor;
-*/
             ISRUNNING = false;
         }
 
