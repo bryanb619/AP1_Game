@@ -24,20 +24,23 @@ public class CompanionOnGui : Editor
         cyan.normal.textColor = Color.cyan;
 
 
-        switch(_companionBehaviour._StateAI)
+        switch (_companionBehaviour._StateAI)
         {
             case CompanionBehaviour.CompanionState._idle:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Idle  GamePlay: " + _companionBehaviour.gameplay, red);
-                    break; 
+                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Idle  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Ubstructed, cyan);
+                    break;
                 }
             case CompanionBehaviour.CompanionState._follow:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Follow  GamePlay: " + _companionBehaviour.gameplay, green);
+                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Follow  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Ubstructed, green);
                     break;
                 }
-
-        }     
-            
+            case CompanionBehaviour.CompanionState._combat:
+                {
+                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Combat  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Ubstructed, red);
+                    break;
+                }
+        }
     }
 }

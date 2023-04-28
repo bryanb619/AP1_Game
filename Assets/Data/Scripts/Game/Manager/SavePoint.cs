@@ -7,12 +7,13 @@ public class SavePoint : MonoBehaviour
 
     private void Start()
     {
-        _saveManager = FindObjectOfType<SaveManager>();
+        _saveManager            = FindObjectOfType<SaveManager>();
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerMovement player = GetComponent<PlayerMovement>();
+        PlayerMovement player   = GetComponent<PlayerMovement>();
 
         if (player != null)
         {

@@ -4,62 +4,83 @@ using LibGameAI.FSMs;
 using UnityEngine.AI;
 using System.Collections;
 
-//using UnityEngine.Animations;
 
 // The script that controls an agent using an FSM
 [RequireComponent(typeof(NavMeshAgent))]
 public class CompanionBehaviour : MonoBehaviour
 {
 
-    //public float floatStrength = 1f;
-    //public float targetHeight = 1f;
-
-
-    //public float damping = 9.99f;
-    //public float floatSpeed = 1f;
-
-    //public float minY = 1.6f;
-    //public float maxY = 2.1f;
-    public float speed = 0.3f;
-
-    private float t = 0f;
-
-    public Transform _lowPos, _highPos;
-
-    private Vector3 targetPosition;
-
     #region Variables
-    public enum CompanionState { _idle, _follow, _rotate}
-    
-    public CompanionState _StateAI;  
+
+    // States & AI ---------------------------------------------------->
+    public enum CompanionState                          {_idle, _follow, _combat, _rotate }
+                        public CompanionState           _StateAI;
+
+                        private StateMachine            stateMachine;
+                        
+
+                        internal NavMeshAgent           Companion;
+
+                        private bool                    _gameplay;
+                        public bool                     gameplay => _gameplay;
+
+                        private GameState               _gameState;
 
 
+                        private PlayerMovement          player;
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     //private mini _MiniMapCollor;
 
-    internal NavMeshAgent Companion;
+    // Movement ------------------------------------------------->
+
+    [SerializeField]    private float              speed = 0.3f;
+
+                        private float               t = 0f;
+
+    [SerializeField]    private Transform           floatPos;
+
+    [SerializeField]    private Transform          _lowPos, _highPos;
+
+                        private Vector3             targetPosition;
+
+                        private float               acceleration = 2000f;
+
+    [SerializeField]    private Transform           _l_rTarget, // low right
+                                                    _l_lTarget, // low left
+                                                    _u_rTarget, // up right
+                                                    _u_lTarget; // up left
+                                                    
+
+                        private Transform           _primeTarget;
+
+
+                        private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, U_R_POS}
+   [SerializeField]     private CompanionPos        _nextPos, _currentPos;
+
+                        private bool                _ubstructed;
+                        public bool                 Ubstructed => _ubstructed;  
+    
+
+    // Materials ---------------------------------------------------------------------->
+                        private CompanionSpawn      point;
+
+                        private MeshRenderer        CompanionMesh;
+
+    [SerializeField]    private Material            AlphaLow, normal;
+
+    // Combat ------------------------------------------------------------------------>
+
+    [SerializeField]    private LayerMask           _attackLayers, _playerMask;
+
+                        private Camera              mainCamera;
 
     // NEW CODE
     //[SerializeField]
     //private float followsRadius = 2f;
 
-    private PlayerMovement player;
 
-    private Transform Target;
-    public Transform playerTarget => Target;
-
-    [SerializeField] private Transform floatPos;
-
-    private float acceleration = 2000f; 
-
-    private CompanionSpawn point;
-
-    private MeshRenderer CompanionMesh;
-
-    [SerializeField] private Material AlphaLow, normal;
-
-
+    // 
 
 
     //[HideInInspector] public bool _playerIsMoving;
@@ -76,15 +97,11 @@ public class CompanionBehaviour : MonoBehaviour
 
     //private float minDist = 0.4f;
     // Reference to the state machine
-    private StateMachine stateMachine;
+
 
     //private bool _enemyIS;
     //public bool canSee => _enemyIS;
 
-    private bool _gameplay; 
-    public bool gameplay => _gameplay;  
-
-    protected private GameState _gameState;
 
     //[Range(10, 150)]
     //public float radius;
@@ -96,21 +113,18 @@ public class CompanionBehaviour : MonoBehaviour
     //[SerializeField] private Transform FOV;
     //public Transform EEFOV => FOV; // Enemy Editor FOV
 
-    [SerializeField] private LayerMask _attackLayers;
-
-     private Camera mainCamera;
+    //private Rigidbody _rb;
 
     #endregion
 
-    //public float floatingHeight = 0.5f;
-    //public float floatingSpeed = 1.0f;
 
-    private Rigidbody _rb;
 
 
 
     //private Vector3 startingPosition;
     //public float floatingMagnitude = 0.5f;
+
+
 
     #region Awake
     private void Awake()
@@ -141,13 +155,12 @@ public class CompanionBehaviour : MonoBehaviour
 
         point                       = FindObjectOfType<CompanionSpawn>();
 
-        Target                      = point.transform;
+        _primeTarget                = point.transform;
 
 
         player                      = FindObjectOfType<PlayerMovement>();
 
         targetPosition              = transform.position;
-
 
         //startingPosition = transform.position;
 
@@ -155,12 +168,17 @@ public class CompanionBehaviour : MonoBehaviour
         {
             case GameState.Paused:
                 {
-                    _gameplay = false;
+                    //_gameplay = false;
+
+                    _gameState = GameState.Paused;
                     break;
                 }
             case GameState.Gameplay:
                 {
-                    _gameplay = true;
+                    //_gameplay = true;
+
+                    _gameState = GameState.Gameplay; 
+
                     break;
                 }
         }
@@ -171,11 +189,13 @@ public class CompanionBehaviour : MonoBehaviour
         //_playerIsMoving = false;
 
        
-        // Create the states
+        // states ------------------------------------------------------------->
 
         State IdleState = new State("Companion Idle",Idle);
 
         State FollowState = new State(("Companion Follow"), Follow); 
+
+        State CombatState = new State("Companion combat", Combat);
             
 
         /*
@@ -193,15 +213,41 @@ public class CompanionBehaviour : MonoBehaviour
         IdleState.AddTransition(
             new Transition(
                 () => _StateAI == CompanionState._follow,
-                //() => Debug.Log("Idle -> Follow"),
                 FollowState));
+
+        // idle -> Combat
+        IdleState.AddTransition(
+            new Transition(
+                () => _StateAI == CompanionState._combat,
+                CombatState));
+
 
         // Follow -> Idle
         FollowState.AddTransition(
            new Transition(
                () => _StateAI == CompanionState._idle,
-               //() => Debug.Log("Follow -> Idle"),
                IdleState));
+
+        // Follow -> Combat
+        FollowState.AddTransition(
+        new Transition(
+            () => _StateAI == CompanionState._combat,
+            CombatState));
+
+
+        // Combat -> Idle 
+        CombatState.AddTransition(
+           new Transition(
+               () => _StateAI == CompanionState._idle,
+               IdleState));
+
+
+        // Combat -> Follow
+
+        CombatState.AddTransition(
+          new Transition(
+              () => _StateAI == CompanionState._follow,
+              FollowState));
 
         // Create the state machine
         stateMachine = new StateMachine(IdleState);
@@ -209,47 +255,22 @@ public class CompanionBehaviour : MonoBehaviour
 
     #endregion
 
-    private void FixedUpdate()
-    {
-        if (_gameplay) //&& _StateAI == CompanionState._idle) 
-        {
-
-            //_rb.AddForce(Vector3.up * floatStrength);
-            //_rb.AddForce(-_rb.velocity * damping);
-            //Vector3 upForce = Vector3.up * _rb.mass * Physics.gravity.magnitude * (floatingHeight / 2 - transform.position.y);
-
-            //_rb.AddForce(upForce, ForceMode.Acceleration);
-            //float distance = targetHeight - transform.position.y;
-            //_rb.AddForce(Vector3.up * distance * floatStrength);
-        }
-        else
-        {
-            //_rb.Sleep();
-        }
-    }
-
     #region Update
     // Request actions to the FSM and perform them
     private void Update()
     {
-        if(_gameplay) 
+        if(_gameState == GameState.Gameplay) 
         {
+          
+            if(_StateAI != CompanionState._combat)
+            {
+                //CheckDist();
+                CheckMoveBool();
+            }
 
+
+            Aim(); 
             ResumeAgent();
-            //StartCoroutine(FOVRoutine());
-
-            //CheckDist(); 
-
-            Aim();
-            
-            // print(Companion.velocity +" Companion Velocity");
-            //print(Companion.speed + " Companion Speed");
-            //print(Companion.acceleration + " Companion Acceleration");
-
-            CheckMoveBool();
-            //CheckEnemy();
-            //AlphaUpdate();
-            //RotateTimer();
 
             Action actions = stateMachine.Update();
             actions?.Invoke();
@@ -264,7 +285,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void CheckDist()
     {
-        if ((Target.position - transform.position).magnitude >= 1f)
+        if ((_primeTarget.position - transform.position).magnitude >= 1f)
         {
             //_StateAI = CompanionState._follow;
             return; 
@@ -301,7 +322,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _attackLayers))
+        if (Physics.Raycast(ray, out var hitInfo, 60f, _attackLayers))
         {
             //companionAim.transform.position = hitInfo.point;
             return (success: true, position: hitInfo.point);
@@ -312,6 +333,114 @@ public class CompanionBehaviour : MonoBehaviour
             return (success: false, position: Vector3.zero);
         }
     }
+
+    private void ObstacleCheck() 
+    {
+        RaycastHit hit;
+
+        Debug.DrawRay(transform.position, transform.forward);
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, _playerMask))
+        {
+            _ubstructed = true;
+        }
+        else
+        {
+            _ubstructed = false;
+        }
+
+        if (_ubstructed) 
+        {
+            ChangeCourse();
+        }
+
+        
+      
+    }
+
+    private void ChangeCourse()
+    {
+        switch (_currentPos)
+        {
+            // lower positions ------------------->
+
+            // Lower left
+            case CompanionPos._L_L_POS:
+                {
+                    //Companion.SetDestination(_u_rTarget.position);
+                    //Destination(_u_rTarget);
+                    _nextPos = CompanionPos.U_R_POS;
+
+                    Destination(_u_rTarget, _nextPos);
+
+
+                    break;
+                }
+            // lower right
+            case CompanionPos._L_R_POS:
+                {
+                    //Companion.SetDestination(_u_lTarget.position);
+                    _nextPos = CompanionPos.U_L_POS;
+
+                    Destination(_u_lTarget, _nextPos);
+
+
+                    break;
+                }
+
+
+            //  Upper positions --------------->
+
+            // up left
+            case CompanionPos.U_L_POS:
+                {
+                    //Companion.SetDestination(_u_lTarget.position);
+                    _nextPos = CompanionPos.U_R_POS; 
+
+                    Destination(_u_rTarget, _nextPos);
+
+                    break;
+                }
+            // up left
+            case CompanionPos.U_R_POS:
+                {
+                    //Companion.SetDestination(_l_lTarget.position);
+
+                    _nextPos = CompanionPos._L_L_POS;
+
+                    Destination(_l_lTarget, _nextPos);
+
+                    break;
+                }
+
+                default: {break;}
+        }
+
+
+
+    }
+        
+
+    private void Destination(Transform pos, CompanionPos NewPos)
+    {
+
+        if ((pos.position - transform.position).magnitude >= 1f)
+        {
+            Companion.SetDestination(pos.position);
+            //transform.position = pos.position;
+        }
+
+        if ((pos.position - transform.position).magnitude <= 0.2f)
+        {
+            _currentPos = NewPos;
+        }
+
+        
+
+        
+    }
+
+
     #endregion
 
     #region AI Actions
@@ -319,13 +448,13 @@ public class CompanionBehaviour : MonoBehaviour
     {
         //print(_playerIsMoving); 
         
-        if (player.IsMoving && (Target.position - transform.position).magnitude >= 1f)
+        if (player.IsMoving && (_primeTarget.position - transform.position).magnitude >= 1f && _StateAI != CompanionState._combat )
         {
             //_StartFollow = true;
             _StateAI = CompanionState._follow;
             return;
         }
-        else if(!player.IsMoving && (Target.position - transform.position).magnitude <= 0.8f)
+        else if(!player.IsMoving && (_primeTarget.position - transform.position).magnitude <= 0.8f && _StateAI != CompanionState._combat)
         {
             // _StartFollow = false;
             _StateAI = CompanionState._idle;
@@ -339,11 +468,11 @@ public class CompanionBehaviour : MonoBehaviour
     private void Idle()
     {
 
-
         //Companion.updatePosition = false;
         StartCoroutine((floatStart()));
 
         FloatCompanion();
+
 
         //float floatingOffset = Mathf.Sin(Time.time * floatingSpeed) * floatingMagnitude;
         //Vector3 newPosition = startingPosition + new Vector3(0f, floatingOffset, 0f);
@@ -389,7 +518,13 @@ public class CompanionBehaviour : MonoBehaviour
 
         Companion.isStopped = false;
 
-        Companion.SetDestination(Target.position); 
+        //Companion.SetDestination(_primeTarget.position); 
+        _primeTarget = point.transform;
+
+        Companion.SetDestination(_primeTarget.position);
+
+        transform.rotation = point.transform.rotation;  
+
         //Companion.speed = 3.4f;
 
         //Companion.speed = 8f;
@@ -397,24 +532,35 @@ public class CompanionBehaviour : MonoBehaviour
         //Companion.acceleration = 10f; 
 
 
-        if ((Target.position - transform.position).magnitude <= 2f)
+        if ((_primeTarget.position - transform.position).magnitude <= 2f)
         {
             //Companion.speed = 3.5f;
             Companion.speed = 4f;
         }
-       
-        else if ((Target.position - transform.position).magnitude <= 0.8f)
+
+        else if ((_primeTarget.position - transform.position).magnitude <= 0.8f)
         {
             SlowDown();
             return;
         }
-        else if ((Target.position - transform.position).magnitude >= 7f)
+        else if ((_primeTarget.position - transform.position).magnitude >= 7f)
         {
             StartCoroutine(CatchPlayer());
             return;
         }
 
+
+
+
     }
+
+   private void Combat()
+   {
+        StartCombat();
+        //Aim();
+        ObstacleCheck();
+   }
+
 
     #endregion
 
@@ -462,8 +608,8 @@ public class CompanionBehaviour : MonoBehaviour
     private IEnumerator CatchPlayer()
     {
         Setlow();
-        transform.position = Target.position;
-        yield return new WaitForSeconds(0.3f);
+        transform.position = _primeTarget.position;
+        yield return new WaitForSeconds(0.2f);
         SetHigh();
         yield return new WaitForSeconds(0.2f);
         Setlow();
@@ -485,8 +631,6 @@ public class CompanionBehaviour : MonoBehaviour
 
     #endregion
 
-
-
     #region Enemy detection
 
 
@@ -502,6 +646,22 @@ public class CompanionBehaviour : MonoBehaviour
         
     }
     #endregion
+
+    private void StartIdle()
+    {
+
+    }
+    private void StartFollow()
+    {
+
+    }
+
+    private void StartCombat()
+    {
+        Companion.radius = 0.8f;
+        Companion.acceleration = 2000f;
+        Companion.speed = 8f;
+    }
 
     #region Alpha update
     private void AlphaUpdate()
@@ -550,11 +710,14 @@ public class CompanionBehaviour : MonoBehaviour
             case GameState.Paused:
                 {
                     _gameplay = false;
+
+                    _gameState = GameState.Paused;
                     
                     break;
                 }
             case GameState.Gameplay:
                 {
+                    _gameState = GameState.Gameplay;
                     _gameplay = true;
                     break;
                 }
