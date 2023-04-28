@@ -942,7 +942,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         
         agent.speed = 25f;
-        agent.acceleration = 14f;
+        //agent.acceleration = 14f;
 
 
         //if ((playerTarget.transform.position - transform.position).magnitude <= 6F) // define min distance
@@ -1650,6 +1650,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, minDist);
+
+           
 
         }
 

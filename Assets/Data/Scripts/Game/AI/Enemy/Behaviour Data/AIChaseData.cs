@@ -50,7 +50,7 @@ public class AIChaseData : ScriptableObject
 
         [Tooltip("Agent Stop distance from player position")]
         [SerializeField]
-            private float               stopDistance = 5F;
+            private float               stopDistance;
             public float                StopDistance => stopDistance; 
 
         [Tooltip("attack value is set to previuos option, use this option to allow some more space so action can be completed succesfuly")]
