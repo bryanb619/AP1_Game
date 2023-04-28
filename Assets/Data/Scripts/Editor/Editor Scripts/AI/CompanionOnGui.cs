@@ -28,17 +28,17 @@ public class CompanionOnGui : Editor
         {
             case CompanionBehaviour.CompanionState._idle:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Idle  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Ubstructed, cyan);
+                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Idle  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Obstructed, cyan);
                     break;
                 }
             case CompanionBehaviour.CompanionState._follow:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Follow  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Ubstructed, green);
+                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Follow  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Obstructed, green);
                     break;
                 }
             case CompanionBehaviour.CompanionState._combat:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Combat  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Ubstructed, red);
+                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Combat  GamePlay: " + _companionBehaviour.gameplay + " Ubstructed : " + _companionBehaviour.Obstructed, red);
                     break;
                 }
         }

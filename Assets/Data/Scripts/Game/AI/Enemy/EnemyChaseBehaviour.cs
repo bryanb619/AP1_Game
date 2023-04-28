@@ -48,14 +48,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
             // AI controller for performance AI actions
             private AIController                _controller;
             private AIHandler                   _hanlderAI;
-            // AI Mesh
-        [SerializeField]
-            private SkinnedMeshRenderer         enemyMesh;
-            // color
-            private Color                       originalColor;
+
+        // AI Mesh
+        [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
+                            private Color                       _color;
 
     // References to player //
-            private GameObject                  playerObject;
+    private GameObject                  playerObject;
             private PlayerHealth                _Player;
     
             private Transform                   playerTarget;
@@ -245,6 +244,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             private Vector3 previousPos;
             private float curSpeed;
 
+
+     
     // weakness
     //private bool                      _iceWeak, _fireWeak, _thunderWeak;
     #endregion
@@ -287,6 +288,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetProfile();
         GetStates();
         AbilityCheck();
+
+        _color = enemyMesh.material.color;
 
         _currentState = HandleState._NONE;
         _canAttack = true;
@@ -1468,11 +1471,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (!ISRUNNING)
         {
             ISRUNNING = true;
-            Color COLOR = enemyMesh.material.color;
+            
 
             enemyMesh.material.color = Color.red;
             yield return new WaitForSeconds(0.2f);
-            enemyMesh.material.color = COLOR;
+            enemyMesh.material.color = _color;
 
             ISRUNNING = false;
         }
@@ -1523,8 +1526,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             default: {break;}
         }
     }
-
-   
 
     // Damage over time
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)

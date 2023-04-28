@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
     private void HandleUnfocussedApp(bool Focused)
     {
         //_state = GameState.Paused;
-       switch(Focused)
+        switch(Focused)
         {
             case true:
                 {
@@ -135,8 +135,7 @@ public class GameManager : MonoBehaviour
                     UpdateGameState(GameState.Paused);
                     break; 
                 }
-       }
-        return; 
+        }
     }
 
 

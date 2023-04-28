@@ -19,7 +19,7 @@ public class CompanionBehaviour : MonoBehaviour
                         private StateMachine            stateMachine;
                         
 
-                        internal NavMeshAgent           Companion;
+                        internal NavMeshAgent           _companion;
 
                         private bool                    _gameplay;
                         public bool                     gameplay => _gameplay;
@@ -55,11 +55,12 @@ public class CompanionBehaviour : MonoBehaviour
                         private Transform           _primeTarget;
 
 
-                        private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, U_R_POS}
+                        //private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, _U_R_POS}
+                        private enum CompanionPos   { _L_L_POS, _U_R_POS }
    [SerializeField]     private CompanionPos        _nextPos, _currentPos;
 
-                        private bool                _ubstructed;
-                        public bool                 Ubstructed => _ubstructed;  
+                        private bool                _obstructed;
+                        public bool                 Obstructed => _obstructed;  
     
 
     // Materials ---------------------------------------------------------------------->
@@ -140,14 +141,14 @@ public class CompanionBehaviour : MonoBehaviour
 
         _StateAI                    = CompanionState._idle;
 
-        Companion                   = GetComponent<NavMeshAgent>();
+        _companion                   = GetComponent<NavMeshAgent>();
 
         //_rb = GetComponent<Rigidbody>();
 
-        Companion.angularSpeed      = 0;
-        Companion.updateRotation    = false;
+        _companion.angularSpeed      = 0;
+        _companion.updateRotation    = false;
 
-        Companion.acceleration      = acceleration;
+        _companion.acceleration      = acceleration;
 
         CompanionMesh               = GetComponent<MeshRenderer>();   
 
@@ -322,7 +323,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out var hitInfo, 60f, _attackLayers))
+        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _attackLayers))
         {
             //companionAim.transform.position = hitInfo.point;
             return (success: true, position: hitInfo.point);
@@ -342,17 +343,15 @@ public class CompanionBehaviour : MonoBehaviour
 
         if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, _playerMask))
         {
-            _ubstructed = true;
+            _obstructed = true;
+            ChangeCourse();
         }
         else
         {
-            _ubstructed = false;
+            _obstructed = false;
         }
-
-        if (_ubstructed) 
-        {
-            ChangeCourse();
-        }
+      
+        
 
         
       
@@ -369,13 +368,15 @@ public class CompanionBehaviour : MonoBehaviour
                 {
                     //Companion.SetDestination(_u_rTarget.position);
                     //Destination(_u_rTarget);
-                    _nextPos = CompanionPos.U_R_POS;
+                    _nextPos = CompanionPos._U_R_POS;
 
                     Destination(_u_rTarget, _nextPos);
 
 
                     break;
                 }
+
+                /*
             // lower right
             case CompanionPos._L_R_POS:
                 {
@@ -387,10 +388,10 @@ public class CompanionBehaviour : MonoBehaviour
 
                     break;
                 }
-
+            */
 
             //  Upper positions --------------->
-
+            /*
             // up left
             case CompanionPos.U_L_POS:
                 {
@@ -401,8 +402,9 @@ public class CompanionBehaviour : MonoBehaviour
 
                     break;
                 }
+                */
             // up left
-            case CompanionPos.U_R_POS:
+            case CompanionPos._U_R_POS:
                 {
                     //Companion.SetDestination(_l_lTarget.position);
 
@@ -424,9 +426,9 @@ public class CompanionBehaviour : MonoBehaviour
     private void Destination(Transform pos, CompanionPos NewPos)
     {
 
-        if ((pos.position - transform.position).magnitude >= 1f)
+        if ((pos.position - transform.position).magnitude >= 0.1f)
         {
-            Companion.SetDestination(pos.position);
+            _companion.SetDestination(pos.position);
             //transform.position = pos.position;
         }
 
@@ -434,9 +436,6 @@ public class CompanionBehaviour : MonoBehaviour
         {
             _currentPos = NewPos;
         }
-
-        
-
         
     }
 
@@ -483,9 +482,9 @@ public class CompanionBehaviour : MonoBehaviour
 
     private IEnumerator floatStart()
     {
-        Companion.velocity = Vector3.zero;
+        _companion.velocity = Vector3.zero;
 
-        Companion.isStopped = true;
+        _companion.isStopped = true;
 
         yield return new WaitForSeconds(2f);
         
@@ -494,8 +493,8 @@ public class CompanionBehaviour : MonoBehaviour
     private void FloatCompanion()
     {
 
-
         t += Time.deltaTime * speed;
+
         float NEWY = Mathf.SmoothStep
             (_lowPos.position.y, _highPos.position.y, t);
 
@@ -509,33 +508,33 @@ public class CompanionBehaviour : MonoBehaviour
 
             Transform TEMPORARY = _lowPos;
 
-            _lowPos = _highPos;
-            _highPos = TEMPORARY;
+            _lowPos             = _highPos;
+            _highPos            = TEMPORARY;
         }
     }
     private void PosUpdate()
     {
 
-        Companion.isStopped = false;
+        _companion.isStopped = false;
 
         //Companion.SetDestination(_primeTarget.position); 
         _primeTarget = point.transform;
 
-        Companion.SetDestination(_primeTarget.position);
+        _companion.SetDestination(_primeTarget.position);
 
-        transform.rotation = point.transform.rotation;  
+        //transform.rotation = point.transform.rotation;  
 
         //Companion.speed = 3.4f;
 
         //Companion.speed = 8f;
-        Companion.speed = 8f;
+        _companion.speed = 8f;
         //Companion.acceleration = 10f; 
 
 
         if ((_primeTarget.position - transform.position).magnitude <= 2f)
         {
             //Companion.speed = 3.5f;
-            Companion.speed = 4f;
+            _companion.speed = 4f;
         }
 
         else if ((_primeTarget.position - transform.position).magnitude <= 0.8f)
@@ -601,7 +600,7 @@ public class CompanionBehaviour : MonoBehaviour
 
         //yield return null;
 
-        yield return new WaitUntil(() => Companion.remainingDistance <= Companion.stoppingDistance);
+        yield return new WaitUntil(() => _companion.remainingDistance <= _companion.stoppingDistance);
     }
 
 
@@ -624,7 +623,7 @@ public class CompanionBehaviour : MonoBehaviour
         //Companion.speed = 3F;
         //Companion.velocity = Companion.velocity.normalized * 4f;
 
-        Companion.velocity = Companion.velocity.normalized / 1.4f;
+        _companion.velocity = _companion.velocity.normalized / 1.4f;
     }
 
     #endregion
@@ -658,9 +657,9 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void StartCombat()
     {
-        Companion.radius = 0.8f;
-        Companion.acceleration = 2000f;
-        Companion.speed = 8f;
+        _companion.radius = 0.8f;
+        _companion.acceleration = 2000f;
+        _companion.speed = 4f;
     }
 
     #region Alpha update
@@ -692,6 +691,8 @@ public class CompanionBehaviour : MonoBehaviour
     {
         // change to transparent material version
         CompanionMesh.material = AlphaLow;
+
+        
 
     }
 
@@ -725,17 +726,17 @@ public class CompanionBehaviour : MonoBehaviour
     }
     private void ResumeAgent()
     {
-        if(Companion.enabled)
+        if(_companion.enabled)
         {
             if (_StateAI == CompanionState._follow)
             {
 
-                Companion.isStopped = true;
+                _companion.isStopped = true;
                 return;
             }
             else
             {
-                Companion.isStopped = false;
+                _companion.isStopped = false;
                 return;
             }
         }
@@ -744,10 +745,10 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void AgentPause()
     {
-        if(Companion.enabled)
+        if(_companion.enabled)
         {
-            Companion.isStopped = true;
-            Companion.velocity = Vector3.zero;
+            _companion.isStopped = true;
+            _companion.velocity = Vector3.zero;
         }
        
         return;
