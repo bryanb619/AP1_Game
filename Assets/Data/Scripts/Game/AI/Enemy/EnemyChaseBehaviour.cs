@@ -1461,17 +1461,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     #region Control & Visual Coroutines
 
-    IEnumerator HitFlash()
+    private IEnumerator HitFlash()
     {
         bool ISRUNNING = false;
 
         if (!ISRUNNING)
         {
             ISRUNNING = true;
+            Color COLOR = enemyMesh.material.color;
 
             enemyMesh.material.color = Color.red;
             yield return new WaitForSeconds(0.2f);
-            enemyMesh.material.color = Color.white;
+            enemyMesh.material.color = COLOR;
 
             ISRUNNING = false;
         }
@@ -1517,12 +1518,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                     STFS_EFFECT = false;
 
-
                     break;
                 }
             default: {break;}
         }
     }
+
+   
 
     // Damage over time
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
@@ -1537,6 +1539,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
             elapsedTime += 2.5f;
 
         }
+
+    }
+
+    #endregion
+
+    #region Sound
+    private void AttackSound()
+    {
+
+    }
+
+    private void GruntSound()
+    {
+
+    }
+
+    private void DeathSound()
+    {
 
     }
 

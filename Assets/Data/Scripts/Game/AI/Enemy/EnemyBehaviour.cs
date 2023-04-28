@@ -59,8 +59,10 @@ public class EnemyBehaviour : MonoBehaviour
 
                             private GemManager                          gemManager;
 
+                            private SkinnedMeshRenderer                 enemyMesh;
 
-    // Combat  ------------------------------------------------------------------------------------------------------------->
+
+        // Combat  ------------------------------------------------------------------------------------------------------------->
 
         // Attack 
 
@@ -262,24 +264,25 @@ public class EnemyBehaviour : MonoBehaviour
     #region Components Sync
     private void GetComponents()
     {
-        agent = GetComponent<NavMeshAgent>();
-        _warn = GetComponent<WarningSystemAI>();
-        _handlerAI = GetComponent<AIHandler>();
+        agent               = GetComponent<NavMeshAgent>();
+        _warn               = GetComponent<WarningSystemAI>();
+        _handlerAI          = GetComponent<AIHandler>();
 
-        _agentAI = GetComponentInChildren<Agents>();
-        _animator = GetComponentInChildren<Animator>();
-        _healthSlider = GetComponentInChildren<Slider>();
+        _agentAI            = GetComponentInChildren<Agents>();
+        _animator           = GetComponentInChildren<Animator>();
+        _healthSlider       = GetComponentInChildren<Slider>();
+        enemyMesh           = GetComponentInChildren<SkinnedMeshRenderer>();
 
-
-        LineOfSightChecker = GetComponentInChildren<SceneChecker>();
+        LineOfSightChecker  = GetComponentInChildren<SceneChecker>();
 
         
-        _player = FindObjectOfType<PlayerHealth>();
-        PlayerObject = GameObject.Find("Player");
-        shooterScript = PlayerObject.GetComponent<Shooter>();
-        _playerTarget = PlayerObject.transform;
+        _player             = FindObjectOfType<PlayerHealth>();
+        PlayerObject        = GameObject.Find("Player");
+        _playerTarget       = PlayerObject.transform;
 
-        valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
+        shooterScript       = PlayerObject.GetComponent<Shooter>();
+
+        valuesTexts         = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
     #endregion
 
@@ -1241,12 +1244,23 @@ public class EnemyBehaviour : MonoBehaviour
     #endregion
 
     #region Combat IEnumerators
-    IEnumerator HitFlash()
+
+    private IEnumerator HitFlash()
     {
-        originalColor = GetComponent<Renderer>().material.color;
-        GetComponent<Renderer>().material.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        GetComponent<Renderer>().material.color = Color.gray;
+        bool ISRUNNING = false;
+
+        if (!ISRUNNING)
+        {
+            ISRUNNING = true;
+            Color COLOR = enemyMesh.material.color;
+
+            enemyMesh.material.color = Color.red;
+            yield return new WaitForSeconds(0.2f);
+            enemyMesh.material.color = COLOR;
+
+            ISRUNNING = false;
+        }
+
     }
 
     private IEnumerator STFS(float value)

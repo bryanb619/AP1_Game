@@ -267,9 +267,9 @@ public class CompanionBehaviour : MonoBehaviour
                 //CheckDist();
                 CheckMoveBool();
             }
-              
-            
 
+
+            Aim(); 
             ResumeAgent();
 
             Action actions = stateMachine.Update();
@@ -557,7 +557,7 @@ public class CompanionBehaviour : MonoBehaviour
    private void Combat()
    {
         StartCombat();
-        Aim();
+        //Aim();
         ObstacleCheck();
    }
 
