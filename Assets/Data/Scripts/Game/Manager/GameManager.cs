@@ -55,7 +55,16 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
+
         Instance = this;
+
+        GameManager[] OTHER_MANAGERS = FindObjectsOfType<GameManager>();
+
+        for (int i = 1; i < OTHER_MANAGERS.Length; i++)
+        {
+            Destroy(OTHER_MANAGERS[i].gameObject);
+        }
+
     }
 
     private void Start()

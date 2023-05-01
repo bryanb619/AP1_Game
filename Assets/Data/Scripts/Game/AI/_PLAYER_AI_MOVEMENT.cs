@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 {
-    private enum CursorState                    { _CLICKED, _UNCLICKED }
+    private enum CursorState                    {_CLICKED, _UNCLICKED}
     private CursorState                         _cursorState;
 
 
@@ -37,17 +37,17 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
     private void Start()
     {
-        agent                   = GetComponent<NavMeshAgent>();
-        mainCamera              = FindObjectOfType<Camera>();
+        agent                                   = GetComponent<NavMeshAgent>();
+        mainCamera                              = FindObjectOfType<Camera>();
 
-        agent.speed             = playerSpeed;
-        agent.acceleration      = playerAcceleration;
+        agent.speed                             = playerSpeed;
+        agent.acceleration                      = playerAcceleration;
 
 
-        agent.updateRotation    = false;
-        agent.angularSpeed      = 0;
+        agent.updateRotation                    = false;
+        agent.angularSpeed                      = 0;
 
-        _cursorState            = CursorState._UNCLICKED;
+        _cursorState                            = CursorState._UNCLICKED;
 
 
     }
@@ -97,8 +97,8 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
             if(agent.remainingDistance <= agent.stoppingDistance)
             {
-                agent.velocity                      = Vector3.zero;
-                agent.isStopped                     = true;
+                agent.velocity                          = Vector3.zero;
+                agent.isStopped                         = true;
             }
 
             /*

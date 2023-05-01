@@ -72,7 +72,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     // Combat ------------------------------------------------------------------------>
 
-    [SerializeField]    private LayerMask           _attackLayers, _playerMask;
+    [SerializeField]    private LayerMask           _walkMask,_attackMask, _playerMask;
 
                         private Camera              mainCamera;
 
@@ -270,11 +270,14 @@ public class CompanionBehaviour : MonoBehaviour
             }
 
 
-            Aim(); 
-            ResumeAgent();
+            Aim();
+            castHandler();
+            
 
             Action actions = stateMachine.Update();
             actions?.Invoke();
+
+            ResumeAgent();
 
         }   
         else
@@ -323,15 +326,45 @@ public class CompanionBehaviour : MonoBehaviour
     {
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _attackLayers))
+        if (Physics.Raycast(ray, out var hitInfo, 50f, _walkMask))
         {
             //companionAim.transform.position = hitInfo.point;
+
+         
             return (success: true, position: hitInfo.point);
-               
         }
+
         else
         {
             return (success: false, position: Vector3.zero);
+        }
+    }
+
+    private void castHandler()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit hit;
+
+        CursorGame cursor;
+
+        cursor = FindObjectOfType<CursorGame>();
+
+        //cursor.UpdateCursor(CursorGame.CursorState._ATTACK);
+
+
+        // Perform the raycast
+        if (Physics.Raycast(ray, out hit, 50F, _attackMask))
+        {
+            // Print the name of the object hit by the ray
+
+            Debug.Log(hit.transform.name);
+            cursor.UpdateCursor(CursorGame.CursorState._ATTACK);
+
+        }
+        else
+        {
+            cursor.UpdateCursor(CursorGame.CursorState._NORMAL);
         }
     }
 
