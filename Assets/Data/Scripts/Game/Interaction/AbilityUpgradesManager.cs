@@ -14,12 +14,15 @@ public class AbilityUpgradesManager : MonoBehaviour
     private Shooter shooterScript;
     private Dashing dashingScript;
 
+
     // Start is called at the beginning
     void Awake()
     {
         UpgradeText();
         shooterScript = GameObject.FindWithTag("Player").GetComponent<Shooter>();
         dashingScript = GameObject.FindWithTag("Player").GetComponent<Dashing>();
+
+
     }
 
     // Update is called once per frame
@@ -56,22 +59,22 @@ public class AbilityUpgradesManager : MonoBehaviour
             switch (upgrade)
             {
                 case upgradeType.qUpgrade:
-                    upgradeUI.transform.GetChild(0).GetComponent<Image>().enabled = true;
+                    upgradeUI.transform.GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
                     shooterScript.UpgradeChecker(1);
                     break;
 
                 case upgradeType.wUpgrade:
-                    upgradeUI.transform.GetChild(1).GetComponent<Image>().enabled = true;
-                    shooterScript.UpgradeChecker(2);
-                    break;
-
+                    upgradeUI.transform.GetChild(1).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
+                    shooterScript.UpgradeChecker(2);                                 
+                    break;                                                           
+                                                                                     
                 case upgradeType.eUpgrade:
-                    upgradeUI.transform.GetChild(2).GetComponent<Image>().enabled = true;
-                    dashingScript.EnableUpgrade();
-                    break;
-
+                    upgradeUI.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
+                    dashingScript.EnableUpgrade();                                   
+                    break;                                                           
+                                                                                     
                 case upgradeType.rUpgrade:
-                    upgradeUI.transform.GetChild(3).GetComponent<Image>().enabled = true;
+                    upgradeUI.transform.GetChild(3).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
                     shooterScript.UpgradeChecker(3);
                     break;
 
