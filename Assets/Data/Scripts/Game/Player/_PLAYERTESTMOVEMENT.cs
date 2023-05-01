@@ -41,9 +41,11 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Movement();
-    }
+       // Movement();
 
+
+    }
+    /*
     private void Movement()
     {
         if (Input.GetMouseButtonDown(1))
@@ -59,40 +61,16 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
                 if (hit.transform.CompareTag("Walk"))
                 {
                     agent.enabled = false;
-                    //direction = hit.point - transform.position;
-                    //Instantiate(effect, hit.point, Quaternion.identity);
 
-                    //Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed * 2f);
-
-                    //targetPosition = hit.point;
-                    //isMoving = true;
                     float height = 0f;
                     height = hit.point.y + 0.3f;
 
-
-                    //(effect, hit.point, Quaternion.identity);
 
                     GameObject spawnedObject = Instantiate(effect, hit.point, Quaternion.identity);
 
                     spawnedObject.transform.position =
                         new Vector3(spawnedObject.transform.position.x, height, spawnedObject.transform.position.z);
 
-
-                    /*
-                    if (_isMoving)
-                    {
-                        targetPosition = hit.point;
-
-                    }
-                    else
-                    {
-                        targetPosition = hit.point;
-                        _isMoving = true;
-
-                    }
-
-                    */
                 }
             }
         }
@@ -131,4 +109,6 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
         yield return new WaitForSeconds(_walkTimer * 2f);
         
     }
+
+    */
 }

@@ -12,16 +12,16 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
     private NavMeshAgent                        agent; 
     //private bool _isMoving;
     //private float _turnSpeed = 10f; 
-    [SerializeField]private LayerMask           seeThroughLayer;
+    [SerializeField]    private LayerMask       _ignoreLayer;
 
     private float                               maxAngle = 30f;
 
 
     private float                               playerSpeed = 4f;
 
-    private float                               playerAcceleration = 2000f; 
+    private float                               playerAcceleration = 2000f;
 
-    private float                               _turnSpeed = 10f;
+    [SerializeField]    private float           _turnSpeed;
 
     private bool                                _isMoving;
 
@@ -34,6 +34,11 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
     private Vector3                             direction; 
 
     float height = 0;
+    [SerializeField]    private float           heightOffset; 
+ 
+
+    // SAMPLE
+    [SerializeField]    private float           _maxRange = 20f; 
 
     private void Start()
     {
@@ -101,68 +106,122 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                 agent.isStopped                         = true;
             }
 
-            /*
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-            {
-                agent.velocity                      = Vector3.zero;
-                agent.isStopped                     = true;
-            }
-            */
-
         }
     }
 
     private void Destination(bool input)
     {
+
         RaycastHit hit;
 
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~seeThroughLayer))
+        Vector3 destination; 
+
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~_ignoreLayer))
         {
-            if (hit.transform.CompareTag("Walk"))
+            if(agent.enabled) 
             {
-                if (agent.enabled)
+                Vector3 newDirection = (hit.point - transform.position).normalized;
+                float angle = Vector3.Angle(direction, newDirection);
+
+                destination = hit.point;
+
+                direction = newDirection;
+
+                NavMeshHit navHit;
+
+                if (NavMesh.SamplePosition(destination, out navHit, _maxRange, NavMesh.AllAreas))
                 {
-                    //  target position
-                    Vector3 newDirection                    = (hit.point - transform.position).normalized;
-                    float angle                             = Vector3.Angle(direction, newDirection);
-
-                    direction                               = newDirection;
-
 
                     if (angle > maxAngle && agent.remainingDistance >= 0.2f)
                     {
-                        agent.velocity                      = Vector3.zero;
+                        agent.velocity = Vector3.zero;
 
-                        targetPosition                      = hit.point;
-
-                        agent.SetDestination(hit.point);
+                        targetPosition = navHit.position;
 
                         //_isMoving = false;
                     }
 
+
                     else
                     {
-                        _isMoving                           = true;
-                        agent.isStopped                     = false;
-                        targetPosition                      = hit.point;
+                        _isMoving = true;
+                        agent.isStopped = false;
+                        targetPosition = (navHit.position);
 
-                        agent.SetDestination(hit.point);
+                        agent.SetDestination(navHit.position);
                     }
 
-                    if(input) 
-                    {
-                        height                              = hit.point.y + 0.3f;
-
-                        GameObject spawnedObject            = Instantiate(_clickEffect, hit.point, Quaternion.identity);
-                        spawnedObject.transform.position    = new Vector3
-                            (spawnedObject.transform.position.x, 
-                            height, 
-                            spawnedObject.transform.position.z);
-                    }
-
+                   
                 }
+
+                if (input)
+                {
+                    height = hit.point.y + heightOffset;
+
+                    GameObject spawnedObject = Instantiate(_clickEffect, hit.point, _clickEffect.transform.rotation);
+                    spawnedObject.transform.position = new Vector3
+                        (spawnedObject.transform.position.x,
+                        height,
+                        spawnedObject.transform.position.z);
+                }
+
+
+
+
             }
         }
-    }
+            /*
+            RaycastHit hit;
+
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~seeThroughLayer))
+            {
+                if (hit.transform.CompareTag("Walk"))
+                {
+                    if (agent.enabled)
+                    {
+                        //  target position
+                        Vector3 newDirection                    = (hit.point - transform.position).normalized;
+                        float angle                             = Vector3.Angle(direction, newDirection);
+
+                        direction                               = newDirection;
+
+
+                        if (angle > maxAngle && agent.remainingDistance >= 0.2f)
+                        {
+                            agent.velocity                      = Vector3.zero;
+
+                            targetPosition                      = hit.point;
+
+                            agent.SetDestination(hit.point);
+
+                            //_isMoving = false;
+                        }
+
+                        else
+                        {
+                            _isMoving                           = true;
+                            agent.isStopped                     = false;
+                            targetPosition                      = hit.point;
+
+                            agent.SetDestination(hit.point);
+                        }
+
+                        if(input) 
+                        {
+                            height                              = hit.point.y + 0.3f;
+
+                            GameObject spawnedObject            = Instantiate(_clickEffect, hit.point, Quaternion.identity);
+                            spawnedObject.transform.position    = new Vector3
+                                (spawnedObject.transform.position.x, 
+                                height, 
+                                spawnedObject.transform.position.z);
+                        }
+
+                    }
+                }
+
+            } */
+
+        }
 }
      

@@ -4,15 +4,15 @@ using UnityEngine;
 public class MainCam : MonoBehaviour
 {
     #region Variables
-    private GameObject                  player;
+                        private GameObject              player;
+                        private Transform               playerTransform;
 
-    private Transform                   playerTransform;
+    [SerializeField]    private LayerMask              obstructionLayer;
+    [SerializeField]    private Transform              leftPos, rightPos; 
 
-    [SerializeField] private LayerMask  obstructionLayer;
+    [SerializeField]    private float                  alphaValue = 0.3f;
 
-    [SerializeField] private float      alphaValue = 0.3f;
-
-    private List<MeshRenderer>          _obstructedMesh = new List<MeshRenderer>();
+                        private List<MeshRenderer>      _obstructedMesh = new List<MeshRenderer>();
 
 
     #endregion
@@ -56,14 +56,29 @@ public class MainCam : MonoBehaviour
 
         float distance = Vector3.Distance(cameraPos, playerPos);
 
-        RaycastHit[] hits = Physics.RaycastAll(cameraPos, direction, distance, obstructionLayer); // raycast
-        //Debug.DrawLine(cameraPosition, playerPosition);
+        RaycastHit[] hits = Physics.RaycastAll(cameraPos, direction, distance, obstructionLayer);
 
+        RaycastHit[] hitsRight = Physics.RaycastAll(rightPos.position, direction, distance, obstructionLayer);
+
+        // raycast
+        Debug.DrawLine(cameraPos, playerPos);
+
+    
         // list
         List<MeshRenderer> resetRenderers = new List<MeshRenderer>(); 
 
         // for each object reduce alpha
         foreach (RaycastHit hit in hits)
+        {
+            MeshRenderer renderer = hit.collider.GetComponent<MeshRenderer>();
+            if (renderer != null && !_obstructedMesh.Contains(renderer))
+            {
+                renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, alphaValue);
+                _obstructedMesh.Add(renderer);
+            }
+        }
+
+        foreach(RaycastHit hit in hitsRight) 
         {
             MeshRenderer renderer = hit.collider.GetComponent<MeshRenderer>();
             if (renderer != null && !_obstructedMesh.Contains(renderer))

@@ -388,12 +388,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerSpeed()
     {
-        speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
-        lastPosition = transform.position;
+        //speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        //lastPosition = transform.position;
         
-        if(speed >= 1f)
+
+        //if (speed >= 1.5f)
+        if(agent.velocity.magnitude > 2f)
         {
            _isMoving = true;
+           print("walk");
             //_CompanionMovement._playerIsMoving = true;
 
         }
@@ -431,8 +434,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void EnemiesAround()
     {
-        Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
-        // Collider[] hits = Physics.OverlapSphere(transform.position, AIradius);
+        //Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
+
     }
 
 

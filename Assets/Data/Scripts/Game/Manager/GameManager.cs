@@ -74,14 +74,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    private void Update()
-    {
-        if(_state == GameState.Gameplay)
-        {
-           //CheckAppFocus();
-        }
-    }
-
     #region Game State
 
     public void UpdateGameState(GameState newGamestate)
@@ -258,5 +250,4 @@ public class GameManager : MonoBehaviour
 
     #endregion
     #endregion
-
 }

@@ -1671,9 +1671,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, minDist);
-
-           
-
         }
 
         #region AI State Label 
@@ -1693,7 +1690,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     }
                 case AI._ATTACK:
                     {
-                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Attack" + "  Gameplay: " + _gameState + _currentState, red);
+                        Handles.Label(_fov.transform.position + Vector3.up * 2f, "Attack" + "  Gameplay: " + _gameState, red);
                         break;
                     }
 
