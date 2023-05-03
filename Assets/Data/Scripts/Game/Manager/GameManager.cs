@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     [Header("Game state")]
         public GameState                        State;
 
-        private GameState                       _state;
+        //private GameState                       _state;
 
         public static GameManager               Instance;
 
@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         _audioState = false;
 
-        _state = GameState.Gameplay;
+        //_state = GameState.Gameplay;
         HandleEventEmitterState();
     }
 
@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour
         _audioState = true;
 
         Time.timeScale = 0f;
-        _state = GameState.Paused;
+        //_state = GameState.Paused;
 
         HandleEventEmitterState();
 

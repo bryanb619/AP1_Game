@@ -1,109 +1,116 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 {
-    private enum CursorState                    {_CLICKED, _UNCLICKED}
-    private CursorState                         _cursorState;
+    // Components ----------------------------------------------------->
+                        private Camera              mainCamera; 
+                        private NavMeshAgent        agent; 
 
+    // Player Movement ------------------------------------------------>
+    [SerializeField]    private LayerMask           _ignoreLayer;
+      
+                        private float               maxAngle = 30f;
+                        private float               playerSpeed = 4f;
+    [SerializeField]    private float               playerAcceleration = 2000f;
+    [SerializeField]    private float               _turnSpeed;
+                        private bool                _isMoving;
 
-    private Camera                              mainCamera; 
-    private NavMeshAgent                        agent; 
-    //private bool _isMoving;
-    //private float _turnSpeed = 10f; 
-    [SerializeField]    private LayerMask       _ignoreLayer;
+    // Click ------------------------------------------------------------>
+                        private enum EffectState    { _CLICKED, _UNCLICKED }
+                        private EffectState         _cursorState;
 
-    private float                               maxAngle = 30f;
+    [SerializeField]    private GameObject          _clickEffect;
 
+                        float                       height = 0;
+    [SerializeField]    private float               heightOffset;
 
-    private float                               playerSpeed = 4f;
+    // target & direction ------------------------------------------------->
+                        private Vector3             targetPosition;
+                        private Vector3             direction; 
 
-    private float                               playerAcceleration = 2000f;
-
-    [SerializeField]    private float           _turnSpeed;
-
-    private bool                                _isMoving;
-
-    private bool                                _clickReset; 
-
-    [SerializeField] 
-    private GameObject                          _clickEffect;
-
-    private Vector3                             targetPosition;
-    private Vector3                             direction; 
-
-    float height = 0;
-    [SerializeField]    private float           heightOffset; 
- 
-
-    // SAMPLE
-    [SerializeField]    private float           _maxRange = 20f; 
+    // Enemy detection ----------------------------------------------------->
+    [SerializeField]    private float               _maxRange = 20f; 
 
     private void Start()
     {
-        agent                                   = GetComponent<NavMeshAgent>();
-        mainCamera                              = FindObjectOfType<Camera>();
+        Components();
+        PlayerProfile();
+    }
 
-        agent.speed                             = playerSpeed;
-        agent.acceleration                      = playerAcceleration;
+    private void Components()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        mainCamera = FindObjectOfType<Camera>();
+    }
+
+    private void PlayerProfile()
+    {
+        agent.speed = playerSpeed;
+        agent.acceleration = playerAcceleration;
 
 
-        agent.updateRotation                    = false;
-        agent.angularSpeed                      = 0;
+        agent.updateRotation = false;
+        agent.angularSpeed = 0;
 
-        _cursorState                            = CursorState._UNCLICKED;
-
+        _cursorState = EffectState._UNCLICKED;
 
     }
+
     // Update is called once per frame
     void Update()
+    {
+        MoveInput();
+        newDirection();
+    }
+
+    private void MoveInput()
     {
         if (Input.GetMouseButtonDown(1))
         {
             Destination(true);
         }
 
-        else if(Input.GetMouseButton(1)) 
+        else if (Input.GetMouseButton(1))
         {
-            _cursorState = CursorState._CLICKED;
+            _cursorState = EffectState._CLICKED;
         }
         else
         {
-            _cursorState = CursorState._UNCLICKED;
+            _cursorState = EffectState._UNCLICKED;
         }
+    }
 
-
-
+    private void newDirection()
+    {
         if (agent.enabled)
         {
-
             if (_isMoving)
             {
                 // set direction
-                direction                           = targetPosition - transform.position;
+                direction = targetPosition - transform.position;
 
                 // Ignore Y position 
-                direction.y                         = 0;
+                direction.y = 0;
 
                 // Rotate player towards the target position
-                Quaternion targetRotation           = Quaternion.LookRotation(direction);
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
 
                 // apply rotation with desired speed
-                transform.rotation                  = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
 
             }
 
 
-            if(_cursorState == CursorState._CLICKED)
+            if (_cursorState == EffectState._CLICKED)
             {
                 Destination(false);
             }
 
-            if(agent.remainingDistance <= agent.stoppingDistance)
+            if (agent.remainingDistance <= agent.stoppingDistance)
             {
-                agent.velocity                          = Vector3.zero;
-                agent.isStopped                         = true;
+                agent.velocity = Vector3.zero;
+                agent.isStopped = true;
             }
 
         }
@@ -111,14 +118,13 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
     private void Destination(bool input)
     {
-
         RaycastHit hit;
 
-        Vector3 destination; 
+        Vector3 destination;
 
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~_ignoreLayer))
         {
-            if(agent.enabled) 
+            if (agent.enabled)
             {
                 Vector3 newDirection = (hit.point - transform.position).normalized;
                 float angle = Vector3.Angle(direction, newDirection);
@@ -151,25 +157,14 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                         agent.SetDestination(navHit.position);
                     }
 
-                   
+
                 }
 
                 if (input)
                 {
-                    height = hit.point.y + heightOffset;
-
-                    GameObject spawnedObject = Instantiate(_clickEffect, hit.point, _clickEffect.transform.rotation);
-                    spawnedObject.transform.position = new Vector3
-                        (spawnedObject.transform.position.x,
-                        height,
-                        spawnedObject.transform.position.z);
+                    EffectSpawn(hit);
                 }
-
-
-
-
             }
-        }
             /*
             RaycastHit hit;
 
@@ -221,7 +216,19 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                 }
 
             } */
-
         }
+    }
+
+    private void EffectSpawn(RaycastHit hit)
+    {
+        height = hit.point.y + heightOffset;
+
+        GameObject spawnedObject = Instantiate(_clickEffect, hit.point, _clickEffect.transform.rotation);
+        spawnedObject.transform.position = new Vector3
+            (spawnedObject.transform.position.x,
+            height,
+            spawnedObject.transform.position.z);
+    }
 }
+
      

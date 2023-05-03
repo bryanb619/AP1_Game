@@ -57,20 +57,24 @@ MonoBehaviour:
   floatPos: {fileID: 0}
   _lowPos: {fileID: 0}
   _highPos: {fileID: 0}
-  _l_rTarget: {fileID: 0}
   _l_lTarget: {fileID: 0}
   _u_rTarget: {fileID: 0}
-  _u_lTarget: {fileID: 0}
-  _nextPos: 0
-  _currentPos: 1
+  rotateDirection: 40
+  rotateSpeed: 0
+  x: 0
+  y: 0
   AlphaLow: {fileID: 2100000, guid: 9b9a335a9064f5c4db212ee5cddfcd21, type: 2}
   normal: {fileID: 2100000, guid: 2e9574c5cd0f32f4cba7e4b06e40547a, type: 2}
-  _attackLayers:
+  _walkMask:
     serializedVersion: 2
-    m_Bits: 524929
+    m_Bits: 0
+  _attackMask:
+    serializedVersion: 2
+    m_Bits: 128
   _playerMask:
     serializedVersion: 2
     m_Bits: 2048
+  detectionRadius: 30
 --- !u!195 &1510856066898559164
 NavMeshAgent:
   m_ObjectHideFlags: 0

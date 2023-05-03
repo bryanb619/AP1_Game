@@ -396,7 +396,7 @@ public class PlayerMovement : MonoBehaviour
         if(agent.velocity.magnitude > 2f)
         {
            _isMoving = true;
-           print("walk");
+           //print("walk");
             //_CompanionMovement._playerIsMoving = true;
 
         }
