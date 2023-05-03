@@ -3,8 +3,9 @@ using UnityEngine.AI;
 
 public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 {
+    #region Variables
     // Components ----------------------------------------------------->
-                        private Camera              mainCamera; 
+    private Camera              mainCamera; 
                         private NavMeshAgent        agent; 
 
     // Player Movement ------------------------------------------------>
@@ -30,8 +31,11 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                         private Vector3             direction; 
 
     // Enemy detection ----------------------------------------------------->
-    [SerializeField]    private float               _maxRange = 20f; 
+    [SerializeField]    private float               _maxRange = 20f;
 
+    #endregion
+
+    #region Start
     private void Start()
     {
         Components();
@@ -57,6 +61,9 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
 
     }
 
+    #endregion
+
+    #region Update
     // Update is called once per frame
     void Update()
     {
@@ -64,6 +71,7 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
         newDirection();
     }
 
+    #region Player Movement AI
     private void MoveInput()
     {
         if (Input.GetMouseButtonDown(1))
@@ -100,7 +108,6 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
                 transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
 
             }
-
 
             if (_cursorState == EffectState._CLICKED)
             {
@@ -229,6 +236,9 @@ public class _PLAYER_AI_MOVEMENT : MonoBehaviour
             height,
             spawnedObject.transform.position.z);
     }
+    #endregion
+
+    #endregion
 }
 
-     
+
