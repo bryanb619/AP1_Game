@@ -6,40 +6,74 @@ using UnityEngine.AI;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement"), SerializeField]
-                     internal float walkSpeed;
-    [SerializeField] internal float dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
+                        internal float              walkSpeed;
+    [SerializeField]    internal float              dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
+
+
+    // Components ----------------------------------------------------->
+                        private Camera              mainCamera;
+                        internal NavMeshAgent       agent;
+
+    // Player Movement ------------------------------------------------>
+    [SerializeField]    private LayerMask           _ignoreLayer;
+
+                        private float               maxAngle = 30f;
+                        private float               playerSpeed = 4f;
+    [SerializeField]    private float               playerAcceleration = 2000f;
+    [SerializeField]    private float               _turnSpeed;
+    //private bool _isMoving;
+
+    // Click ------------------------------------------------------------>
+                        private enum EffectState    { _CLICKED, _UNCLICKED }
+                        private EffectState         _cursorState;
+
+    [SerializeField]    private GameObject          _clickEffect;
+
+                        private float               height = 0;
+    [SerializeField]    private float               heightOffset;
+
+    // target & direction ------------------------------------------------->
+                        private Vector3             targetPosition;
+                        private Vector3             direction;
+
+    // Enemy detection ----------------------------------------------------->
+    [SerializeField]    private float               _maxRange = 20f;
+
 
     [Header("Ground Check"), SerializeField]
-                     private float playerHeight;
-    [SerializeField] private LayerMask whatIsGround;
+                        private float               playerHeight;
+    [SerializeField]    private LayerMask           whatIsGround;
     
-    [SerializeField] private Transform orientation;
-                     private MovementState state;
+    [SerializeField]    private Transform           orientation;
+                        private MovementState       state;
 
-    [SerializeField] private LayerMask aiLayer;
+    [SerializeField]    private LayerMask           aiLayer;
 
 
     [Header("Slope Handling")]
-    [HideInInspector]public bool CanMove; 
-                     private float maxSlopeAngle;
-                     private RaycastHit slopeHit;
-                     private bool exitingSlope;
+    [HideInInspector]public bool                    CanMove; 
+                     private float                  maxSlopeAngle;
+                     private RaycastHit             slopeHit;
+                     private bool                   exitingSlope;
 
-                     private bool grounded;
-                     private float horizontalInput, verticalInput;
-                     Vector3 moveDirection;
-                     Rigidbody rb;
-                     public bool dashing;
+                     private bool                   grounded;
+                     private float                  horizontalInput, verticalInput;
+                     Vector3                        moveDirection;
+                     Rigidbody                      rb;
+                     public bool                    dashing;
 
 
-                     private bool PlayerOnMove;
-                     public bool _PlayerOnMove => PlayerOnMove;
-                     private CompanionBehaviour _CompanionMovement;
-                     private EnemyBehaviour enemyHealth;
+                     private bool                   PlayerOnMove;
+                     public bool                    _PlayerOnMove => PlayerOnMove;
+                     private CompanionBehaviour     _CompanionMovement;
+                     private EnemyBehaviour         enemyHealth;
                      
-                     private RestartMenu restartMenu;
+                     private RestartMenu            restartMenu;
                      
-                     private float speed;
+                     private float                  speed;
+
+
+
                      
                      // player health
                      
@@ -47,13 +81,13 @@ public class PlayerMovement : MonoBehaviour
     
 
     [Header("Dash Explosion"), SerializeField]
-                     private float explosionForce = 10f;
+                     private float              explosionForce = 10f;
     //[SerializeField] private float explosionDamage = 20f;  
                      
 
     [Header("References"), SerializeField]
-                     private MeshRenderer playerMaterial;
-    [SerializeField] private Camera mainCamera; 
+                     private MeshRenderer       playerMaterial;
+    //[SerializeField] private Camera mainCamera; 
     [SerializeField] private GameObject effect;
     [SerializeField] private LayerMask SeeThroughLayer; 
     [SerializeField] private GameObject playerMesh;
@@ -65,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
                      private NavMeshPath path;
                      //private float elapsed = 0.0f;
                      
-                     internal NavMeshAgent agent;
+                     //internal NavMeshAgent agent;
                      
                      private LayerMask _layerMask;
                      
@@ -141,6 +175,30 @@ public class PlayerMovement : MonoBehaviour
         //elapsed = 0.0f;
 
         currentDest = transform.position;
+
+
+
+        Components();
+        PlayerProfile();
+    }
+
+
+    private void Components()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        mainCamera = FindObjectOfType<Camera>();
+    }
+
+    private void PlayerProfile()
+    {
+        agent.speed = playerSpeed;
+        agent.acceleration = playerAcceleration;
+
+
+        agent.updateRotation = false;
+        agent.angularSpeed = 0;
+
+        _cursorState = EffectState._UNCLICKED;
 
     }
 
@@ -248,84 +306,148 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-        bool canMoveL = false;
 
-        if(_gamePlay)
+        switch(_gamePlay)
         {
-            //agent.isStopped = false;
-           
-            if (canMoveL)
-            {
-                if(Input.GetMouseButtonDown(1)) 
+            case true:
                 {
-                   // agent.isStopped = false;
-                    RaycastHit hit;
-
-                    // Something other than the world was hit!
-                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
-                    //if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, NavMesh.GetAreaFromName("Walkable")))
-                    {
-                        agent.angularSpeed = 0f;
-
-                        Instantiate(effect, hit.point, Quaternion.identity);
-
-                        if (hit.transform.CompareTag("Walk"))
-                        {
-                            //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(hit.point), 2f);
-                            //agent.destination = hit.point;
-                            if (agent.enabled) 
-                            {
-
-                                //transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
-                                
-                                agent.SetDestination(hit.point);
-
-
-                                if (!agent.pathPending &&  agent.remainingDistance <= agent.stoppingDistance) 
-                                {
-                                    
-                                    agent.velocity = Vector3.zero;
-                                    agent.isStopped = true;
-                                    return;
-
-                                }
-                                else
-                                {
-                                    agent.isStopped = false;
-                                    return; 
-                                }
-
-
-                                //agent.isStopped = true;
-
-                                
-                               /* if (agent.remainingDistance <= 0.1f)
-                                {
-                                    agent.isStopped = true;
-                                }
-
-                                */
-                            }
-                            
-                        }
-                        else
-                        {
-                            agent.isStopped = true; 
-                            return;
-                        }  
-                        
-                    }
-                    return; 
+                    MoveInput();
+                    newDirection();
+                    break;
                 }
-                return; 
-            }
+            case false:
+                {
+                    agent.velocity = Vector3.zero;
+                    agent.isStopped = true;
+
+                    break;
+
+                }
         }
-        else if(!_gamePlay) 
+
+    }
+
+    #region Player Movement AI
+    private void MoveInput()
+    {
+        if (Input.GetMouseButtonDown(1))
         {
-            agent.velocity = Vector3.zero;
-            //agent.isStopped = true;
+            Destination(true);
+        }
+
+        else if (Input.GetMouseButton(1))
+        {
+            _cursorState = EffectState._CLICKED;
+        }
+        else
+        {
+            _cursorState = EffectState._UNCLICKED;
         }
     }
+
+    private void newDirection()
+    {
+        if (agent.enabled)
+        {
+            if (_isMoving)
+            {
+                // set direction
+                direction = targetPosition - transform.position;
+
+                // Ignore Y position 
+                direction.y = 0;
+
+                // Rotate player towards the target position
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+                // apply rotation with desired speed
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
+
+            }
+
+            if (_cursorState == EffectState._CLICKED)
+            {
+                Destination(false);
+            }
+
+            if (agent.remainingDistance <= agent.stoppingDistance)
+            {
+                agent.velocity = Vector3.zero;
+                agent.isStopped = true;
+            }
+
+        }
+    }
+
+    private void Destination(bool input)
+    {
+        RaycastHit hit;
+
+        Vector3 destination;
+
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~_ignoreLayer))
+        {
+            if (agent.enabled)
+            {
+                Vector3 newDirection = (hit.point - transform.position).normalized;
+                float angle = Vector3.Angle(direction, newDirection);
+
+                destination = hit.point;
+
+                direction = newDirection;
+
+                NavMeshHit navHit;
+
+                if (NavMesh.SamplePosition(destination, out navHit, _maxRange, NavMesh.AllAreas))
+                {
+
+                    if (angle > maxAngle && agent.remainingDistance >= 0.2f)
+                    {
+                        agent.velocity = Vector3.zero;
+
+                        targetPosition = navHit.position;
+
+                        //_isMoving = false;
+                    }
+
+
+                    else
+                    {
+                        _isMoving = true;
+                        agent.isStopped = false;
+                        targetPosition = (navHit.position);
+
+                        agent.SetDestination(navHit.position);
+                    }
+
+
+                }
+
+                if (input)
+                {
+                    EffectSpawn(hit);
+                }
+            }        
+        }
+    }
+
+
+    private void EffectSpawn(RaycastHit hit)
+    {
+        height = hit.point.y + heightOffset;
+
+        GameObject spawnedObject = Instantiate(_clickEffect, hit.point, _clickEffect.transform.rotation);
+        spawnedObject.transform.position = new Vector3
+            (spawnedObject.transform.position.x,
+            height,
+            spawnedObject.transform.position.z);
+    }
+    #endregion
+
+
+
+
+
 
     private void MovePlayer()
     {
