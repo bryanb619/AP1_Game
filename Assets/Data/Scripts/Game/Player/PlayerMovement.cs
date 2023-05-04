@@ -6,112 +6,105 @@ using UnityEngine.AI;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement"), SerializeField]
-                        internal float              walkSpeed;
-    [SerializeField]    internal float              dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
+                        internal float                  walkSpeed;
+    [SerializeField]    internal float                  dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
 
 
     // Components ----------------------------------------------------->
-                        private Camera              mainCamera;
-                        internal NavMeshAgent       agent;
+                        private Camera                  mainCamera;
+                        internal NavMeshAgent           agent;
 
     // Player Movement ------------------------------------------------>
-    [SerializeField]    private LayerMask           _ignoreLayer;
+    [SerializeField]    private LayerMask               _ignoreLayer;
 
-                        private float               maxAngle = 30f;
-                        private float               playerSpeed = 4f;
-    [SerializeField]    private float               playerAcceleration = 2000f;
-    [SerializeField]    private float               _turnSpeed;
+                        private float                   maxAngle = 30f;
+                        private float                   playerSpeed = 4f;
+    [SerializeField]    private float                   playerAcceleration = 2000f;
+    [SerializeField]    private float                   _turnSpeed;
     //private bool _isMoving;
 
     // Click ------------------------------------------------------------>
-                        private enum EffectState    { _CLICKED, _UNCLICKED }
-                        private EffectState         _cursorState;
+                        private enum EffectState        { _CLICKED, _UNCLICKED }
+                        private EffectState             _cursorState;
 
-    [SerializeField]    private GameObject          _clickEffect;
+    [SerializeField]    private GameObject              _clickEffect;
 
-                        private float               height = 0;
-    [SerializeField]    private float               heightOffset;
+                        private float                   height = 0;
+    [SerializeField]    private float                   heightOffset;
 
     // target & direction ------------------------------------------------->
-                        private Vector3             targetPosition;
-                        private Vector3             direction;
+                        private Vector3                 targetPosition;
+                        private Vector3                 direction;
 
     // Enemy detection ----------------------------------------------------->
-    [SerializeField]    private float               _maxRange = 20f;
+    [SerializeField]    private float                   _maxRange = 20f;
 
 
     [Header("Ground Check"), SerializeField]
-                        private float               playerHeight;
-    [SerializeField]    private LayerMask           whatIsGround;
+                        private float                   playerHeight;
+    [SerializeField]    private LayerMask               whatIsGround;
     
-    [SerializeField]    private Transform           orientation;
-                        private MovementState       state;
+    [SerializeField]    private Transform               orientation;
+                        private MovementState           state;
 
-    [SerializeField]    private LayerMask           aiLayer;
+    [SerializeField]    private LayerMask               aiLayer;
 
 
     [Header("Slope Handling")]
-    [HideInInspector]public bool                    CanMove; 
-                     private float                  maxSlopeAngle;
-                     private RaycastHit             slopeHit;
-                     private bool                   exitingSlope;
+    [HideInInspector]   public bool                    CanMove; 
+                        private float                  maxSlopeAngle;
+                        private RaycastHit             slopeHit;
+                        private bool                   exitingSlope;
 
-                     private bool                   grounded;
-                     private float                  horizontalInput, verticalInput;
-                     Vector3                        moveDirection;
-                     Rigidbody                      rb;
-                     public bool                    dashing;
+                        private bool                   grounded;
+                        private float                  horizontalInput, verticalInput;
+                        Vector3                        moveDirection;
+                        Rigidbody                      rb;
+                        public bool                    dashing;
 
 
-                     private bool                   PlayerOnMove;
-                     public bool                    _PlayerOnMove => PlayerOnMove;
-                     private CompanionBehaviour     _CompanionMovement;
-                     private EnemyBehaviour         enemyHealth;
+                        private bool                   PlayerOnMove;
+                        public bool                    _PlayerOnMove => PlayerOnMove;
+                        private CompanionBehaviour     _CompanionMovement;
+                        private EnemyBehaviour         enemyHealth;
                      
-                     private RestartMenu            restartMenu;
+                         private RestartMenu            restartMenu;
                      
-                     private float                  speed;
+                        private float                   speed;
 
-
-
-                     
-                     // player health
-                     
-
-    
 
     [Header("Dash Explosion"), SerializeField]
-                     private float              explosionForce = 10f;
+                        private float                   explosionForce = 10f;
     //[SerializeField] private float explosionDamage = 20f;  
                      
 
     [Header("References"), SerializeField]
-                     private MeshRenderer       playerMaterial;
+                        private MeshRenderer            playerMaterial;
     //[SerializeField] private Camera mainCamera; 
-    [SerializeField] private GameObject effect;
-    [SerializeField] private LayerMask SeeThroughLayer; 
-    [SerializeField] private GameObject playerMesh;
+    [SerializeField]    private GameObject              effect;
+    [SerializeField]    private LayerMask               SeeThroughLayer; 
+    [SerializeField]    private GameObject              playerMesh;
 
-                     private SkinnedMeshRenderer[] skinnedMeshRenderers;
-                     private Color[] originalColors;
-                     private bool _gamePlay;
+                        private SkinnedMeshRenderer[]   skinnedMeshRenderers;
+                        private Color[]                 originalColors;
+                        private bool                    _gamePlay;
 
-                     private NavMeshPath path;
-                     //private float elapsed = 0.0f;
+                        private NavMeshPath             path;
+                        //private float elapsed = 0.0f;
                      
-                     //internal NavMeshAgent agent;
+                        //internal NavMeshAgent agent;
                      
-                     private LayerMask _layerMask;
+                        private LayerMask               _layerMask;
                      
-                     public float acceleration = 2f;
-                     public float deceleration = 60f;
+                        public float                    acceleration = 2f;
+                        public float                    deceleration = 60f;
                      
-                     public float closeEnoughMeters = 3f;
+                        public float                    closeEnoughMeters = 3f;
                      
-                     private Vector3 currentDest;
+                        private Vector3                 currentDest;
                      
-                     private bool _isMoving; 
-                     public bool IsMoving => _isMoving;
+                        private bool                    _isMoving; 
+                        public bool                     IsMoving => _isMoving;
 
     private enum MovementState
     {
@@ -157,24 +150,24 @@ public class PlayerMovement : MonoBehaviour
         originalColors = new Color[skinnedMeshRenderers.Length];
         for (int i = 0; i < skinnedMeshRenderers.Length; i++)
         {
-            originalColors[i] = skinnedMeshRenderers[i].material.color;
+            originalColors[i]   = skinnedMeshRenderers[i].material.color;
         }
 
-        CanMove = true;
+        CanMove                 = true;
 
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
+        rb                      = GetComponent<Rigidbody>();
+        rb.freezeRotation       = true;
 
-        agent = GetComponent<NavMeshAgent>();
+        agent                   = GetComponent<NavMeshAgent>();
 
-        _CompanionMovement = FindObjectOfType<CompanionBehaviour>();
-        restartMenu = FindObjectOfType<RestartMenu>();
+        _CompanionMovement      = FindObjectOfType<CompanionBehaviour>();
+        restartMenu             = FindObjectOfType<RestartMenu>();
         
 
-        path = new NavMeshPath();
+        path                    = new NavMeshPath();
         //elapsed = 0.0f;
 
-        currentDest = transform.position;
+        currentDest             = transform.position;
 
 
 
@@ -185,20 +178,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void Components()
     {
-        agent = GetComponent<NavMeshAgent>();
-        mainCamera = FindObjectOfType<Camera>();
+        agent                   = GetComponent<NavMeshAgent>();
+        mainCamera              = FindObjectOfType<Camera>();
     }
 
     private void PlayerProfile()
     {
-        agent.speed = playerSpeed;
-        agent.acceleration = playerAcceleration;
+        agent.speed             = playerSpeed;
+        agent.acceleration      = playerAcceleration;
 
 
-        agent.updateRotation = false;
-        agent.angularSpeed = 0;
+        agent.updateRotation    = false;
+        agent.angularSpeed      = 0;
 
-        _cursorState = EffectState._UNCLICKED;
+        _cursorState            = EffectState._UNCLICKED;
 
     }
 
