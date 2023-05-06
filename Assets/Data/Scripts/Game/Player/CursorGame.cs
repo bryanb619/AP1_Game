@@ -19,9 +19,12 @@ public class CursorGame : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        Instance = this;
 
-        CursorGame[] OTHER_MANAGERS = FindObjectsOfType<CursorGame>();
+        Instance                            = this;
+
+        CursorGame[] OTHER_MANAGERS         = FindObjectsOfType<CursorGame>();
+
+
 
         for (int i = 1; i < OTHER_MANAGERS.Length; i++)
         {
@@ -37,7 +40,6 @@ public class CursorGame : MonoBehaviour
     }
 
     
-
     public void UpdateCursor(CursorState newState)
     {
         switch(newState) 
@@ -59,28 +61,6 @@ public class CursorGame : MonoBehaviour
         }
         OnCursorStateChanged?.Invoke(newState);
 
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.L)) 
-        {
-            switch(_state) 
-            {
-                case CursorState._NORMAL:
-                    {
-                        _state = CursorState._ATTACK;
-                        UpdateCursor(_state);
-                        break;
-                    }
-                case CursorState._ATTACK:
-                    {
-                        _state = CursorState._NORMAL;
-                        UpdateCursor(_state);
-                        break;
-                    }
-            }
-        }
     }
 
     private void NormalCursor()

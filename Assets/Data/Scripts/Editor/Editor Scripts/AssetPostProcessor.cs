@@ -12,9 +12,9 @@ public class UIAssetProcessor : AssetPostprocessor
 
             e.textureType = TextureImporterType.Sprite;
 
-            e.mipmapEnabled = false;
+            //e.mipmapEnabled = false;
             e.alphaIsTransparency = true;
-            e.wrapMode = TextureWrapMode.Repeat;
+            e.wrapMode = TextureWrapMode.Clamp;
 
             AssetDatabase.Refresh();
         }

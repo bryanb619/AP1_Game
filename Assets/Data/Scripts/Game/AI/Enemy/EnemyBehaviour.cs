@@ -253,12 +253,12 @@ public class EnemyBehaviour : MonoBehaviour
 
 
         // temp code
-        _canMove = true;
-        _canAttack = true;
-        _isAttacking = false;
-        _canPeformAttack = true;
-        _dizzyText.enabled = false;
-        _currentState = HandleState._NONE; 
+        _canMove            = true;
+        _canAttack          = true;
+        _isAttacking        = false;
+        _canPeformAttack    = true;
+        _dizzyText.enabled  = false;
+        _currentState       = HandleState._NONE; 
     }
 
     #region Components Sync
@@ -423,7 +423,6 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case true:
                 {
-
                     if(_gamePlay == GameState.Gameplay)
                     {
                         outlineDeactivation.enabled = false;
