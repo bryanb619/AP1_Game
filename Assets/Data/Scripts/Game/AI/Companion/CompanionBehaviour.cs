@@ -3,14 +3,12 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
 
 
 // The script that controls an agent using an FSM
 [RequireComponent(typeof(NavMeshAgent))]
 public class CompanionBehaviour : MonoBehaviour
 {
-
     #region Variables
 
     // States & AI ---------------------------------------------------->
@@ -91,10 +89,7 @@ public class CompanionBehaviour : MonoBehaviour
                         private Camera                  mainCamera;
 
                         private Vector3                 direction; 
-
-
-
-    // NEW CODE
+    // OLD CODE
     //[SerializeField]
     //private float followsRadius = 2f;
 
@@ -133,7 +128,6 @@ public class CompanionBehaviour : MonoBehaviour
     //public Transform EEFOV => FOV; // Enemy Editor FOV
 
     //private Rigidbody _rb;
-
     #endregion
 
     #region Awake

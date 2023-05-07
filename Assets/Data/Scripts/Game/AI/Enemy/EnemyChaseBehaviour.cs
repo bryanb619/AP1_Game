@@ -7,9 +7,12 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
 using TMPro;
-
-using UnityEditor; // comment this before build
 using FMODUnity;
+
+#if UNITY_EDITOR
+using UnityEditor; // comment this before build
+#endif
+
 
 #endregion
 
@@ -28,43 +31,42 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private HandleState                 _currentState;
 
 
-            // Game State
-            private GameState                               _gameState;
+                        // Game State
+                        private GameState                   _gameState;
 
     // Components --------------------------------------------------------------------------------->
 
-    [Header("AI Profile")] 
+    [Header("AI Profile")]
 
-        [SerializeField]
-            // AI profile data
-            private AIChaseData                 data;
+    // AI profile data
+    [SerializeField]    private AIChaseData                 data;
       
-            // FSM 
-            private StateMachine                stateMachine;  
-            // AI Path solution
-            private NavMeshAgent                agent;
-            // AI Warning other agents system
-            private WarningSystemAI             _warn;
-            // AI controller for performance AI actions
-            private AIController                _controller;
-            private AIHandler                   _hanlderAI;
+                        // FSM 
+                        private StateMachine                stateMachine;  
+                        // AI Path solution
+                        private NavMeshAgent                agent;
+                        // AI Warning other agents system
+                        private WarningSystemAI             _warn;
+                        // AI controller for performance AI actions
+                        private AIController                _controller;
+                        private AIHandler                   _hanlderAI;
 
-        // AI Mesh
-        [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
-                            private Color                       _color;
+                        // AI Mesh
+    [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
+                        private Color                       _color;
 
     // References to player //
-    private GameObject                  playerObject;
-            private PlayerHealth                _Player;
+                        private GameObject                  playerObject;
+                        private PlayerHealth                _Player;
     
-            private Transform                   playerTarget;
-            public Transform                    PlayerTarget => playerTarget;
-            private Shooter                     shooterScript;
+                        private Transform                   playerTarget;
+                        public Transform                    PlayerTarget => playerTarget;
+                        private Shooter                     shooterScript;
 
     // Handling --------------------------------------------------------------------------------->
 
-            // defines when agent is active
-            private bool                        _deactivateAI;
+                        // defines when agent is active
+                        private bool                        _deactivateAI;
 
     // AI ACTIONS -------------------------------------AI ACTIONS------------------------------>
 
@@ -72,182 +74,172 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [Header("Patrol")]
 
-            private int                         destPoint = 0;
-        [SerializeField] 
-            private Transform[]                 _patrolPoints;
+                        private int                         destPoint = 0;
+    [SerializeField]    private Transform[]                 _patrolPoints;
 
     // Cover // --------------------------------------------------------------------------------->
-            private Collider[]                  Colliders = new Collider[10];
+                        private Collider[]                  Colliders = new Collider[10];
 
             //Lower is a better hiding spot
-            private float                       HideSensitivity = 0;
-            private float                       UpdateFrequency =  0.25f;
-            private float                       minDistInCover;
-            private LayerMask                   HidableLayers;
-            private SceneChecker                LineOfSightChecker;
-            private Coroutine                   MovementCoroutine;
+                        private float                       HideSensitivity = 0;
+                        private float                       UpdateFrequency =  0.25f;
+                        private float                       minDistInCover;
+                        private LayerMask                   HidableLayers;
+                        private SceneChecker                LineOfSightChecker;
+                        private Coroutine                   MovementCoroutine;
 
     // Combat // --------------------------------------------------------------------------------->
 
     [Header("Attack")]
           
         [SerializeField]
-            // attack position
-            private Transform                   _attackPoint;
-            // attack range
-            private float                       _attackRange;
-            // attack rate of AI 
-            private float                       attackRate;
-            // time out between attacks
-            private float                       _attackTimer;
-            // attack special effects
-            private GameObject                  _attackEffect, _s_attackEffect, _specialAttackEffect;
+                        // attack position
+                        private Transform                   _attackPoint;
+                        // attack range
+                        private float                       _attackRange;
+                        // attack rate of AI 
+                        private float                       attackRate;
+                        // time out between attacks
+                        private float                       _attackTimer;
+                        // attack special effects
+                        private GameObject                  _attackEffect, _s_attackEffect, _specialAttackEffect;
            
-            // stoping distance from target
-            private float                       stopDistance;
+                        // stoping distance from target
+                        private float                       stopDistance;
                 
-            private float                       nextAttack;
-            private float                       _attackSpeed;
+                        private float                       nextAttack;
+                        private float                       _attackSpeed;
 
-            private bool                        _canAttack;
-            private bool                        _canPerformAttack = true; 
-            private bool                        _isAttacking;
+                        private bool                        _canAttack;
+                        private bool                        _canPerformAttack = true; 
+                        private bool                        _isAttacking;
 
-            private float                       minDist;
+                        private float                       minDist;
 
-            private Vector3                     targetPosition;
+                        private Vector3                     targetPosition;
 
-            // random attack
-            private float                       percentage;
-            private int                         b_damage; 
+                        // random attack
+                        private float                       percentage;
+                        private int                         b_damage; 
 
-            // special attack
-            private const float                 ABILITY_MAX_VALUE = 100F;
-            private float                       currentAbilityValue;
-            private float                       abilityIncreasePerFrame;
-            private int                         specialDamage;
-            private bool                        _canSpecialAttack;
+                        // special attack
+                        private const float                 ABILITY_MAX_VALUE = 100F;
+                        private float                       currentAbilityValue;
+                        private float                       abilityIncreasePerFrame;
+                        private int                         specialDamage;
+                        private bool                        _canSpecialAttack;
 
     // FOV --------------------------------------------------------------------------------->
 
-        [SerializeField]
-            private Transform                   _fov;
-            public Transform                    EEFOV => _fov; // Enemy Editor FOV
+    [SerializeField]    private Transform                   _fov;
+                        public Transform                    EEFOV => _fov; // Enemy Editor FOV
 
-            private bool                        _useFOV;
+                        private bool                        _useFOV;
 
-    [SerializeField]
-            private float                       radius;
-            public float                        Radius => radius;
+    [SerializeField]    private float                       radius;
+                        public float                        Radius => radius;
 
-    [SerializeField]
-            private float                       angle;
-            public float                        Angle => angle;
-            private LayerMask                   targetMask;
-            private LayerMask                   obstructionMask;
+    [SerializeField]    private float                       angle;
+                        public float                        Angle => angle;
+                        private LayerMask                   targetMask;
+                        private LayerMask                   obstructionMask;
     
-            private bool                        canSeePlayer;
-            public bool                         canSee => canSeePlayer;
+                        private bool                        canSeePlayer;
+                        public bool                         canSee => canSeePlayer;
 
 
     // Combat Events --------------------------------------------------------------------->
 
-            // Health //
-            private float                       _health;
-            private int                         MAXHEALTH = 100;
-            private float                       healthInCreasePerFrame;
+                        // Health //
+                        private float                       _health;
+                        private int                         MAXHEALTH = 100;
+                        private float                       healthInCreasePerFrame;
 
-            // Death //
-            private GameObject                  _death;
+                        // Death //
+                        private GameObject                  _death;
 
-            // Drops & Loot //
-            private bool                        _spawnHealth;
+                        // Drops & Loot //
+                        private bool                        _spawnHealth;
 
-            private int                         _healthItems;
-            private GameObject                  _healthDrop;
+                        private int                         _healthItems;
+                        private GameObject                  _healthDrop;
 
-            private bool                        _spawnMana; 
+                        private bool                        _spawnMana; 
 
-            private int                         _manaItems;
-            private GameObject                  _manaDrop;
-
+                        private int                         _manaItems;
+                        private GameObject                  _manaDrop;
 
             
-            private float                       dropRadius = 2f;
+                        private float                       dropRadius = 2f;
 
-            private bool                        gemSpawnOnDeath;
-            private GameObject                  gemPrefab;
+                        private bool                        gemSpawnOnDeath;
+                        private GameObject                  gemPrefab;
 
-            // damage //
-            private float                       damageOverTime = 2f;
-            private float                       durationOfDOT = 10f;
+                        // damage //
+                        private float                       damageOverTime = 2f;
+                        private float                       durationOfDOT = 10f;
 
-            private int                         damage;
-            internal int                        damageBoost;
-            private float                       damageEffectTime = 0.5f;
+                        private int                         damage;
+                        internal int                        damageBoost;
+                        private float                       damageEffectTime = 0.5f;
 
-            // Stunned             
-            private float                       stunnedTime;
-            //private float                     stunnedFrequency;
-            private float                       stunedChance;
+                        // Stunned             
+                        private float                       stunnedTime;
+                        //private float                     stunnedFrequency;
+                        private float                       stunedChance;
 
-            private bool                        _spawnOtherAI;
-            private int                         quantityOfSpawn; 
-            [SerializeField]
-            private GameObject                  _targetEffect, _spawnEffect;
+                        private bool                        _spawnOtherAI;
+                        private int                         quantityOfSpawn; 
+    [SerializeField]    private GameObject                  _targetEffect, _spawnEffect;
 
-            [SerializeField]
-            private GameObject                  _enemyChase, enemyRaged;
+    [SerializeField]    private GameObject                  _enemyChase, enemyRaged;
 
  
-
     // Sound FMOD --------------------------------------------------------------------------------->
             
-            // grunt sounds
-            private EventReference              _gruntSound_a;
-            private EventReference              _soundGrunt_b;
+                        // grunt sounds
+                        private EventReference              _gruntSound_a;
+                        private EventReference              _soundGrunt_b;
 
-            // special attack sound
-            private EventReference              _screamSound;
+                        // special attack sound
+                        private EventReference              _screamSound;
 
-            // attack sounds
-            private EventReference              soundAttack_a;
-            private EventReference              soundAttack_b;
+                        // attack sounds
+                        private EventReference              soundAttack_a;
+                        private EventReference              soundAttack_b;
 
 
-    // UI --------------------------------------------------------------------------------->
+    // UI -------------------------------------------------------------------------------------->
 
-    [Header("UI Sliders")]
+    [Header("UI Sliders")] 
 
-        [SerializeField] 
-            private Slider                      _healthSlider;
+    [SerializeField]    private Slider                      _healthSlider;
 
-        [SerializeField] 
-            private Slider                      _AbilitySlider; 
+    [SerializeField]    private Slider                      _AbilitySlider; 
 
-            private TextMeshProUGUI             damageText;
+                        private TextMeshProUGUI             damageText;
 
-            private ValuesTextsScript           valuesTexts;
+                        private ValuesTextsScript           valuesTexts;
 
 
     // Animator --------------------------------------------------------------------------------->
-            private Animator                    _animator;
+                        private Animator                    _animator;
 
 
-    // DEBUG --------------------------------------------------------------------------------->
+    // DEBUG ------------------------------------------------------------------------------------>
     [Header("Debug")]
 
-        [SerializeField]
-            private bool                        _showExtraGizmos, _showLabelGizmos;
+    [SerializeField]    private bool                        _showExtraGizmos, _showLabelGizmos;
 
 
-            private Vector3 previousPos;
-            private float curSpeed;
+                        private Vector3                     previousPos;
+                        private float                       curSpeed;
 
 
-     
-    // weakness
-    //private bool                      _iceWeak, _fireWeak, _thunderWeak;
+    private int enemyMask;
+    private int playerMask;
+
+
     #endregion
 
     #region Awake 
@@ -283,7 +275,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     /// 
     /// </summary>
     private void Start()
-    {
+    { 
         GetComponents();
         GetProfile();
         GetStates();
@@ -294,6 +286,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _currentState = HandleState._NONE;
         _canAttack = true;
         //_useFOV = true;
+
+        enemyMask = LayerMask.GetMask("AI_Enemy_Layer");
+        playerMask = LayerMask.GetMask("PlayerTarget");
+
     }
 
     #region Components Sync
@@ -610,14 +606,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region FOV
     private void StartFOV()
     {
-        StartCoroutine(FOVRoutine());
+        //StartCoroutine(FOVRoutine());
     }
 
     #region Field of view Routine
 
     private IEnumerator FOVRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(0.2f);
+        WaitForSeconds wait = new WaitForSeconds(1f);
 
         while (true)
         {
@@ -669,13 +665,58 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Distance Check
     private void MinimalCheck()
     {
-        
+
+        if (_stateAI == AI._ATTACK)
+        {
+            int ENEMYMAX            = 10;
+            Collider[] AIColliders  = new Collider[ENEMYMAX];
+
+
+            int EnemyColliders      = 
+                Physics.OverlapSphereNonAlloc(transform.position, 4f, AIColliders, enemyMask);
+
+            for (int i = 0; i < EnemyColliders; ++i)
+            {
+                EnemyChaseBehaviour CHASEAI = 
+                    AIColliders[i].GetComponent<EnemyChaseBehaviour>();
+
+                if (CHASEAI != null)
+                {
+                    print("OTHER AI FOUND");
+                }
+            }
+        }
+
+
+        else if (_stateAI != AI._ATTACK)
+        {
+            int PLAYERMAXCOLLIDER               = 1;
+            Collider[] playerHitColliders       = new Collider[PLAYERMAXCOLLIDER];
+
+            int PlayerColliders =
+                Physics.OverlapSphereNonAlloc(_attackPoint.position, 3f, playerHitColliders, playerMask);
+
+            for (int i = 0; i < PlayerColliders; ++i)
+            {
+                PlayerMovement PLAYER = playerHitColliders[i].GetComponent<PlayerMovement>(); 
+                
+                if(PLAYER != null)
+                {
+                    print("player found");
+                    _stateAI = AI._ATTACK;
+
+                }
+
+            }
+        }
+
+        /*
         if ((playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
         {
             SetAttack();
-            
-        }
 
+        }
+        */
     }
 
     #endregion
@@ -775,16 +816,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (_canAttack) 
         {
           
-            // get player direction
-            Vector3 DIRECTION = playerTarget.position - transform.position;
-            //rotation 
-            Quaternion DISAREDROT = Quaternion.LookRotation(new Vector3(DIRECTION.x, 0f, DIRECTION.z));
+            if(agent.enabled)
+            {
+                // get player direction
+                Vector3 DIRECTION = playerTarget.position - transform.position;
+                //rotation 
+                Quaternion DISAREDROT = Quaternion.LookRotation(new Vector3(DIRECTION.x, 0f, DIRECTION.z));
 
-            // apply rotation to AI 
-            transform.rotation = DISAREDROT;
+                // apply rotation to AI 
+                transform.rotation = DISAREDROT;
 
-            // set destination
-            agent.SetDestination(playerTarget.position);
+                // set destination
+                agent.SetDestination(playerTarget.position);
+            }
+            
 
 
             switch (_canSpecialAttack)
@@ -840,9 +885,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             if (UnityEngine.Random.value < percentage && _canPerformAttack)
                             {
                                 //print("chose random");
-
-
-                                
 
                                 Collider[] hitEnemies = Physics.OverlapSphere(_attackPoint.position, _attackRange, targetMask);
 
@@ -943,8 +985,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // * Special Attack -------------------------------->
     private void HabilityAttack()
     {
+        if(agent.enabled) 
+        {
+            agent.speed = 25f;
+        }
         
-        agent.speed = 25f;
         //agent.acceleration = 14f;
 
 

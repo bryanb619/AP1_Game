@@ -1,19 +1,15 @@
-﻿/*Authors 
- * Steven Hall & Diogo Freire 
- * 
- * */
-
-#region Libs
+﻿#region Libs
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
-
-using UnityEditor; // comment this on build
 using TMPro;
-using System.Runtime.CompilerServices;
+
+#if UNITY_EDITOR
+using UnityEditor; 
+#endif
 
 #endregion
 
@@ -66,14 +62,13 @@ public class EnemyBehaviour : MonoBehaviour
 
         // Attack 
 
-        [SerializeField]
-        private Transform                           _shootPos;
+        [SerializeField]    private Transform                           _shootPos;
 
-        private GameObject                          bullet, randomBullet, specialPower;
+                            private GameObject                          bullet, randomBullet, specialPower;
 
-        private float                               fireRate = 2f;
-        private float                               nextFire = 0f;
-        private float                               percentage;
+                            private float                               fireRate = 2f;
+                            private float                               nextFire = 0f;
+                            private float                               percentage;
 
 
 
@@ -1417,11 +1412,12 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 
+#if UNITY_EDITOR
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
 
-#if UNITY_EDITOR
+
 
 
         //Vector3 namePosition = new Vector3(transform.position.x, transform.position.y, 2f);
@@ -1487,7 +1483,8 @@ public class EnemyBehaviour : MonoBehaviour
                 }
         }
         #endregion
-#endif
+
     }
     #endregion
+#endif
 }
