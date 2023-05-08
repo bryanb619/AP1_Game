@@ -12,9 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f164e7accfd96c24bbae33016d80036f, type: 3}
   m_Name: AI Chase Data
   m_EditorClassIdentifier: 
-  _canSpawnOthers: 0
-  quantity: 2
-  _attackSpeed: 1.8
   _attackDist: 2.5
   _attackEffect: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
   _damageEffectTime: 0.4
@@ -31,6 +28,9 @@ MonoBehaviour:
   s_damage: 15
   currentAbilityValue: 32
   abilityIncreasePerFrame: 2
+  patrolSpeed: 0.8
+  attackSpeed: 1.2
+  otherSpeed: 0
   radius: 10
   angle: 90
   targetMask:

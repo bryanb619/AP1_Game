@@ -3,13 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class StartMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject _Menu, _OptionsMenu;
-    // Debug Color
-    string DebugColor = "<size=14><color=green>";
-    string closeColor = "</color></size>";
+    [SerializeField]    private GameObject _Menu, _OptionsMenu;
+    [SerializeField]    private string loadMenu; 
+
+                        // Debug Color
+                        private string DebugColor = "<size=14><color=green>";
+                        private string closeColor = "</color></size>";
 
 
-    // Start is called before the first frame update
     void Start()
     {
         // Cursor Lock state
@@ -25,7 +26,7 @@ public class StartMenu : MonoBehaviour
     // Game Load Button
     public void LoadGame()
     {
-        SceneManager.LoadScene("LoadingScene");
+        SceneManager.LoadScene(loadMenu);
         Debug.Log(DebugColor + "Game Loading!" + closeColor);
 
     }

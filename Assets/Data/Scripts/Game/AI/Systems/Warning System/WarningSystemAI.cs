@@ -12,7 +12,7 @@ public class WarningSystemAI : MonoBehaviour
     // Set this to the layer that the AI game objects are on
     [SerializeField] private LayerMask aiLayer;
 
-    // Set this to the radius in which the AI game objects should be warned
+    //  radius in which the AI can alert
     [Range(0, 30)][SerializeField] private float AiRadius = 20.0f;
 
     private EnemyChaseBehaviour enemy;
@@ -46,7 +46,6 @@ public class WarningSystemAI : MonoBehaviour
 
     private void Update()
     {
-
         if(canAlertAI) 
         {
             AlertAI();
@@ -78,9 +77,7 @@ public class WarningSystemAI : MonoBehaviour
         Collider[] aiHits = Physics.OverlapSphere(transform.position, AiRadius, aiLayer);
         if (aiHits.Length > 0)
         {
-            
-
-            // Iterate through the list of AI game objects and send a warning message
+                        // Iterate through the list of AI game objects and send a warning message
             foreach (Collider aiHit in aiHits)
             {
                 aiHit.gameObject.SendMessage("OnPlayerWarning", transform.position, SendMessageOptions.DontRequireReceiver);

@@ -600,21 +600,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stateAI: 2
-  data: {fileID: 11400000, guid: 5cf2283a5d6dbc348a799dc4e969895a, type: 2}
+  data: {fileID: 11400000, guid: 9c72e6fe0b220ad409222f3f9792cabd, type: 2}
   enemyMesh: {fileID: 3110441228081096987}
-  _patrolPoints: []
+  patrolPoints: []
   _attackPoint: {fileID: 3331569744526991545}
-  _fov: {fileID: 1831208982663463918}
+  fov: {fileID: 1831208982663463918}
   radius: 0
   angle: 0
   _targetEffect: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
   _spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
   _enemyChase: {fileID: 1831208983068165615}
   enemyRaged: {fileID: 0}
-  _healthSlider: {fileID: 8963490514696597323}
-  _AbilitySlider: {fileID: 5430720324937001575}
-  _showExtraGizmos: 0
-  _showLabelGizmos: 0
+  healthSlider: {fileID: 8963490514696597323}
+  abilitySlider: {fileID: 5430720324937001575}
+  _showExtraGizmos: 1
+  _showLabelGizmos: 1
 --- !u!114 &8322705189930119540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -816,7 +816,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1.15
-  m_Speed: 3.5
+  m_Speed: 1.5
   m_Acceleration: 10
   avoidancePriority: 99
   m_AngularSpeed: 120
@@ -827,7 +827,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 1
   m_WalkableMask: 5
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!136 &1831208983068165609
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -836,7 +836,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1831208983068165615}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.7
   m_Height: 3.16

@@ -4,19 +4,19 @@ using FMODUnity;
 [CreateAssetMenu(menuName = "Akarya/AI/Chase Data")]
 public class AIChaseData : ScriptableObject
 {
+    #region Combat
     // Combat -------------------------------------------------------------------->
 
     [Header("Combat")]
-        [SerializeField] 
+
+    /*        [SerializeField] 
             private bool                _canSpawnOthers;
             internal bool               CanSpawnOthers => _canSpawnOthers;
     [SerializeField]
             private int                 quantity; 
             internal int                Quantity => quantity;
 
-        [SerializeField]
-            private float               _attackSpeed = 1.8f;
-            public float                AttackSpeed => _attackSpeed; 
+    */
 
         [SerializeField]
             private float               _attackDist = 2.5f;
@@ -114,8 +114,26 @@ public class AIChaseData : ScriptableObject
             private float               abilityIncreasePerFrame = 5f;
             public float                AbilityIncreasePerFrame => abilityIncreasePerFrame;
 
+    #endregion
+
+    #region Movement
+    // AI Walk Speed per state -------------------------------------------------------------->
+
+    [Header("Movement Speed")]
+    [SerializeField]    private float patrolSpeed; 
+                        public float PatrolSpeed => patrolSpeed;
+
+    [SerializeField]    private float attackSpeed;
+                        public float AttackSpeed => attackSpeed;
+
+    [SerializeField]    private float otherSpeed;
+                        public float OtherSpeed => patrolSpeed;
+
+    #endregion
+
+    #region FOV
     // FOV -------------------------------------------------------------------->
-        [Header("FOV")]
+    [Header("FOV")]
         [Tooltip("Radius of FOV")]
         [Range(10f, 150f)]
         [SerializeField] 
@@ -138,9 +156,11 @@ public class AIChaseData : ScriptableObject
             private LayerMask           obstructionMask;
             public LayerMask            ObstructionMask => obstructionMask;
 
-       
+    #endregion
+
+    #region Health
     // HEALTH -------------------------------------------------------------------->
-        [Header("Health")]
+    [Header("Health")]
         [Tooltip("Set AI Health")]
         [Range(0, 1000)]
         [SerializeField] 
@@ -171,11 +191,13 @@ public class AIChaseData : ScriptableObject
      public bool Thunder => thunder;
 
      */
+    #endregion
 
+    #region Damage & Death
     // DAMAGE--------------------------------------------------------------------> 
 
     // Stunned //
-        [Header("Stunned")]
+    [Header("Stunned")]
         [SerializeField] 
             private float               _stunnedTime;
             public float                StunnedTime => _stunnedTime;     
@@ -237,7 +259,9 @@ public class AIChaseData : ScriptableObject
             private int                 _manaItems;
             internal int                ManaItems => _manaItems;
 
+    #endregion
 
+    #region Sounds 
     // Sound -------------------------------------------------------------------->
     [Header("Sound")]
        
@@ -254,8 +278,9 @@ public class AIChaseData : ScriptableObject
             public EventReference       Etc => _etc;
 
 
+    #endregion
 
-
+    #region Other
     // COVER
     [Header("Cover")]
     [Tooltip("Hidable masks layers for AI (Walls is one by default")]
@@ -282,5 +307,5 @@ public class AIChaseData : ScriptableObject
     [SerializeField]
     private float fleeDistance = 15f;
     public float FleeDistance => fleeDistance;
-
+    #endregion
 }

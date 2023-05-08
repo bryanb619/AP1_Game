@@ -306,12 +306,11 @@ public class Drop : MonoBehaviour
 
     private void OnDraw()
     {
-        var step = attractionSpeed * Time.deltaTime;
+
         if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
         {
-
             _canFloat = false;
-            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
+            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position,attractionSpeed * Time.deltaTime);
             //print("player"); 
         }
         else { _canFloat = true; return; }

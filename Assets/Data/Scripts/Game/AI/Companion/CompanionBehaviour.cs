@@ -88,7 +88,10 @@ public class CompanionBehaviour : MonoBehaviour
 
                         private Camera                  mainCamera;
 
-                        private Vector3                 direction; 
+                        private Vector3                 direction;
+
+
+    [SerializeField]    bool                            _playerDirection;
     // OLD CODE
     //[SerializeField]
     //private float followsRadius = 2f;
@@ -333,20 +336,30 @@ public class CompanionBehaviour : MonoBehaviour
     #region Raycast aim mouse Update
     private void Aim()
     {
-        var (success, position) = GetMousePosition();
-        if (success)
+        if(Input.GetMouseButtonDown(0)) 
         {
-            // Calculate the direction
-            var direction = position - transform.position;
+            var (success, position) = GetMousePosition();
+            if (success)
+            {
+                // Calculate the direction
+                var direction = position - transform.position;
 
-            // You might want to delete this line.
-            // Ignore the height difference.
-            direction.y = 0;
+                // You might want to delete this line.
+                // Ignore the height difference.
+                direction.y = 0;
 
-            // Make the transform look in the direction.
-            transform.forward = direction;
-            
+                // Make the transform look in the direction.
+                transform.forward = direction;
+
+                if(_playerDirection)
+                {
+                    player.transform.forward = direction;
+                }
+                 
+
+            }
         }
+        
     }
 
     private (bool success, Vector3 position) GetMousePosition()
@@ -356,7 +369,7 @@ public class CompanionBehaviour : MonoBehaviour
         if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _walkMask))
         {
             //companionAim.transform.position = hitInfo.point;
-
+            
             return (success: true, position: hitInfo.point);
         }
 

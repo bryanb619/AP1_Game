@@ -7,48 +7,44 @@ public class GameManager : MonoBehaviour
 {
     #region Variables
 
-    // GAME STATE -------------------------------------------------->
+    // GAME STATE   ------------------------------------------------------------------------------------------->
     [Header("Game state")]
-        public GameState                        State;
 
-        //private GameState                       _state;
+                        public GameState                        State;
+                        //private GameState                       _state;
+                        public static GameManager               Instance;
 
-        public static GameManager               Instance;
+                        public static event Action<GameState>   OnGameStateChanged;
 
-        public static event Action<GameState>   OnGameStateChanged;
-
-    [SerializeField] 
-        private GameObject                      _outOfFocus, _pauseMenu;
+    [SerializeField]    private GameObject                      _outOfFocus, _pauseMenu;
 
 
-    // GAME SOUND -------------------------------------------------->
-    [SerializeField]
-        private StudioEventEmitter[]            ambientSounds;
+    // Scenes       ------------------------------------------------------------------------------------------->
 
-    [SerializeField]
-        private StudioEventEmitter[]            sfxSounds;
+    [SerializeField]    private string                          startMenu;
+    [SerializeField]    private string                          restartMenu; 
+    [SerializeField]    private string                          endMenu;
 
-    [SerializeField]
-        private StudioEventEmitter[]            musicSounds;
+
+    // GAME SOUND   ------------------------------------------------------------------------------------------->
+    [SerializeField]    private StudioEventEmitter[]            ambientSounds;
+
+    [SerializeField]    private StudioEventEmitter[]            sfxSounds;
+
+    [SerializeField]    private StudioEventEmitter[]            musicSounds;
 
     //[SerializeField]
-        // VOLUME
-        private float                           ambientVolume;
-        private float                           sfxVolume;
-        private float                           musicVolume;
+                        // VOLUME
+                        private float                           ambientVolume;
+                        private float                           sfxVolume;
+                        private float                           musicVolume;
 
-        // AUDIO STATE
-        private bool                            _audioState;
-
+                        // AUDIO STATE
+                        private bool                            _audioState;
 
     //public class SFXSound : UnityEvent<float> {}
-
     //public static SFXSound OnSFXValueChange = new SFXSound();
-
-
     //[SerializeField] private Slider _ambientSlider;
-
-
     #endregion
 
     #region Awake & Start
@@ -143,12 +139,12 @@ public class GameManager : MonoBehaviour
     private void HandlePaused()
     {
         // set cursor to pause mode
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible      = true;
+        Cursor.lockState    = CursorLockMode.None;
 
-        _audioState = true;
+        _audioState         = true;
 
-        Time.timeScale = 0f;
+        Time.timeScale      = 0f;
         //_state = GameState.Paused;
 
         HandleEventEmitterState();
@@ -181,10 +177,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void RestartGame()
+    {
+
+    }
 
     public void ExitToMainMenu()
     {
-        SceneManager.LoadScene("StartMenu");
+        SceneManager.LoadScene(startMenu);
     }
 
     #region FMOD Sounds
