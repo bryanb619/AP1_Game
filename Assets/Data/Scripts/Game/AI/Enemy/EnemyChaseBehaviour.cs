@@ -60,6 +60,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private Transform                   playerTarget;
                         public Transform                    PlayerTarget => playerTarget;
                         private Shooter                     shooterScript;
+                        private ObjectiveUI                 objectiveUIScript;
 
                         private Rigidbody                   rb;
 
@@ -248,6 +249,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+
+        objectiveUIScript = FindObjectOfType<ObjectiveUI>();
 
         switch (_gameState)
         {
@@ -1513,6 +1516,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         Instantiate(death, transform.position, Quaternion.identity);
 
         valuesTexts.GetKill();
+
+        objectiveUIScript.IncreaseEnemyDefeatedCount();
 
         Destroy(this.gameObject);
     }

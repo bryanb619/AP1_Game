@@ -57,6 +57,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                             private SkinnedMeshRenderer                 enemyMesh;
 
+                            private ObjectiveUI                         objectiveUIScript;
 
         // Combat  ------------------------------------------------------------------------------------------------------------->
 
@@ -234,6 +235,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Awake()
     { 
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        objectiveUIScript = FindObjectOfType<ObjectiveUI>();
     }
 
     #endregion
@@ -1255,9 +1257,12 @@ public class EnemyBehaviour : MonoBehaviour
             Instantiate(gemPrefab, transform.position, Quaternion.identity);
             Debug.Log("Spawned Gem");
         }
-        Destroy(gameObject);
+
+        objectiveUIScript.IncreaseEnemyDefeatedCount();
 
         valuesTexts.GetKill();
+
+        Destroy(gameObject);
 
         Debug.Log("Enemy died");
     }

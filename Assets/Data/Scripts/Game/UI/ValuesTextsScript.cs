@@ -25,6 +25,8 @@ public class ValuesTextsScript : MonoBehaviour
         upgradesText.text = upgrades.ToString();
     }
 
+
+
     internal void GetKill()
     {
         kills += 1;

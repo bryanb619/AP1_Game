@@ -1494,7 +1494,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30950
+  m_Name: pb_Mesh30948
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1730,6 +1730,7 @@ MonoBehaviour:
       Data3: 284616345
       Data4: -1006319745
     Path: event:/Enemy/EnemySpawn/AISpawn
+  objectiveUIScript: {fileID: 1106341859}
   _startWait: 0
   _waitTime: 0
   _spawnTime: 0.5
@@ -2489,10 +2490,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Upgrade (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 8883800141596814417, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
       propertyPath: upgrade
       value: 1
@@ -2500,19 +2497,7 @@ PrefabInstance:
     - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
       propertyPath: upgradeUI
       value: 
-      objectReference: {fileID: 1806454342}
-    - target: {fileID: 8883800142940868062, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143190493548, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143444148449, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1922388307}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
 --- !u!4 &165487597 stripped
@@ -13423,10 +13408,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Upgrade (3)
       objectReference: {fileID: 0}
-    - target: {fileID: 8883800141596814417, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
       propertyPath: upgrade
       value: 3
@@ -13434,19 +13415,7 @@ PrefabInstance:
     - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
       propertyPath: upgradeUI
       value: 
-      objectReference: {fileID: 1806454342}
-    - target: {fileID: 8883800142940868062, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143190493548, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143444148449, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1922388307}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
 --- !u!4 &357564898 stripped
@@ -13523,7 +13492,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30334
+  m_Name: pb_Mesh30330
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -29888,17 +29857,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.014469128, y: 0.007478842, z: 0.013417516}
   m_Center: {x: -0.0000812097, y: 0.0011784586, z: -0.00015094665}
---- !u!114 &628254026 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2508626532377099489, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-  m_PrefabInstance: {fileID: 2508626531916880299}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b11729d98e8f4fd4eb839fdf6017cd02, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &636371434 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3006328815571793890, guid: d39509f6fbe604a4bbab8b80448aa80f, type: 3}
@@ -41433,7 +41391,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30884
+  m_Name: pb_Mesh30882
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -48911,6 +48869,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2508626532989662794, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
   m_PrefabInstance: {fileID: 2508626531916880299}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1106341859 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6563184016625231964, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
+  m_PrefabInstance: {fileID: 2508626531916880299}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b11729d98e8f4fd4eb839fdf6017cd02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1115789199 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 61fbea66eb553b343a3968d44ca92d3d, type: 3}
@@ -74196,7 +74165,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30396
+  m_Name: pb_Mesh30392
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -77596,11 +77565,6 @@ Terrain:
   m_GroupingID: 0
   m_RenderingLayerMask: 1
   m_AllowAutoConnect: 1
---- !u!1 &1806454342 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9002438497831478156, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
-  m_PrefabInstance: {fileID: 2688298550431168961}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1822134670
 GameObject:
   m_ObjectHideFlags: 0
@@ -77722,7 +77686,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh30284
+  m_Name: pb_Mesh30280
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -88371,6 +88335,11 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.23, y: 0.23478031, z: 1.0792725}
   m_Center: {x: -0.13, y: -0.000000014901161, z: 0.0025013387}
+--- !u!1 &1922388307 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2673822056178144152, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
+  m_PrefabInstance: {fileID: 2688298550431168961}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1931834591
 GameObject:
   m_ObjectHideFlags: 0
@@ -89337,30 +89306,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Upgrade (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 8883800141596814417, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: upgrade
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
       propertyPath: upgradeUI
       value: 
-      objectReference: {fileID: 1806454342}
-    - target: {fileID: 8883800142940868062, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143190493548, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143444148449, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1922388307}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
 --- !u!4 &2069197712 stripped
@@ -90259,7 +90208,7 @@ PrefabInstance:
     - target: {fileID: 6050601795298580372, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
       propertyPath: objectiveUI
       value: 
-      objectReference: {fileID: 628254026}
+      objectReference: {fileID: 0}
     - target: {fileID: 6050601795298580372, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
       propertyPath: targetedAttackAbilityHolder
       value: 
@@ -90290,22 +90239,6 @@ PrefabInstance:
     - target: {fileID: 2259382031723774392, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259382031723774392, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 491.4823
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259382031723774392, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 18.3146
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259382031723774392, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -33.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259382031723774392, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 14.8227
       objectReference: {fileID: 0}
     - target: {fileID: 2259382032660291761, guid: 8b6f2d749cc002448a234d555b3851f2, type: 3}
       propertyPath: m_Pivot.x
@@ -90404,34 +90337,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1859903518}
     m_Modifications:
-    - target: {fileID: 2508626532377099489, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: Crystals.Array.data[0]
-      value: 
-      objectReference: {fileID: 1339711858}
-    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2508626532377099500, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2508626532989662794, guid: 6c3d83558105ce940a071713510ae1a6, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -90592,18 +90497,6 @@ PrefabInstance:
     - target: {fileID: 2765388108352682793, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5535793319514531993, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
-      propertyPath: m_Color.b
-      value: 0.45490196
-      objectReference: {fileID: 0}
-    - target: {fileID: 5535793319514531993, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
-      propertyPath: m_Color.g
-      value: 0.7882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 5535793319514531993, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
-      propertyPath: m_Color.r
-      value: 0.99215686
       objectReference: {fileID: 0}
     - target: {fileID: 7882429377639163589, guid: fc07b24cc02ef2b459272e35339a5da9, type: 3}
       propertyPath: m_Pivot.x
@@ -91161,10 +91054,6 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 579049718}
-    - target: {fileID: 8760901748302297717, guid: 52071118b0076fe4596bcb26d7d6cb52, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ExitButton
-      objectReference: {fileID: 0}
     - target: {fileID: 8760901748522861702, guid: 52071118b0076fe4596bcb26d7d6cb52, type: 3}
       propertyPath: m_Name
       value: Canvas Pause
@@ -91262,14 +91151,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1859903518}
     m_Modifications:
-    - target: {fileID: 1911738631, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1911738631, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1821193679184456121, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -91364,14 +91245,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1821193679210172287, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8061491772066701096, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8061491772066701096, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
-      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -91478,25 +91351,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Upgrade
       objectReference: {fileID: 0}
-    - target: {fileID: 8883800141596814417, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
+    - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
+      propertyPath: upgrade
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8883800141596814420, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
       propertyPath: upgradeUI
       value: 
-      objectReference: {fileID: 1806454342}
-    - target: {fileID: 8883800142940868062, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143190493548, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8883800143444148449, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
-      propertyPath: m_Layer
-      value: 2
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1922388307}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dae20ebd6a9af34ea4b4e227dcada3e, type: 3}
