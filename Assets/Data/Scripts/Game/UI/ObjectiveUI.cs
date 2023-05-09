@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 
 public class ObjectiveUI : MonoBehaviour
 {
-    private TextMeshProUGUI textReference;
+    [SerializeField]private TextMeshProUGUI mainTextReference, newTextReference;
+    private Animator animator;
     private DoorHandler doorHandler;
+    private bool secondTextAnimationTriggered = false, thirdTextAnimationTriggered = false, passedThroughCollider = false;
     [HideInInspector]public bool passedSecondObjective;
     [SerializeField] private string firstObjective;
     [SerializeField] private string secondObjective;
@@ -14,6 +17,8 @@ public class ObjectiveUI : MonoBehaviour
     [SerializeField] private string fourthObjective;
     //[SerializeField] private float radius = 20f;
     [SerializeField] private LayerMask AILayer;
+    private int totalEnemyCount = 0, currentEnemyDefeated = 0;
+
 
     [Header("Crystal")]
     [SerializeField] private GameObject[] Crystals;
@@ -22,29 +27,64 @@ public class ObjectiveUI : MonoBehaviour
     void Start()
     {
         passedSecondObjective = false;
-        textReference = GetComponent<TextMeshProUGUI>();
-        textReference.text = firstObjective;
-
+        mainTextReference.text = "No objective currently";
+        animator = GetComponent<Animator>();
         doorHandler = FindObjectOfType<DoorHandler>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (passedSecondObjective == false)
-            KillEnemiesCheck();
-        else if (passedSecondObjective == true)
-            CleansedTheCrystals();
+
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            animator.SetTrigger("Show Objective");
+        }
+        
+
+
+        if(passedThroughCollider)
+        {
+            if (passedSecondObjective == false)
+                KillEnemiesCheck();
+            else if (passedSecondObjective == true)
+                CleansedTheCrystals();
+        }
+    }
+
+    public void PassedThroughCollider()
+    {
+        passedThroughCollider = true;
+        newTextReference.text = firstObjective;
+        animator.SetTrigger("New Objective");
+    }
+
+    public void RecieveEnemyCountInfo(int ChaseCount, int RangedCount)
+    {
+        totalEnemyCount = ChaseCount + RangedCount;
+    }
+
+    public void IncreaseEnemyDefeatedCount()
+    {
+        totalEnemyCount += 1;
+        mainTextReference.text = (secondObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
     }
 
     private void KillEnemiesCheck()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        //If needed for active and inactive checking through tags
 
-        if (enemies.Length <= 0)
+        /*GameObject[] allEnemies = Resources.FindObjectsOfTypeAll<GameObject>()
+            .Where(obj => obj.CompareTag("nemy"))
+            .ToArray();
+
+        bool noEnemiesLeft = allEnemies.Length == 0;
+        */
+
+        if (totalEnemyCount == currentEnemyDefeated)
         {
-            textReference.text = secondObjective;
-            foreach(GameObject crystal in Crystals)
+            TextAnimation(1);
+            foreach (GameObject crystal in Crystals)
             {
                 crystal.GetComponent<Outline>().enabled = true;
             }
@@ -54,7 +94,29 @@ public class ObjectiveUI : MonoBehaviour
     private void CleansedTheCrystals()
     {
         //Reference the door opening script here
-        textReference.text = thirdObjective;
+        TextAnimation(2);
         doorHandler.state = DoorHandler.DoorState.Opening;
+    }
+
+    private void TextAnimation(int i)
+    {
+        if (i == 1)
+        {
+            newTextReference.text = (secondObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
+            if(secondTextAnimationTriggered == false)
+                animator.SetTrigger("New Objective");
+            secondTextAnimationTriggered = true;
+        }
+        else if (i == 2 && thirdTextAnimationTriggered == false)
+        {
+            newTextReference.text = thirdObjective;
+            animator.SetTrigger("New Objective");
+            thirdTextAnimationTriggered = true;
+        }
+    }
+
+    private void TextAnimationEnd()
+    {
+        mainTextReference.text = newTextReference.text;
     }
 }

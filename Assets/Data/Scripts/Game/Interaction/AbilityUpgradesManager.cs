@@ -59,22 +59,22 @@ public class AbilityUpgradesManager : MonoBehaviour
             switch (upgrade)
             {
                 case upgradeType.qUpgrade:
-                    upgradeUI.transform.GetChild(0).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
+                    upgradeUI.transform.GetChild(0).gameObject.SetActive(true);
                     shooterScript.UpgradeChecker(1);
                     break;
 
                 case upgradeType.wUpgrade:
-                    upgradeUI.transform.GetChild(1).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
+                    upgradeUI.transform.GetChild(1).gameObject.SetActive(true);
                     shooterScript.UpgradeChecker(2);                                 
                     break;                                                           
                                                                                      
                 case upgradeType.eUpgrade:
-                    upgradeUI.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
+                    upgradeUI.transform.GetChild(2).gameObject.SetActive(true);
                     dashingScript.EnableUpgrade();                                   
                     break;                                                           
                                                                                      
                 case upgradeType.rUpgrade:
-                    upgradeUI.transform.GetChild(3).GetChild(0).GetComponent<Image>().color = new Color32(223, 116, 255, 100);
+                    upgradeUI.transform.GetChild(3).gameObject.SetActive(true);
                     shooterScript.UpgradeChecker(3);
                     break;
 

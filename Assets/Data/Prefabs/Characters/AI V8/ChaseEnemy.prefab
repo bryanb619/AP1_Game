@@ -272,6 +272,7 @@ GameObject:
   - component: {fileID: 554273238514934917}
   - component: {fileID: 554273238514934918}
   - component: {fileID: 8557553125150964295}
+  - component: {fileID: 501132576}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -317,6 +318,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &8557553125150964295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935337217872657983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467e6e7040298ca48951571de489ff23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &501132576
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -578,7 +591,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1831208983068165614
 Transform:
   m_ObjectHideFlags: 0
@@ -616,7 +629,8 @@ MonoBehaviour:
   _stateAI: 1
   data: {fileID: 11400000, guid: 9c72e6fe0b220ad409222f3f9792cabd, type: 2}
   enemyMesh: {fileID: 3110441228081096987}
-  patrolPoints: []
+  objectiveUIScript: {fileID: 0}
+  _patrolPoints: []
   _attackPoint: {fileID: 3331569744526991545}
   fov: {fileID: 1831208982663463918}
   radius: 3.3
@@ -625,10 +639,10 @@ MonoBehaviour:
   _spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
   _enemyChase: {fileID: 1831208983068165615, guid: bd37bf34c82166e4cbc542a9ea1102a6, type: 3}
   enemyRaged: {fileID: 0}
-  healthSlider: {fileID: 8963490514696597323}
-  abilitySlider: {fileID: 5430720324937001575}
+  _healthSlider: {fileID: 8963490514696597323}
+  _AbilitySlider: {fileID: 5430720324937001575}
   _showExtraGizmos: 0
-  _showLabelGizmos: 0
+  _showLabelGizmos: 1
 --- !u!114 &8322705189930119540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,7 +845,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 10
+  m_Acceleration: 2000
   avoidancePriority: 99
   m_AngularSpeed: 120
   m_StoppingDistance: 0.1
@@ -870,7 +884,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!1 &1831208984231802270
 GameObject:
@@ -2435,7 +2449,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3041,7 +3055,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -0.0000005958864, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3343,8 +3357,8 @@ RectTransform:
   m_Father: {fileID: 1192099220337860066}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.19999999, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -0.0000005958864, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

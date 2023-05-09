@@ -24,6 +24,8 @@ public class CollSpawnAI : MonoBehaviour
 
     [SerializeField]    private EventReference          _soundAISpawn;
 
+    [SerializeField] private ObjectiveUI                objectiveUIScript;
+
     // Time -------------------------------------------------------------------------------->
     [Header("Spawn")]
 
@@ -42,11 +44,15 @@ public class CollSpawnAI : MonoBehaviour
         _collider                   = GetComponent<BoxCollider>();
         _collider.enabled           = true;
         _collider.isTrigger         = true;
+
+        objectiveUIScript.RecieveEnemyCountInfo(_chaseCount, _rangedCount);
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
+        objectiveUIScript.PassedThroughCollider();
+
         PlayerMovement PLAYER       = other.GetComponent<PlayerMovement>();
 
         if (PLAYER != null ) 
