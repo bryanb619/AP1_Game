@@ -92,6 +92,12 @@ public class CompanionBehaviour : MonoBehaviour
 
 
     [SerializeField]    bool                            _playerDirection;
+
+
+    // DEBUG ---------------------------------------------------------------------------------->
+
+    [SerializeField]    private GameObject             testGame; 
+
     // OLD CODE
     //[SerializeField]
     //private float followsRadius = 2f;
@@ -351,16 +357,19 @@ public class CompanionBehaviour : MonoBehaviour
                 // Make the transform look in the direction.
                 transform.forward = direction;
 
-                if(_playerDirection)
+
+                if (_playerDirection)
                 {
                     player.transform.forward = direction;
                 }
-                 
-
             }
         }
         
+
+
     }
+        
+    
 
     private (bool success, Vector3 position) GetMousePosition()
     {
@@ -369,8 +378,17 @@ public class CompanionBehaviour : MonoBehaviour
         if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _walkMask))
         {
             //companionAim.transform.position = hitInfo.point;
-            
-            return (success: true, position: hitInfo.point);
+
+            // add novo ponto com nova altura
+            Vector3 point = hitInfo.point;
+
+            // somar na coordenada Y, novo valor
+            point.y += 2.5F;
+
+            //return (success: true, position: hitInfo.point);
+            Instantiate(testGame, point, Quaternion.identity); 
+
+            return (success: true, position:point);
         }
 
         else

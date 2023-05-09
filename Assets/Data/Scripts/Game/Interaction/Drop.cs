@@ -4,59 +4,56 @@ using FMODUnity;
 
 public class Drop : MonoBehaviour
 {
-    // Data //
-    [SerializeField] private DropData data;
+    // Data --------------------------------------------------->
+    [SerializeField]    private DropData data;
 
-    private DropType _dropType;
+                        private DropType _dropType;
 
-    //private BoxCollider m_BoxCollider;
+                        //private BoxCollider m_BoxCollider;
 
-    // Health //
-    private int _health;
-    public int Health => _health;
+    // Health --------------------------------------------------->
+                        private int _health;
+                        public int Health => _health;
 
-    // Mana //
-    private int _mana;
-    public int Mana => _mana;
+    // Mana --------------------------------------------------->
+                        private int _mana;
+                        public int Mana => _mana;
 
 
-    [SerializeField] private GameObject m_prefab;
-    private Rigidbody _rb;
+    [SerializeField]    private GameObject m_prefab;
+                        private Rigidbody rb;
 
-    // Game State //
-    private GameState _state;
-    private bool _gamePlay;
+                        // Game State //
+                        private GameState _state;
+                        private bool _gamePlay;
 
-    // FMOD & Sound Handling //
+    // FMOD & Sound Handling --------------------------------------------------->
     private StudioEventEmitter m_Emitter;
-    private bool _audioState;
-    private bool _useAudio;
-    private bool _usesAudioAmbient;
+                        private bool _audioState;
+                        private bool _useAudio;
+                        private bool _usesAudioAmbient;
 
-    // Atraction //
-    private bool _canUseForce;
-    //private float                               startForce; 
-    private bool _canBeDrawned;
-    private int attractionSpeed;
-    private float maxDistance;
-    private bool _canIgnorePlayerMaHealth;
+    // Atraction --------------------------------------------------->
+                        private bool _canUseForce;
+                        //private float                               startForce; 
+                        private bool _canBeDrawned;
+                        private int attractionSpeed;
+                        private float maxDistance;
+                        private bool _canIgnorePlayerMaHealth;
 
-    private bool _canFloat;
+                        private bool _canFloat;
 
-    private LayerMask _ignoreMask;
-    public float avoidanceForce = 5f;
-    public float avoidanceDuration = 1.8f;
+                        private LayerMask _ignoreMask;
+                        public float avoidanceForce = 5f;
+                        public float avoidanceDuration = 1.8f;
 
 
+    // managing --------------------------------------------------->
+                        // height of float 
+                        private float height;
 
-    // managing // 
+                        private PlayerMovement player;
 
-    // height of float
-    private float height;
-
-    private PlayerMovement player;
-
-    //private ManaManager manaManager;
 
 
     private void Awake()
@@ -98,30 +95,30 @@ public class Drop : MonoBehaviour
     private void GetComponents()
     {
         //m_BoxCollider = GetComponent<BoxCollider>();
-        m_Emitter = GetComponent<StudioEventEmitter>();
-        _rb = GetComponent<Rigidbody>();
+        m_Emitter                   = GetComponent<StudioEventEmitter>();
+        rb                         = GetComponent<Rigidbody>();
 
-        player = FindObjectOfType<PlayerMovement>();
+        player                      = FindObjectOfType<PlayerMovement>();
         //manaManager = FindObjectOfType<ManaManager>();    
     }
 
     private void GetProfile()
     {
-        _dropType = data.Drop; 
+        _dropType                   = data.Drop; 
 
-        _health = data.Health;
-        _mana = data.Mana;
+        _health                     = data.Health;
+        _mana                       = data.Mana;
 
-        _canFloat = data.Float;
-        _canUseForce = data.UseStartForce;
-        _canIgnorePlayerMaHealth = data.CanIgnoreHealth;
-        height = data.HeightFloat;
-        _usesAudioAmbient = data.UseAudioAmbient;
+        _canFloat                   = data.Float;
+        _canUseForce                = data.UseStartForce;
+        _canIgnorePlayerMaHealth    = data.CanIgnoreHealth;
+        height                      = data.HeightFloat;
+        _usesAudioAmbient           = data.UseAudioAmbient;
        
-        _canBeDrawned = data.CanBeattracted;
-        attractionSpeed = data.AtractionSpeed;
-        maxDistance = data.MaxDistance;
-        _ignoreMask = data.LayerMask;
+        _canBeDrawned               = data.CanBeattracted;
+        attractionSpeed             = data.AtractionSpeed;
+        maxDistance                 = data.MaxDistance;
+        _ignoreMask                 = data.LayerMask;
 
 
     }
@@ -215,7 +212,7 @@ public class Drop : MonoBehaviour
 
                         if (_canBeDrawned)
                         {
-                            _rb.Sleep();
+                            rb.Sleep();
                         }
                         UpdateSound();
                         return;
@@ -280,7 +277,7 @@ public class Drop : MonoBehaviour
 
             Vector3 avoidanceDirection = transform.position - other.transform.position;
 
-            _rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
+            rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
 
             Invoke("StopForce", avoidanceDuration);
         }
@@ -291,8 +288,8 @@ public class Drop : MonoBehaviour
     private void StopForce()
     {
         //print("no one found");
-        _rb.velocity = Vector3.zero;
-        _rb.Sleep();
+        rb.velocity = Vector3.zero;
+        rb.Sleep();
 
         //_canFloat = true;
     }

@@ -22,6 +22,8 @@ public class CollSpawnAI : MonoBehaviour
 
                         private BoxCollider             _collider;
 
+    [SerializeField]    private bool                    _useSound; 
+
     [SerializeField]    private EventReference          _soundAISpawn;
 
     // Time -------------------------------------------------------------------------------->
@@ -69,7 +71,10 @@ public class CollSpawnAI : MonoBehaviour
 
             int i;
 
-            RuntimeManager.PlayOneShot(_soundAISpawn);
+            if( _useSound)
+            {
+                RuntimeManager.PlayOneShot(_soundAISpawn);
+            }
 
             for (i = 0; i < _chaseCount; i++)
             {

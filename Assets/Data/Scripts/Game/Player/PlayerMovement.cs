@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]    private LayerMask               _ignoreLayer;
 
                         private float                   maxAngle = 30f;
-                        private float                   playerSpeed = 4f;
+                        private float                   playerSpeed = 5f;
     [SerializeField]    private float                   playerAcceleration = 2000f;
     [SerializeField]    private float                   _turnSpeed;
     //private bool _isMoving;

@@ -73,16 +73,30 @@ public class WarningSystemAI : MonoBehaviour
 
     private void AlertAI()
     {
-        // Check if the player is within the warning radius
-        Collider[] aiHits = Physics.OverlapSphere(transform.position, AiRadius, aiLayer);
-        if (aiHits.Length > 0)
+
+        bool IsRunning = false;
+
+        
+
+        if(!IsRunning) 
         {
-                        // Iterate through the list of AI game objects and send a warning message
-            foreach (Collider aiHit in aiHits)
+            
+            //print("WARNING");
+
+            // Check if the player is within the warning radius
+            Collider[] aiHits = Physics.OverlapSphere(transform.position, AiRadius, aiLayer);
+            if (aiHits.Length > 0)
             {
-                aiHit.gameObject.SendMessage("OnPlayerWarning", transform.position, SendMessageOptions.DontRequireReceiver);
+                // Iterate through the list of AI game objects and send a warning message
+                foreach (Collider aiHit in aiHits)
+                {
+                    aiHit.gameObject.SendMessage("OnPlayerWarning", transform.position, SendMessageOptions.DontRequireReceiver);
+                }
             }
+            IsRunning = true;
         }
+        
+        
     }
 
     private void OnDrawGizmos()

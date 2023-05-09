@@ -555,7 +555,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         else if (_deactivateAI)
         {
-            //StopAgent();
+            StopAgent();
             return;
         }
     }
@@ -686,7 +686,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 if (CHASEAI != null && CHASEAI.gameObject != gameObject)
                 {
                     agent.enabled = false;
-                    print("OTHER AI FOUND");
+                    //print("OTHER AI FOUND");
 
                     Vector3 direction = transform.position - CHASEAI.transform.position;
                     rb.AddForce(direction.normalized * 10f);
@@ -694,13 +694,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
                 else if (PLAYER != null)
                 {
-                    if ((playerTarget.transform.position - transform.position).magnitude < 0.6f)
+                    if ((playerTarget.transform.position - transform.position).magnitude < 0.8f)
                     {
 
                         agent.enabled = false;
                         print("PLAYER FOUND");
                         Vector3 direction = transform.position - PLAYER.transform.position;
-                        rb.AddForce(direction.normalized * 2f);
+                        rb.AddForce(direction.normalized * 6f);
                     }
                  
                 }
@@ -894,7 +894,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case true:
                 {
                     //if ((playerTarget.transform.position - transform.position).magnitude <= 6F)
-                    if (agent.remainingDistance <= stopDistance)
+                    //if (agent.remainingDistance <= stopDistance)
+                    if ((playerTarget.transform.position - transform.position).magnitude <= 3.5F)
                     {
                         PauseAgent();
                         
@@ -903,7 +904,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         {
 
                             //print("2nd step");
-                            float randomFloat = UnityEngine.Random.value;
+                            //float randomFloat = UnityEngine.Random.value;
                             
 
                             if (UnityEngine.Random.value < percentage && _canPerformAttack)
@@ -923,7 +924,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                                     if (PLAYER != null)
                                     {
-
+                                        //print("2nd step");
                                         //AttackAnim();
                                         PLAYER.TakeDamage(b_damage);
 
@@ -1540,6 +1541,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
             return;
         }
 
+    }
+
+    public void ReceiveWarning()
+    {
+        if (_canAttack)
+        {
+            SetAttack();
+
+            return;
+        }
     }
     #endregion
 

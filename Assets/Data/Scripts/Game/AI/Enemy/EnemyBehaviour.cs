@@ -423,6 +423,7 @@ public class EnemyBehaviour : MonoBehaviour
                         outlineDeactivation.enabled = false;
 
                         MinimalCheck(); // Tester
+
                         if(_fov)
                         {
                             StartCoroutine(FOVRoutine());
@@ -485,7 +486,13 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void MinimalCheck()
     {
-        if (!_canGloryKill && _canAttack)
+        if (_stateAI != AI._ATTACK)
+        {
+            StartCoroutine(distanceCheck());
+         
+        }
+
+        if (!_canGloryKill && _canAttack && _stateAI != AI._ATTACK)
         {
             if ((_playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
             {
@@ -494,6 +501,18 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
        
+    }
+
+    private IEnumerator distanceCheck() 
+    {
+        yield return new WaitForSeconds(1f);
+
+        if((_playerTarget.transform.position - transform.position).magnitude < 25f)
+        {
+            _fov = true;
+        }
+        
+
     }
 
     private void AISpeed()
@@ -989,7 +1008,7 @@ public class EnemyBehaviour : MonoBehaviour
     #region Field of view Routine
     private IEnumerator FOVRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(0.2f);
+        WaitForSeconds wait = new WaitForSeconds(2f);
 
         while (true)
         {
@@ -1000,33 +1019,40 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FieldOfViewCheck()
     {
-        Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
+        bool IsRunning = false;
 
-        if (rangeChecks.Length != 0)
+        if(!IsRunning) 
         {
-            Transform target = rangeChecks[0].transform;
-            Vector3 directionToTarget = (target.position - FOV.position).normalized;
+            IsRunning = true;
 
-            if (Vector3.Angle(FOV.forward, directionToTarget) < angle / 2)
+            Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
+
+            if (rangeChecks.Length != 0)
             {
-                float distanceToTarget = Vector3.Distance(FOV.position, target.position);
+                Transform target = rangeChecks[0].transform;
+                Vector3 directionToTarget = (target.position - FOV.position).normalized;
 
-                if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                if (Vector3.Angle(FOV.forward, directionToTarget) < angle / 2)
                 {
-                    canSeePlayer = true;
-                    SetAttack(); 
+                    float distanceToTarget = Vector3.Distance(FOV.position, target.position);
+
+                    if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                    {
+                        canSeePlayer = true;
+                        SetAttack();
+                    }
+
+                    else
+                        canSeePlayer = false;
                 }
-                    
                 else
                     canSeePlayer = false;
             }
-            else
+            else if (canSeePlayer)
                 canSeePlayer = false;
         }
-        else if (canSeePlayer)
-            canSeePlayer = false;
 
-       
+        IsRunning = false;
 
     }
     #endregion
