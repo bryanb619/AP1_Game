@@ -1,26 +1,28 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using FMODUnity;
 
 public class PauseMenu : MonoBehaviour
 { 
-    private GameManager     _manager; 
+                    private GameManager                 _manager; 
  
-    // game paused bool
-    private bool            _Paused;
+                    // game paused bool
+                    private bool                        _paused;
 
     //  Pause Menu Canvas
-    [SerializeField]
-    private GameObject      PauseCanvas, _pauseMenu, _OptionsMenu;
+    [SerializeField] private GameObject                 pauseCanvas, pauseMenu, optionsMenu;
 
-    [SerializeField] private Slider audioSlider; 
+    [SerializeField] private EventReference             click; 
+
+    [SerializeField] private Slider                     _sliderAudio; 
 
     private void Start()
     {
-        _manager = FindObjectOfType<GameManager>();
+        _manager                                        = FindObjectOfType<GameManager>();
 
-        PauseCanvas.SetActive(true);
-        _pauseMenu.SetActive(false);
-        _OptionsMenu.SetActive(false);
+        pauseCanvas.SetActive(true);
+        pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
        
 
     }
@@ -28,17 +30,15 @@ public class PauseMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         KeyDetect();
-
     }
     
     private void KeyDetect()
     {
-        if (Input.GetButtonDown("Pause"))
+        if(Input.GetButtonDown("Pause"))
         {
             
-            if (_Paused)
+            if (_paused && !optionsMenu)
             {
                 Resume();
             }
@@ -54,8 +54,8 @@ public class PauseMenu : MonoBehaviour
     private void Resume()
     {
     
-        _pauseMenu.SetActive(false);
-        _Paused = false;
+        pauseMenu.SetActive(false);
+        _paused = false;
 
         _manager.UpdateGameState(GameState.Gameplay); 
 
@@ -63,14 +63,12 @@ public class PauseMenu : MonoBehaviour
     // method pause
     private void Pause()
     {
-        _pauseMenu.SetActive(true);
-        _Paused = true;
+        pauseMenu.SetActive(true);
+        _paused = true;
 
         _manager.UpdateGameState(GameState.Paused);
     }
-
-   
-
+    
     // Pause Menu
 
     // Resume button
@@ -83,9 +81,8 @@ public class PauseMenu : MonoBehaviour
     // OPTIONS Button
     public void OptionsButton()
     {
-
-        _OptionsMenu.SetActive(true);
-        _pauseMenu.SetActive(false);
+        optionsMenu.SetActive(true);
+        pauseMenu.SetActive(false);
     }
 
 
@@ -109,8 +106,8 @@ public class PauseMenu : MonoBehaviour
 
     public void BackButton()
     {
-        _pauseMenu.SetActive(true);
-        _OptionsMenu.SetActive(false);
+        pauseMenu.SetActive(true);
+        optionsMenu.SetActive(false);
 
     }
 

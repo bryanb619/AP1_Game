@@ -40,9 +40,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField]    private AIChaseData                 data;
       
                         // FSM 
-                        private StateMachine                stateMachine;  
+                        private StateMachine                _stateMachine;  
                         // AI Path solution
-                        private NavMeshAgent                agent;
+                        private NavMeshAgent                _agent;
                         // AI Warning other agents system
                         private WarningSystemAI             warn;
                         // AI controller for performance AI actions
@@ -299,9 +299,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Components Sync
     private void GetComponents()
     {
-        agent                       = GetComponent<NavMeshAgent>();
-        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-        agent.updateRotation        = false;
+        _agent                       = GetComponent<NavMeshAgent>();
+        _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        _agent.updateRotation        = false;
 
 
         warn                        = GetComponent<WarningSystemAI>();
@@ -497,7 +497,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         #endregion
 
-        stateMachine = new StateMachine(PatrolState);
+        _stateMachine = new StateMachine(PatrolState);
     }
     #endregion
 
@@ -548,7 +548,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             AISpeed();
 
-            Action actions = stateMachine.Update();
+            Action actions = _stateMachine.Update();
             actions?.Invoke();
 
             if (_useFOV)
@@ -569,7 +569,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_currentState == HandleState._NONE)
         {
-            if (agent.enabled)
+            if (_agent.enabled)
             {
                 // resume agent
                 HandleStateAI(false);
@@ -582,7 +582,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_currentState == HandleState._NONE)
         {
-            if (agent.enabled)
+            if (_agent.enabled)
             {
                 //stop agent
                 HandleStateAI(true);
@@ -597,7 +597,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         StopAllCoroutines();
         _useFOV = false;    
 
-        if (agent.enabled)
+        if (_agent.enabled)
         {
             // fully stop agent
             HandleStateAI(true);
@@ -688,7 +688,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                 if (CHASEAI != null && CHASEAI.gameObject != gameObject)
                 {
-                    agent.enabled = false;
+                    _agent.enabled = false;
                     //print("OTHER AI FOUND");
 
                     Vector3 direction = transform.position - CHASEAI.transform.position;
@@ -700,7 +700,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     if ((playerTarget.transform.position - transform.position).magnitude < 0.8f)
                     {
 
-                        agent.enabled = false;
+                        _agent.enabled = false;
                         print("PLAYER FOUND");
                         Vector3 direction = transform.position - PLAYER.transform.position;
                         rb.AddForce(direction.normalized * 6f);
@@ -709,7 +709,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    agent.enabled =true;
+                    _agent.enabled =true;
                 }
             }
         }
@@ -810,9 +810,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region PATROL
     private void Patrol()
     {
-       if(agent.enabled) 
+       if(_agent.enabled) 
        {
-            if (!agent.pathPending && agent.remainingDistance < 0.5f && !canSeePlayer)
+            if (!_agent.pathPending && _agent.remainingDistance < 0.5f && !canSeePlayer)
             {
                 SetPatrol();
                 GotoNetPoint();
@@ -828,7 +828,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             return;
 
         // Set the agent to go to the currently selected destination.
-        agent.destination = patrolPoints[destPoint].position;
+        _agent.destination = patrolPoints[destPoint].position;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
@@ -844,7 +844,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (_canAttack) 
         {
           
-            if(agent.enabled)
+            if(_agent.enabled)
             {
                 // get player direction
                 Vector3 DIRECTION = playerTarget.position - transform.position;
@@ -855,7 +855,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 transform.rotation = DISAREDROT;
 
                 // set destination
-                agent.SetDestination(playerTarget.position);
+                _agent.SetDestination(playerTarget.position);
 
                 switch (_canSpecialAttack)
                 {
@@ -1013,9 +1013,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // * Special Attack -------------------------------->
     private void HabilityAttack()
     {
-        if(agent.enabled) 
+        if(_agent.enabled) 
         {
-            agent.speed = 25f;
+            _agent.speed = 25f;
         }
         
         //agent.acceleration = 14f;
@@ -1023,7 +1023,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         //if ((playerTarget.transform.position - transform.position).magnitude <= 6F) // define min distance
 
-        if (agent.remainingDistance <= stopDistance)
+        if (_agent.remainingDistance <= stopDistance)
         {
             PauseAgent();
 
@@ -1062,7 +1062,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Cooldown
     private void Cooldown()
     {
-        currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);
+        currentAbilityValue = 
+            Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 
+                0.0f, ABILITY_MAX_VALUE);
+        
         abilitySlider.value = currentAbilityValue;
 
 
@@ -1101,7 +1104,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                 Instantiate(_enemyChase, spawnPosition, transform.rotation); 
 
-                StartCoroutine(STFS(2F));
+                StartCoroutine(StopForSeconds(2F));
 
                 print(i);
             }
@@ -1190,7 +1193,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 Colliders[i] = null;
             }
 
-            int hits = Physics.OverlapSphereNonAlloc(agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
+            int hits = Physics.OverlapSphereNonAlloc(_agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
 
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
@@ -1207,31 +1210,31 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             for (int i = 0; i < hits; i++)
             {
-                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, agent.areaMask))
+                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, _agent.areaMask))
                 {
-                    if (!NavMesh.FindClosestEdge(hit.position, out hit, agent.areaMask))
+                    if (!NavMesh.FindClosestEdge(hit.position, out hit, _agent.areaMask))
                     {
                         Debug.LogError($"Unable to find edge close to {hit.position}");
                     }
 
                     if (Vector3.Dot(hit.normal, (Target.position - hit.position).normalized) < HideSensitivity)
                     {
-                        agent.SetDestination(hit.position);
+                        _agent.SetDestination(hit.position);
                         break;
                     }
                     else
                     {
                         // Since the previous spot wasn't facing "away" enough from teh target, we'll try on the other side of the object
-                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, agent.areaMask))
+                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, _agent.areaMask))
                         {
-                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, agent.areaMask))
+                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, _agent.areaMask))
                             {
                                 Debug.LogError($"Unable to find edge close to {hit2.position} (second attempt)");
                             }
 
                             if (Vector3.Dot(hit2.normal, (Target.position - hit2.position).normalized) < HideSensitivity)
                             {
-                                agent.SetDestination(hit2.position);
+                                _agent.SetDestination(hit2.position);
                                 break;
                             }
                         }
@@ -1262,7 +1265,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         else
         {
-            return Vector3.Distance(agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(agent.transform.position, B.transform.position));
+            return Vector3.Distance(_agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(_agent.transform.position, B.transform.position));
         }
     }
     #endregion
@@ -1280,13 +1283,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //print("patrol FIRED");
         _stateAI = AI._PATROL;
 
-        agent.autoBraking = false;
-        agent.updateRotation = true;
+        _agent.autoBraking = false;
+        _agent.updateRotation = true;
 
-        agent.stoppingDistance = 0.1f;
-        agent.speed = patrolSpeed;
+        _agent.stoppingDistance = 0.1f;
+        _agent.speed = patrolSpeed;
 
-        agent.radius = 0.5f;
+        _agent.radius = 0.5f;
 
         if(hanlderAI.AgentOperate)
         {
@@ -1300,15 +1303,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         // Agent configuration
       
-        if(agent.enabled) 
+        if(_agent.enabled) 
         {
             //agent.speed = attackSpeed;
             //agent.stoppingDistance = 3.9f;
-            agent.speed = attackSpeed;
+            _agent.speed = attackSpeed;
 
-            agent.angularSpeed = 0f;
-            agent.updateRotation = false;
-            agent.radius = 2F; 
+            _agent.angularSpeed = 0f;
+            _agent.updateRotation = false;
+            _agent.radius = 2F; 
 
             //StartAttacking();
             _canAttack = true;
@@ -1329,14 +1332,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetCover()
     {
         _canAttack = false;
-        agent.angularSpeed = 120f;
-        agent.updateRotation = true;
+        _agent.angularSpeed = 120f;
+        _agent.updateRotation = true;
  
 
-        agent.radius = 1f;
+        _agent.radius = 1f;
 
-        agent.speed = 4f;
-        agent.stoppingDistance = 0.3f;
+        _agent.speed = 4f;
+        _agent.stoppingDistance = 0.3f;
 
         _stateAI = AI._COVER;
 
@@ -1348,7 +1351,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetGloryKill()
     {
         _stateAI = AI._GLORYKILL;
-        agent.radius = 0.5f;
+        _agent.radius = 0.5f;
         _useFOV = false;
         StopCoroutine(FOVRoutine());
         return;
@@ -1409,7 +1412,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         health -= _damage + damageBoost;
 
                         if (shooterScript.rUpgraded == true)
-                            StartCoroutine(STFS(stunnedTime));
+                            StartCoroutine(StopForSeconds(stunnedTime));
                         else
                             StartCoroutine(HitFlash());
                         break;
@@ -1586,7 +1589,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
 
     // stop agent for seconds
-    private IEnumerator STFS(float value)
+    private IEnumerator StopForSeconds(float value)
     {
         // Start bool at false to make sure coroutine is not being run more than once
         bool STFS_EFFECT = false;
@@ -1691,13 +1694,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             case true:
                 {
-                    agent.velocity = Vector3.zero;
-                    agent.isStopped = true;
+                    _agent.velocity = Vector3.zero;
+                    _agent.isStopped = true;
                     break;
                 }
             case false:
                 {
-                    agent.isStopped = false;
+                    _agent.isStopped = false;
                     break;
                 }
         }

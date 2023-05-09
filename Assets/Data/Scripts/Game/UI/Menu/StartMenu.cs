@@ -1,10 +1,16 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using FMODUnity;
 
 public class StartMenu : MonoBehaviour
 {
-    [SerializeField]    private GameObject _Menu, _OptionsMenu;
-    [SerializeField]    private string loadMenu; 
+    [Header("Menus")]
+    [SerializeField]    private GameObject menu, optionsMenu, startText;
+    [SerializeField]    private string loadMenu;
+    
+    [Header("Sounds")]
+    [SerializeField]    private EventReference hover, click, music;
 
                         // Debug Color
                         private string DebugColor = "<size=14><color=green>";
@@ -16,10 +22,34 @@ public class StartMenu : MonoBehaviour
         // Cursor Lock state
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
-        _Menu.SetActive(true);
-        _OptionsMenu.SetActive(false);
+        
+        startText.SetActive(true);
+        
+        menu.SetActive(false);
+        optionsMenu.SetActive(false);
     }
+
+
+    private void Update()
+    {
+        bool run = false;
+
+        if (startText)
+        {
+            if (Input.anyKeyDown && !run)
+            {
+                
+                startText.SetActive(false);
+                
+                menu.SetActive(true);
+
+                run = true; 
+            } 
+        }
+        
+    }
+
+
     #region Start Menu
 
  
@@ -32,8 +62,8 @@ public class StartMenu : MonoBehaviour
     }
     public void Options()
     {
-        _Menu.SetActive(false);
-        _OptionsMenu.SetActive(true);
+        menu.SetActive(false);
+        optionsMenu.SetActive(true);
     }
 
     // Game Exit Button
@@ -43,6 +73,23 @@ public class StartMenu : MonoBehaviour
         Application.Quit();
         Debug.Log(DebugColor + "Game quit!" + closeColor);
     }
+
+
+
+    // Sounds ------------------------------------------------------------>
+    public void HoverButton()
+    {
+        //PlayOneShot
+        RuntimeManager.PlayOneShot(hover);
+        
+        
+    }
+
+    public void ClickButton() 
+    {
+        RuntimeManager.PlayOneShot(click);
+
+    }
     #endregion
 
     #region Options Menu
@@ -50,8 +97,8 @@ public class StartMenu : MonoBehaviour
     // Back to main Menu Button
     public void BackButton()
     {
-        _OptionsMenu.SetActive(false);
-        _Menu.SetActive(true);
+        optionsMenu.SetActive(false);
+        menu.SetActive(true);
     }
 
     #endregion

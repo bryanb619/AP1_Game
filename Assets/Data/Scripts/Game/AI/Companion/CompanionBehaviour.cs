@@ -342,28 +342,30 @@ public class CompanionBehaviour : MonoBehaviour
     #region Raycast aim mouse Update
     private void Aim()
     {
-        if(Input.GetMouseButtonDown(0)) 
+        
+        var (success, position) = GetMousePosition();
+        if (success)
         {
-            var (success, position) = GetMousePosition();
-            if (success)
+            // Calculate the direction
+            var direction = position - transform.position;
+
+            // You might want to delete this line.
+            // Ignore the height difference.
+            direction.y = 0;
+
+            // Make the transform look in the direction.
+            transform.forward = direction;
+
+
+            if (_playerDirection)
             {
-                // Calculate the direction
-                var direction = position - transform.position;
-
-                // You might want to delete this line.
-                // Ignore the height difference.
-                direction.y = 0;
-
-                // Make the transform look in the direction.
-                transform.forward = direction;
-
-
-                if (_playerDirection)
-                {
-                    player.transform.forward = direction;
-                }
+                player.transform.forward = direction;
             }
         }
+        //if(Input.GetMouseButtonDown(0)) 
+        //{
+            
+        //}
         
 
 
@@ -386,7 +388,7 @@ public class CompanionBehaviour : MonoBehaviour
             point.y += 2.5F;
 
             //return (success: true, position: hitInfo.point);
-            Instantiate(testGame, point, Quaternion.identity); 
+            //Instantiate(testGame, point, Quaternion.identity); 
 
             return (success: true, position:point);
         }
