@@ -671,13 +671,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         if (_stateAI == AI._ATTACK)
         {
-            int ENEMYMAX                    = 10;
+            int ENEMYMAX                    = 15;
             Collider[] AIColliders          = new Collider[ENEMYMAX];
 
 
             int EnemyColliders              = 
-                Physics.OverlapSphereNonAlloc(transform.position, 2.5f, AIColliders);
-
+                Physics.OverlapSphereNonAlloc(transform.position, 3f, AIColliders);
+            
+            
             for (int i = 0; i < EnemyColliders; ++i)
             {
                 EnemyChaseBehaviour CHASEAI = 
@@ -692,7 +693,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     //print("OTHER AI FOUND");
 
                     Vector3 direction = transform.position - CHASEAI.transform.position;
-                    rb.AddForce(direction.normalized * 10f);
+                    rb.AddForce(direction.normalized * 15f);
 
                 }
                 else if (PLAYER != null)

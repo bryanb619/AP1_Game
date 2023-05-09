@@ -2051,7 +2051,19 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
+      - m_Target: {fileID: 4428502045232544581}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: ClickSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!1 &4428502045198056478
 GameObject:
   m_ObjectHideFlags: 0
@@ -2249,9 +2261,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e87ae2e0cbc44f4b937f2d5766c53c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PauseCanvas: {fileID: 4428502045232544586}
-  _pauseMenu: {fileID: 4428502045426788042}
-  _OptionsMenu: {fileID: 4428502045375861131}
+  pauseCanvas: {fileID: 4428502045232544586}
+  pauseMenu: {fileID: 4428502045426788042}
+  optionsMenu: {fileID: 4428502045375861131}
+  click:
+    Guid:
+      Data1: 426427852
+      Data2: 1267148484
+      Data3: 18430083
+      Data4: -1489564501
+    Path: event:/UI/Click
 --- !u!1 &4428502045375861131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2346,7 +2365,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b640300ad798ace42abf66190d50f418, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resDropdown: {fileID: 2418762741622374996}
+  _resDropdown: {fileID: 0}
+  _resDropdown2: {fileID: 0}
 --- !u!1 &4428502045426788042
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,7 +2384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4428502045426788041
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2952,7 +2972,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4428502046532585541
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3150,7 +3170,19 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
+      - m_Target: {fileID: 4428502045232544581}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: ClickSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!1 &4788710035978749272
 GameObject:
   m_ObjectHideFlags: 0

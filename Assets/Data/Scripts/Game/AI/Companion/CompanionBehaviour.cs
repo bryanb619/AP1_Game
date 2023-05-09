@@ -14,15 +14,17 @@ public class CompanionBehaviour : MonoBehaviour
     // States & AI ---------------------------------------------------->
                         public enum CompanionState      {_idle, _follow, _combat}
     [Header("State")]
-                        public CompanionState           _StateAI;
-                        private StateMachine            stateMachine;            
+                        public CompanionState           _stateAI;
+                        private StateMachine            _stateMachine;            
                         internal NavMeshAgent           _companion;
 
                         private bool                    _gameplay;
-                        public bool                     gameplay => _gameplay;
+                        public bool                     Gameplay => _gameplay;
                         private GameState               _gameState;
+                        
+                        private CursorGame              _cursor;
 
-                        private PlayerMovement          player;
+                        private PlayerMovement          _player;
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     //private mini _MiniMapCollor;
@@ -68,6 +70,11 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField] private float x;
     [SerializeField] private float y;
+    
+    // -------------------------------------------------------------------------------->
+
+    [SerializeField] private float followSpeed;
+    [SerializeField] private float attackSpeed; 
 
 
     // Materials ---------------------------------------------------------------------->
@@ -98,45 +105,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     [SerializeField]    private GameObject             testGame; 
 
-    // OLD CODE
-    //[SerializeField]
-    //private float followsRadius = 2f;
-
-
-    // 
-
-
-    //[HideInInspector] public bool _playerIsMoving;
-
-    //private bool _StartFollow;
-
-    //private PlayerMovement _Player;
-    //[Header("Mesh Configuration")]
-
-    //[SerializeField] private MeshRenderer CompanionMesh;
-    //[SerializeField] Material normal, AlphaLow;
-
-    //[SerializeField] private Transform AlphaPoint;
-
-    //private float minDist = 0.4f;
-    // Reference to the state machine
-
-
-    //private bool _enemyIS;
-    //public bool canSee => _enemyIS;
-
-
-    //[Range(10, 150)]
-    //public float radius;
-    //[Range(50, 360)]
-    //public float angle;
-
-    //public LayerMask targetMask;
-    //public LayerMask obstructionMask;
-    //[SerializeField] private Transform FOV;
-    //public Transform EEFOV => FOV; // Enemy Editor FOV
-
-    //private Rigidbody _rb;
+    
     #endregion
 
     #region Awake
@@ -167,11 +136,13 @@ public class CompanionBehaviour : MonoBehaviour
         mainCamera                      = FindObjectOfType<Camera>();
 
         point                           = FindObjectOfType<CompanionSpawn>();
+        
+        _cursor                          = FindObjectOfType<CursorGame>();
 
         _primeTarget                    = point.transform;
 
 
-        player                          = FindObjectOfType<PlayerMovement>();
+        _player                          = FindObjectOfType<PlayerMovement>();
 
         targetPosition                  = transform.position;
 
@@ -228,33 +199,33 @@ public class CompanionBehaviour : MonoBehaviour
         // Idle -> Follow
         IdleState.AddTransition(
             new Transition(
-                () => _StateAI == CompanionState._follow,
+                () => _stateAI == CompanionState._follow,
                 FollowState));
 
         // idle -> Combat
         IdleState.AddTransition(
             new Transition(
-                () => _StateAI == CompanionState._combat,
+                () => _stateAI == CompanionState._combat,
                 CombatState));
 
 
         // Follow -> Idle
         FollowState.AddTransition(
            new Transition(
-               () => _StateAI == CompanionState._idle,
+               () => _stateAI == CompanionState._idle,
                IdleState));
 
         // Follow -> Combat
         FollowState.AddTransition(
         new Transition(
-            () => _StateAI == CompanionState._combat,
+            () => _stateAI == CompanionState._combat,
             CombatState));
 
 
         // Combat -> Idle 
         CombatState.AddTransition(
            new Transition(
-               () => _StateAI == CompanionState._idle,
+               () => _stateAI == CompanionState._idle,
                IdleState));
 
 
@@ -262,11 +233,11 @@ public class CompanionBehaviour : MonoBehaviour
 
         CombatState.AddTransition(
           new Transition(
-              () => _StateAI == CompanionState._follow,
+              () => _stateAI == CompanionState._follow,
               FollowState));
 
         // Create the state machine
-        stateMachine = new StateMachine(IdleState);
+        _stateMachine = new StateMachine(IdleState);
     }
 
     #endregion
@@ -280,13 +251,9 @@ public class CompanionBehaviour : MonoBehaviour
 
             if (aiHits.Length > 0)
             {
-                _StateAI = CompanionState._combat;
+                _stateAI = CompanionState._combat;
             }
-            else
-            {
-                return;
-            }
-
+            
         }
         
     }
@@ -299,7 +266,7 @@ public class CompanionBehaviour : MonoBehaviour
         {
             ResumeAgent();
 
-            if (_StateAI != CompanionState._combat)
+            if (_stateAI != CompanionState._combat)
             {
                 //CheckDist();
                 CheckMoveBool();
@@ -310,7 +277,7 @@ public class CompanionBehaviour : MonoBehaviour
             castHandler();
             
 
-            Action actions = stateMachine.Update();
+            Action actions = _stateMachine.Update();
             actions?.Invoke();
 
             
@@ -336,13 +303,10 @@ public class CompanionBehaviour : MonoBehaviour
             return; 
         }
     }
-
-   
-
+    
     #region Raycast aim mouse Update
     private void Aim()
     {
-        
         var (success, position) = GetMousePosition();
         if (success)
         {
@@ -359,20 +323,15 @@ public class CompanionBehaviour : MonoBehaviour
 
             if (_playerDirection)
             {
-                player.transform.forward = direction;
+                _player.transform.forward = direction;
             }
         }
         //if(Input.GetMouseButtonDown(0)) 
         //{
             
         //}
-        
-
-
     }
-        
     
-
     private (bool success, Vector3 position) GetMousePosition()
     {
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -389,7 +348,6 @@ public class CompanionBehaviour : MonoBehaviour
 
             //return (success: true, position: hitInfo.point);
             //Instantiate(testGame, point, Quaternion.identity); 
-
             return (success: true, position:point);
         }
 
@@ -405,11 +363,6 @@ public class CompanionBehaviour : MonoBehaviour
 
         RaycastHit hit;
 
-        CursorGame cursor;
-
-        cursor = FindObjectOfType<CursorGame>();
-
-
 
         // Perform the raycast
         if (Physics.Raycast(ray, out hit, 50F, _attackMask))
@@ -417,12 +370,12 @@ public class CompanionBehaviour : MonoBehaviour
             // Print the name of the object hit by the ray
 
             //Debug.Log(hit.transform.name);
-            cursor.UpdateCursor(CursorGame.CursorState._ATTACK);
+            _cursor.UpdateCursor(CursorGame.CursorState._ATTACK);
 
         }
         else
         {
-            cursor.UpdateCursor(CursorGame.CursorState._NORMAL);
+            _cursor.UpdateCursor(CursorGame.CursorState._NORMAL);
         }
     }
 
@@ -433,16 +386,16 @@ public class CompanionBehaviour : MonoBehaviour
     {
         //print(_playerIsMoving); 
         
-        if (player.IsMoving && (_primeTarget.position - transform.position).magnitude >= 1f )
+        if (_player.IsMoving && (_primeTarget.position - transform.position).magnitude >= 1f )
         {
             //_StartFollow = true;
-            _StateAI = CompanionState._follow;
+            _stateAI = CompanionState._follow;
             return;
         }
-        else if(!player.IsMoving && (_primeTarget.position - transform.position).magnitude <= 0.8f)
+        else if(!_player.IsMoving && (_primeTarget.position - transform.position).magnitude <= 0.8f)
         {
             // _StartFollow = false;
-            _StateAI = CompanionState._idle;
+            _stateAI = CompanionState._idle;
             return; 
         }
         
@@ -485,7 +438,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void RotateAround()
     {
-        transform.RotateAround(player.transform.position,
+        transform.RotateAround(_player.transform.position,
             new Vector3(x, rotateDirection, y), rotateSpeed * Time.deltaTime);
     }
          
@@ -505,14 +458,14 @@ public class CompanionBehaviour : MonoBehaviour
         //Companion.speed = 3.4f;
 
         //Companion.speed = 8f;
-        _companion.speed = 8f;
+        _companion.speed = 5f;
         //Companion.acceleration = 10f; 
 
 
         if ((_primeTarget.position - transform.position).magnitude <= 2f)
         {
             //Companion.speed = 3.5f;
-            _companion.speed = 4f;
+            _companion.speed = followSpeed;
         }
 
         else if ((_primeTarget.position - transform.position).magnitude <= 0.8f)
@@ -608,7 +561,7 @@ public class CompanionBehaviour : MonoBehaviour
         Debug.DrawRay(transform.position, transform.forward);
 
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100f, _playerMask))
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 20f, _playerMask))
         {
             ChangeCourse(_currentPos);
         }
@@ -622,7 +575,6 @@ public class CompanionBehaviour : MonoBehaviour
 
         switch (currentPos)
         {
-
             case CompanionPos._L_L_POS:
                 {
                     //Destination(_u_rTarget);
@@ -711,8 +663,8 @@ public class CompanionBehaviour : MonoBehaviour
         _companion.enabled = true;
 
         //_companion.radius = 0.2f;
-        _companion.acceleration = 2000f;
-        _companion.speed = 9f;
+        _companion.acceleration     = 2000f;
+        _companion.speed            = attackSpeed;
 
         return;
     }
@@ -780,7 +732,7 @@ public class CompanionBehaviour : MonoBehaviour
     {
         if(_companion.enabled)
         {
-            if (_StateAI == CompanionState._follow)
+            if (_stateAI == CompanionState._follow)
             {
 
                 _companion.isStopped = true;

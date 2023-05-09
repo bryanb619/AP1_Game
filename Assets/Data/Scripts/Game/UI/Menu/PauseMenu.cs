@@ -111,7 +111,10 @@ public class PauseMenu : MonoBehaviour
 
     }
 
-
+    public void ClickSound()
+    {
+        RuntimeManager.PlayOneShot(click);
+    }
 }
 
 

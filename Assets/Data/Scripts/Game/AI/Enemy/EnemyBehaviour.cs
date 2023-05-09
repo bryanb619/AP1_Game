@@ -18,9 +18,17 @@ public class EnemyBehaviour : MonoBehaviour
 {
     #region  Variables
 
-    // States ------------------------------------------------------------------------------------------------------------->
+    // States --------------------------------------------------------------------------------------------------------->
 
-                            private enum AI                             { _GUARD, _PATROL, _ATTACK, _COVER, _SEARCH, _GLORYKILL, _NONE }
+                            private enum AI                             { 
+                                                                        _GUARD, 
+                                                                        _PATROL,
+                                                                        _ATTACK,
+                                                                        _COVER, 
+                                                                        _SEARCH, 
+                                                                        _GLORYKILL, 
+                                                                        _NONE }
+                            
         [SerializeField]    private AI                                  _stateAI;
 
                             private enum HandleState                    { _STOPED, _NONE }
@@ -29,7 +37,7 @@ public class EnemyBehaviour : MonoBehaviour
                             private GameState                           _gamePlay;
 
 
-    // Components ------------------------------------------------------------------------------------------------------------->
+    // Components ----------------------------------------------------------------------------------------------------->
         
                             // Reference to AI data
         [SerializeField]    private AIRangedData                        data;
@@ -59,7 +67,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                             private ObjectiveUI                         objectiveUIScript;
 
-        // Combat  ------------------------------------------------------------------------------------------------------------->
+        // Combat  ---------------------------------------------------------------------------------------------------->
 
         // Attack 
 
@@ -75,37 +83,53 @@ public class EnemyBehaviour : MonoBehaviour
 
         // special ability 
 
-        private const float                         ABILITY_MAX_VALUE = 100F;
+                            private const float                         ABILITY_MAX_VALUE = 100F;
 
-        private float                               currentAbilityValue;
+                            private float                               currentAbilityValue;
 
-        private float                               abilityIncreasePerFrame;
+                            private float                               abilityIncreasePerFrame;
 
         // Effects
 
-        [SerializeField]
-        private GameObject                          _targetEffect;
+        [SerializeField]    private GameObject                          _targetEffect;
+        
+        
+        // FOV ---------------------------------------------------------------------------------------------------------------->
+                            private bool                                     _canFov;            
+        [Range(10, 150)]
+        [SerializeField]    private float                                   radius;
+        public float                                                        Radius => radius;
+        [Range(50, 360)]
+        [SerializeField]    private float                                   angle;
+        public float                                                        Angle => angle;
+
+        private LayerMask                                                   targetMask;
+        private LayerMask                                                   obstructionMask;
+        [SerializeField] private Transform                                  fov;
+        public Transform                                                    EEFOV => fov; // Enemy Editor FOV
+
+        private bool                                                        canSeePlayer;
+        public bool                                                         canSee => canSeePlayer;
 
 
-    // Drops & Death ------------------------------------------------------------------------------------------------------------->
-        [SerializeField] 
-        private GameObject                          _death;
+    // Drops & Death -------------------------------------------------------------------------------------------------->
+        [SerializeField]    private GameObject                              _death;
 
-        private bool                                gemSpawnOnDeath;
-        private GameObject                          gemPrefab;
+                            private bool                                    gemSpawnOnDeath;
+                            private GameObject                              gemPrefab;
 
-        private bool                                _spawnHealth;
-        private int                                 _healthItems;
-        private GameObject                          _healthDrop;
+                            private bool                                _spawnHealth;
+                            private int                                 _healthItems;
+                            private GameObject                          _healthDrop;
 
-        private bool                                _spawnMana; 
-        private int                                 _manaItems;
-        private GameObject                          _manaDrop;
+                            private bool                                _spawnMana; 
+                            private int                                 _manaItems;
+                            private GameObject                          _manaDrop;
 
-        private int                                 _dropRadius; 
+                            private int                                 _dropRadius; 
 
 
-    // Health ------------------------------------------------------------------------------------------------------------->
+    // Health --------------------------------------------------------------------------------------------------------->
 
         // UI
 
@@ -145,21 +169,6 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private Transform[]                                _PatrolPoints;
 
 
-    private bool                                                        _fov; 
-    //[Range(10, 150)]
-    private float                                                       radius;
-    public float                                                        Radius => radius;
-    //[Range(50, 360)]
-    private float                                                       angle;
-    public float                                                        Angle => angle;
-
-    private LayerMask                                                   targetMask;
-    private LayerMask                                                   obstructionMask;
-    [SerializeField] private Transform                                  FOV;
-    public Transform                                                    EEFOV => FOV; // Enemy Editor FOV
-
-    private bool                                                        canSeePlayer;
-    public bool                                                         canSee => canSeePlayer;
 
     // COMBAT //
 
@@ -332,9 +341,9 @@ public class EnemyBehaviour : MonoBehaviour
 
         // FOV //
 
-        radius = data.Radius;
+        //radius = data.Radius;
         
-        angle = data.Angle;
+        //angle = data.Angle;
 
         targetMask = data.TargetMask;
 
@@ -426,7 +435,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                         MinimalCheck(); // Tester
 
-                        if(_fov)
+                        if(_stateAI != AI._ATTACK)
                         {
                             StartCoroutine(FOVRoutine());
                         }
@@ -434,7 +443,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                         AISpeed();
 
-                        Dizzy(); 
+                        //Dizzy(); 
 
                         Action actions = stateMachine.Update();
                         actions?.Invoke();
@@ -490,13 +499,13 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (_stateAI != AI._ATTACK)
         {
-            StartCoroutine(distanceCheck());
+            StartCoroutine(DistanceCheck());
          
         }
 
         if (!_canGloryKill && _canAttack && _stateAI != AI._ATTACK)
         {
-            if ((_playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
+            if ((_playerTarget.transform.position - transform.position).magnitude < 2 && _canAttack)
             {
                 SetAttack();
                 return;
@@ -505,13 +514,17 @@ public class EnemyBehaviour : MonoBehaviour
        
     }
 
-    private IEnumerator distanceCheck() 
+    private IEnumerator DistanceCheck() 
     {
         yield return new WaitForSeconds(1f);
 
         if((_playerTarget.transform.position - transform.position).magnitude < 25f)
         {
-            _fov = true;
+            _canFov = true;
+        }
+        else
+        {
+            _canFov = false;
         }
         
 
@@ -632,7 +645,6 @@ public class EnemyBehaviour : MonoBehaviour
             case true:
                 {
                     
-
                     if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)  //
                     {
                         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
@@ -642,15 +654,14 @@ public class EnemyBehaviour : MonoBehaviour
                         if (_canAttack) { SpecialAttack();}
                     }
 
-                    else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
+                    else if ((_playerTarget.transform.position - transform.position).magnitude < 
+                             AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
                     {
                         if(_canAttack && _currentState == HandleState._NONE) 
                         { 
                             ResumeAgent();
                             GetDistance(9F);
                         }
-
-                        
                     }
 
                     break;
@@ -658,7 +669,6 @@ public class EnemyBehaviour : MonoBehaviour
             case false:
                 {
                     
-
                     if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
                     {
                         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
@@ -667,7 +677,8 @@ public class EnemyBehaviour : MonoBehaviour
                         if(_canAttack && !_canSpecialAttack) { Attack(); }
                     }
 
-                    else if ((_playerTarget.transform.position - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
+                    else if ((_playerTarget.transform.position 
+                              - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) 
                     {
                         if (_canAttack && _currentState == HandleState._NONE)
                         {
@@ -745,60 +756,6 @@ public class EnemyBehaviour : MonoBehaviour
         _animator.SetBool("isAttacking", false);
         StartCoroutine(SpecialAttackTimer());
 
-        /*
-        float _attackRange = 3f; 
-
-        transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
-        //agent.SetDestination(_playerTarget.position);
-
-        //agent.stoppingDistance = 3.8f;
-
-        Collider[] hitEnemies = Physics.OverlapSphere(_shootPos.position, _attackRange, targetMask);
-
-        foreach (Collider collider in hitEnemies)
-        {
-            //Debug.Log(DebugColor + "Special attack" + closeColor);
-            //print(currentAbilityValue);
-
-
-
-            string DebugColor = "<size=14><color=orange>";
-            string closeColor = "</color></size>";
-            Debug.Log(DebugColor + "Special Attack" + closeColor);
-
-            _player.TakeDamage(specialDamage);
-            Instantiate(s_damageEffect, _shootPos.position, Quaternion.identity);
-
-            currentAbilityValue = 0;
-            _abilitySlider.value = currentAbilityValue;
-            _canSpecialAttack = false;
-            StartCoroutine(SpecialAttackTimer());
-        }
-        */
-        /*
-        if ((_playerTarget.transform.position - transform.position).magnitude <= 4f)
-        {
-             // look at ignoring player Y AXIS
-
-            //Debug.Log(DebugColor + "Special attack" + closeColor);
-            //print(currentAbilityValue);
-
-
-
-            string DebugColor = "<size=14><color=orange>";
-            string closeColor = "</color></size>";
-            Debug.Log(DebugColor + "Special Attack" + closeColor);
-
-            _player.TakeDamage(specialDamage);
-            Instantiate(s_damageEffect, _shootPos.position, Quaternion.identity);   
-
-            currentAbilityValue = 0;
-            _abilitySlider.value = currentAbilityValue;
-            _canSpecialAttack = false;
-            StartCoroutine(SpecialAttackTimer());
-            return; 
-        }
-        */
     }
 
 
@@ -1027,18 +984,18 @@ public class EnemyBehaviour : MonoBehaviour
         {
             IsRunning = true;
 
-            Collider[] rangeChecks = Physics.OverlapSphere(FOV.position, radius, targetMask);
+            Collider[] rangeChecks = Physics.OverlapSphere(fov.position, radius, targetMask);
 
             if (rangeChecks.Length != 0)
             {
                 Transform target = rangeChecks[0].transform;
-                Vector3 directionToTarget = (target.position - FOV.position).normalized;
+                Vector3 directionToTarget = (target.position - fov.position).normalized;
 
-                if (Vector3.Angle(FOV.forward, directionToTarget) < angle / 2)
+                if (Vector3.Angle(fov.forward, directionToTarget) < angle / 2)
                 {
-                    float distanceToTarget = Vector3.Distance(FOV.position, target.position);
+                    float distanceToTarget = Vector3.Distance(fov.position, target.position);
 
-                    if (!Physics.Raycast(FOV.position, directionToTarget, distanceToTarget, obstructionMask))
+                    if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, obstructionMask))
                     {
                         canSeePlayer = true;
                         SetAttack();
@@ -1349,23 +1306,17 @@ public class EnemyBehaviour : MonoBehaviour
     private void SetGuard()
     {
         _stateAI = AI._GUARD;
-        _fov = true;
-        return;
+        
     }
     private void SetPatrol()
     {
         _stateAI = AI._PATROL;
-        _fov = true; 
-        return;
-
     }
     private void SetAttack()
     {
         _stateAI = AI._ATTACK;
-        _fov = false;
 
         agent.speed = 4f;
-        return;
     }
     private void SetCover()
     {
@@ -1474,42 +1425,42 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case AI._GUARD:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Guard" + "  Gameplay: " + _gamePlay, green);
+                    Handles.Label(fov.transform.position + Vector3.up, "Guard" + "  Gameplay: " + _gamePlay, green);
                     break;
                 }
             case AI._PATROL:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Patrol" + "  Gameplay: " + _gamePlay, blue);
+                    Handles.Label(fov.transform.position + Vector3.up, "Patrol" + "  Gameplay: " + _gamePlay, blue);
                     break;
                 }
             case AI._ATTACK:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Attack" + "  Gameplay: " + _gamePlay + "Peform attack: " + _canPeformAttack, red);
+                    Handles.Label(fov.transform.position + Vector3.up, "Attack" + "  Gameplay: " + _gamePlay + "Peform attack: " + _canPeformAttack, red);
                     break;
                 }
             case AI._SEARCH:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Search" + "  Gameplay: " + _gamePlay, yellow);
+                    Handles.Label(fov.transform.position + Vector3.up, "Search" + "  Gameplay: " + _gamePlay, yellow);
                     break;
                 }
             case AI._COVER:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Cover" + "  Gameplay: " + _gamePlay, cyan);
+                    Handles.Label(fov.transform.position + Vector3.up, "Cover" + "  Gameplay: " + _gamePlay, cyan);
                     break;
                 }
             case AI._GLORYKILL:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: " + _gamePlay);
+                    Handles.Label(fov.transform.position + Vector3.up, "Glory Kill" + "  Gameplay: " + _gamePlay);
                     break;
                 }
             case AI._NONE:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "NONE" + "  Gameplay: " + _gamePlay);
+                    Handles.Label(fov.transform.position + Vector3.up, "NONE" + "  Gameplay: " + _gamePlay);
                     break;
                 }
             default:
                 {
-                    Handles.Label(FOV.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: " + _gamePlay);
+                    Handles.Label(fov.transform.position + Vector3.up, "NO STATE FOUND" + "  Gameplay: " + _gamePlay);
                     break;
                 }
         }
