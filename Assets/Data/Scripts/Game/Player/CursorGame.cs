@@ -68,8 +68,8 @@ public class CursorGame : MonoBehaviour
         //print("cursor normal");
 
         Cursor.SetCursor(_imageNormal, Vector2.zero,CursorMode.ForceSoftware);
-        return;
-        print("cursor normal");
+        
+        //print("cursor normal");
     }
 
     private void AttackCursor() 

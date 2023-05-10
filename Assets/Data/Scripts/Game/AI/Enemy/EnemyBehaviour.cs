@@ -106,7 +106,7 @@ public class EnemyBehaviour : MonoBehaviour
         private LayerMask                                                   targetMask;
         private LayerMask                                                   obstructionMask;
         [SerializeField] private Transform                                  fov;
-        public Transform                                                    EEFOV => fov; // Enemy Editor FOV
+        public Transform                                                    EefovTransform => fov; // Enemy Editor FOV
 
         private bool                                                        canSeePlayer;
         public bool                                                         canSee => canSeePlayer;
@@ -967,7 +967,7 @@ public class EnemyBehaviour : MonoBehaviour
     #region Field of view Routine
     private IEnumerator FOVRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(2f);
+        WaitForSeconds wait = new WaitForSeconds(1f);
 
         while (true)
         {

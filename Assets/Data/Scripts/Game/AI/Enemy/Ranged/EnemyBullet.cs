@@ -1,5 +1,8 @@
-//using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [RequireComponent(typeof(Rigidbody))]
 public class EnemyBullet : MonoBehaviour
@@ -178,8 +181,10 @@ public class EnemyBullet : MonoBehaviour
 */
         if (player != null)
         {
-            DestroyBullet();
+           print("PLAYER DAMAGE");
             player.TakeDamage(damage);
+            DestroyBullet();
+            
         }
         else if (hitInfo.tag == "Wall" || hitInfo.tag == "Default")
         {
@@ -220,12 +225,12 @@ public class EnemyBullet : MonoBehaviour
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
     #endregion
-
-    /*
+#if UNITY_EDITOR
+    
         #region Editor Gizmos
         private void OnDrawGizmos()
         {
-    #if UNITY_EDITOR
+  
 
             switch (_gamePlay)
             {
@@ -241,10 +246,9 @@ public class EnemyBullet : MonoBehaviour
                     }
             }
 
-    #endif
+   
         }
         #endregion
-
-        */
-
+    
+#endif
 }

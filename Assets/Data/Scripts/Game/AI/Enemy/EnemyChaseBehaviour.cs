@@ -1821,9 +1821,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     }
             }
         }
-
         
-
         #endregion
 
         #endregion

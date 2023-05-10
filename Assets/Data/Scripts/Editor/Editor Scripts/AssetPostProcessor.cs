@@ -18,7 +18,22 @@ public class UIAssetProcessor : AssetPostprocessor
 
             AssetDatabase.Refresh();
         }
-        
+
+        if (assetPath.Contains("Cursor UI"))
+        {
+            TextureImporter e  = (assetImporter as TextureImporter);
+            
+            e.textureType           = TextureImporterType.Cursor;
+
+            e.alphaIsTransparency   = true;
+            e.wrapMode              = TextureWrapMode.Clamp;
+            e.filterMode            = FilterMode.Point;
+            e.isReadable            = true; 
+            
+            AssetDatabase.Refresh();
+        }
+
+
     }
     
 

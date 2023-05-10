@@ -12,162 +12,170 @@ public class CompanionBehaviour : MonoBehaviour
     #region Variables
 
     // States & AI ---------------------------------------------------->
-                        public enum CompanionState      {_idle, _follow, _combat}
-    [Header("State")]
-                        public CompanionState           _stateAI;
-                        private StateMachine            _stateMachine;            
-                        internal NavMeshAgent           _companion;
+    public enum CompanionState
+    {
+        _idle,
+        _follow,
+        _combat
+    }
 
-                        private bool                    _gameplay;
-                        public bool                     Gameplay => _gameplay;
-                        private GameState               _gameState;
-                        
-                        private CursorGame              _cursor;
+    [Header("State")] public CompanionState _stateAI;
+    private StateMachine _stateMachine;
+    internal NavMeshAgent _companion;
 
-                        private PlayerMovement          _player;
+    private bool _gameplay;
+    public bool Gameplay => _gameplay;
+    private GameState _gameState;
+
+    private CursorGame _cursor;
+
+    private PlayerMovement _player;
 
     //[SerializeField]private GameObject _EPI; // Enemy presence Image
     //private mini _MiniMapCollor;
 
     // Movement ------------------------------------------------->
 
-    [Header("Float")]
+    [Header("Float")] [SerializeField] private float speed = 0.3f;
 
-    [SerializeField]    private float                   speed = 0.3f;
+    private float t = 0f;
 
-                        private float                   t = 0f;
+    [SerializeField] private Transform floatPos;
 
-    [SerializeField]    private Transform               floatPos;
+    [SerializeField] private Transform _lowPos, _highPos;
 
-    [SerializeField]    private Transform               _lowPos, _highPos;
+    private Vector3 targetPosition;
 
-                        private Vector3                 targetPosition;
+    private float acceleration = 2000f;
 
-                        private float                   acceleration = 2000f;
-
-    [Header("Positions")]
-    [SerializeField]    private Transform               //_l_rTarget, // low right
-                                                        _l_lTarget, // low left
-                                                        _u_rTarget; // up right
-                                                        //_u_lTarget; // up left
-
-    
-                        private Transform               _primeTarget, _attackPos;
+    [Header("Positions")] [SerializeField] private Transform //_l_rTarget, // low right
+        _l_lTarget, // low left
+        _u_rTarget; // up right
+    //_u_lTarget; // up left
 
 
-                        //private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, _U_R_POS}
-                        private enum CompanionPos       { _L_L_POS, _U_R_POS }
-   //[SerializeField]     
-                        private CompanionPos            _nextPos, _currentPos;
-
-                        private bool                    _obstructed;
-                        public bool                     Obstructed => _obstructed;
+    private Transform _primeTarget, _attackPos;
 
 
-    [Header("Rotation")]
-    [SerializeField]    private float                   rotateDirection;
-    [SerializeField]    private float                   rotateSpeed;
+    //private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, _U_R_POS}
+    private enum CompanionPos
+    {
+        _L_L_POS,
+        _U_R_POS
+    }
+
+    [SerializeField] private CompanionPos _nextPos, _currentPos;
+
+    private bool _changePos;
+    public bool ChangePos => _changePos;
+
+    private bool _enemiesInRange; 
+
+
+    [Header("Rotation")] [SerializeField] private float rotateDirection;
+    [SerializeField] private float rotateSpeed;
 
     [SerializeField] private float x;
     [SerializeField] private float y;
-    
-    // -------------------------------------------------------------------------------->
+
+    // Movement -------------------------------------------------------------------------------->
 
     [SerializeField] private float followSpeed;
-    [SerializeField] private float attackSpeed; 
+    [SerializeField] private float attackSpeed;
 
 
     // Materials ---------------------------------------------------------------------->
-    private CompanionSpawn          point;
+    private CompanionSpawn point;
 
-                        private MeshRenderer            CompanionMesh;
+    private MeshRenderer CompanionMesh;
 
-    [Header("Material")]
-    [SerializeField]    private Material                AlphaLow, normal;
+    [Header("Material")] [SerializeField] private Material AlphaLow, normal;
 
     // Combat ------------------------------------------------------------------------>
 
-    [Header("Masks")]
-    [SerializeField]    private LayerMask               _walkMask,_attackMask, _playerMask;
+    [Header("Masks")] [SerializeField] private LayerMask _walkMask, _attackMask, _playerMask;
 
-    [Header("Detection")]
-    [SerializeField]    private float                   detectionRadius; 
+    [Header("Detection")] [SerializeField] private float detectionRadius;
 
-                        private Camera                  mainCamera;
+    private Camera mainCamera;
 
-                        private Vector3                 direction;
+    private Vector3 direction;
 
 
-    [SerializeField]    bool                            _playerDirection;
+    [SerializeField] bool _playerDirection;
 
 
     // DEBUG ---------------------------------------------------------------------------------->
 
-    [SerializeField]    private GameObject             testGame; 
+    [SerializeField] private GameObject testGame;
 
-    
+
     #endregion
 
     #region Awake
+
     private void Awake()
     {
         GameManager.OnGameStateChanged += OnGameStateChanged;
     }
+
     #endregion
 
     #region Start
+
     // Create the FSM
     private void Start()
     {
 
         //_StateAI                    = CompanionState._idle;
 
-        _companion                      = GetComponent<NavMeshAgent>();
+        _companion = GetComponent<NavMeshAgent>();
 
         //_rb = GetComponent<Rigidbody>();
 
-        _companion.angularSpeed         = 0;
-        _companion.updateRotation       = false;
+        _companion.angularSpeed = 0;
+        _companion.updateRotation = false;
 
-        _companion.acceleration         = acceleration;
+        _companion.acceleration = acceleration;
 
-        CompanionMesh                   = GetComponent<MeshRenderer>();   
+        CompanionMesh = GetComponent<MeshRenderer>();
 
-        mainCamera                      = FindObjectOfType<Camera>();
+        mainCamera = FindObjectOfType<Camera>();
 
-        point                           = FindObjectOfType<CompanionSpawn>();
-        
-        _cursor                          = FindObjectOfType<CursorGame>();
+        point = FindObjectOfType<CompanionSpawn>();
 
-        _primeTarget                    = point.transform;
+        _cursor = FindObjectOfType<CursorGame>();
+
+        _primeTarget = point.transform;
 
 
-        _player                          = FindObjectOfType<PlayerMovement>();
+        _player = FindObjectOfType<PlayerMovement>();
 
-        targetPosition                  = transform.position;
+        targetPosition = transform.position;
 
-        _attackPos                      = _primeTarget;
-        _currentPos                     = CompanionPos._L_L_POS;
+        _attackPos = _primeTarget;
+        _currentPos = CompanionPos._L_L_POS;
+        _nextPos = CompanionPos._U_R_POS;
 
         //startingPosition = transform.position;
 
         switch (_gameState)
         {
             case GameState.Paused:
-                {
-                    //_gameplay = false;
+            {
+                //_gameplay = false;
 
-                    _gameState = GameState.Paused;
-                    break;
-                }
+                _gameState = GameState.Paused;
+                break;
+            }
             case GameState.Gameplay:
-                {
-                    //_gameplay = true;
+            {
+                //_gameplay = true;
 
-                    _gameState = GameState.Gameplay; 
+                _gameState = GameState.Gameplay;
 
-                    break;
-                }
+                break;
+            }
         }
 
         //CompanionMesh = GetComponent<MeshRenderer>();
@@ -175,15 +183,15 @@ public class CompanionBehaviour : MonoBehaviour
         //mainCamera = Camera.main;
         //_playerIsMoving = false;
 
-       
+
         // states ------------------------------------------------------------->
 
-        State IdleState = new State("Companion Idle",Idle);
+        State IdleState = new State("Companion Idle", Idle);
 
-        State FollowState = new State(("Companion Follow"), Follow); 
+        State FollowState = new State(("Companion Follow"), Follow);
 
         State CombatState = new State("Companion combat", Combat);
-            
+
 
         /*
         State RotateState = new State("",
@@ -211,100 +219,74 @@ public class CompanionBehaviour : MonoBehaviour
 
         // Follow -> Idle
         FollowState.AddTransition(
-           new Transition(
-               () => _stateAI == CompanionState._idle,
-               IdleState));
+            new Transition(
+                () => _stateAI == CompanionState._idle,
+                IdleState));
 
         // Follow -> Combat
         FollowState.AddTransition(
-        new Transition(
-            () => _stateAI == CompanionState._combat,
-            CombatState));
+            new Transition(
+                () => _stateAI == CompanionState._combat,
+                CombatState));
 
 
         // Combat -> Idle 
         CombatState.AddTransition(
-           new Transition(
-               () => _stateAI == CompanionState._idle,
-               IdleState));
+            new Transition(
+                () => _stateAI == CompanionState._idle,
+                IdleState));
 
 
         // Combat -> Follow
 
         CombatState.AddTransition(
-          new Transition(
-              () => _stateAI == CompanionState._follow,
-              FollowState));
+            new Transition(
+                () => _stateAI == CompanionState._follow,
+                FollowState));
 
         // Create the state machine
         _stateMachine = new StateMachine(IdleState);
     }
 
     #endregion
-
-
-    private void FixedUpdate()
-    {
-        if(_gameState == GameState.Gameplay)
-        {
-            Collider[] aiHits = Physics.OverlapSphere(transform.position, detectionRadius, _attackMask);
-
-            if (aiHits.Length > 0)
-            {
-                _stateAI = CompanionState._combat;
-            }
-            
-        }
-        
-    }
-
+    
     #region Update
+
     // Request actions to the FSM and perform them
     private void Update()
     {
-        if(_gameState == GameState.Gameplay) 
+        if (_gameState == GameState.Gameplay)
         {
             ResumeAgent();
-
-            if (_stateAI != CompanionState._combat)
+            
+            Aim();
+            StartCoroutine(EnemyCheckRoutine());
+            
+            
+            if (_enemiesInRange)
             {
-                //CheckDist();
+                _stateAI = CompanionState._combat;
+                castHandler();
+            }
+            else if (!_enemiesInRange)
+            {
                 CheckMoveBool();
             }
-
-
-            Aim();
-            castHandler();
             
-
             Action actions = _stateMachine.Update();
             actions?.Invoke();
-
             
-
-        }   
+        }
         else
         {
             AgentPause();
         }
     }
-    #endregion
 
-    private void CheckDist()
-    {
-        if ((_primeTarget.position - transform.position).magnitude >= 1f)
-        {
-            //_StateAI = CompanionState._follow;
-            return; 
-        }
-        else
-        {
-            //_StateAI = CompanionState._idle;
-            return; 
-        }
-    }
+    #endregion
     
     #region Raycast aim mouse Update
+
     private void Aim()
     {
         var (success, position) = GetMousePosition();
@@ -328,10 +310,10 @@ public class CompanionBehaviour : MonoBehaviour
         }
         //if(Input.GetMouseButtonDown(0)) 
         //{
-            
+
         //}
     }
-    
+
     private (bool success, Vector3 position) GetMousePosition()
     {
         var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -348,7 +330,7 @@ public class CompanionBehaviour : MonoBehaviour
 
             //return (success: true, position: hitInfo.point);
             //Instantiate(testGame, point, Quaternion.identity); 
-            return (success: true, position:point);
+            return (success: true, position: point);
         }
 
         else
@@ -362,7 +344,6 @@ public class CompanionBehaviour : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;
-
 
         // Perform the raycast
         if (Physics.Raycast(ray, out hit, 50F, _attackMask))
@@ -380,29 +361,59 @@ public class CompanionBehaviour : MonoBehaviour
     }
 
     #endregion
+    
+    #region Enemy detection
+    private IEnumerator EnemyCheckRoutine()
+    {
+        WaitForSeconds wait = new WaitForSeconds(2f);
+
+        while (true)
+        {
+            yield return wait;
+            EnemyCheck();
+        }
+    }
+
+    private void EnemyCheck()
+    {
+        Collider[] aiHits = Physics.OverlapSphere(transform.position, detectionRadius, _attackMask);
+
+        if (aiHits.Length > 0)
+        {
+            _enemiesInRange = true;
+        }
+        else
+        {
+            _enemiesInRange = false; 
+        }
+    }
+    #endregion
 
     #region AI Actions
+
     private void CheckMoveBool()
     {
         //print(_playerIsMoving); 
-        
-        if (_player.IsMoving && (_primeTarget.position - transform.position).magnitude >= 1f )
+
+        if (_player.IsMoving && (_primeTarget.position - transform.position).magnitude >= 1f)
         {
             //_StartFollow = true;
             _stateAI = CompanionState._follow;
-            return;
+            
         }
-        else if(!_player.IsMoving && (_primeTarget.position - transform.position).magnitude <= 0.8f)
+        
+        if (!_player.IsMoving && (_primeTarget.position - transform.position).magnitude <= 0.8f)
         {
             // _StartFollow = false;
             _stateAI = CompanionState._idle;
-            return; 
+            
         }
-        
+
     }
 
     #region Idle State
-    // Chase the small enemy
+
+    // idle
     private void Idle()
     {
         StartIdle();
@@ -420,7 +431,7 @@ public class CompanionBehaviour : MonoBehaviour
         float NEWY = Mathf.SmoothStep
             (_lowPos.position.y, _highPos.position.y, t);
 
-        transform.position  = new Vector3
+        transform.position = new Vector3
             (transform.position.x, NEWY, transform.position.z);
 
 
@@ -428,12 +439,12 @@ public class CompanionBehaviour : MonoBehaviour
         {
             t = 0f;
 
-            Transform TEMPORARY     = _lowPos;
+            Transform TEMPORARY = _lowPos;
 
-            _lowPos                 = _highPos;
-            _highPos                = TEMPORARY;
+            _lowPos = _highPos;
+            _highPos = TEMPORARY;
         }
-        
+
     }
 
     private void RotateAround()
@@ -441,9 +452,23 @@ public class CompanionBehaviour : MonoBehaviour
         transform.RotateAround(_player.transform.position,
             new Vector3(x, rotateDirection, y), rotateSpeed * Time.deltaTime);
     }
-         
 
-    private void PosUpdate()
+    #endregion
+
+    #region Follow State
+
+    private void Follow()
+    {
+        StartFollow();
+        // Companion.Warp(transform.position); 
+        //FloatCompanion();
+        //StopCoroutine(floatStart());
+
+        PosUpdate(_primeTarget);
+        // StartCoroutine(FollowPlayer());
+    }
+    
+    private void PosUpdate(Transform pos)
     {
 
         _companion.isStopped = false;
@@ -451,7 +476,7 @@ public class CompanionBehaviour : MonoBehaviour
         //Companion.SetDestination(_primeTarget.position); 
         _primeTarget = point.transform;
 
-        _companion.SetDestination(_primeTarget.position);
+        _companion.SetDestination(pos.position);
 
         //transform.rotation = point.transform.rotation;  
 
@@ -462,74 +487,29 @@ public class CompanionBehaviour : MonoBehaviour
         //Companion.acceleration = 10f; 
 
 
-        if ((_primeTarget.position - transform.position).magnitude <= 2f)
+        if ((pos.position - transform.position).magnitude <= 2f)
         {
             //Companion.speed = 3.5f;
             _companion.speed = followSpeed;
         }
 
-        else if ((_primeTarget.position - transform.position).magnitude <= 0.8f)
+        else if ((pos.position - transform.position).magnitude <= 0.8f)
         {
             SlowDown();
             return;
         }
-        else if ((_primeTarget.position - transform.position).magnitude >= 7f)
+        else if ((pos.position - transform.position).magnitude >= 5f)
         {
-            StartCoroutine(CatchPlayer());
+            StartCoroutine(CatchPlayer(pos));
             return;
         }
-
-
-
-
-    }
-    #endregion
-
-    #region Follow State
-    private void Follow()
-    {
-        StartFollow();
-        // Companion.Warp(transform.position); 
-        //FloatCompanion();
-        //StopCoroutine(floatStart());
-
-        PosUpdate();
-       // StartCoroutine(FollowPlayer());
     }
 
-    private IEnumerator FollowPlayer()
-    {
-        
-        //yield return null;
-
-        PosUpdate();
-
-
-        // add reference to player navmesh agent
-
-        /* CODE EXAMPLE 
-         * NavMeshAgent playerAgent = Player.GetComponentInChildren<NavMeshAgent>();
-            Vector3 playerDestination = playerAgent.destination;
-            Vector3 positionOffset = FollowRadius * new Vector3(
-            Mathf.Cos(2 * Mathf.PI * Random.value),
-            0,
-            Mathf.Sin(2 * Mathf.PI * Random.value)
-        ).normalized;
-
-        Agent.SetDestination(playerDestination + positionOffset);
-
-        */
-
-        //yield return null;
-
-        yield return new WaitUntil(() => _companion.remainingDistance <= _companion.stoppingDistance);
-    }
-
-
-    private IEnumerator CatchPlayer()
+    
+    private IEnumerator CatchPlayer(Transform pos)
     {
         Setlow();
-        transform.position = _primeTarget.position;
+        transform.position = pos.position;
 
         yield return new WaitForSeconds(0.2f);
         SetHigh();
@@ -547,114 +527,190 @@ public class CompanionBehaviour : MonoBehaviour
         _companion.velocity = _companion.velocity.normalized / 1.4f;
     }
 
+
+ 
     #endregion
+
+    #region Combat
+
     private void Combat()
     {
         StartCombat();
         //Aim();
         ObstacleCheck();
     }
+
     private void ObstacleCheck()
     {
         RaycastHit hit;
 
-        Debug.DrawRay(transform.position, transform.forward);
+        Debug.DrawRay(transform.position, transform.forward, Color.magenta);
 
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 20f, _playerMask))
+        if (Physics.Raycast
+                (transform.position, transform.forward, out hit, 50f, _playerMask)
+            && _changePos)
         {
-            ChangeCourse(_currentPos);
+            
+            _changePos = false;
+
+        }
+        
+        if (!_changePos)
+        {
+            Destination();
+        }
+        else
+        {
+            PersistantPosCheck();
         }
 
-        Destination(_attackPos);
+       
+
 
     }
 
-    private void ChangeCourse(CompanionPos currentPos)
+    private void Destination()
     {
-
-        switch (currentPos)
+        
+        if (_currentPos == CompanionPos._L_L_POS)
         {
-            case CompanionPos._L_L_POS:
-                {
-                    //Destination(_u_rTarget);
-                    //_currentPos = currentPos;
-                    _nextPos = CompanionPos._U_R_POS;
-
-                    _currentPos = _nextPos;
-
-                    _attackPos = _u_rTarget;
-                     
-                    break;
-                }
-
-            case CompanionPos._U_R_POS:
-                {
-                    //Destination(_l_lTarget);
-                    _currentPos = currentPos;
-                    _nextPos = CompanionPos._L_L_POS;
-
-                    //_currentPos = _nextPos;
-
-                    _attackPos = _l_lTarget;
-
-                    break;
-                }
-
-            default: { break; }
+            _nextPos = CompanionPos._U_R_POS;
         }
-    }
-
-
-    private void Destination(Transform pos)//, CompanionPos newPos)
-    {
-
-        if ((pos.position - transform.position).magnitude >= 0.1f)
+        else if (_currentPos == CompanionPos._U_R_POS)
         {
-            _companion.SetDestination(pos.position);
-            //transform.position = pos.position;
+            _nextPos = CompanionPos._L_L_POS;
+
         }
-        else 
-        {
-            _companion.velocity = Vector3.zero;
-        }
+        NewPosition(_nextPos);
+        
         /*
 
-        else if ((pos.position - transform.position).magnitude <= 0.2f)
+        _companion.speed = 8f; 
+
+        if (_companion.remainingDistance <= 0.5)
         {
-            _currentPos = newPos;
+            switch (_nextPos)
+            {
+                case  CompanionPos._L_L_POS:
+                {
+                    _companion.speed = attackSpeed; 
+                    _companion.SetDestination(_l_lTarget.position);
+                    
+                    if((transform.position - _l_lTarget.position).magnitude < 0.5f)
+                    {
+                        _currentPos = CompanionPos._L_L_POS;
+                        _changePos = true; 
+                    }
+                    break;
+      
+                }
+                
+                case CompanionPos._U_R_POS:
+                {
+                    _companion.speed = attackSpeed; 
+                    _companion.SetDestination(_u_rTarget.position);
+
+                    if ((transform.position - _u_rTarget.position).magnitude < 0.5f)
+                    {
+                        _currentPos = CompanionPos._U_R_POS;
+                        _changePos = true; 
+                    }
+
+                    break;
+                }
+                default:{break;}
+            }
         }
         */
     }
 
-
-    #endregion
-
-    #region Enemy detection
-
-
-
-    private void CheckEnemy()
+    private void NewPosition(CompanionPos nextPos)
     {
+        Transform newDest;
+        
+        switch (nextPos)
+        {
 
-        //_EPI.SetActive(true);
-        //_MiniMapCollor.SetCollorRed();
+            case CompanionPos._L_L_POS:
+            {
+                
+                if ((transform.position - _l_lTarget.position).magnitude < 0.1f)
+                {
+                    _currentPos = CompanionPos._L_L_POS;
+                    _changePos = true; 
+                }
+                else
+                {
+                    newDest = _l_lTarget;
+                    PosUpdate(newDest);
+                }
 
-        //_EPI.SetActive(false);
-        //_MiniMapCollor.SetCollorDefault();
+                break;
+            }
+
+            case CompanionPos._U_R_POS:
+            {
+                if ((transform.position - _u_rTarget.position).magnitude < 0.1f)
+                {
+                    _currentPos = CompanionPos._U_R_POS;
+                    _changePos = true; 
+                }
+                else
+                {
+                    newDest = _u_rTarget;
+                    PosUpdate(newDest);
+                }
+
+                
+                break;
+            }
+            
+        }
+    }
+
+    private void PersistantPosCheck()
+    {
+        switch (_currentPos)
+        {
+            case CompanionPos._L_L_POS:
+            {
+                PosUpdate(_l_lTarget);
+                if ((transform.position - _l_lTarget.position).magnitude > 2f)
+                {
+                    
+                }
+                break;
+            }
+            case CompanionPos._U_R_POS:
+            {
+                PosUpdate(_u_rTarget);
+                if ((transform.position - _u_rTarget.position).magnitude > 2f)
+                {
+                    
+                }
+                break;
+            }
+            
+        }
         
     }
-    #endregion
-
     
-    private void StartIdle()
+#endregion
+#endregion
+
+    #region State data
+
+private void StartIdle()
     {
        _companion.enabled = false;
         return;
     }
     private void StartFollow()
     {
-        _companion.enabled = true;
+        
+        _companion.enabled                  = true;
+        _companion.obstacleAvoidanceType    = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         return;
     }
 
@@ -663,11 +719,13 @@ public class CompanionBehaviour : MonoBehaviour
         _companion.enabled = true;
 
         //_companion.radius = 0.2f;
-        _companion.acceleration     = 2000f;
-        _companion.speed            = attackSpeed;
+        _companion.acceleration             = 2000f;
+        _companion.speed                    = attackSpeed;
+        _companion.obstacleAvoidanceType    = ObstacleAvoidanceType.NoObstacleAvoidance;
 
         return;
     }
+    #endregion
 
     #region Alpha update
     private void AlphaUpdate()
