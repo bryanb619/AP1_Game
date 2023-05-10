@@ -63,8 +63,9 @@ public class PlayerHealth : MonoBehaviour
         //print(_maxHealth);
     }
     
-    internal void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
+        print("Player took damage: " + damage);
         if (currentShield < damage)
         {
             damage -= currentShield;

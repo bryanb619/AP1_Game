@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class rotateObject : MonoBehaviour
+public class RotateObject : MonoBehaviour
 {
     [Header("Rotation")]
 
@@ -26,7 +26,7 @@ public class rotateObject : MonoBehaviour
 
         if(_rotate && _gamePlay) 
         {
-            transform.Rotate(Vector3.up * Time.deltaTime * _rotateSpeed);
+            transform.Rotate(Vector3.up * _rotateSpeed * Time.deltaTime );
         }
  
     }
