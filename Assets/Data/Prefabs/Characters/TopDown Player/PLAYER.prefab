@@ -692,7 +692,6 @@ GameObject:
   - component: {fileID: 1104454313920517158}
   - component: {fileID: 1104454313920517157}
   - component: {fileID: 1104454313920517154}
-  - component: {fileID: 1104454313920517166}
   m_Layer: 2
   m_Name: MainCamera
   m_TagString: Untagged
@@ -809,7 +808,7 @@ MonoBehaviour:
     m_Bits: 1572864
   leftPos: {fileID: 0}
   rightPos: {fileID: 3043553457570586193}
-  alphaValue: 0.3
+  alphaValue: 0.1
 --- !u!114 &1104454313920517157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -858,20 +857,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attenuationObject: {fileID: 0}
   ListenerNumber: -1
---- !u!114 &1104454313920517166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1104454313920517164}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ae42c8f78c60684aab6be6c18bd7a9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Type: 0
-  colorblindShader: {fileID: 4800000, guid: b35b8f7ae8cf168488129d5f5f39ebf4, type: 3}
 --- !u!1 &1104454313930022511
 GameObject:
   m_ObjectHideFlags: 0
