@@ -21,7 +21,7 @@ public class SpecialItem : MonoBehaviour
     internal int                                Mana => _manaEmpower;
 
 
-    [SerializeField] private GameObject         m_prefab;
+    [SerializeField] private GameObject         soundGameObject;
     private Rigidbody                           _rb;
 
     // Game State //
@@ -58,8 +58,9 @@ public class SpecialItem : MonoBehaviour
     // height of float
     private float                               height;
 
-    private PlayerMovement                      player; 
+    private PlayerMovement                      player;
 
+    [SerializeField] private GameObject         parent; 
 
     private void Awake()
     {
@@ -281,16 +282,14 @@ public class SpecialItem : MonoBehaviour
 
         if (_useAudio)
         {
-            Instantiate(m_prefab, transform.position, Quaternion.identity);
+            Instantiate(soundGameObject, transform.position, Quaternion.identity);
         }
 
         //Destroy(m_BoxCollider);
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        Destroy(parent);
 
-
-        //player
-
-
+        
         // Check if the other collider is on the layer we want to avoid
         if (other.gameObject.layer == LayerMask.NameToLayer("InteractiveZone"))
         {
@@ -338,7 +337,6 @@ public class SpecialItem : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-        
     }
     
 }
