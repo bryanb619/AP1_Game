@@ -20,6 +20,8 @@ public class CollSpawnAI : MonoBehaviour
 
     [SerializeField]    private Transform               _transform_a, _transform_b;
 
+    [SerializeField]    private bool                    secondTransform; 
+
                         private BoxCollider             _collider;
 
     [SerializeField]    private bool                    _useSound; 
@@ -103,26 +105,31 @@ public class CollSpawnAI : MonoBehaviour
                 //print(i);
             }
 
-            for (i = 0; i < _rangedCount; i++)
+            if (secondTransform)
             {
-                if (_startWait)
+                for (i = 0; i < _rangedCount; i++)
                 {
-                    yield return new WaitForSeconds(_waitTime);
+                    if (_startWait)
+                    {
+                        yield return new WaitForSeconds(_waitTime);
+                    }
+
+                    Vector3 spawnPosition = _transform_b.position +
+                                            new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
+                                                UnityEngine.Random.Range(-_dropRadius, _dropRadius));
+
+
+                    Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
+
+                    yield return new WaitForSeconds(_spawnTime);
+                    Instantiate(_ranged, spawnPosition, transform.rotation);
+
+
+                    //print(i);
                 }
-
-                Vector3 spawnPosition = _transform_a.position +
-                    new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius), 0f,
-                    UnityEngine.Random.Range(-_dropRadius, _dropRadius));
-
-
-                Instantiate(_spawnEffect, spawnPosition, _spawnEffect.transform.rotation);
-
-                yield return new WaitForSeconds(_spawnTime);
-                Instantiate(_ranged, spawnPosition, transform.rotation);
-
-
-                //print(i);
             }
+
+            
 
             Destroy(gameObject);
             running = false;
