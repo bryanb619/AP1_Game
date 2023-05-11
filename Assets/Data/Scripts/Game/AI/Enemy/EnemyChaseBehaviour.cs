@@ -207,8 +207,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private EventReference              _screamSound;
 
                         // attack sounds
-                        private EventReference              soundAttack_a;
-                        private EventReference              soundAttack_b;
+                        private EventReference              _soundAttackA;
+                        private EventReference              _soundAttackB;
+                        
+    [SerializeField]    private EventReference              testAttack; 
 
 
     // UI -------------------------------------------------------------------------------------->
@@ -668,7 +670,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Distance Check
     private void MinimalCheck()
     {
-
         if (_stateAI == AI._ATTACK)
         {
             int ENEMYMAX                    = 15;
@@ -704,7 +705,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         _agent.enabled = false;
                         print("PLAYER FOUND");
                         Vector3 direction = transform.position - PLAYER.transform.position;
-                        rb.AddForce(direction.normalized * 6f);
+                        rb.AddForce(direction.normalized * 8f);
                     }
                  
                 }
@@ -897,6 +898,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             case true:
                 {
+                    SetAttack();
                     //if ((playerTarget.transform.position - transform.position).magnitude <= 6F)
                     //if (agent.remainingDistance <= stopDistance)
                     if ((playerTarget.transform.position - transform.position).magnitude <= 3.5F)
@@ -930,6 +932,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                     {
                                         //print("2nd step");
                                         //AttackAnim();
+                                        
+                                        RuntimeManager.PlayOneShot(testAttack);
                                         PLAYER.TakeDamage(b_damage);
 
                                         Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
@@ -966,6 +970,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                     if (PLAYER != null)
                                     {
                                         //AttackAnim();
+                                        RuntimeManager.PlayOneShot(testAttack);
 
                                         PLAYER.TakeDamage(damage);
 
