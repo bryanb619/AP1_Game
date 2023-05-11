@@ -144,7 +144,7 @@ public class Shooter : MonoBehaviour
                     //Cleanse Crystal
                     if (hit.collider.name == "Crystal" && hit.collider.GetComponent<Outline>().enabled == true)
                     {
-                        if (Input.GetKeyDown(KeyCode.Mouse0))
+                        if (Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                             hit.collider.GetComponent<Outline>().enabled = false;

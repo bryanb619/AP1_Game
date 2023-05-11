@@ -98,9 +98,9 @@ public class ObjectiveUI : MonoBehaviour
 
     private void CleansedTheCrystals()
     {
+        doorHandler.state = DoorHandler.DoorState.Opening;
         //Reference the door opening script here
         TextAnimation(3);
-        doorHandler.state = DoorHandler.DoorState.Opening;
     }
 
     private void TextAnimation(int i)
