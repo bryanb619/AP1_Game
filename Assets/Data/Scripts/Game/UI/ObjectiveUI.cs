@@ -83,11 +83,17 @@ public class ObjectiveUI : MonoBehaviour
         if (totalEnemyCount == currentEnemyDefeated)
         {
             TextAnimation(2);
+
             foreach (GameObject crystal in Crystals)
             {
                 crystal.GetComponent<Outline>().enabled = true;
             }
         }
+    }
+
+    public void Passed()
+    {
+        passedSecondObjective = true;
     }
 
     private void CleansedTheCrystals()

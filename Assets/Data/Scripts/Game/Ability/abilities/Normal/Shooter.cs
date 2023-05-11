@@ -148,7 +148,7 @@ public class Shooter : MonoBehaviour
                         {
                             hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                             hit.collider.GetComponent<Outline>().enabled = false;
-                            objectiveUI.passedSecondObjective = true;
+                            objectiveUI.Passed();
                             valuesTexts.GetCrystal();
                             break;
                         }
