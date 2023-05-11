@@ -160,7 +160,7 @@ public class Shooter : MonoBehaviour
                     }
                     else
                     {
-                        if (!normalCooldown && Input.GetKeyDown(KeyCode.Mouse0))
+                        if (!normalCooldown && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             StartCoroutine(NormalAttackCooldown());
                             Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
