@@ -210,7 +210,7 @@ public class Shooter : MonoBehaviour
 
     private void HoverHighlight()
     {
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50f))
             if (hit.collider.CompareTag("Enemy"))
             {
                 hit.collider.gameObject.GetComponent<Outline>().enabled = true;
@@ -223,6 +223,7 @@ public class Shooter : MonoBehaviour
                 foreach (GameObject enemy in enemies)
                 {
                     enemy.GetComponent<Outline>().enabled = false;
+                    
                 }
             }
 
