@@ -16,19 +16,19 @@ MonoBehaviour:
   _attackEffect: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
   _damageEffectTime: 0.4
   minDist: 3
-  attackRate: 4
+  attackRate: 5
   a_damage: 2
   stopDistance: 3
   attackDistOffset: 4
-  _attackTimer: 1.5
-  _percentage: 0.3
-  b_damage: 3
+  _attackTimer: 1
+  _percentage: 0.55
+  b_damage: 5
   s_attackEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
   specialAttackEffect: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
   s_damage: 15
   currentAbilityValue: 32
   abilityIncreasePerFrame: 2
-  patrolSpeed: 0.8
+  patrolSpeed: 50
   attackSpeed: 1.2
   otherSpeed: 0
   radius: 10
@@ -39,7 +39,7 @@ MonoBehaviour:
   obstructionMask:
     serializedVersion: 2
     m_Bits: 8769
-  health: 100
+  health: 345
   healthRegen: 2
   maxHealthRegen: 70
   _stunnedTime: 2
