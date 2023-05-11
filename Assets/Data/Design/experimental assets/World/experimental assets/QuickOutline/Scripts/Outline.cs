@@ -266,7 +266,7 @@ public class Outline : MonoBehaviour {
 
     // Append combined submesh
     mesh.subMeshCount++;
-    mesh.SetTriangles(mesh.triangles, mesh.subMeshCount - 1);
+    //mesh.SetTriangles(mesh.triangles, mesh.subMeshCount - 1);
   }
 
   void UpdateMaterialProperties() {
