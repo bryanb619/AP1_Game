@@ -23,6 +23,7 @@ public class CompanionSpawn : MonoBehaviour
 
     private void Spawn()
     {
+        /*
         if(_gamePlay)
         {
             if (Input.GetKeyUp(KeyCode.L)) 
@@ -36,7 +37,7 @@ public class CompanionSpawn : MonoBehaviour
 
             }
            
-        }
+        } */
     }
 
     private IEnumerator Timer()
