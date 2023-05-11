@@ -697,7 +697,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Attack()
     {
-        
+        agent.speed = 4f;
 
         if (Time.time > nextFire)
         {

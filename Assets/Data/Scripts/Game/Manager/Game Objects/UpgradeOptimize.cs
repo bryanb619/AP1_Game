@@ -1,22 +1,23 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using FMODUnity;
-using UnityEngine.UIElements;
 
-public class CollectiblesOptimize : MonoBehaviour
+public class UpgradeOptimize : MonoBehaviour
 {
-
     [SerializeField]    private MeshRenderer mesh;
-                        private RotateObject _rotate;
-                        private SpecialItem _specialItem; 
-                        //private StudioEventEmitter _event; 
+    private RotateObject _rotate;
+    //private SpecialItem _specialItem; 
+    private AbilityUpgradesManager _ability; 
+    //private StudioEventEmitter _event; 
                         
     private void Start()
     {
         
         _rotate             = GetComponentInParent<RotateObject>();
-        _specialItem        = GetComponent<SpecialItem>();
-        
+        _ability            = GetComponentInParent<AbilityUpgradesManager>(); 
+        //_specialItem        = GetComponent<SpecialItem>();
+
+
         //_event              = GetComponent<StudioEventEmitter>();  
     }
 
@@ -62,15 +63,14 @@ public class CollectiblesOptimize : MonoBehaviour
         {
             case true:
             {
-                print(gameObject); 
                 _rotate.enabled         = true;
-                _specialItem.enabled    = true; 
+                _ability .enabled       = true; 
                 break; 
             }
             case false:
             {
                 _rotate.enabled         = false;
-                _specialItem.enabled    = false;
+                _ability .enabled       = false;
                 break;
             }
             
