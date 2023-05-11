@@ -591,7 +591,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1831208983068165614
 Transform:
   m_ObjectHideFlags: 0
@@ -629,8 +629,7 @@ MonoBehaviour:
   _stateAI: 1
   data: {fileID: 11400000, guid: 9c72e6fe0b220ad409222f3f9792cabd, type: 2}
   enemyMesh: {fileID: 3110441228081096987}
-  objectiveUIScript: {fileID: 0}
-  _patrolPoints: []
+  patrolPoints: []
   _attackPoint: {fileID: 3331569744526991545}
   fov: {fileID: 1831208982663463918}
   radius: 3.3
@@ -639,8 +638,8 @@ MonoBehaviour:
   _spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
   _enemyChase: {fileID: 1831208983068165615, guid: bd37bf34c82166e4cbc542a9ea1102a6, type: 3}
   enemyRaged: {fileID: 0}
-  _healthSlider: {fileID: 8963490514696597323}
-  _AbilitySlider: {fileID: 5430720324937001575}
+  healthSlider: {fileID: 0}
+  abilitySlider: {fileID: 0}
   _showExtraGizmos: 0
   _showLabelGizmos: 1
 --- !u!114 &8322705189930119540
@@ -2449,7 +2448,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.000030517578, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3055,7 +3054,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -0.0000005958864, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3357,8 +3356,8 @@ RectTransform:
   m_Father: {fileID: 1192099220337860066}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.19999999, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -0.0000005958864, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

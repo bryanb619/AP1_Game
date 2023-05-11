@@ -1,10 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 using FMODUnity;
 
 public class PauseMenu : MonoBehaviour
 { 
-                    private GameManager                 _manager; 
+                    private GameManager                 _manager;
+                    private GameState                   _gameState; 
  
                     // game paused bool
                     private bool                        _paused;
@@ -14,7 +16,12 @@ public class PauseMenu : MonoBehaviour
 
     [SerializeField] private EventReference             click; 
 
-    [SerializeField] private Slider                     _sliderAudio; 
+    [SerializeField] private Slider                     _sliderAudio;
+
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+    }
 
     private void Start()
     {
@@ -35,18 +42,27 @@ public class PauseMenu : MonoBehaviour
     
     private void KeyDetect()
     {
-        if(Input.GetButtonDown("Pause"))
+        if (_gameState != GameState.Death)
         {
-            
-            if (_paused && !optionsMenu)
+            if(Input.GetButtonDown("Pause"))
             {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
             
+                if (_paused && !optionsMenu)
+                {
+                    Resume();
+                }
+                else
+                {
+                    Pause();
+                }
+            
+            }
+
+            
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            _manager.UpdateGameState(GameState.Death);
         }
     }
 
@@ -114,6 +130,35 @@ public class PauseMenu : MonoBehaviour
     public void ClickSound()
     {
         RuntimeManager.PlayOneShot(click);
+    }
+
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+            {
+                _gameState = GameState.Gameplay;
+                break;
+            }
+            case GameState.Paused:
+            {
+                _gameState = GameState.Paused;
+                break;
+            }
+            case GameState.Death:
+            {
+                _gameState = GameState.Death; 
+                break; 
+            }
+           
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 }
 

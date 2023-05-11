@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
@@ -16,7 +18,7 @@ public class GameManager : MonoBehaviour
 
                         public static event Action<GameState>   OnGameStateChanged;
 
-    [SerializeField]    private GameObject                      _outOfFocus, _pauseMenu;
+    [SerializeField]    private GameObject outOfFocus, pauseMenu;
 
 
     // Scenes       ------------------------------------------------------------------------------------------->
@@ -24,6 +26,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]    private string                          startMenu;
     [SerializeField]    private string                          restartMenu; 
     [SerializeField]    private string                          endMenu;
+
+    [SerializeField]    private float                           restartTime; 
 
 
     // GAME SOUND   ------------------------------------------------------------------------------------------->
@@ -42,6 +46,8 @@ public class GameManager : MonoBehaviour
                         // AUDIO STATE
                         private bool                            _audioState;
 
+                 
+
     //public class SFXSound : UnityEvent<float> {}
     //public static SFXSound OnSFXValueChange = new SFXSound();
     //[SerializeField] private Slider _ambientSlider;
@@ -50,7 +56,7 @@ public class GameManager : MonoBehaviour
     #region Awake & Start
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        //DontDestroyOnLoad(this);
 
         Instance = this;
 
@@ -66,7 +72,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         UpdateGameState(GameState.Gameplay);
-        _outOfFocus.SetActive(false);
+        outOfFocus.SetActive(false);
+        
     }
     #endregion
 
@@ -94,6 +101,11 @@ public class GameManager : MonoBehaviour
                     HandlePaused();
                     break; 
                 }
+            case GameState.Death:
+            {
+                HandleDeath();
+                break; 
+            }
 
             default: { throw new ArgumentOutOfRangeException(nameof(newGamestate), newGamestate, null); }
         }
@@ -122,13 +134,13 @@ public class GameManager : MonoBehaviour
         {
             case true:
                 {
-                    _outOfFocus.SetActive(false);
+                    outOfFocus.SetActive(false);
                     UpdateGameState(GameState.Gameplay);
                     break; 
                 }
             case false:
                 {
-                    _outOfFocus.SetActive(true);
+                    outOfFocus.SetActive(true);
                     UpdateGameState(GameState.Paused);
                     break; 
                 }
@@ -161,6 +173,33 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void HandleDeath()
+    {
+        // set cursor to pause mode
+        Cursor.visible      = true;
+        Cursor.lockState    = CursorLockMode.None;
+
+        StartCoroutine(TimerToRestart()); 
+
+    }
+
+    private IEnumerator TimerToRestart()
+    {
+        bool isRunning = false;
+
+        if (!isRunning)
+        {
+            isRunning = true; 
+            
+            yield return new WaitForSeconds(restartTime);
+            SceneManager.LoadScene(restartMenu);
+
+            isRunning = false; 
+
+        }
+           
+    }
+
 
     private void CheckAppFocus()
     {
@@ -179,6 +218,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        
 
     }
 

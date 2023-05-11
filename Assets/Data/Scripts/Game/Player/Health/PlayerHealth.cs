@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+//using UnityEngine.UI;
+//using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -28,6 +28,9 @@ public class PlayerHealth : MonoBehaviour
                             private PlayerMovement  coroutineCaller;
                             internal _PlayerHealth _playerHealthState;
 
+                            private GameManager _gameManager;
+                            private PlayerAnimationHandler _playerAnim; 
+
     internal enum _PlayerHealth
     {
         _Max,
@@ -37,14 +40,16 @@ public class PlayerHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        coroutineCaller = FindObjectOfType<PlayerMovement>();
-        _healthBar = FindObjectOfType<HealthBar>();
+        coroutineCaller                     = FindObjectOfType<PlayerMovement>();
+        _healthBar                          = FindObjectOfType<HealthBar>();
+        _gameManager                        = FindObjectOfType<GameManager>();
+        _playerAnim                         = GetComponentInChildren<PlayerAnimationHandler>();
 
-        _currentHealth = _maxHealth;
-        _healthBar.healthSlider.value = _currentHealth;
-        _healthBar.healthSlider.maxValue = _maxHealth;
-        HealthSetAtMax = true;
-        _currentHealth = 100;
+        _currentHealth                      = _maxHealth;
+        _healthBar.healthSlider.value       = _currentHealth;
+        _healthBar.healthSlider.maxValue    = _maxHealth;
+        HealthSetAtMax                      = true;
+        _currentHealth                      = 100;
     }
 
     internal void EmpowerHealth(int powerUp)
@@ -93,8 +98,14 @@ public class PlayerHealth : MonoBehaviour
         {
             //Debug.Log("DEAD");
             //restartMenu.LoadRestart();
-            SceneManager.LoadScene("RestartScene");
+            //SceneManager.LoadScene("RestartScene");
             //RestarMenu.SetActive(true);
+            
+            _playerAnim.DeathAnim();
+            
+            _gameManager.UpdateGameState(GameState.Death);
+            
+            //deathMessage.SetActive(true);
 
             //Time.timeScale = 0f;
         }

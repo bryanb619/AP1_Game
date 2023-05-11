@@ -6,7 +6,27 @@ ModelImporter:
   - first:
       74: -203655887218126122
     second: mixamo.com
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Base material
+    second: {fileID: 2100000, guid: 2ac6c85dbf481804e855c5866e8149cb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert1
+    second: {fileID: 2100000, guid: 804920d62d4e4034b808be561d4caff0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert4
+    second: {fileID: 2100000, guid: f226c48e24c1ed14e8689ee6e3031f38, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert6
+    second: {fileID: 2100000, guid: 8e3086e4e0c56064f8df323ba98e8870, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -91,7 +111,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.017
+    globalScale: 1.7
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

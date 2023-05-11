@@ -436,12 +436,7 @@ public class PlayerMovement : MonoBehaviour
             spawnedObject.transform.position.z);
     }
     #endregion
-
-
-
-
-
-
+    
     private void MovePlayer()
     {
         if (state == MovementState.dashing) return;
