@@ -16,6 +16,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]        private int             shieldDecayAmount;
     [SerializeField]        private float           shieldDecayRate;
     [SerializeField]        internal int            currentShield = 0;
+    [SerializeField]        private bool            immortality;
 
     // --------------------------Health----------------------------------------
     [Header ("Health")]
@@ -50,6 +51,7 @@ public class PlayerHealth : MonoBehaviour
         _healthBar.healthSlider.maxValue    = _maxHealth;
         HealthSetAtMax                      = true;
         _currentHealth                      = 100;
+        immortality                         = false;
     }
 
     internal void EmpowerHealth(int powerUp)
@@ -101,8 +103,9 @@ public class PlayerHealth : MonoBehaviour
             //SceneManager.LoadScene("RestartScene");
             //RestarMenu.SetActive(true);
             
+            coroutineCaller.StopMovement();
             _playerAnim.DeathAnim();
-            
+
             _gameManager.UpdateGameState(GameState.Death);
             
             //deathMessage.SetActive(true);
@@ -188,12 +191,13 @@ public class PlayerHealth : MonoBehaviour
         if (currentShield > 0)
         { 
             currentShield -= shieldDecayAmount;
-            _healthBar.SetMaxHealth(_maxHealth, currentShield);
-            _healthBar.SetHealth(_currentHealth, currentShield);
+            //_healthBar.SetMaxHealth(_maxHealth, currentShield);
+           // _healthBar.SetHealth(_currentHealth, currentShield);
+            immortality = true;
         } 
         else
         {
-
+            immortality = false;
         }
     }
 
