@@ -26,6 +26,7 @@ public class Shooter : MonoBehaviour
     [SerializeField] private float areaAttackRadius = 5f;
 
     [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
+    [SerializeField] private GameObject rAbilityTelegraph;
 
     internal bool normalCooldown, fireCooldown, iceCooldown, thunderCooldown = false;
 
@@ -92,7 +93,6 @@ public class Shooter : MonoBehaviour
             //When you press the key (telegraph of the ability)
             if (Input.GetKey(KeyCode.Mouse0))
             {
-
             }
             else if (Input.GetKey(KeyCode.Q))
             {
@@ -104,7 +104,7 @@ public class Shooter : MonoBehaviour
             }
             else if (Input.GetKey(KeyCode.R))
             {
-                
+                rAbilityTelegraph.SetActive(true);
             }
 
             //--------------------------------------
@@ -114,25 +114,22 @@ public class Shooter : MonoBehaviour
             {
                 Debug.Log("Shot auto");
                 _magicType = WeaponType.Normal;
-                //print("Ability is set to normal");
                 Shoot();
             }
             else if (Input.GetKeyUp(KeyCode.Q))
             {
                 _magicType = WeaponType.Fire;
-                //print("Ability is set to fire");
                 Shoot();
             }
             else if (Input.GetKeyUp(KeyCode.W))
             {
                 _magicType = WeaponType.Ice;
-                //print("Ability is set to Ice");
                 Shoot();
             }
             else if (Input.GetKeyUp(KeyCode.R))
             {
                 _magicType = WeaponType.Thunder;
-                //print("Ability is set to Thunder");
+                rAbilityTelegraph.SetActive(false);
                 Shoot();
             }
         }
