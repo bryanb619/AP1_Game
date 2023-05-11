@@ -89,7 +89,7 @@ public class AbilityHolder : MonoBehaviour
             {
                 // ready state
                 case Ability_State.ready:
-                    if (Input.GetKeyDown(key))
+                    if (Input.GetKeyUp(key))
                     {
                         if(abilityNEW)
                         {

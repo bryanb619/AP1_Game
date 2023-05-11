@@ -89,25 +89,47 @@ public class Shooter : MonoBehaviour
     {
         if (firePoint != null)
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            //When you press the key (telegraph of the ability)
+            if (Input.GetKey(KeyCode.Mouse0))
             {
+
+            }
+            else if (Input.GetKey(KeyCode.Q))
+            {
+                
+            }
+            else if (Input.GetKey(KeyCode.W))
+            {
+                
+            }
+            else if (Input.GetKey(KeyCode.R))
+            {
+                
+            }
+
+            //--------------------------------------
+            //When you release the key
+
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                Debug.Log("Shot auto");
                 _magicType = WeaponType.Normal;
                 //print("Ability is set to normal");
                 Shoot();
             }
-            else if (Input.GetKeyDown(KeyCode.Q))
+            else if (Input.GetKeyUp(KeyCode.Q))
             {
                 _magicType = WeaponType.Fire;
                 //print("Ability is set to fire");
                 Shoot();
             }
-            else if (Input.GetKeyDown(KeyCode.W))
+            else if (Input.GetKeyUp(KeyCode.W))
             {
                 _magicType = WeaponType.Ice;
                 //print("Ability is set to Ice");
                 Shoot();
             }
-            else if (Input.GetKeyDown(KeyCode.R))
+            else if (Input.GetKeyUp(KeyCode.R))
             {
                 _magicType = WeaponType.Thunder;
                 //print("Ability is set to Thunder");
@@ -138,7 +160,7 @@ public class Shooter : MonoBehaviour
                     }
                     else
                     {
-                        if (!normalCooldown && Input.GetKeyDown(KeyCode.Mouse0))
+                        if (!normalCooldown && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             StartCoroutine(NormalAttackCooldown());
                             Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
