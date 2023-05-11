@@ -213,9 +213,12 @@ public class Shooter : MonoBehaviour
 
     private void HoverHighlight()
     {
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
             if (hit.collider.CompareTag("Enemy"))
+            {
                 hit.collider.gameObject.GetComponent<Outline>().enabled = true;
+            }
+                
             else
             {
                 GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
