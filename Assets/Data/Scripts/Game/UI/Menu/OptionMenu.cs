@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,6 +15,11 @@ public class OptionMenu : MonoBehaviour
 
     [SerializeField] private TMP_Dropdown _resDropdown2;
 
+    [SerializeField] private Slider musicSlider;
+    //[SerializeField] private StudioEventEmitter[] eventEmitters;  
+
+    private MusicManager _musicManager; 
+
     #endregion
 
     #region Start
@@ -21,6 +27,11 @@ public class OptionMenu : MonoBehaviour
     {
         ResolutionSetup();
         Screen.fullScreen = true;
+        
+        musicSlider.onValueChanged.AddListener(MusicVolume);
+
+        _musicManager = FindObjectOfType<MusicManager>(); 
+
     }
     #endregion
 
@@ -88,5 +99,16 @@ public class OptionMenu : MonoBehaviour
         SceneManager.LoadScene("Main Menu");
     }
 
+    #endregion
+
+    #region Sliders
+
+    private void MusicVolume(float newVolume)
+    {
+        print(newVolume);
+        _musicManager.MusicVolume(newVolume);
+        
+    }
+    
     #endregion
 }

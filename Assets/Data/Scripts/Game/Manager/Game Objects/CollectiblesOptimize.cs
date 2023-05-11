@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using FMODUnity;
 using UnityEngine.UIElements;
@@ -5,43 +6,74 @@ using UnityEngine.UIElements;
 public class CollectiblesOptimize : MonoBehaviour
 {
 
-    [SerializeField] MeshRenderer mesh;
-
-    //private SpecialItem _healthPoint;
-
-    private RotateObject _rotate; 
-
-    private StudioEventEmitter _event; 
-    
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]    private MeshRenderer mesh;
+                        private RotateObject _rotate;
+                        private SpecialItem _specialItem; 
+                        //private StudioEventEmitter _event; 
+                        
+    private void Start()
     {
-        //_mesh = GetComponent<MeshRenderer>();
-
-        //_healthPoint = GetComponent<SpecialItem>();
         
         _rotate             = GetComponentInParent<RotateObject>();
-        _event              = GetComponent<StudioEventEmitter>();  
+        _specialItem        = GetComponent<SpecialItem>();
+        
+        //_event              = GetComponent<StudioEventEmitter>();  
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
+        StartCoroutine(CheckRoutine());
+    }
+
+
+    #region Mesh check 
+
+    
+    private IEnumerator CheckRoutine()
+    {
+        WaitForSeconds wait = new WaitForSeconds(1f);
+
+        while (true)
+        {
+            yield return wait;
+            CheckMesh();
+        }
+    }
+
+    
+    private void CheckMesh()
+    {
+        
         if(mesh.isVisible)
         {
-            //_healthPoint.enabled = true; 
-            //_event.enabled = true; 
-            _rotate.enabled = true;
-            return;
+            ComponentState(true);
         }
-        else
+        else if (!mesh.isVisible)
         {
-            _rotate.enabled = false; 
-            //_healthPoint.enabled = false;
-            //_event.enabled = false; 
-            return; 
+            ComponentState(false);
         }
-
-        
     }
+    
+
+    private void ComponentState(bool active)
+    {
+        switch (active)
+        {
+            case true:
+            {
+                _rotate.enabled         = true;
+                _specialItem.enabled    = true; 
+                break; 
+            }
+            case false:
+            {
+                _rotate.enabled         = false;
+                _specialItem.enabled    = false;
+                break;
+            }
+            
+        }
+    }
+    #endregion 
 }
