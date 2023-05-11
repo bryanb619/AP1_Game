@@ -2636,7 +2636,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh118212
+  m_Name: pb_Mesh31244
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7740,7 +7740,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117808
+  m_Name: pb_Mesh30840
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12860,7 +12860,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117644
+  m_Name: pb_Mesh30674
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -13372,7 +13372,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117278
+  m_Name: pb_Mesh30310
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -19515,7 +19515,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117868
+  m_Name: pb_Mesh30900
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -20079,7 +20079,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117960
+  m_Name: pb_Mesh30992
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -21889,6 +21889,11 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.3478818, y: 0.67855155, z: 0.76441264}
   m_Center: {x: -0.0000009536743, y: -0.000000059604645, z: 0.000000014901163}
+--- !u!1 &774847268 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4687415141191617786, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
+  m_PrefabInstance: {fileID: 8061491771891897594}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &781238316
 GameObject:
   m_ObjectHideFlags: 0
@@ -35032,7 +35037,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh118038
+  m_Name: pb_Mesh31070
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -41730,7 +41735,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117738
+  m_Name: pb_Mesh30770
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -49704,7 +49709,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117362
+  m_Name: pb_Mesh30394
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -53053,7 +53058,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh117228
+  m_Name: pb_Mesh30260
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -61490,6 +61495,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -41.50418
       objectReference: {fileID: 0}
+    - target: {fileID: 9163711082428797767, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
+      propertyPath: healthShield
+      value: 
+      objectReference: {fileID: 774847268}
+    - target: {fileID: 9163711082428797767, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
+      propertyPath: shieldDecayRate
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163711082428797767, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
+      propertyPath: shieldDecayAmount
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9163711082428797767, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
+      propertyPath: shieldDecayWaitTime
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
 --- !u!224 &1466132356670291565 stripped
@@ -62546,6 +62567,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1821193679210172287, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4687415141191617786, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
