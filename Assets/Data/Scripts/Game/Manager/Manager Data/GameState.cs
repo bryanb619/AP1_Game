@@ -2,7 +2,8 @@
 public enum GameState 
 { 
     Gameplay, 
-    Paused, 
+    Paused,
+    Death, 
     LoadMenu,
     Unfocussed,
     Menu 

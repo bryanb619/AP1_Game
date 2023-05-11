@@ -108,10 +108,7 @@ public class PlayerAnimationHandler : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
-    }
+
 
     private void BlendTreeStartup()
     {
@@ -130,6 +127,16 @@ public class PlayerAnimationHandler : MonoBehaviour
         }
         else
             velocity = 0f;
+    }
+
+    public void DeathAnim()
+    {
+        playerAnimator.SetBool("isDead", true);
+    }
+    
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
 
 }
