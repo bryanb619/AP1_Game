@@ -55,8 +55,7 @@ public class ObjectiveUI : MonoBehaviour
     public void PassedThroughCollider()
     {
         passedThroughCollider = true;
-        newTextReference.text = firstObjective;
-        animator.SetTrigger("New Objective");
+        TextAnimation(1);
     }
 
     public void RecieveEnemyCountInfo(int ChaseCount, int RangedCount)
@@ -66,7 +65,7 @@ public class ObjectiveUI : MonoBehaviour
 
     public void IncreaseEnemyDefeatedCount()
     {
-        totalEnemyCount += 1;
+        currentEnemyDefeated += 1;
         mainTextReference.text = (firstObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
     }
 
@@ -80,7 +79,7 @@ public class ObjectiveUI : MonoBehaviour
 
         bool noEnemiesLeft = allEnemies.Length == 0;
         */
-
+        Debug.Log("Amount of enemies: " + currentEnemyDefeated);
         if (totalEnemyCount == currentEnemyDefeated)
         {
             TextAnimation(2);
@@ -94,7 +93,7 @@ public class ObjectiveUI : MonoBehaviour
     private void CleansedTheCrystals()
     {
         //Reference the door opening script here
-        TextAnimation(2);
+        TextAnimation(3);
         doorHandler.state = DoorHandler.DoorState.Opening;
     }
 
@@ -103,15 +102,29 @@ public class ObjectiveUI : MonoBehaviour
         if (i == 1)
         {
             newTextReference.text = (firstObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
-            if(secondTextAnimationTriggered == false)
+            if(passedThroughCollider == true)
+            {
                 animator.SetTrigger("New Objective");
-            secondTextAnimationTriggered = true;
+                secondTextAnimationTriggered = true;
+            }
         }
         else if (i == 2)
         {
+            if (secondTextAnimationTriggered == false)
+            {
+                newTextReference.text = secondObjective;
+                animator.SetTrigger("New Objective");
+                secondTextAnimationTriggered = true;
+            }
+        }
+        else if(i == 3)
+        {
             newTextReference.text = thirdObjective;
-            animator.SetTrigger("New Objective");
-            thirdTextAnimationTriggered = true;
+            if (thirdTextAnimationTriggered == false)
+            {
+                animator.SetTrigger("New Objective");
+                thirdTextAnimationTriggered = true;
+            }
         }
     }
 

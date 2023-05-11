@@ -20,9 +20,9 @@ public class HealthBar : MonoBehaviour
 
     internal void SetMaxHealth(int health, int shield)
     {
-        healthSlider.maxValue = health + shield;
-        criticalSlider.maxValue = health + shield;
-        shieldSlider.maxValue = health + shield;    
+        healthSlider.maxValue = health;
+        //criticalSlider.maxValue = health + shield;
+        //shieldSlider.maxValue = health + shield;    
         //_fill.color = _gradient.Evaluate(1f);
 
     }
@@ -30,7 +30,7 @@ public class HealthBar : MonoBehaviour
     {
         time = 0f;
         healthSlider.value = health;
-        shieldSlider.value = health + shield;
+        //shieldSlider.value = health + shield;
         //_fill.color = _gradient.Evaluate(_slider.normalizedValue);
     }
 

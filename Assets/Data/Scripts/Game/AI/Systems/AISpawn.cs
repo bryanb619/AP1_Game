@@ -9,9 +9,9 @@ public class AISpawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyUp(KeyCode.H))
+        /*if(Input.GetKeyUp( KeyCode.H))
         {
             Instantiate(m_SpawnObject, transform.position, Quaternion.identity);
-        }
+        }*/
     }
 }
