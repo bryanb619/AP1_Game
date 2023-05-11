@@ -112,6 +112,7 @@ public class Shooter : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
+                Debug.Log("Shot auto");
                 _magicType = WeaponType.Normal;
                 //print("Ability is set to normal");
                 Shoot();
