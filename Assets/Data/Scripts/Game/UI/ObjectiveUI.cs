@@ -67,7 +67,7 @@ public class ObjectiveUI : MonoBehaviour
     public void IncreaseEnemyDefeatedCount()
     {
         totalEnemyCount += 1;
-        mainTextReference.text = (secondObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
+        mainTextReference.text = (firstObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
     }
 
     private void KillEnemiesCheck()
@@ -75,7 +75,7 @@ public class ObjectiveUI : MonoBehaviour
         //If needed for active and inactive checking through tags
 
         /*GameObject[] allEnemies = Resources.FindObjectsOfTypeAll<GameObject>()
-            .Where(obj => obj.CompareTag("nemy"))
+            .Where(obj => obj.CompareTag("Enemy"))
             .ToArray();
 
         bool noEnemiesLeft = allEnemies.Length == 0;
@@ -83,7 +83,7 @@ public class ObjectiveUI : MonoBehaviour
 
         if (totalEnemyCount == currentEnemyDefeated)
         {
-            TextAnimation(1);
+            TextAnimation(2);
             foreach (GameObject crystal in Crystals)
             {
                 crystal.GetComponent<Outline>().enabled = true;
@@ -102,12 +102,12 @@ public class ObjectiveUI : MonoBehaviour
     {
         if (i == 1)
         {
-            newTextReference.text = (secondObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
+            newTextReference.text = (firstObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
             if(secondTextAnimationTriggered == false)
                 animator.SetTrigger("New Objective");
             secondTextAnimationTriggered = true;
         }
-        else if (i == 2 && thirdTextAnimationTriggered == false)
+        else if (i == 2)
         {
             newTextReference.text = thirdObjective;
             animator.SetTrigger("New Objective");
