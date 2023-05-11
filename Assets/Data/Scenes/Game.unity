@@ -11654,7 +11654,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339711858}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
@@ -19302,6 +19302,11 @@ Terrain:
   m_GroupingID: 0
   m_RenderingLayerMask: 1
   m_AllowAutoConnect: 1
+--- !u!1 &1806864614 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4687415141191617786, guid: a110f1c9cf11d0b4697d5c7a8323c4ad, type: 3}
+  m_PrefabInstance: {fileID: 8061491771891897594}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1822134670
 GameObject:
   m_ObjectHideFlags: 0
@@ -22447,7 +22452,7 @@ PrefabInstance:
     - target: {fileID: 9163711082428797767, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
       propertyPath: healthShield
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1806864614}
     - target: {fileID: 9163711082428797767, guid: af1b0d72845ea91488e5829ed727bbf8, type: 3}
       propertyPath: shieldDecayRate
       value: 0.5

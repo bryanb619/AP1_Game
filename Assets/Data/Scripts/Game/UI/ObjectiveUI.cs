@@ -79,7 +79,7 @@ public class ObjectiveUI : MonoBehaviour
 
         bool noEnemiesLeft = allEnemies.Length == 0;
         */
-        Debug.Log("Amount of enemies: " + currentEnemyDefeated);
+        //Debug.Log("Amount of enemies: " + currentEnemyDefeated);
         if (totalEnemyCount == currentEnemyDefeated)
         {
             TextAnimation(2);
