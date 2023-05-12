@@ -1,14 +1,16 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class RotateObject : MonoBehaviour
 {
+    [FormerlySerializedAs("_rotate")]
     [Header("Rotation")]
 
     [SerializeField]
-    private bool            _rotate;
+    private bool            rotate;
 
-    [SerializeField]
-    private float           _rotateSpeed;
+    [FormerlySerializedAs("_rotateSpeed")] [SerializeField]
+    private float           rotateSpeed;
 
     private bool            _gamePlay;
 
@@ -24,9 +26,9 @@ public class RotateObject : MonoBehaviour
     void Update()
     {
 
-        if(_rotate && _gamePlay) 
+        if(rotate && _gamePlay) 
         {
-            transform.Rotate(Vector3.up * _rotateSpeed * Time.deltaTime );
+            transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime );
         }
  
     }

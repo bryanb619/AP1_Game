@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-public class EndGameUI : MonoBehaviour
+public class EndGameUi : MonoBehaviour
 {
     [SerializeField] private GameObject panel1, panel2; 
 
@@ -18,7 +18,7 @@ public class EndGameUI : MonoBehaviour
         panel2.SetActive(true);
     }
 
-   public void loadMainMenu()
+   public void LoadMainMenu()
    {
         SceneManager.LoadScene("StartMenu"); 
    }

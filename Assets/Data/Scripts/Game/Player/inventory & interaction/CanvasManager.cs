@@ -1,14 +1,15 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class CanvasManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _interactionPanel;
-    [SerializeField] private Text _interactionText;
-    [SerializeField] private Image[] _inventoryIcons;
+    [FormerlySerializedAs("_interactionPanel")] [SerializeField] private GameObject interactionPanel;
+    [FormerlySerializedAs("_interactionText")] [SerializeField] private Text interactionText;
+    [FormerlySerializedAs("_inventoryIcons")] [SerializeField] private Image[] inventoryIcons;
 
-    public static bool Inventory_Active = false;
-    public GameObject Inventory_Canvas;
+    public static bool InventoryActive = false;
+    [FormerlySerializedAs("Inventory_Canvas")] public GameObject inventoryCanvas;
 
     void Start()
     {
@@ -23,14 +24,14 @@ public class CanvasManager : MonoBehaviour
 
     public void HideInteractionPanel()
     {
-        _interactionPanel.SetActive(false);
+        interactionPanel.SetActive(false);
     }
 
     // Activate Interaction Panel with X message
     public void ShowInteractionPanel(string message)
     {
-        _interactionText.text = message;
-        _interactionPanel.SetActive(true);
+        interactionText.text = message;
+        interactionPanel.SetActive(true);
 
 
     }
@@ -38,17 +39,17 @@ public class CanvasManager : MonoBehaviour
 
     public void SetInventoryIcon(int i, Sprite icon)
     {
-        _inventoryIcons[i].sprite = icon;
-        _inventoryIcons[i].color = Color.white;
+        inventoryIcons[i].sprite = icon;
+        inventoryIcons[i].color = Color.white;
     }
 
     public void ClearInventoryIcons()
     {
         // if(numbers!= null)
-        for (int i = 0; i < _inventoryIcons.Length; ++i)
+        for (int i = 0; i < inventoryIcons.Length; ++i)
         {
-            _inventoryIcons[i].sprite = null;
-            _inventoryIcons[i].color = Color.clear;
+            inventoryIcons[i].sprite = null;
+            inventoryIcons[i].color = Color.clear;
         }
 
 
@@ -60,7 +61,7 @@ public class CanvasManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             // is active hide inventory
-            if (Inventory_Active)
+            if (InventoryActive)
             {
                 Hide_Inventory();
             }
@@ -79,8 +80,8 @@ public class CanvasManager : MonoBehaviour
     public void Hide_Inventory()
     {
         // canvas settings
-        Inventory_Canvas.SetActive(false);
-        Inventory_Active = false;
+        inventoryCanvas.SetActive(false);
+        InventoryActive = false;
 
         /* cursor settings
         Cursor.visible = false;
@@ -91,8 +92,8 @@ public class CanvasManager : MonoBehaviour
     public void Show_Inventory()
     {
         // Canvas settings
-        Inventory_Canvas.SetActive(true);
-        Inventory_Active = true;
+        inventoryCanvas.SetActive(true);
+        InventoryActive = true;
 
         /* cursor setting
         Cursor.visible = true;

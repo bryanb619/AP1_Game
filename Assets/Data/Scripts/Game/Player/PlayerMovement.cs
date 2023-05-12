@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.AI; 
+using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 
 public class PlayerMovement : MonoBehaviour
@@ -11,33 +12,33 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Components ----------------------------------------------------->
-                        private Camera                  mainCamera;
-                        internal NavMeshAgent           agent;
+                        private Camera                  _mainCamera;
+                        internal NavMeshAgent           Agent;
 
     // Player Movement ------------------------------------------------>
-    [SerializeField]    private LayerMask               _ignoreLayer;
+    [FormerlySerializedAs("_ignoreLayer")] [SerializeField]    private LayerMask               ignoreLayer;
 
-                        private float                   maxAngle = 30f;
-                        private float                   playerSpeed = 5f;
+                        private float                   _maxAngle = 30f;
+                        private float                   _playerSpeed = 5f;
     [SerializeField]    private float                   playerAcceleration = 2000f;
-    [SerializeField]    private float                   _turnSpeed;
+    [FormerlySerializedAs("_turnSpeed")] [SerializeField]    private float                   turnSpeed;
     //private bool _isMoving;
 
     // Click ------------------------------------------------------------>
-                        private enum EffectState        { _CLICKED, _UNCLICKED }
+                        private enum EffectState        { Clicked, Unclicked }
                         private EffectState             _cursorState;
 
-    [SerializeField]    private GameObject              _clickEffect;
+    [FormerlySerializedAs("_clickEffect")] [SerializeField]    private GameObject              clickEffect;
 
-                        private float                   height = 0;
+                        private float                   _height = 0;
     [SerializeField]    private float                   heightOffset;
 
     // target & direction ------------------------------------------------->
-                        private Vector3                 targetPosition;
-                        private Vector3                 direction;
+                        private Vector3                 _targetPosition;
+                        private Vector3                 _direction;
 
     // Enemy detection ----------------------------------------------------->
-    [SerializeField]    private float                   _maxRange = 20f;
+    [FormerlySerializedAs("_maxRange")] [SerializeField]    private float                   maxRange = 20f;
 
 
     [Header("Ground Check"), SerializeField]
@@ -45,32 +46,33 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]    private LayerMask               whatIsGround;
     
     [SerializeField]    private Transform               orientation;
-                        private MovementState           state;
+                        private MovementState           _state;
 
     [SerializeField]    private LayerMask               aiLayer;
 
 
+    [FormerlySerializedAs("CanMove")]
     [Header("Slope Handling")]
-    [HideInInspector]   public bool                    CanMove; 
-                        private float                  maxSlopeAngle;
-                        private RaycastHit             slopeHit;
-                        private bool                   exitingSlope;
+    [HideInInspector]   public bool                    canMove; 
+                        private float                  _maxSlopeAngle;
+                        private RaycastHit             _slopeHit;
+                        private bool                   _exitingSlope;
 
-                        private bool                   grounded;
-                        private float                  horizontalInput, verticalInput;
-                        Vector3                        moveDirection;
-                        Rigidbody                      rb;
+                        private bool                   _grounded;
+                        private float                  _horizontalInput, _verticalInput;
+                        Vector3                        _moveDirection;
+                        Rigidbody                      _rb;
                         public bool                    dashing;
 
 
-                        private bool                   PlayerOnMove;
-                        public bool                    _PlayerOnMove => PlayerOnMove;
-                        private CompanionBehaviour     _CompanionMovement;
-                        private EnemyBehaviour         enemyHealth;
+                        private bool                   _playerOnMove;
+                        public bool                    PlayerOnMove => _playerOnMove;
+                        private CompanionBehaviour     _companionMovement;
+                        private EnemyBehaviour         _enemyHealth;
                      
-                        private RestartMenu            restartMenu;
+                        private RestartMenu            _restartMenu;
                      
-                        private float                   speed;
+                        private float                   _speed;
 
 
     [Header("Dash Explosion"), SerializeField]
@@ -82,14 +84,14 @@ public class PlayerMovement : MonoBehaviour
                         private MeshRenderer            playerMaterial;
     //[SerializeField] private Camera mainCamera; 
     [SerializeField]    private GameObject              effect;
-    [SerializeField]    private LayerMask               SeeThroughLayer; 
+    [FormerlySerializedAs("SeeThroughLayer")] [SerializeField]    private LayerMask               seeThroughLayer; 
     [SerializeField]    private GameObject              playerMesh;
 
-                        private SkinnedMeshRenderer[]   skinnedMeshRenderers;
-                        private Color[]                 originalColors;
+                        private SkinnedMeshRenderer[]   _skinnedMeshRenderers;
+                        private Color[]                 _originalColors;
                         private bool                    _gamePlay;
 
-                        private NavMeshPath             path;
+                        private NavMeshPath             _path;
                         //private float elapsed = 0.0f;
                      
                         //internal NavMeshAgent agent;
@@ -101,16 +103,16 @@ public class PlayerMovement : MonoBehaviour
                      
                         public float                    closeEnoughMeters = 3f;
                      
-                        private Vector3                 currentDest;
+                        private Vector3                 _currentDest;
                      
                         private bool                    _isMoving; 
                         public bool                     IsMoving => _isMoving;
 
     private enum MovementState
     {
-        walking,
-        dashing,
-        air
+        Walking,
+        Dashing,
+        Air
     }
 
     private void Awake()
@@ -144,30 +146,30 @@ public class PlayerMovement : MonoBehaviour
         this.enabled = true;
 
         // Make a list of all SkinnedMeshRender in the character
-        skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+        _skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
 
         // Create an array to store the original colors
-        originalColors = new Color[skinnedMeshRenderers.Length];
-        for (int i = 0; i < skinnedMeshRenderers.Length; i++)
+        _originalColors = new Color[_skinnedMeshRenderers.Length];
+        for (int i = 0; i < _skinnedMeshRenderers.Length; i++)
         {
-            originalColors[i]   = skinnedMeshRenderers[i].material.color;
+            _originalColors[i]   = _skinnedMeshRenderers[i].material.color;
         }
 
-        CanMove                 = true;
+        canMove                 = true;
 
-        rb                      = GetComponent<Rigidbody>();
-        rb.freezeRotation       = true;
+        _rb                      = GetComponent<Rigidbody>();
+        _rb.freezeRotation       = true;
 
-        agent                   = GetComponent<NavMeshAgent>();
+        Agent                   = GetComponent<NavMeshAgent>();
 
-        _CompanionMovement      = FindObjectOfType<CompanionBehaviour>();
-        restartMenu             = FindObjectOfType<RestartMenu>();
+        _companionMovement      = FindObjectOfType<CompanionBehaviour>();
+        _restartMenu             = FindObjectOfType<RestartMenu>();
         
 
-        path                    = new NavMeshPath();
+        _path                    = new NavMeshPath();
         //elapsed = 0.0f;
 
-        currentDest             = transform.position;
+        _currentDest             = transform.position;
 
 
 
@@ -178,37 +180,37 @@ public class PlayerMovement : MonoBehaviour
 
     private void Components()
     {
-        agent                   = GetComponent<NavMeshAgent>();
-        mainCamera              = FindObjectOfType<Camera>();
+        Agent                   = GetComponent<NavMeshAgent>();
+        _mainCamera              = FindObjectOfType<Camera>();
     }
 
     private void PlayerProfile()
     {
-        agent.speed             = playerSpeed;
-        agent.acceleration      = playerAcceleration;
+        Agent.speed             = _playerSpeed;
+        Agent.acceleration      = playerAcceleration;
 
 
-        agent.updateRotation    = false;
-        agent.angularSpeed      = 0;
+        Agent.updateRotation    = false;
+        Agent.angularSpeed      = 0;
 
-        _cursorState            = EffectState._UNCLICKED;
+        _cursorState            = EffectState.Unclicked;
 
     }
 
     private void Update()
     {    
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
+        _grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
         SpeedControl();
         StateHandler();
         EnemiesAround();
 
-        if (state == MovementState.walking /*|| state == MovementState.crouching*/)
-            rb.drag = groundDrag;
+        if (_state == MovementState.Walking /*|| state == MovementState.crouching*/)
+            _rb.drag = groundDrag;
         else
-            rb.drag = 0;
+            _rb.drag = 0;
     }
 
 
@@ -219,40 +221,40 @@ public class PlayerMovement : MonoBehaviour
         PlayerSpeed();     
     }
 
-    private float desiredMoveSpeed, lastDesiredMoveSpeed;
-    private MovementState lastState;
-    private bool keepMomentum;
+    private float _desiredMoveSpeed, _lastDesiredMoveSpeed;
+    private MovementState _lastState;
+    private bool _keepMomentum;
     private void StateHandler()
     {
         if (dashing)
         {
-            state = MovementState.dashing;
-            desiredMoveSpeed = dashSpeed;
-            speedChangeFactor = dashSpeedChangeFactor;
+            _state = MovementState.Dashing;
+            _desiredMoveSpeed = dashSpeed;
+            _speedChangeFactor = dashSpeedChangeFactor;
         }
 
-        else if (grounded)
+        else if (_grounded)
         {
-            state = MovementState.walking;
-            desiredMoveSpeed = walkSpeed;
+            _state = MovementState.Walking;
+            _desiredMoveSpeed = walkSpeed;
         }
 
         else
         {
-            state = MovementState.air;
+            _state = MovementState.Air;
 
-            if (desiredMoveSpeed < maxSpeed)
-                desiredMoveSpeed = walkSpeed;
+            if (_desiredMoveSpeed < maxSpeed)
+                _desiredMoveSpeed = walkSpeed;
             else
-                desiredMoveSpeed = maxSpeed;
+                _desiredMoveSpeed = maxSpeed;
         }
 
-        bool desiredMoveSpeedHasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
-        if(lastState == MovementState.dashing)   keepMomentum = true;
+        bool desiredMoveSpeedHasChanged = _desiredMoveSpeed != _lastDesiredMoveSpeed;
+        if(_lastState == MovementState.Dashing)   _keepMomentum = true;
 
         if (desiredMoveSpeedHasChanged)
         {
-            if(keepMomentum)
+            if(_keepMomentum)
             {
                 StopAllCoroutines();
                 StartCoroutine(SmoothlyLerpMoveSpeed());
@@ -260,40 +262,40 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 StopAllCoroutines();
-                moveSpeed = desiredMoveSpeed;
+                moveSpeed = _desiredMoveSpeed;
             }
         }
 
-        lastDesiredMoveSpeed = desiredMoveSpeed;
-        lastState = state;
+        _lastDesiredMoveSpeed = _desiredMoveSpeed;
+        _lastState = _state;
 
         
 
     }
 
-    private float speedChangeFactor;
-    private Vector3 lastPosition;
+    private float _speedChangeFactor;
+    private Vector3 _lastPosition;
 
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
         float time = 0;
-        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+        float difference = Mathf.Abs(_desiredMoveSpeed - moveSpeed);
         float startValue = moveSpeed;
 
-        float boostFactor = speedChangeFactor;
+        float boostFactor = _speedChangeFactor;
 
         while(time < difference)
         {
-            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+            moveSpeed = Mathf.Lerp(startValue, _desiredMoveSpeed, time / difference);
 
             time += Time.deltaTime * boostFactor;
 
             yield return null;
         }
 
-        moveSpeed = desiredMoveSpeed;
-        speedChangeFactor = 1f;
-        keepMomentum = false;
+        moveSpeed = _desiredMoveSpeed;
+        _speedChangeFactor = 1f;
+        _keepMomentum = false;
     }
 
 
@@ -305,13 +307,13 @@ public class PlayerMovement : MonoBehaviour
             case true:
                 {
                     MoveInput();
-                    newDirection();
+                    NewDirection();
                     break;
                 }
             case false:
                 {
-                    agent.velocity = Vector3.zero;
-                    agent.isStopped = true;
+                    Agent.velocity = Vector3.zero;
+                    Agent.isStopped = true;
 
                     break;
 
@@ -330,43 +332,43 @@ public class PlayerMovement : MonoBehaviour
 
         else if (Input.GetMouseButton(1))
         {
-            _cursorState = EffectState._CLICKED;
+            _cursorState = EffectState.Clicked;
         }
         else
         {
-            _cursorState = EffectState._UNCLICKED;
+            _cursorState = EffectState.Unclicked;
         }
     }
 
-    private void newDirection()
+    private void NewDirection()
     {
-        if (agent.enabled)
+        if (Agent.enabled)
         {
             if (_isMoving)
             {
                 // set direction
-                direction = targetPosition - transform.position;
+                _direction = _targetPosition - transform.position;
 
                 // Ignore Y position 
-                direction.y = 0;
+                _direction.y = 0;
 
                 // Rotate player towards the target position
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                Quaternion targetRotation = Quaternion.LookRotation(_direction);
 
                 // apply rotation with desired speed
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * _turnSpeed);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
 
             }
 
-            if (_cursorState == EffectState._CLICKED)
+            if (_cursorState == EffectState.Clicked)
             {
                 Destination(false);
             }
 
-            if (agent.remainingDistance <= agent.stoppingDistance)
+            if (Agent.remainingDistance <= Agent.stoppingDistance)
             {
-                agent.velocity = Vector3.zero;
-                agent.isStopped = true;
+                Agent.velocity = Vector3.zero;
+                Agent.isStopped = true;
             }
 
         }
@@ -378,27 +380,27 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 destination;
 
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~_ignoreLayer))
+        if (Physics.Raycast(_mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50, ~ignoreLayer))
         {
-            if (agent.enabled)
+            if (Agent.enabled)
             {
                 Vector3 newDirection = (hit.point - transform.position).normalized;
-                float angle = Vector3.Angle(direction, newDirection);
+                float angle = Vector3.Angle(_direction, newDirection);
 
                 destination = hit.point;
 
-                direction = newDirection;
+                _direction = newDirection;
 
                 NavMeshHit navHit;
 
-                if (NavMesh.SamplePosition(destination, out navHit, _maxRange, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(destination, out navHit, maxRange, NavMesh.AllAreas))
                 {
 
-                    if (angle > maxAngle && agent.remainingDistance >= 0.2f)
+                    if (angle > _maxAngle && Agent.remainingDistance >= 0.2f)
                     {
-                        agent.velocity = Vector3.zero;
+                        Agent.velocity = Vector3.zero;
 
-                        targetPosition = navHit.position;
+                        _targetPosition = navHit.position;
 
                         //_isMoving = false;
                     }
@@ -407,10 +409,10 @@ public class PlayerMovement : MonoBehaviour
                     else
                     {
                         _isMoving = true;
-                        agent.isStopped = false;
-                        targetPosition = (navHit.position);
+                        Agent.isStopped = false;
+                        _targetPosition = (navHit.position);
 
-                        agent.SetDestination(navHit.position);
+                        Agent.SetDestination(navHit.position);
                     }
 
 
@@ -427,63 +429,63 @@ public class PlayerMovement : MonoBehaviour
 
     private void EffectSpawn(RaycastHit hit)
     {
-        height = hit.point.y + heightOffset;
+        _height = hit.point.y + heightOffset;
 
-        GameObject spawnedObject = Instantiate(_clickEffect, hit.point, _clickEffect.transform.rotation);
+        GameObject spawnedObject = Instantiate(clickEffect, hit.point, clickEffect.transform.rotation);
         spawnedObject.transform.position = new Vector3
             (spawnedObject.transform.position.x,
-            height,
+            _height,
             spawnedObject.transform.position.z);
     }
     #endregion
     
     private void MovePlayer()
     {
-        if (state == MovementState.dashing) return;
+        if (_state == MovementState.Dashing) return;
 
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        _moveDirection = orientation.forward * _verticalInput + orientation.right * _horizontalInput;
 
-        if (OnSlope() && !exitingSlope)
+        if (OnSlope() && !_exitingSlope)
         {
-            rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+            _rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
 
-            if (rb.velocity.y > 0)
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+            if (_rb.velocity.y > 0)
+                _rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
 
 
-        if(state == MovementState.walking)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        if(_state == MovementState.Walking)
+            _rb.AddForce(_moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
-        rb.useGravity = !OnSlope();
+        _rb.useGravity = !OnSlope();
     }
 
     private void SpeedControl()
     {
-        if(OnSlope() && !exitingSlope)
+        if(OnSlope() && !_exitingSlope)
         {
-            if (rb.velocity.magnitude > moveSpeed)
-                rb.velocity = rb.velocity.normalized * moveSpeed;
+            if (_rb.velocity.magnitude > moveSpeed)
+                _rb.velocity = _rb.velocity.normalized * moveSpeed;
         }
 
         else
         { 
-            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            Vector3 flatVel = new Vector3(_rb.velocity.x, 0f, _rb.velocity.z);
 
             if(flatVel.magnitude > moveSpeed)
             {
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
-                rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
+                _rb.velocity = new Vector3(limitedVel.x, _rb.velocity.y, limitedVel.z);
             }
         }
     }
 
     private bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if(Physics.Raycast(transform.position, Vector3.down, out _slopeHit, playerHeight * 0.5f + 0.3f))
         {
-            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            return angle < maxSlopeAngle && angle != 0;
+            float angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
+            return angle < _maxSlopeAngle && angle != 0;
         }
 
         return false;
@@ -491,7 +493,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetSlopeMoveDirection()
     {
-        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+        return Vector3.ProjectOnPlane(_moveDirection, _slopeHit.normal).normalized;
     }
 
 
@@ -503,7 +505,7 @@ public class PlayerMovement : MonoBehaviour
         
 
         //if (speed >= 1.5f)
-        if(agent.velocity.magnitude > 2f)
+        if(Agent.velocity.magnitude > 2f)
         {
            _isMoving = true;
            //print("walk");
@@ -520,12 +522,12 @@ public class PlayerMovement : MonoBehaviour
 
     void OnCollisionEnter(Collision other) 
     {
-        if (other.gameObject.tag == "Enemy" && state == MovementState.dashing)
+        if (other.gameObject.tag == "Enemy" && _state == MovementState.Dashing)
         {
-            Rigidbody enemyRB = other.gameObject.GetComponent<Rigidbody>();
+            Rigidbody enemyRb = other.gameObject.GetComponent<Rigidbody>();
             Debug.Log("Dash damage");
 
-            enemyHealth = other.gameObject.GetComponent<EnemyBehaviour>();
+            _enemyHealth = other.gameObject.GetComponent<EnemyBehaviour>();
             
             //direction and distance of the push
             Vector3 pushDirection = other.transform.position - transform.position;
@@ -534,8 +536,8 @@ public class PlayerMovement : MonoBehaviour
             pushDirection.Normalize();
 
             Debug.Log("Push Direction: " + pushDirection);
-            rb.AddForce(-pushDirection * explosionForce, ForceMode.Impulse);
-            enemyRB.AddForce(pushDirection * explosionForce * 0.05f, ForceMode.Impulse);
+            _rb.AddForce(-pushDirection * explosionForce, ForceMode.Impulse);
+            enemyRb.AddForce(pushDirection * explosionForce * 0.05f, ForceMode.Impulse);
 
             //explosion damage
             //enemyHealth.TakeDamage((int)explosionDamage, WeaponType.Dash);
@@ -550,7 +552,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void StopMovement()
     {
-        agent.isStopped = true;
+        Agent.isStopped = true;
         this.enabled = false;
     }
 
@@ -561,7 +563,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         //Change the material colors to red
-        foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
+        foreach (SkinnedMeshRenderer skinnedMeshRenderer in _skinnedMeshRenderers)
         {
             skinnedMeshRenderer.material.color = Color.red;
         }
@@ -569,9 +571,9 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         // Change the material colors back to their original colors
-        for (int j = 0; j < skinnedMeshRenderers.Length; j++)
+        for (int j = 0; j < _skinnedMeshRenderers.Length; j++)
         {
-            skinnedMeshRenderers[j].material.color = originalColors[j];
+            _skinnedMeshRenderers[j].material.color = _originalColors[j];
         }
     }
 
@@ -580,7 +582,7 @@ public class PlayerMovement : MonoBehaviour
         for (int i = 0; i <= 2; i++)
         {
             // Set the material colors to green
-            foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
+            foreach (SkinnedMeshRenderer skinnedMeshRenderer in _skinnedMeshRenderers)
             {
                 skinnedMeshRenderer.material.color = Color.green;
             }
@@ -588,9 +590,9 @@ public class PlayerMovement : MonoBehaviour
             yield return new WaitForSeconds(0.2f);
 
             // Change the material colors back to their original colors
-            for (int j = 0; j < skinnedMeshRenderers.Length; j++)
+            for (int j = 0; j < _skinnedMeshRenderers.Length; j++)
             {
-                skinnedMeshRenderers[j].material.color = originalColors[j];
+                _skinnedMeshRenderers[j].material.color = _originalColors[j];
             }
 
             yield return new WaitForSeconds(0.2f);

@@ -3,18 +3,20 @@ using System.Collections;
 //using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
+
 //using UnityEngine.UI;
 //using UnityEngine.UIElements;
 
 public class GemManager : MonoBehaviour
 {
     [Header ("script references")]
-    private PlayerHealth playerScript;
-    private ManaManager manaManager;
+    private PlayerHealth _playerScript;
+    private ManaManager _manaManager;
 
-    private Gems gemType = new();
+    private Gems _gemType = new();
 
-    private TextMeshProUGUI gemText;
+    private TextMeshProUGUI _gemText;
     
     [Header ("Variables")]
     [SerializeField] private float maxDistance = 3;
@@ -22,26 +24,26 @@ public class GemManager : MonoBehaviour
     [SerializeField] private Material mana, health;
     [SerializeField] private int manaGemRecovery, healthGemRecovery;
 
-    private GameObject player;
-    private int gemNumber;
+    private GameObject _player;
+    private int _gemNumber;
 
-    [SerializeField, HideInInspector]
-    private MeshRenderer CubeRenderer;
+    [FormerlySerializedAs("CubeRenderer")] [SerializeField, HideInInspector]
+    private MeshRenderer cubeRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        playerScript = FindObjectOfType<PlayerHealth>();
-        manaManager = FindObjectOfType<ManaManager>();
-        player = GameObject.Find("Player");
+        _playerScript = FindObjectOfType<PlayerHealth>();
+        _manaManager = FindObjectOfType<ManaManager>();
+        _player = GameObject.Find("Player");
     }
 
     private void Awake()
     {
-        gemText = GetComponentInChildren<TextMeshProUGUI>();
+        _gemText = GetComponentInChildren<TextMeshProUGUI>();
 
-        gemNumber = UnityEngine.Random.Range(1, 3);
-        GemNumber(gemNumber);
+        _gemNumber = UnityEngine.Random.Range(1, 3);
+        GemNumber(_gemNumber);
     }
 
     // Update is called once per frame
@@ -56,15 +58,15 @@ public class GemManager : MonoBehaviour
     {
         Canvas canvas = GetComponentInChildren<Canvas>();
 
-        canvas.transform.LookAt(player.transform.position);
+        canvas.transform.LookAt(_player.transform.position);
     }
 
     private void MoveTowardsPlayer()
     {
         var step = gemSpeed * Time.deltaTime;
-        if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) < maxDistance)
         {
-            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
+            transform.position = Vector3.LerpUnclamped(transform.position, _player.transform.position, Time.deltaTime);
         }
     }
 
@@ -83,30 +85,30 @@ public class GemManager : MonoBehaviour
     {
         if (i == 1)
         { 
-            gemType = Gems.Mana;
+            _gemType = Gems.Mana;
             GetComponentInChildren<MeshRenderer>().material = mana;
-            gemText.text = "Mana";
+            _gemText.text = "Mana";
         }
         else if (i == 2)
         {
-            gemType = Gems.Health;
+            _gemType = Gems.Health;
             GetComponentInChildren<MeshRenderer>().material = health;
-            gemText.text = "Health";
+            _gemText.text = "Health";
         }
 
-        Debug.Log("Number: " + gemNumber + " Type: " + gemType);
+        Debug.Log("Number: " + _gemNumber + " Type: " + _gemType);
     }
     
     public void GemCatch()
     {
-        switch (gemType)
+        switch (_gemType)
         {
             case Gems.Mana:
-                manaManager.RecoverMana(manaGemRecovery);
+                _manaManager.RecoverMana(manaGemRecovery);
                 break;
 
             case Gems.Health:
-                playerScript.RegenerateHealth(healthGemRecovery);
+                _playerScript.RegenerateHealth(healthGemRecovery);
                 break;
 
             default:

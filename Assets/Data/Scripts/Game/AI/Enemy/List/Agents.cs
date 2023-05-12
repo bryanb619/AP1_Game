@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Agents : MonoBehaviour
 {
-    private AIController _controller;
+    private AiController _controller;
 
     private EnemyBehaviour _enemyBehaviour;
     
@@ -20,7 +20,7 @@ public class Agents : MonoBehaviour
             _enemyChaseBehaviour = GetComponentInParent<EnemyChaseBehaviour>();
         }
 
-        _controller = FindObjectOfType<AIController>();
+        _controller = FindObjectOfType<AiController>();
     }
 
 

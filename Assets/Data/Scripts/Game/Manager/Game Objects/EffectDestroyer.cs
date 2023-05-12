@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EffectDestroyer : MonoBehaviour
 {
-    [SerializeField] private float _destroyTime;
+    [FormerlySerializedAs("_destroyTime")] [SerializeField] private float destroyTime;
     private GameState _gameState; 
 
-    private float elapsed = 0f;
+    private float _elapsed = 0f;
     // Start is called before the first frame update
 
     private void Awake()
@@ -20,9 +21,9 @@ public class EffectDestroyer : MonoBehaviour
         {
             case GameState.Gameplay:
                 {
-                    elapsed += Time.deltaTime;
+                    _elapsed += Time.deltaTime;
 
-                    if (elapsed >= _destroyTime) { Destroy(gameObject); }
+                    if (_elapsed >= destroyTime) { Destroy(gameObject); }
                     
                     break; 
                 }

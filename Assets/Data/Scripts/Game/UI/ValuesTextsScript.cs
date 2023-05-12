@@ -5,38 +5,38 @@ using UnityEngine.UI;
 
 public class ValuesTextsScript : MonoBehaviour
 {
-    internal int kills, crystals, upgrades;
+    internal int Kills, Crystals, Upgrades;
     
     [SerializeField]
     private Text killsText, crystalsText, upgradesText;
 
     void Start()
     {
-        kills = 0;
-        crystals = 0;
-        upgrades = 0;
+        Kills = 0;
+        Crystals = 0;
+        Upgrades = 0;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        killsText.text = kills.ToString();
-        crystalsText.text = crystals.ToString();
-        upgradesText.text = upgrades.ToString();
+        killsText.text = Kills.ToString();
+        crystalsText.text = Crystals.ToString();
+        upgradesText.text = Upgrades.ToString();
     }
 
 
 
     internal void GetKill()
     {
-        kills += 1;
+        Kills += 1;
     }
     internal void GetCrystal()
     {
-        crystals += 1;
+        Crystals += 1;
     }
     internal void GetUpgrade()
     {
-        upgrades += 1;
+        Upgrades += 1;
     }
 }

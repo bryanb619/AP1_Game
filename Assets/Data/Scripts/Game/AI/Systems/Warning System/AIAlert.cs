@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class AIAlert : MonoBehaviour
+public class AiAlert : MonoBehaviour
 {
-    public void GetPlayer(Transform Target)
+    public void GetPlayer(Transform target)
     {   
-        transform.LookAt(new Vector3(0, Target.position.y, 0));
+        transform.LookAt(new Vector3(0, target.position.y, 0));
     }
   
 }

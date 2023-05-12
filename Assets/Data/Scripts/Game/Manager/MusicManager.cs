@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using FMODUnity;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class MusicManager : MonoBehaviour
@@ -20,11 +19,11 @@ public class MusicManager : MonoBehaviour
     {
         Instance = this;
 
-        MusicManager[] OTHER_MANAGERS = FindObjectsOfType<MusicManager>();
+        MusicManager[] otherManagers = FindObjectsOfType<MusicManager>();
 
-        for (int i = 1; i < OTHER_MANAGERS.Length; i++)
+        for (int i = 1; i < otherManagers.Length; i++)
         {
-            Destroy(OTHER_MANAGERS[i].gameObject);
+            Destroy(otherManagers[i].gameObject);
         }
     }
 

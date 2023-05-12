@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class AISpawn : MonoBehaviour
+public class AiSpawn : MonoBehaviour
 {
 
-    [SerializeField] private GameObject m_SpawnObject;
+    [FormerlySerializedAs("m_SpawnObject")] [SerializeField] private GameObject mSpawnObject;
 
 
     // Update is called once per frame

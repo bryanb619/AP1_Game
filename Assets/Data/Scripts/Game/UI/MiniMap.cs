@@ -1,17 +1,18 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MiniMap : MonoBehaviour
 {
     // Player camaera
-    [SerializeField] private Transform Target;
+    [FormerlySerializedAs("Target")] [SerializeField] private Transform target;
 
     private void LateUpdate()
     {
-        Vector3 newPos = Target.position;
+        Vector3 newPos = target.position;
         newPos.y = transform.position.y;
 
         transform.position = newPos;
 
-        transform.rotation = Quaternion.Euler(90f, Target.eulerAngles.y, 0f);
+        transform.rotation = Quaternion.Euler(90f, target.eulerAngles.y, 0f);
     }
 }

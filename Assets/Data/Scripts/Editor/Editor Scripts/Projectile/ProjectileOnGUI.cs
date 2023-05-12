@@ -23,7 +23,7 @@ public class ProjectileOnGUI : Editor
         GUIStyle cyan = new GUIStyle();
         cyan.normal.textColor = Color.cyan;
 
-        switch (projectile.gamePlay)
+        switch (projectile.Gameplay)
         {
             case true:
                 {

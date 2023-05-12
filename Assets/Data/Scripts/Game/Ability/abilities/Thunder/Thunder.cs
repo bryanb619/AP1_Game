@@ -3,17 +3,17 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Akarya/abilities/Thunder")]
 public class Thunder : Ability
 {
-    private Shooter shoot;
+    private Shooter _shoot;
 
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
 
         // INSTANTIATE
-        if (shoot != null)
+        if (_shoot != null)
         {
-            shoot = FindObjectOfType<Shooter>();
-            shoot.Shoot();
+            _shoot = FindObjectOfType<Shooter>();
+            _shoot.Shoot();
         }
 
     }

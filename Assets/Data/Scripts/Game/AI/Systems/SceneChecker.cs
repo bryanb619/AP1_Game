@@ -1,27 +1,28 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(SphereCollider))]
 public class SceneChecker : MonoBehaviour
 {
 
-    public SphereCollider Collider;
+    [FormerlySerializedAs("Collider")] public SphereCollider collider;
 
 
-    public float FieldOfView = 360f;
-    public LayerMask LineOfSightLayers;
+    [FormerlySerializedAs("FieldOfView")] public float fieldOfView = 360f;
+    [FormerlySerializedAs("LineOfSightLayers")] public LayerMask lineOfSightLayers;
 
-    public delegate void GainSightEvent(Transform Target);
+    public delegate void GainSightEvent(Transform target);
     public GainSightEvent OnGainSight;
-    public delegate void LoseSightEvent(Transform Target);
+    public delegate void LoseSightEvent(Transform target);
     public LoseSightEvent OnLoseSight;
 
-    private Coroutine CheckForLineOfSightCoroutine;
+    private Coroutine _checkForLineOfSightCoroutine;
 
 
     private void Awake()
     {
-        Collider = GetComponent<SphereCollider>();
+        collider = GetComponent<SphereCollider>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -30,28 +31,28 @@ public class SceneChecker : MonoBehaviour
 
         if (!CheckLineOfSight(other.transform))
         {
-            CheckForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(other.transform));
+            _checkForLineOfSightCoroutine = StartCoroutine(CheckForLineOfSight(other.transform));
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         OnLoseSight?.Invoke(other.transform);
-        if (CheckForLineOfSightCoroutine != null)
+        if (_checkForLineOfSightCoroutine != null)
         {
-            StopCoroutine(CheckForLineOfSightCoroutine);
+            StopCoroutine(_checkForLineOfSightCoroutine);
         }
     }
 
-    private bool CheckLineOfSight(Transform Target)
+    private bool CheckLineOfSight(Transform target)
     {
-        Vector3 direction = (Target.transform.position - transform.position).normalized;
+        Vector3 direction = (target.transform.position - transform.position).normalized;
         float dotProduct = Vector3.Dot(transform.forward, direction);
-        if (dotProduct >= Mathf.Cos(FieldOfView))
+        if (dotProduct >= Mathf.Cos(fieldOfView))
         {
-            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, Collider.radius, LineOfSightLayers))
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, collider.radius, lineOfSightLayers))
             {
-                OnGainSight?.Invoke(Target);
+                OnGainSight?.Invoke(target);
                 return true;
             }
         }
@@ -59,18 +60,13 @@ public class SceneChecker : MonoBehaviour
         return false;
     }
 
-    private void ColliderShow()
+    private IEnumerator CheckForLineOfSight(Transform target)
     {
-        
-    }
+        WaitForSeconds wait = new WaitForSeconds(0.5f);
 
-    private IEnumerator CheckForLineOfSight(Transform Target)
-    {
-        WaitForSeconds Wait = new WaitForSeconds(0.5f);
-
-        while (!CheckLineOfSight(Target))
+        while (!CheckLineOfSight(target))
         {
-            yield return Wait;
+            yield return wait;
         }
     }
 

@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
     #region Variables
 
     // GAME STATE   ------------------------------------------------------------------------------------------->
-    [Header("Game state")]
+    [FormerlySerializedAs("State")] [Header("Game state")]
 
-                        public GameState                        State;
+                        public GameState                        state;
                         //private GameState                       _state;
                         public static GameManager               Instance;
 
@@ -39,9 +40,9 @@ public class GameManager : MonoBehaviour
 
     //[SerializeField]
                         // VOLUME
-                        private float                           ambientVolume;
-                        private float                           sfxVolume;
-                        private float                           musicVolume;
+                        private float                           _ambientVolume;
+                        private float                           _sfxVolume;
+                        private float                           _musicVolume;
 
                         // AUDIO STATE
                         private bool                            _audioState;
@@ -60,11 +61,11 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
 
-        GameManager[] OTHER_MANAGERS = FindObjectsOfType<GameManager>();
+        GameManager[] otherManagers = FindObjectsOfType<GameManager>();
 
-        for (int i = 1; i < OTHER_MANAGERS.Length; i++)
+        for (int i = 1; i < otherManagers.Length; i++)
         {
-            Destroy(OTHER_MANAGERS[i].gameObject);
+            Destroy(otherManagers[i].gameObject);
         }
 
     }
@@ -81,7 +82,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateGameState(GameState newGamestate)
     {
-        State = newGamestate;
+        state = newGamestate;
 
         switch (newGamestate)
         {
@@ -127,10 +128,10 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private void HandleUnfocussedApp(bool Focused)
+    private void HandleUnfocussedApp(bool focused)
     {
         //_state = GameState.Paused;
-        switch(Focused)
+        switch(focused)
         {
             case true:
                 {
@@ -251,33 +252,33 @@ public class GameManager : MonoBehaviour
 
     public void HandleMusicVolume(float newVolume)
     {
-        musicVolume = newVolume;
+        _musicVolume = newVolume;
 
-        print("ambient " + ambientVolume);
+        print("ambient " + _ambientVolume);
 
         foreach (FMODUnity.StudioEventEmitter emitter in musicSounds)
         {
             // 
-            emitter.SetParameter("Volume", musicVolume);
+            emitter.SetParameter("Volume", _musicVolume);
 
         }
     }
 
     public void HandleAmbientVolume(float newVolume)
     {
-        ambientVolume = newVolume;
+        _ambientVolume = newVolume;
         
         //print("ambient " + ambientVolume);
 
         foreach (FMODUnity.StudioEventEmitter emitter in ambientSounds)
         {
-            emitter.SetParameter("Volume", ambientVolume);
+            emitter.SetParameter("Volume", _ambientVolume);
         }
     }
 
-    public void HandleSFXVolume(float newVolume)
+    public void HandleSfxVolume(float newVolume)
     {
-        sfxVolume = newVolume;
+        _sfxVolume = newVolume;
 
         //print("ambient " + sfxVolume);
 

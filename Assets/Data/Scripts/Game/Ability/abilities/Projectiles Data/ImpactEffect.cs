@@ -6,13 +6,13 @@ public class ImpactEffect : MonoBehaviour
 {
     [SerializeField] private ImpactData         data;
 
-    private float                               elapsed;
-    private int                                 maxTime;
+    private float                               _elapsed;
+    private int                                 _maxTime;
 
     private GameState                           _state;
     private bool                                _gamePlay;
 
-    private StudioEventEmitter                  emitter;
+    private StudioEventEmitter                  _emitter;
 
 
 
@@ -29,9 +29,9 @@ public class ImpactEffect : MonoBehaviour
 
     private void CollectData()
     {
-        emitter = GetComponent<StudioEventEmitter>();
+        _emitter = GetComponent<StudioEventEmitter>();
         
-        maxTime = data.timeInScene;
+        _maxTime = data.timeInScene;
 
         switch (_state)
         {
@@ -58,9 +58,9 @@ public class ImpactEffect : MonoBehaviour
 
     private void UpdateImpact()
     {
-        elapsed += Time.deltaTime;
+        _elapsed += Time.deltaTime;
 
-        if (elapsed >= maxTime)
+        if (_elapsed >= _maxTime)
         {
             DestroyEffect();
         }
@@ -85,12 +85,12 @@ public class ImpactEffect : MonoBehaviour
 
     private void SoundSetPlay()
     {
-        emitter.EventInstance.setPaused(false); // set play
+        _emitter.EventInstance.setPaused(false); // set play
     }
 
     private void SoundSetPause()
     {
-        emitter.EventInstance.setPaused(true); // set paused
+        _emitter.EventInstance.setPaused(true); // set paused
     }
 
     private void GameManager_OnGameStateChanged(GameState state)

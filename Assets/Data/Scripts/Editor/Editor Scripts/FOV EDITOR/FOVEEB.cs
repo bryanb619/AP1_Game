@@ -6,6 +6,7 @@ public class FOVEEB : Editor
 {
     private void OnSceneGUI()
     {
+        /*
         EnemyBehaviour fov = (EnemyBehaviour)target;
         Handles.color = Color.red;
         Handles.DrawWireArc(fov.EefovTransform.position, Vector3.up, Vector3.forward, 360, fov.Radius);
@@ -17,11 +18,12 @@ public class FOVEEB : Editor
         Handles.DrawLine(fov.EefovTransform.position, fov.EefovTransform.position + viewAngle01 * fov.Radius);
         Handles.DrawLine(fov.EefovTransform.position, fov.EefovTransform.position + viewAngle02 * fov.Radius);
             
-        if (fov.canSee)
+        if (fov.CanSee)
         {
             Handles.color = Color.cyan;
             Handles.DrawLine(fov.EefovTransform.position, fov.PlayerTarget.transform.position);
         }
+        */
     }
 
     private Vector3 DirectionFromAngle(float eulerY, float angleInDegrees)

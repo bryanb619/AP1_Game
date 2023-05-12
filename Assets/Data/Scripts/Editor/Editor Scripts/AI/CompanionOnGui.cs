@@ -6,7 +6,7 @@ public class CompanionOnGui : Editor
 {
     private void OnSceneGUI()
     {
-        CompanionBehaviour _companionBehaviour = (CompanionBehaviour)target;
+        CompanionBehaviour companionBehaviour = (CompanionBehaviour)target;
 
         GUIStyle red = new GUIStyle();
         red.normal.textColor = Color.red;
@@ -24,21 +24,21 @@ public class CompanionOnGui : Editor
         cyan.normal.textColor = Color.cyan;
 
 
-        switch (_companionBehaviour._stateAI)
+        switch (companionBehaviour.stateAi)
         {
-            case CompanionBehaviour.CompanionState._idle:
+            case CompanionBehaviour.CompanionState.Idle:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Idle  GamePlay: " + _companionBehaviour.Gameplay, cyan);
+                    Handles.Label(companionBehaviour.transform.position + Vector3.up, "Idle  GamePlay: " + companionBehaviour.Gameplay, cyan);
                     break;
                 }
-            case CompanionBehaviour.CompanionState._follow:
+            case CompanionBehaviour.CompanionState.Follow:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Follow  GamePlay: " + _companionBehaviour.Gameplay, green);
+                    Handles.Label(companionBehaviour.transform.position + Vector3.up, "Follow  GamePlay: " + companionBehaviour.Gameplay, green);
                     break;
                 }
-            case CompanionBehaviour.CompanionState._combat:
+            case CompanionBehaviour.CompanionState.Combat:
                 {
-                    Handles.Label(_companionBehaviour.transform.position + Vector3.up, "Combat  GamePlay: " + _companionBehaviour.Gameplay + " Change Pos : " + _companionBehaviour.ChangePos, red);
+                    Handles.Label(companionBehaviour.transform.position + Vector3.up, "Combat  GamePlay: " + companionBehaviour.Gameplay + " Change Pos : " + companionBehaviour.ChangePos, red);
                     break;
                 }
         }

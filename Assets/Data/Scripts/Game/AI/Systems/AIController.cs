@@ -1,19 +1,20 @@
 using System.Collections.Generic; 
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class AIController : MonoBehaviour
+public class AiController : MonoBehaviour
 {
-    private int maxAttackingAgents = 2;
+    private int _maxAttackingAgents = 2;
 
-    private EnemyChaseBehaviour c_enemy; 
+    private EnemyChaseBehaviour _cEnemy; 
 
-    private EnemyBehaviour r_enemy;
+    private EnemyBehaviour _rEnemy;
 
     //[SerializeField] privat
     // CHANGE TO DIFERENT SCRIPT
     //private List<Agents> AttakingAI = new List<Agents>(); 
 
-    [SerializeField] private List<GameObject> _enemies = new List<GameObject>();
+    [FormerlySerializedAs("_enemies")] [SerializeField] private List<GameObject> enemies = new List<GameObject>();
 
 
     private void Start()
@@ -25,7 +26,7 @@ public class AIController : MonoBehaviour
     {
         //print(AttakingAI); 
 
-        if (_enemies.Count >= maxAttackingAgents)
+        if (enemies.Count >= _maxAttackingAgents)
         {
             // Stop the agent from attacking
 
@@ -36,10 +37,10 @@ public class AIController : MonoBehaviour
             
             
         }
-        else if (!_enemies.Contains(enemy))
+        else if (!enemies.Contains(enemy))
         {
             // Add the agent to the list of attacking agents
-            _enemies.Add(enemy);
+            enemies.Add(enemy);
             return; 
 
         }
@@ -49,7 +50,7 @@ public class AIController : MonoBehaviour
     {
         //print(AttakingAI);
         //c_enemy.StopAttack();
-        _enemies.Remove(enemy);
+        enemies.Remove(enemy);
         return; 
     }
 

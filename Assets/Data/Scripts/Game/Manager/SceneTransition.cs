@@ -5,7 +5,7 @@ public class SceneTransition : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Interactive interactive;
-    private int levelToLoad;
+    private int _levelToLoad;
 
     internal void FadeToLevel(int levelIndex)
     {

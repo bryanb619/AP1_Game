@@ -7,7 +7,7 @@ using TMPro;
 public class AbilityUpgradesManager : MonoBehaviour
 {
     [SerializeField]
-    private upgradeType upgrade;
+    private UpgradeType upgrade;
     [SerializeField]
     private GameObject upgradeUI;
 
@@ -35,16 +35,16 @@ public class AbilityUpgradesManager : MonoBehaviour
     {
         switch(upgrade)
         { 
-            case upgradeType.qUpgrade:
+            case UpgradeType.qUpgrade:
                 GetComponentInChildren<TextMeshProUGUI>().text = "Q Upgrade";
                 break;
-            case upgradeType.wUpgrade:
+            case UpgradeType.wUpgrade:
                 GetComponentInChildren<TextMeshProUGUI>().text = "W Upgrade";
                 break;
-            case upgradeType.eUpgrade:
+            case UpgradeType.eUpgrade:
                 GetComponentInChildren<TextMeshProUGUI>().text = "E Upgrade";
                 break;
-            case upgradeType.rUpgrade:
+            case UpgradeType.rUpgrade:
                 GetComponentInChildren<TextMeshProUGUI>().text = "R Upgrade";
                 break;
             default:
@@ -58,22 +58,22 @@ public class AbilityUpgradesManager : MonoBehaviour
         {
             switch (upgrade)
             {
-                case upgradeType.qUpgrade:
+                case UpgradeType.qUpgrade:
                     upgradeUI.transform.GetChild(0).gameObject.SetActive(true);
                     shooterScript.UpgradeChecker(1);
                     break;
 
-                case upgradeType.wUpgrade:
+                case UpgradeType.wUpgrade:
                     upgradeUI.transform.GetChild(1).gameObject.SetActive(true);
                     shooterScript.UpgradeChecker(2);                                 
                     break;                                                           
                                                                                      
-                case upgradeType.eUpgrade:
+                case UpgradeType.eUpgrade:
                     upgradeUI.transform.GetChild(2).gameObject.SetActive(true);
                     dashingScript.EnableUpgrade();                                   
                     break;                                                           
                                                                                      
-                case upgradeType.rUpgrade:
+                case UpgradeType.rUpgrade:
                     upgradeUI.transform.GetChild(3).gameObject.SetActive(true);
                     shooterScript.UpgradeChecker(3);
                     break;
@@ -86,7 +86,7 @@ public class AbilityUpgradesManager : MonoBehaviour
         }
     }
 
-    public enum upgradeType
+    public enum UpgradeType
     {
         qUpgrade,
         wUpgrade,

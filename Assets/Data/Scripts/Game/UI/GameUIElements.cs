@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class GameUIElements : MonoBehaviour
+public class GameUiElements : MonoBehaviour
 {
-    private Camera              mainCamera;
+    private Camera              _mainCamera;
     private Transform           _camTransform;
 
-    private Vector3             desiredTarget; 
+    private Vector3             _desiredTarget; 
 
     // Start is called before the first frame update
     void Start()
     {
-        mainCamera              = FindObjectOfType<Camera>();
-        _camTransform           = mainCamera.transform;
+        _mainCamera              = FindObjectOfType<Camera>();
+        _camTransform           = _mainCamera.transform;
     }
   
     // Update is called once per frame
@@ -19,8 +19,8 @@ public class GameUIElements : MonoBehaviour
     {
         //transform.LookAt(_camTransform.position);
 
-        desiredTarget = _camTransform.position - transform.position;
-        Quaternion rotation = Quaternion.LookRotation(desiredTarget);
+        _desiredTarget = _camTransform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(_desiredTarget);
 
         transform.rotation = Quaternion.Euler(0, rotation.eulerAngles.y, 0);
     }

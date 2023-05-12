@@ -20,11 +20,11 @@ public class CameraZoom : MonoBehaviour
 
 */
 
-    private Vector3 followOffset; 
+    private Vector3 _followOffset; 
 
-    private float followMin = 8f; 
+    private float _followMin = 8f; 
 
-    private float followMax = 15f; 
+    private float _followMax = 15f; 
 
     [SerializeField] private CinemachineVirtualCamera cam;
 
@@ -34,7 +34,7 @@ public class CameraZoom : MonoBehaviour
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
-        followOffset = cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset; 
+        _followOffset = cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset; 
     }
 
     void Start()
@@ -105,37 +105,37 @@ public class CameraZoom : MonoBehaviour
     {
         if(_state == GameState.Gameplay) 
         {
-            Vector3 ZOOMDIR = followOffset.normalized;
+            Vector3 zoomdir = _followOffset.normalized;
 
 
-            float ZoomSpeed = 1.5F;
+            float zoomSpeed = 1.5F;
 
             if (Input.mouseScrollDelta.y > 0)
             {
-                followOffset -= ZOOMDIR;
+                _followOffset -= zoomdir;
             }
 
             else if (Input.mouseScrollDelta.y < 0)
             {
-                followOffset += ZOOMDIR;
+                _followOffset += zoomdir;
             }
 
-            if (followOffset.magnitude < followMin)
+            if (_followOffset.magnitude < _followMin)
             {
 
-                followOffset = ZOOMDIR * followMin;
+                _followOffset = zoomdir * _followMin;
             }
 
-            if (followOffset.magnitude > followMax)
+            if (_followOffset.magnitude > _followMax)
             {
-                followOffset = ZOOMDIR * followMax;
+                _followOffset = zoomdir * _followMax;
             }
 
 
 
             cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset =
                 Vector3.Lerp(cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset,
-                followOffset, Time.deltaTime * ZoomSpeed);
+                _followOffset, Time.deltaTime * zoomSpeed);
         }
         //Debug.Log(Input.mouseScrollDelta); 
 

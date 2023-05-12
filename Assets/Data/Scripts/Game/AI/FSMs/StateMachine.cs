@@ -15,7 +15,7 @@ namespace LibGameAI.FSMs
     public class StateMachine
     {
         // Current state
-        private State currentState;
+        private State _currentState;
 
         /// <summary>
         /// Create a new FSM.
@@ -23,7 +23,7 @@ namespace LibGameAI.FSMs
         /// <param name="initialState">Initial state.</param>
         public StateMachine(State initialState)
         {
-            currentState = initialState;
+            _currentState = initialState;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace LibGameAI.FSMs
 
             // Check through each transition and store the first one that
             // triggers
-            foreach (Transition transition in currentState.Transitions)
+            foreach (Transition transition in _currentState.Transitions)
             {
                 if (transition.IsTriggered())
                 {
@@ -57,18 +57,18 @@ namespace LibGameAI.FSMs
 
                 // Add the exit action of the old state, the transition action
                 // and the entry for the new state
-                actions += currentState.ExitActions;
+                actions += _currentState.ExitActions;
                 actions += triggeredTransition.Actions;
                 actions += targetState.EntryActions;
 
                 // Complete the transition and return the action list
-                currentState = targetState;
+                _currentState = targetState;
                 return actions;
             }
 
             // If no transition was triggered, return the actions for the
             // current state
-            return currentState.StateActions;
+            return _currentState.StateActions;
         }
     }
 }

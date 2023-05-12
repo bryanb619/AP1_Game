@@ -3,22 +3,22 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Akarya/abilities/Normal")]
 public class Normal : Ability
 {
-    private Shooter shoot;
+    private Shooter _shoot;
 
     public override void Activate(GameObject parent)
     {
         // ACTIVATE ANIMATION
-        shoot = FindObjectOfType<Shooter>();
+        _shoot = FindObjectOfType<Shooter>();
         // INSTANTIATE
-        if (shoot != null)
+        if (_shoot != null)
         {
             
-            shoot.Shoot();
+            _shoot.Shoot();
         }
 
 
 
-        shoot.Shoot();
+        _shoot.Shoot();
         //_player.TakeDamage(7);
 
         // POWER CODE
@@ -26,7 +26,7 @@ public class Normal : Ability
 
     public override void BeginCooldown(GameObject parent)
     {
-        shoot = FindObjectOfType<Shooter>();
+        _shoot = FindObjectOfType<Shooter>();
       
     }
 

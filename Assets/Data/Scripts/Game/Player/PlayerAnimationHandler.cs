@@ -1,28 +1,29 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class PlayerAnimationHandler : MonoBehaviour
 {
-    private Vector3 previousPosition;
+    private Vector3 _previousPosition;
     
     [HideInInspector]
     public float speed;
 
     //private float crossFadeTime = 0.2f; 
 
-    private Animator playerAnimator;
+    private Animator _playerAnimator;
 
-    private AnimatorStateInfo stateInfo;
+    private AnimatorStateInfo _stateInfo;
 
-    [HideInInspector] 
-    public bool CANMOVE;
+    [FormerlySerializedAs("CANMOVE")] [HideInInspector] 
+    public bool canmove;
 
     private bool _gamePlay;
 
     [SerializeField]
     private float velocityChanger;
 
-    private float velocity;
+    private float _velocity;
 
 
     private void Awake()
@@ -35,17 +36,17 @@ public class PlayerAnimationHandler : MonoBehaviour
 
         _gamePlay = true;
 
-        CANMOVE = false;
+        canmove = false;
  
-        previousPosition = transform.position;
+        _previousPosition = transform.position;
 
-        playerAnimator = GetComponent<Animator>();
+        _playerAnimator = GetComponent<Animator>();
 
-        playerAnimator.SetBool("_canRun", false);
+        _playerAnimator.SetBool("_canRun", false);
 
-         stateInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+         _stateInfo = _playerAnimator.GetCurrentAnimatorStateInfo(0);
 
-        velocity = 0f;
+        _velocity = 0f;
     }
     // Update is called once per frame
     void Update()
@@ -57,20 +58,20 @@ public class PlayerAnimationHandler : MonoBehaviour
     {
         if (_gamePlay)
         {
-            Vector3 curMove = transform.position - previousPosition;
+            Vector3 curMove = transform.position - _previousPosition;
             speed = curMove.magnitude / Time.deltaTime;
-            previousPosition = transform.position;
+            _previousPosition = transform.position;
 
             if (speed >= 1)
             {
                 // The object is moving
-                CANMOVE = true;
+                canmove = true;
                 
             }
             else if (speed <= 1)
             {
                 // The object is not moving
-                CANMOVE = false;
+                canmove = false;
                 
             }
             HandleAnimation();
@@ -80,7 +81,7 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private void HandleAnimation()
     {
-        if (CANMOVE)
+        if (canmove)
         {
             BlendTreeStartup();
             return;
@@ -112,26 +113,26 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private void BlendTreeStartup()
     {
-        if(velocity < 1f)
+        if(_velocity < 1f)
         {
-            velocity += velocityChanger * Time.deltaTime;
-            playerAnimator.SetFloat("Velocity", velocity);
+            _velocity += velocityChanger * Time.deltaTime;
+            _playerAnimator.SetFloat("Velocity", _velocity);
         }
     }
     private void BlendTreeSlowdown()
     {
-        if (velocity > 0)
+        if (_velocity > 0)
         {
-            velocity -= velocityChanger * Time.deltaTime;
-            playerAnimator.SetFloat("Velocity", velocity);
+            _velocity -= velocityChanger * Time.deltaTime;
+            _playerAnimator.SetFloat("Velocity", _velocity);
         }
         else
-            velocity = 0f;
+            _velocity = 0f;
     }
 
     public void DeathAnim()
     {
-        playerAnimator.SetBool("isDead", true);
+        _playerAnimator.SetBool("isDead", true);
     }
     
     private void OnDestroy()

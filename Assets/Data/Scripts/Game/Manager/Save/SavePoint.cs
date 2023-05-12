@@ -34,17 +34,17 @@ public class SavePoint : MonoBehaviour
 
     private IEnumerator StartDestroy()
     {
-        bool IS_RUNNING = false;
+        bool isRunning = false;
 
-        if(!IS_RUNNING) 
+        if(!isRunning) 
         {
-            IS_RUNNING = true;
+            isRunning = true;
 
             yield return new WaitForSeconds(3.0f);
 
             DestroySavePoint();
 
-            IS_RUNNING = false;
+            isRunning = false;
         }
 
         

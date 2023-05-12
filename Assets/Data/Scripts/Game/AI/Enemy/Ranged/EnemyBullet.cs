@@ -16,20 +16,20 @@ public class EnemyBullet : MonoBehaviour
     private GameState                           _state;
 
     private Rigidbody                           _rb;
-    private float                               m_thrust;
+    private float                               _mThrust;
     private bool                                _useRb;
 
-    private int                                 speed;
+    private int                                 _speed;
 
-    private int                                  damage;
+    private int                                  _damage;
 
-    private int                                 maxTime; 
+    private int                                 _maxTime; 
 
-    private float                               elapsed;
+    private float                               _elapsed;
 
     private bool                                _impactEffet;
 
-    private GameObject                          impactObject;
+    private GameObject                          _impactObject;
     #endregion
 
     private void Awake()
@@ -83,24 +83,24 @@ public class EnemyBullet : MonoBehaviour
 
        
 
-        speed = data.speed;
+        _speed = data.speed;
 
-        _useRb = data._useRBPhysics;
-        m_thrust = data.thrust; 
+        _useRb = data.useRbPhysics;
+        _mThrust = data.thrust; 
 
-        damage = data.damage;
+        _damage = data.damage;
 
-        maxTime = data.timeAirbone;
+        _maxTime = data.timeAirbone;
 
       
-        _impactEffet = data._useImpact;
+        _impactEffet = data.useImpact;
 
-        impactObject = data.impactEffect;
+        _impactObject = data.impactEffect;
 
         if (_rb != null && _useRb)
         {
             _rb = GetComponent<Rigidbody>();
-            _rb.AddForce(transform.forward * m_thrust);
+            _rb.AddForce(transform.forward * _mThrust);
         }
     }
 
@@ -135,10 +135,10 @@ public class EnemyBullet : MonoBehaviour
     {
         if (_gamePlay)
         {
-            elapsed += Time.deltaTime;
+            _elapsed += Time.deltaTime;
 
             //Debug.Log(elapsed);
-            if (elapsed >= maxTime)
+            if (_elapsed >= _maxTime)
             {
                 DestroyOnDistance();
             }
@@ -151,7 +151,7 @@ public class EnemyBullet : MonoBehaviour
         {
             if (_gamePlay)
             {
-                transform.Translate(Vector3.forward * speed * Time.deltaTime);
+                transform.Translate(Vector3.forward * _speed * Time.deltaTime);
                 //Debug.Log(speed + " gameplay ");
             }
         }
@@ -182,7 +182,7 @@ public class EnemyBullet : MonoBehaviour
         if (player != null)
         {
            print("PLAYER DAMAGE");
-            player.TakeDamage(damage);
+            player.TakeDamage(_damage);
             DestroyBullet();
             
         }
@@ -205,7 +205,7 @@ public class EnemyBullet : MonoBehaviour
         }
         if(_impactEffet)
         {
-            Instantiate(impactObject, transform.position, transform.rotation);
+            Instantiate(_impactObject, transform.position, transform.rotation);
 
         }
        

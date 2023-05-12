@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu (menuName ="Akarya/AI/Boss Data")]
-public class AIBossData : ScriptableObject
+public class AiBossData : ScriptableObject
 {
     // FOV // 
     [Header("FOV Masks")]
@@ -14,7 +14,7 @@ public class AIBossData : ScriptableObject
 
     // Hide //
     [Header("Hide")]
-    private float minObstacleHeight = 0.3f;
-    public float MinObstacleHeight => minObstacleHeight; 
+    private float _minObstacleHeight = 0.3f;
+    public float MinObstacleHeight => _minObstacleHeight; 
 
 }

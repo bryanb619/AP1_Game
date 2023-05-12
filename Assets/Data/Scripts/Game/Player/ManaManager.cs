@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ManaManager : MonoBehaviour
 {
@@ -17,10 +18,11 @@ public class ManaManager : MonoBehaviour
     [SerializeField] private float manaRegenRate = 1f;
     [SerializeField] private float manaRegenAmount = 10f;
     [SerializeField] private float waitTime = 2f;
-                     private WaitForSeconds manaTimer;
+                     private WaitForSeconds _manaTimer;
     
+    [FormerlySerializedAs("manaUI")]
     [Header("References")]
-    [SerializeField] private ManaBar manaUI;
+    [SerializeField] private ManaBar manaUi;
     [SerializeField] private Shooter shooter;
 
     [Header("Cheats")]
@@ -29,7 +31,7 @@ public class ManaManager : MonoBehaviour
 
     private void Start()
     {
-        manaTimer = new WaitForSeconds(waitTime);
+        _manaTimer = new WaitForSeconds(waitTime);
     }
 
     private void Update()
@@ -42,17 +44,17 @@ public class ManaManager : MonoBehaviour
         if (manaCheat == true)
         {
             mana = maxMana;
-            manaUI.SetMana(mana);
+            manaUi.SetMana(mana);
         }
     }
 
     #region Mana Management
 
-    internal bool ManaCheck(WeaponType _magicType)
+    internal bool ManaCheck(WeaponType magicType)
     {
         CancelInvoke("ManaRegeneration");
 
-        switch (_magicType)
+        switch (magicType)
         { 
             case WeaponType.Fire:
                 if (mana >= fireAttackCost)
@@ -95,18 +97,18 @@ public class ManaManager : MonoBehaviour
     private void ManaRegeneration()
     {
         mana += manaRegenAmount;
-        manaUI.SetMana(mana);
+        manaUi.SetMana(mana);
     }
     internal void RecoverMana(int recoverable)
     {
         mana += recoverable;
-        manaUI.SetMana(mana);
+        manaUi.SetMana(mana);
     }
 
     internal void ManaIncrease(int add)
     {
         maxMana += add; 
-        manaUI.SetNewMax(add);
+        manaUi.SetNewMax(add);
     }
 
     #endregion
@@ -116,7 +118,7 @@ public class ManaManager : MonoBehaviour
     internal void FireAttack()
     {
         mana -= fireAttackCost;
-        manaUI.SetMana(mana);
+        manaUi.SetMana(mana);
 
         StopCoroutine(RegenerationTimer());
         StartCoroutine(RegenerationTimer());
@@ -124,7 +126,7 @@ public class ManaManager : MonoBehaviour
     internal void IceAttack()
     {
         mana -= iceAttackCost;
-        manaUI.SetMana(mana);
+        manaUi.SetMana(mana);
 
         StopCoroutine(RegenerationTimer());
         StartCoroutine(RegenerationTimer());
@@ -132,7 +134,7 @@ public class ManaManager : MonoBehaviour
     internal void ThunderAttack()
     {
         mana -= thunderAttackCost;
-        manaUI.SetMana(mana);
+        manaUi.SetMana(mana);
 
         StopCoroutine(RegenerationTimer());
         StartCoroutine(RegenerationTimer());

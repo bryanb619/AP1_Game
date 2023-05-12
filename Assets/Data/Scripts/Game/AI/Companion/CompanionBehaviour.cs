@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using LibGameAI.FSMs;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 
 // The script that controls an agent using an FSM
@@ -14,14 +15,14 @@ public class CompanionBehaviour : MonoBehaviour
     // States & AI ---------------------------------------------------->
     public enum CompanionState
     {
-        _idle,
-        _follow,
-        _combat
+        Idle,
+        Follow,
+        Combat
     }
 
-    [Header("State")] public CompanionState _stateAI;
+    [FormerlySerializedAs("_stateAI")] [Header("State")] public CompanionState stateAi;
     private StateMachine _stateMachine;
-    internal NavMeshAgent _companion;
+    internal NavMeshAgent Companion;
 
     private bool _gameplay;
     public bool Gameplay => _gameplay;
@@ -38,19 +39,23 @@ public class CompanionBehaviour : MonoBehaviour
 
     [Header("Float")] [SerializeField] private float speed = 0.3f;
 
-    private float t = 0f;
+    private float _t = 0f;
 
     [SerializeField] private Transform floatPos;
 
-    [SerializeField] private Transform _lowPos, _highPos;
+    [FormerlySerializedAs("_lowPos")] [SerializeField] private Transform lowPos;
+    [FormerlySerializedAs("_highPos")] [SerializeField] private Transform highPos;
 
-    private Vector3 targetPosition;
+    private Vector3 _targetPosition;
 
-    private float acceleration = 2000f;
+    private float _acceleration = 2000f;
 
-    [Header("Positions")] [SerializeField] private Transform //_l_rTarget, // low right
-        _l_lTarget, // low left
-        _u_rTarget; // up right
+    [FormerlySerializedAs("_l_lTarget")] [Header("Positions")] [SerializeField] private Transform //_l_rTarget, // low right
+        lLTarget; // up right
+
+    [FormerlySerializedAs("_u_rTarget")] [Header("Positions")] [SerializeField] private Transform //_l_rTarget, // low right
+        // low left
+        uRTarget; // up right
     //_u_lTarget; // up left
 
 
@@ -60,11 +65,12 @@ public class CompanionBehaviour : MonoBehaviour
     //private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, _U_R_POS}
     private enum CompanionPos
     {
-        _L_L_POS,
-        _U_R_POS
+        LLPos,
+        URPos
     }
 
-    [SerializeField] private CompanionPos _nextPos, _currentPos;
+    [FormerlySerializedAs("_nextPos")] [SerializeField] private CompanionPos nextPos;
+    [FormerlySerializedAs("_currentPos")] [SerializeField] private CompanionPos currentPos;
 
     private bool _changePos;
     public bool ChangePos => _changePos;
@@ -85,24 +91,27 @@ public class CompanionBehaviour : MonoBehaviour
 
 
     // Materials ---------------------------------------------------------------------->
-    private CompanionSpawn point;
+    private CompanionSpawn _point;
 
-    private MeshRenderer CompanionMesh;
+    private MeshRenderer _companionMesh;
 
-    [Header("Material")] [SerializeField] private Material AlphaLow, normal;
+    [FormerlySerializedAs("AlphaLow")] [Header("Material")] [SerializeField] private Material alphaLow;
+    [Header("Material")] [SerializeField] private Material normal;
 
     // Combat ------------------------------------------------------------------------>
 
-    [Header("Masks")] [SerializeField] private LayerMask _walkMask, _attackMask, _playerMask;
+    [FormerlySerializedAs("_walkMask")] [Header("Masks")] [SerializeField] private LayerMask walkMask;
+    [FormerlySerializedAs("_attackMask")] [Header("Masks")] [SerializeField] private LayerMask attackMask;
+    [FormerlySerializedAs("_playerMask")] [Header("Masks")] [SerializeField] private LayerMask playerMask;
 
     [Header("Detection")] [SerializeField] private float detectionRadius;
 
-    private Camera mainCamera;
+    private Camera _mainCamera;
 
-    private Vector3 direction;
+    private Vector3 _direction;
 
 
-    [SerializeField] bool _playerDirection;
+    [FormerlySerializedAs("_playerDirection")] [SerializeField] bool playerDirection;
 
 
     // DEBUG ---------------------------------------------------------------------------------->
@@ -129,33 +138,33 @@ public class CompanionBehaviour : MonoBehaviour
 
         //_StateAI                    = CompanionState._idle;
 
-        _companion = GetComponent<NavMeshAgent>();
+        Companion = GetComponent<NavMeshAgent>();
 
         //_rb = GetComponent<Rigidbody>();
 
-        _companion.angularSpeed = 0;
-        _companion.updateRotation = false;
+        Companion.angularSpeed = 0;
+        Companion.updateRotation = false;
 
-        _companion.acceleration = acceleration;
+        Companion.acceleration = _acceleration;
 
-        CompanionMesh = GetComponent<MeshRenderer>();
+        _companionMesh = GetComponent<MeshRenderer>();
 
-        mainCamera = FindObjectOfType<Camera>();
+        _mainCamera = FindObjectOfType<Camera>();
 
-        point = FindObjectOfType<CompanionSpawn>();
+        _point = FindObjectOfType<CompanionSpawn>();
 
         _cursor = FindObjectOfType<CursorGame>();
 
-        _primeTarget = point.transform;
+        _primeTarget = _point.transform;
 
 
         _player = FindObjectOfType<PlayerMovement>();
 
-        targetPosition = transform.position;
+        _targetPosition = transform.position;
 
         _attackPos = _primeTarget;
-        _currentPos = CompanionPos._L_L_POS;
-        _nextPos = CompanionPos._U_R_POS;
+        currentPos = CompanionPos.LLPos;
+        nextPos = CompanionPos.URPos;
 
         //startingPosition = transform.position;
 
@@ -186,11 +195,11 @@ public class CompanionBehaviour : MonoBehaviour
 
         // states ------------------------------------------------------------->
 
-        State IdleState = new State("Companion Idle", Idle);
+        State idleState = new State("Companion Idle", Idle);
 
-        State FollowState = new State(("Companion Follow"), Follow);
+        State followState = new State(("Companion Follow"), Follow);
 
-        State CombatState = new State("Companion combat", Combat);
+        State combatState = new State("Companion combat", Combat);
 
 
         /*
@@ -205,47 +214,47 @@ public class CompanionBehaviour : MonoBehaviour
 
 
         // Idle -> Follow
-        IdleState.AddTransition(
+        idleState.AddTransition(
             new Transition(
-                () => _stateAI == CompanionState._follow,
-                FollowState));
+                () => stateAi == CompanionState.Follow,
+                followState));
 
         // idle -> Combat
-        IdleState.AddTransition(
+        idleState.AddTransition(
             new Transition(
-                () => _stateAI == CompanionState._combat,
-                CombatState));
+                () => stateAi == CompanionState.Combat,
+                combatState));
 
 
         // Follow -> Idle
-        FollowState.AddTransition(
+        followState.AddTransition(
             new Transition(
-                () => _stateAI == CompanionState._idle,
-                IdleState));
+                () => stateAi == CompanionState.Idle,
+                idleState));
 
         // Follow -> Combat
-        FollowState.AddTransition(
+        followState.AddTransition(
             new Transition(
-                () => _stateAI == CompanionState._combat,
-                CombatState));
+                () => stateAi == CompanionState.Combat,
+                combatState));
 
 
         // Combat -> Idle 
-        CombatState.AddTransition(
+        combatState.AddTransition(
             new Transition(
-                () => _stateAI == CompanionState._idle,
-                IdleState));
+                () => stateAi == CompanionState.Idle,
+                idleState));
 
 
         // Combat -> Follow
 
-        CombatState.AddTransition(
+        combatState.AddTransition(
             new Transition(
-                () => _stateAI == CompanionState._follow,
-                FollowState));
+                () => stateAi == CompanionState.Follow,
+                followState));
 
         // Create the state machine
-        _stateMachine = new StateMachine(IdleState);
+        _stateMachine = new StateMachine(idleState);
     }
 
     #endregion
@@ -265,8 +274,8 @@ public class CompanionBehaviour : MonoBehaviour
             
             if (_enemiesInRange)
             {
-                _stateAI = CompanionState._combat;
-                castHandler();
+                stateAi = CompanionState.Combat;
+                CastHandler();
             }
             else if (!_enemiesInRange)
             {
@@ -303,7 +312,7 @@ public class CompanionBehaviour : MonoBehaviour
             transform.forward = direction;
 
 
-            if (_playerDirection)
+            if (playerDirection)
             {
                 _player.transform.forward = direction;
             }
@@ -316,9 +325,9 @@ public class CompanionBehaviour : MonoBehaviour
 
     private (bool success, Vector3 position) GetMousePosition()
     {
-        var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, _walkMask))
+        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, walkMask))
         {
             //companionAim.transform.position = hitInfo.point;
 
@@ -339,24 +348,24 @@ public class CompanionBehaviour : MonoBehaviour
         }
     }
 
-    private void castHandler()
+    private void CastHandler()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;
 
         // Perform the raycast
-        if (Physics.Raycast(ray, out hit, 50F, _attackMask))
+        if (Physics.Raycast(ray, out hit, 50F, attackMask))
         {
             // Print the name of the object hit by the ray
 
             //Debug.Log(hit.transform.name);
-            _cursor.UpdateCursor(CursorGame.CursorState._ATTACK);
+            _cursor.UpdateCursor(CursorGame.CursorState.Attack);
 
         }
         else
         {
-            _cursor.UpdateCursor(CursorGame.CursorState._NORMAL);
+            _cursor.UpdateCursor(CursorGame.CursorState.Normal);
         }
     }
 
@@ -376,7 +385,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void EnemyCheck()
     {
-        Collider[] aiHits = Physics.OverlapSphere(transform.position, detectionRadius, _attackMask);
+        Collider[] aiHits = Physics.OverlapSphere(transform.position, detectionRadius, attackMask);
 
         if (aiHits.Length > 0)
         {
@@ -398,14 +407,14 @@ public class CompanionBehaviour : MonoBehaviour
         if (_player.IsMoving && (_primeTarget.position - transform.position).magnitude >= 1f)
         {
             //_StartFollow = true;
-            _stateAI = CompanionState._follow;
+            stateAi = CompanionState.Follow;
             
         }
         
         if (!_player.IsMoving && (_primeTarget.position - transform.position).magnitude <= 0.8f)
         {
             // _StartFollow = false;
-            _stateAI = CompanionState._idle;
+            stateAi = CompanionState.Idle;
             
         }
 
@@ -426,23 +435,23 @@ public class CompanionBehaviour : MonoBehaviour
     private void FloatCompanion()
     {
 
-        t += Time.deltaTime * speed;
+        _t += Time.deltaTime * speed;
 
-        float NEWY = Mathf.SmoothStep
-            (_lowPos.position.y, _highPos.position.y, t);
+        float newy = Mathf.SmoothStep
+            (lowPos.position.y, highPos.position.y, _t);
 
         transform.position = new Vector3
-            (transform.position.x, NEWY, transform.position.z);
+            (transform.position.x, newy, transform.position.z);
 
 
-        if (t >= 1f)
+        if (_t >= 1f)
         {
-            t = 0f;
+            _t = 0f;
 
-            Transform TEMPORARY = _lowPos;
+            Transform temporary = lowPos;
 
-            _lowPos = _highPos;
-            _highPos = TEMPORARY;
+            lowPos = highPos;
+            highPos = temporary;
         }
 
     }
@@ -471,26 +480,26 @@ public class CompanionBehaviour : MonoBehaviour
     private void PosUpdate(Transform pos)
     {
 
-        _companion.isStopped = false;
+        Companion.isStopped = false;
 
         //Companion.SetDestination(_primeTarget.position); 
-        _primeTarget = point.transform;
+        _primeTarget = _point.transform;
 
-        _companion.SetDestination(pos.position);
+        Companion.SetDestination(pos.position);
 
         //transform.rotation = point.transform.rotation;  
 
         //Companion.speed = 3.4f;
 
         //Companion.speed = 8f;
-        _companion.speed = 5f;
+        Companion.speed = 5f;
         //Companion.acceleration = 10f; 
 
 
         if ((pos.position - transform.position).magnitude <= 2f)
         {
             //Companion.speed = 3.5f;
-            _companion.speed = followSpeed;
+            Companion.speed = followSpeed;
         }
 
         else if ((pos.position - transform.position).magnitude <= 0.8f)
@@ -524,7 +533,7 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void SlowDown()
     {
-        _companion.velocity = _companion.velocity.normalized / 1.4f;
+        Companion.velocity = Companion.velocity.normalized / 1.4f;
     }
 
 
@@ -548,7 +557,7 @@ public class CompanionBehaviour : MonoBehaviour
 
 
         if (Physics.Raycast
-                (transform.position, transform.forward, out hit, 50f, _playerMask)
+                (transform.position, transform.forward, out hit, 50f, playerMask)
             && _changePos)
         {
             
@@ -573,16 +582,16 @@ public class CompanionBehaviour : MonoBehaviour
     private void Destination()
     {
         
-        if (_currentPos == CompanionPos._L_L_POS)
+        if (currentPos == CompanionPos.LLPos)
         {
-            _nextPos = CompanionPos._U_R_POS;
+            nextPos = CompanionPos.URPos;
         }
-        else if (_currentPos == CompanionPos._U_R_POS)
+        else if (currentPos == CompanionPos.URPos)
         {
-            _nextPos = CompanionPos._L_L_POS;
+            nextPos = CompanionPos.LLPos;
 
         }
-        NewPosition(_nextPos);
+        NewPosition(nextPos);
         
         /*
 
@@ -632,33 +641,33 @@ public class CompanionBehaviour : MonoBehaviour
         switch (nextPos)
         {
 
-            case CompanionPos._L_L_POS:
+            case CompanionPos.LLPos:
             {
                 
-                if ((transform.position - _l_lTarget.position).magnitude < 0.1f)
+                if ((transform.position - lLTarget.position).magnitude < 0.1f)
                 {
-                    _currentPos = CompanionPos._L_L_POS;
+                    currentPos = CompanionPos.LLPos;
                     _changePos = true; 
                 }
                 else
                 {
-                    newDest = _l_lTarget;
+                    newDest = lLTarget;
                     PosUpdate(newDest);
                 }
 
                 break;
             }
 
-            case CompanionPos._U_R_POS:
+            case CompanionPos.URPos:
             {
-                if ((transform.position - _u_rTarget.position).magnitude < 0.1f)
+                if ((transform.position - uRTarget.position).magnitude < 0.1f)
                 {
-                    _currentPos = CompanionPos._U_R_POS;
+                    currentPos = CompanionPos.URPos;
                     _changePos = true; 
                 }
                 else
                 {
-                    newDest = _u_rTarget;
+                    newDest = uRTarget;
                     PosUpdate(newDest);
                 }
 
@@ -671,21 +680,21 @@ public class CompanionBehaviour : MonoBehaviour
 
     private void PersistantPosCheck()
     {
-        switch (_currentPos)
+        switch (currentPos)
         {
-            case CompanionPos._L_L_POS:
+            case CompanionPos.LLPos:
             {
-                PosUpdate(_l_lTarget);
-                if ((transform.position - _l_lTarget.position).magnitude > 2f)
+                PosUpdate(lLTarget);
+                if ((transform.position - lLTarget.position).magnitude > 2f)
                 {
                     
                 }
                 break;
             }
-            case CompanionPos._U_R_POS:
+            case CompanionPos.URPos:
             {
-                PosUpdate(_u_rTarget);
-                if ((transform.position - _u_rTarget.position).magnitude > 2f)
+                PosUpdate(uRTarget);
+                if ((transform.position - uRTarget.position).magnitude > 2f)
                 {
                     
                 }
@@ -703,25 +712,25 @@ public class CompanionBehaviour : MonoBehaviour
 
 private void StartIdle()
     {
-       _companion.enabled = false;
+       Companion.enabled = false;
         return;
     }
     private void StartFollow()
     {
         
-        _companion.enabled                  = true;
-        _companion.obstacleAvoidanceType    = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        Companion.enabled                  = true;
+        Companion.obstacleAvoidanceType    = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         return;
     }
 
     private void StartCombat()
     {
-        _companion.enabled = true;
+        Companion.enabled = true;
 
         //_companion.radius = 0.2f;
-        _companion.acceleration             = 2000f;
-        _companion.speed                    = attackSpeed;
-        _companion.obstacleAvoidanceType    = ObstacleAvoidanceType.NoObstacleAvoidance;
+        Companion.acceleration             = 2000f;
+        Companion.speed                    = attackSpeed;
+        Companion.obstacleAvoidanceType    = ObstacleAvoidanceType.NoObstacleAvoidance;
 
         return;
     }
@@ -755,13 +764,13 @@ private void StartIdle()
     private void Setlow()
     {
         // change to transparent material version
-        CompanionMesh.material = AlphaLow;
+        _companionMesh.material = alphaLow;
     }
 
     private void SetHigh()
     {
         // change to normal material
-        CompanionMesh.material = normal;
+        _companionMesh.material = normal;
     }
     #endregion
 
@@ -788,17 +797,17 @@ private void StartIdle()
     }
     private void ResumeAgent()
     {
-        if(_companion.enabled)
+        if(Companion.enabled)
         {
-            if (_stateAI == CompanionState._follow)
+            if (stateAi == CompanionState.Follow)
             {
 
-                _companion.isStopped = true;
+                Companion.isStopped = true;
                 return;
             }
             else
             {
-                _companion.isStopped = false;
+                Companion.isStopped = false;
                 return;
             }
         }
@@ -807,10 +816,10 @@ private void StartIdle()
 
     private void AgentPause()
     {
-        if(_companion.enabled)
+        if(Companion.enabled)
         {
-            _companion.isStopped = true;
-            _companion.velocity = Vector3.zero;
+            Companion.isStopped = true;
+            Companion.velocity = Vector3.zero;
         }
        
         return;

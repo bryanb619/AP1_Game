@@ -1,22 +1,23 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.AI; 
+using UnityEngine.AI;
+using UnityEngine.Serialization;
 
-public class _PLAYERTESTMOVEMENT : MonoBehaviour
+public class Playertestmovement : MonoBehaviour
 {
     private bool _isMoving = false;
     public bool IsMoving => _isMoving;
 
-    private NavMeshAgent agent;
+    private NavMeshAgent _agent;
 
-    [SerializeField] private float _playerSpeed;
+    [FormerlySerializedAs("_playerSpeed")] [SerializeField] private float playerSpeed;
 
-    float speed;
-    private Vector3 lastPosition; 
+    float _speed;
+    private Vector3 _lastPosition; 
 
-    [SerializeField] private float _turnSpeed;
+    [FormerlySerializedAs("_turnSpeed")] [SerializeField] private float turnSpeed;
 
-    [SerializeField] private float _walkTimer;
+    [FormerlySerializedAs("_walkTimer")] [SerializeField] private float walkTimer;
 
     [SerializeField] private LayerMask seeThroughLayer;
 
@@ -24,16 +25,16 @@ public class _PLAYERTESTMOVEMENT : MonoBehaviour
 
     //private Vector3 targetEulerAngles;
 
-    private Vector3 targetPosition;
-    Vector3 direction; 
+    private Vector3 _targetPosition;
+    Vector3 _direction; 
 
 
-    private Camera mainCamera;
+    private Camera _mainCamera;
     // Start is called before the first frame update
     void Start()
     {
-        mainCamera = FindObjectOfType<Camera>();
-        agent = GetComponent<NavMeshAgent>();
+        _mainCamera = FindObjectOfType<Camera>();
+        _agent = GetComponent<NavMeshAgent>();
 
         //targetEulerAngles = new Vector3(_turnSpeed, 0, 0);
     }
