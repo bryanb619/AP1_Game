@@ -41,7 +41,7 @@ public class EnemyRanged : MonoBehaviour
                         // Components ----------------------------------------------------------------------------------------------------->
         
                         // Reference to AI data
-    [SerializeField]    private AIRangedData                        data;
+    [SerializeField]    private AiRangedData                        data;
 
                         // Reference to the state machine
                         private StateMachine                        _stateMachine;
@@ -49,14 +49,14 @@ public class EnemyRanged : MonoBehaviour
                         // Reference to the NavMeshAgent
                         private NavMeshAgent                       _agent;
                         
-                        private WarningSystemAI                     _warn;
+                        private WarningSystemAi                     _warn;
 
     [SerializeField]    private Agents                              agentAI;
 
-                        private AIHandler                           _handlerAI;
+                        private AiHandler                           _handlerAI;
                         private bool                                _deactivateAI;
                         
-                        private ObjectiveUI                         _objectiveUIScript;
+                        private ObjectiveUi                         _objectiveUIScript;
                         
                         // animator
                         private Animator                            animator;
@@ -200,7 +200,7 @@ public class EnemyRanged : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.OnGameStateChanged
+        //GameManager.OnGameStateChanged;
     }
     
     private 
@@ -218,8 +218,8 @@ public class EnemyRanged : MonoBehaviour
     private void GetComponents()
     {
         _agent              = GetComponent<NavMeshAgent>();
-        _warn               = GetComponent<WarningSystemAI>();
-        _handlerAI          = GetComponent<AIHandler>();
+        _warn               = GetComponent<WarningSystemAi>();
+        _handlerAI          = GetComponent<AiHandler>();
 
         agentAI            = GetComponentInChildren<Agents>();
         animator           = GetComponentInChildren<Animator>();
@@ -231,7 +231,7 @@ public class EnemyRanged : MonoBehaviour
         
         _player             = FindObjectOfType<PlayerHealth>();
         playerObject        = GameObject.Find("Player");
-        _playerTarget       = PlayerObject.transform;
+        _playerTarget       = playerObject.transform;
         //_shooterScript      = PlayerObject.GetComponent<Shooter>();
 
         _valuesTexts         = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
@@ -260,9 +260,9 @@ public class EnemyRanged : MonoBehaviour
 
         // projectiles //
 
-        _bullet          = data.ProjectileA;
-        _randomBullet    = data.R_projectile;
-        _specialPower    = data.S_Projectile;
+        _bullet          = data.NProjectile;
+        _randomBullet    = data.RProjectile;
+        _specialPower    = data.SProjectile;
 
         // cover //
         //fleeDistance = data.FleeDistance; 
