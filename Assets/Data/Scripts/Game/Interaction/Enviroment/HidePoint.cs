@@ -1,16 +1,18 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HidePoint : MonoBehaviour
 {
-    private MeshRenderer m_Renderer;
+    private MeshRenderer _mRenderer;
 
-    [SerializeField] Material normal, AlphaLow;
+    [SerializeField] Material normal;
+    [FormerlySerializedAs("AlphaLow")] [SerializeField] Material alphaLow;
 
     // Start is called before the first frame update
     void Start()
     {
-        m_Renderer = GetComponent<MeshRenderer>();
-        m_Renderer.material = normal;
+        _mRenderer = GetComponent<MeshRenderer>();
+        _mRenderer.material = normal;
     }
 
 
@@ -26,7 +28,7 @@ public class HidePoint : MonoBehaviour
         
         if (player != null) 
         {
-            m_Renderer.material = AlphaLow;
+            _mRenderer.material = alphaLow;
             print("changed");
         }
     }
@@ -35,7 +37,7 @@ public class HidePoint : MonoBehaviour
         PlayerMovement player = GetComponent<PlayerMovement>();
         if (player != null) 
         {
-            m_Renderer.material = normal;
+            _mRenderer.material = normal;
             print("changed to normal");
         }
 

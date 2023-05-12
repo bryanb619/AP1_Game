@@ -1,6 +1,7 @@
 // using UnityEditor;
 
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// Script used for Realtime lightning optimization & Peformance
@@ -13,13 +14,13 @@ public class LightOptimize : MonoBehaviour
 
     //private float                               distance;
   
-    [SerializeField] private Light              _lightcomponent;
+    [FormerlySerializedAs("_lightcomponent")] [SerializeField] private Light              lightcomponent;
 
-    public GameObject                           Player;
+    [FormerlySerializedAs("Player")] public GameObject                           player;
 
     private bool                                _isActive;
 
-    [SerializeField] private LightFlick         _lightScript;
+    [FormerlySerializedAs("_lightScript")] [SerializeField] private LightFlick         lightScript;
     
     private void Start()
     {
@@ -47,8 +48,8 @@ public class LightOptimize : MonoBehaviour
     private void OnBecameInvisible()
     {
         //this.gameObject.SetActive(false);
-        _lightcomponent.enabled = false;
-        _lightScript.enabled = false;   
+        lightcomponent.enabled = false;
+        lightScript.enabled = false;   
 
         return;
     }
@@ -56,8 +57,8 @@ public class LightOptimize : MonoBehaviour
     private void OnBecameVisible()
     {
         //this.gameObject.gameObject.SetActive(true);
-        _lightcomponent.enabled = true;
-        _lightScript.enabled = true;
+        lightcomponent.enabled = true;
+        lightScript.enabled = true;
         
         return;
     }

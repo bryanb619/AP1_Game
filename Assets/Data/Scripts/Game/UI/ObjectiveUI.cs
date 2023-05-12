@@ -3,33 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 
-public class ObjectiveUI : MonoBehaviour
+public class ObjectiveUi : MonoBehaviour
 {
     [SerializeField]private TextMeshProUGUI mainTextReference, newTextReference;
-    private Animator animator;
-    private DoorHandler doorHandler;
-    private bool secondTextAnimationTriggered = false, thirdTextAnimationTriggered = false, passedThroughCollider = false;
+    private Animator _animator;
+    private DoorHandler _doorHandler;
+    private bool _secondTextAnimationTriggered = false, _thirdTextAnimationTriggered = false, _passedThroughCollider = false;
     [HideInInspector]public bool passedSecondObjective;
     [SerializeField] private string firstObjective;
     [SerializeField] private string secondObjective;
     [SerializeField] private string thirdObjective;
     [SerializeField] private string fourthObjective;
     //[SerializeField] private float radius = 20f;
-    [SerializeField] private LayerMask AILayer;
-    private int totalEnemyCount = 0, currentEnemyDefeated = 0;
+    [FormerlySerializedAs("AILayer")] [SerializeField] private LayerMask aiLayer;
+    private int _totalEnemyCount = 0, _currentEnemyDefeated = 0;
 
 
+    [FormerlySerializedAs("Crystals")]
     [Header("Crystal")]
-    [SerializeField] private GameObject[] Crystals;
+    [SerializeField] private GameObject[] crystals;
 
     // Start is called before the first frame update
     void Start()
     {
         passedSecondObjective = false;
         mainTextReference.text = "No objective currently";
-        animator = GetComponent<Animator>();
-        doorHandler = FindObjectOfType<DoorHandler>();
+        _animator = GetComponent<Animator>();
+        _doorHandler = FindObjectOfType<DoorHandler>();
     }
 
     // Update is called once per frame
@@ -38,12 +40,12 @@ public class ObjectiveUI : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Tab))
         {
-            animator.SetTrigger("Show Objective");
+            _animator.SetTrigger("Show Objective");
         }
         
 
 
-        if(passedThroughCollider)
+        if(_passedThroughCollider)
         {
             if (passedSecondObjective == false)
                 KillEnemiesCheck();
@@ -54,19 +56,19 @@ public class ObjectiveUI : MonoBehaviour
 
     public void PassedThroughCollider()
     {
-        passedThroughCollider = true;
+        _passedThroughCollider = true;
         TextAnimation(1);
     }
 
-    public void RecieveEnemyCountInfo(int ChaseCount, int RangedCount)
+    public void RecieveEnemyCountInfo(int chaseCount, int rangedCount)
     {
-        totalEnemyCount = ChaseCount + RangedCount;
+        _totalEnemyCount = chaseCount + rangedCount;
     }
 
     public void IncreaseEnemyDefeatedCount()
     {
-        currentEnemyDefeated += 1;
-        mainTextReference.text = (firstObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
+        _currentEnemyDefeated += 1;
+        mainTextReference.text = (firstObjective + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
     }
 
     private void KillEnemiesCheck()
@@ -80,11 +82,11 @@ public class ObjectiveUI : MonoBehaviour
         bool noEnemiesLeft = allEnemies.Length == 0;
         */
         //Debug.Log("Amount of enemies: " + currentEnemyDefeated);
-        if (totalEnemyCount == currentEnemyDefeated)
+        if (_totalEnemyCount == _currentEnemyDefeated)
         {
             TextAnimation(2);
 
-            foreach (GameObject crystal in Crystals)
+            foreach (GameObject crystal in crystals)
             {
                 crystal.GetComponent<Outline>().enabled = true;
             }
@@ -98,7 +100,7 @@ public class ObjectiveUI : MonoBehaviour
 
     private void CleansedTheCrystals()
     {
-        doorHandler.state = DoorHandler.DoorState.Opening;
+        _doorHandler.state = DoorHandler.DoorState.Opening;
         //Reference the door opening script here
         TextAnimation(3);
     }
@@ -107,29 +109,29 @@ public class ObjectiveUI : MonoBehaviour
     {
         if (i == 1)
         {
-            newTextReference.text = (firstObjective + "(" + currentEnemyDefeated + "/" + totalEnemyCount + ")");
-            if(passedThroughCollider == true)
+            newTextReference.text = (firstObjective + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
+            if(_passedThroughCollider == true)
             {
-                animator.SetTrigger("New Objective");
-                secondTextAnimationTriggered = true;
+                _animator.SetTrigger("New Objective");
+                _secondTextAnimationTriggered = true;
             }
         }
         else if (i == 2)
         {
-            if (secondTextAnimationTriggered == false)
+            if (_secondTextAnimationTriggered == false)
             {
                 newTextReference.text = secondObjective;
-                animator.SetTrigger("New Objective");
-                secondTextAnimationTriggered = true;
+                _animator.SetTrigger("New Objective");
+                _secondTextAnimationTriggered = true;
             }
         }
         else if(i == 3)
         {
             newTextReference.text = thirdObjective;
-            if (thirdTextAnimationTriggered == false)
+            if (_thirdTextAnimationTriggered == false)
             {
-                animator.SetTrigger("New Objective");
-                thirdTextAnimationTriggered = true;
+                _animator.SetTrigger("New Objective");
+                _thirdTextAnimationTriggered = true;
             }
         }
     }

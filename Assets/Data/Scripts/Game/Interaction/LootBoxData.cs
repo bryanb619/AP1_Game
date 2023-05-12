@@ -1,35 +1,39 @@
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu (menuName = "Akarya/Interaction/Loot Box")]
 public class LootBoxData : ScriptableObject
 {
+    [FormerlySerializedAs("_loot")]
     [Header("Loot")]
         [SerializeField] 
-            private GameObject                  _loot;
-            public GameObject                   Loot => _loot;
+            private GameObject                  loot;
+            public GameObject                   Loot => loot;
 
-        [SerializeField] 
-            private GameObject                  _openEffect; 
-            public GameObject                   OpenEffect => _openEffect;
+        [FormerlySerializedAs("_openEffect")] [SerializeField] 
+            private GameObject                  openEffect; 
+            public GameObject                   OpenEffect => openEffect;
 
-        [SerializeField] 
-            private int                         _maxItems;
-            public int                          MaxItems => _maxItems;
+        [FormerlySerializedAs("_maxItems")] [SerializeField] 
+            private int                         maxItems;
+            public int                          MaxItems => maxItems;
 
-        [SerializeField]
-            private float                       _dropRadius; 
-            public float                        DropRadius => _dropRadius;
+        [FormerlySerializedAs("_dropRadius")] [SerializeField]
+            private float                       dropRadius; 
+            public float                        DropRadius => dropRadius;
 
+        [FormerlySerializedAs("_giveLoot")]
         [Tooltip("check box if loot instead of spawned should be given directly to player")]
         [SerializeField]
-            private bool                        _giveLoot;
-            public bool                         GiveLoot => _giveLoot;
+            private bool                        giveLoot;
+            public bool                         GiveLoot => giveLoot;
 
+    [FormerlySerializedAs("_soundOpen")]
     [Header("Sound")]
         [SerializeField] 
-            private EventReference              _soundOpen;
-            public EventReference               SoundOpen => _soundOpen;  
+            private EventReference              soundOpen;
+            public EventReference               SoundOpen => soundOpen;  
 
 
 

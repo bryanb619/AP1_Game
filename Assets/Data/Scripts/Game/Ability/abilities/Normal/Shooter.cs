@@ -1,17 +1,18 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 public class Shooter : MonoBehaviour
 {
     [Header("References")]
-    private Transform firePoint;
+    private Transform _firePoint;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Material cleansedCrystal;
 
-    private GameObject firePrefab, icePrefab, thunderPrefab;
-    internal WeaponType _magicType;
+    private GameObject _firePrefab, _icePrefab, _thunderPrefab;
+    internal WeaponType MagicType;
 
-    [SerializeField] private GameObject _areaEffect;
+    [FormerlySerializedAs("_areaEffect")] [SerializeField] private GameObject areaEffect;
 
     [Header("Default Ability Prefabs")]
     [SerializeField] private GameObject defaultFirePrefab;
@@ -20,7 +21,7 @@ public class Shooter : MonoBehaviour
     [Header("Upgraded Ability Prefabs")]
     [SerializeField] private GameObject upgradedFirePrefab;
     [SerializeField] private GameObject upgradedIcePrefab, upgradedThunderPrefab;
-                     internal bool wUpgraded = false, rUpgraded = false;
+                     internal bool WUpgraded = false, RUpgraded = false;
 
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
@@ -28,35 +29,35 @@ public class Shooter : MonoBehaviour
     [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
     [SerializeField] private GameObject rAbilityTelegraph;
 
-    internal bool normalCooldown, fireCooldown, iceCooldown, thunderCooldown = false;
+    internal bool NormalCooldown, FireCooldown, IceCooldown, ThunderCooldown = false;
 
     [Header("Script References")]
-    private ManaManager manaManager;
-    [SerializeField] private ObjectiveUI objectiveUI;
-    private ValuesTextsScript valuesTexts;
+    private ManaManager _manaManager;
+    [FormerlySerializedAs("objectiveUI")] [SerializeField] private ObjectiveUi objectiveUi;
+    private ValuesTextsScript _valuesTexts;
     [SerializeField] private AbilityHolder targetedAttackAbilityHolder;
 
-    private RaycastHit hit;
-    private Vector3 enemyPosition;
+    private RaycastHit _hit;
+    private Vector3 _enemyPosition;
 
     private bool _gameplay;
 
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-        manaManager = GetComponent<ManaManager>();
+        _manaManager = GetComponent<ManaManager>();
     }
     private void Start()
     {
-        _magicType = WeaponType.Fire;
+        MagicType = WeaponType.Fire;
 
-        firePoint = GameObject.Find("CompanionShootPos").transform;
+        _firePoint = GameObject.Find("CompanionShootPos").transform;
 
-        valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
+        _valuesTexts = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
 
-        firePrefab = defaultFirePrefab;
-        icePrefab = defaultIcePrefab;
-        thunderPrefab = defaultThunderPrefab;
+        _firePrefab = defaultFirePrefab;
+        _icePrefab = defaultIcePrefab;
+        _thunderPrefab = defaultThunderPrefab;
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -88,7 +89,7 @@ public class Shooter : MonoBehaviour
 
     private void ShootInput()
     {
-        if (firePoint != null)
+        if (_firePoint != null)
         {
             //When you press the key (telegraph of the ability)
             if (Input.GetKey(KeyCode.Mouse0))
@@ -113,22 +114,22 @@ public class Shooter : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
                 Debug.Log("Shot auto");
-                _magicType = WeaponType.Normal;
+                MagicType = WeaponType.Normal;
                 Shoot();
             }
             else if (Input.GetKeyUp(KeyCode.Q))
             {
-                _magicType = WeaponType.Fire;
+                MagicType = WeaponType.Fire;
                 Shoot();
             }
             else if (Input.GetKeyUp(KeyCode.W))
             {
-                _magicType = WeaponType.Ice;
+                MagicType = WeaponType.Ice;
                 Shoot();
             }
             else if (Input.GetKeyUp(KeyCode.R))
             {
-                _magicType = WeaponType.Thunder;
+                MagicType = WeaponType.Thunder;
                 rAbilityTelegraph.SetActive(false);
                 Shoot();
             }
@@ -137,19 +138,19 @@ public class Shooter : MonoBehaviour
 
     public void Shoot()
     {
-        switch (_magicType)
+        switch (MagicType)
         {
             case WeaponType.Normal: // input nº1
                 {
                     //Cleanse Crystal
-                    if (hit.collider.name == "Crystal" && hit.collider.GetComponent<Outline>().enabled == true)
+                    if (_hit.collider.name == "Crystal" && _hit.collider.GetComponent<Outline>().enabled == true)
                     {
                         if (Input.GetKeyUp(KeyCode.Mouse0))
                         {
-                            hit.collider.GetComponent<MeshRenderer>().material.Lerp(hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
-                            hit.collider.GetComponent<Outline>().enabled = false;
-                            objectiveUI.Passed();
-                            valuesTexts.GetCrystal();
+                            _hit.collider.GetComponent<MeshRenderer>().material.Lerp(_hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
+                            _hit.collider.GetComponent<Outline>().enabled = false;
+                            objectiveUi.Passed();
+                            _valuesTexts.GetCrystal();
                             break;
                         }
                         else
@@ -157,22 +158,22 @@ public class Shooter : MonoBehaviour
                     }
                     else
                     {
-                        if (!normalCooldown && Input.GetKeyUp(KeyCode.Mouse0))
+                        if (!NormalCooldown && Input.GetKeyUp(KeyCode.Mouse0))
                         {
                             StartCoroutine(NormalAttackCooldown());
-                            Instantiate(normalPrefab, firePoint.position, firePoint.rotation);
+                            Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
                         }
                         break;
                     }
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
-                    if(!fireCooldown)
+                    if(!FireCooldown)
                     { 
-                        if (manaManager.ManaCheck(_magicType) == true)
+                        if (_manaManager.ManaCheck(MagicType) == true)
                         {
                             StartCoroutine(FireAttackCooldown());
-                            Instantiate(firePrefab, firePoint.position, firePoint.rotation);
+                            Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
                         }
                         break;
                     }
@@ -181,7 +182,7 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Ice: // input nº3 (W)
                 {
-                    if(!iceCooldown)
+                    if(!IceCooldown)
                         //Instantiate inside the TargetAttack function to avoid unecessary code
                         TargetAttack();
                     
@@ -189,9 +190,9 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Thunder: // input nº4 (R)
                 {
-                    if(!thunderCooldown)
+                    if(!ThunderCooldown)
                     {
-                        if (manaManager.ManaCheck(_magicType) == true)
+                        if (_manaManager.ManaCheck(MagicType) == true)
                         {
                             //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
                             AreaAttack();
@@ -210,11 +211,11 @@ public class Shooter : MonoBehaviour
 
     private void HoverHighlight()
     {
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 50f))
-            if (hit.collider.CompareTag("Enemy"))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 50f))
+            if (_hit.collider.CompareTag("Enemy"))
             {
-                Debug.Log(hit.collider.gameObject + " hightlight on");
-                hit.collider.gameObject.GetComponent<Outline>().enabled = true;
+                Debug.Log(_hit.collider.gameObject + " hightlight on");
+                _hit.collider.gameObject.GetComponent<Outline>().enabled = true;
             }
                 
             else
@@ -232,15 +233,15 @@ public class Shooter : MonoBehaviour
 
     private void TargetAttack()
     {
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
         {
-            if (hit.collider.CompareTag("Enemy"))
+            if (_hit.collider.CompareTag("Enemy"))
             {
-                    if (manaManager.ManaCheck(_magicType) == true)
+                    if (_manaManager.ManaCheck(MagicType) == true)
                     {
                         StartCoroutine(IceAttackCooldown());
-                        Instantiate(icePrefab, hit.collider.transform.position, firePoint.rotation);
-                        targetedAttackAbilityHolder.TargetedAttackCooldownUI();
+                        Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
+                        targetedAttackAbilityHolder.TargetedAttackCooldownUi();
                         Debug.Log("Enemy Hit with Ice");
                     }
                 else
@@ -258,9 +259,9 @@ public class Shooter : MonoBehaviour
             if (hitCollider.CompareTag("Enemy"))
             {
                 // Deal damage to the enemy
-                Instantiate(thunderPrefab, hitCollider.transform.position, firePoint.rotation);
+                Instantiate(_thunderPrefab, hitCollider.transform.position, _firePoint.rotation);
 
-                Instantiate(_areaEffect, transform.position, Quaternion.identity);
+                Instantiate(areaEffect, transform.position, Quaternion.identity);
             }
         }
         StartCoroutine(ThunderAttackCooldown());
@@ -272,17 +273,17 @@ public class Shooter : MonoBehaviour
         {
             
             case 1:
-                firePrefab = upgradedFirePrefab;
+                _firePrefab = upgradedFirePrefab;
                 break;
             
             case 2:
-                icePrefab = upgradedIcePrefab;
-                wUpgraded = true;
+                _icePrefab = upgradedIcePrefab;
+                WUpgraded = true;
                 break;
             
             case 3:
-                thunderPrefab = upgradedThunderPrefab;
-                rUpgraded = true;
+                _thunderPrefab = upgradedThunderPrefab;
+                RUpgraded = true;
                 break;
             
             default:
@@ -294,29 +295,29 @@ public class Shooter : MonoBehaviour
 
     IEnumerator NormalAttackCooldown()
     {
-        normalCooldown = true;
+        NormalCooldown = true;
         yield return new WaitForSecondsRealtime(normalTimer.cooldownTime);
-        normalCooldown = false;
+        NormalCooldown = false;
     }   
     IEnumerator FireAttackCooldown()
     {
-        fireCooldown = true;
+        FireCooldown = true;
         yield return new WaitForSecondsRealtime(fireTimer.cooldownTime);
-        fireCooldown = false;
+        FireCooldown = false;
     }
 
     IEnumerator IceAttackCooldown()
     {
-        iceCooldown = true;
+        IceCooldown = true;
         yield return new WaitForSecondsRealtime(iceTimer.cooldownTime);
-        iceCooldown = false;
+        IceCooldown = false;
     }
 
     IEnumerator ThunderAttackCooldown()
     {
-        thunderCooldown = true;
+        ThunderCooldown = true;
         yield return new WaitForSecondsRealtime(thunderTimer.cooldownTime);
-        thunderCooldown = false;
+        ThunderCooldown = false;
     }
 
     #endregion

@@ -39,10 +39,10 @@ namespace LibGameAI.FSMs
         /// Public property exposing the transitions associated with this
         /// state.
         /// </summary>
-        public IEnumerable<Transition> Transitions => transitions;
+        public IEnumerable<Transition> Transitions => _transitions;
 
         // Internal list of the transitions associated with this state
-        private IList<Transition> transitions;
+        private IList<Transition> _transitions;
 
         /// <summary>
         /// Create a new state.
@@ -65,7 +65,7 @@ namespace LibGameAI.FSMs
             //EntryActions = entryActions;
             StateActions = stateActions;
             //ExitActions = exitActions;
-            transitions = new List<Transition>();
+            _transitions = new List<Transition>();
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace LibGameAI.FSMs
         /// <param name="transition">Transition to another state.</param>
         public void AddTransition(Transition transition)
         {
-            transitions.Add(transition);
+            _transitions.Add(transition);
         }
     }
 }

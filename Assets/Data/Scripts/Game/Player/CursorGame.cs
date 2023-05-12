@@ -1,16 +1,18 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class CursorGame : MonoBehaviour
 {
-                        public enum CursorState                         { _NORMAL, _ATTACK }
+                        public enum CursorState                         { Normal, Attack }
 
-    [SerializeField]    private CursorState                             _state;
+    [FormerlySerializedAs("_state")] [SerializeField]    private CursorState                             state;
 
-    [SerializeField]    private Texture2D                               _imageNormal, _imageAttack;
+    [FormerlySerializedAs("_imageNormal")] [SerializeField]    private Texture2D                               imageNormal;
+    [FormerlySerializedAs("_imageAttack")] [SerializeField]    private Texture2D                               imageAttack;
 
-                        public static CursorGame                        Instance;
+    public static CursorGame                        Instance;
 
                         public static event Action<CursorState>         OnCursorStateChanged;
 
@@ -22,13 +24,13 @@ public class CursorGame : MonoBehaviour
 
         Instance                            = this;
 
-        CursorGame[] OTHER_MANAGERS         = FindObjectsOfType<CursorGame>();
+        CursorGame[] otherManagers         = FindObjectsOfType<CursorGame>();
 
 
 
-        for (int i = 1; i < OTHER_MANAGERS.Length; i++)
+        for (int i = 1; i < otherManagers.Length; i++)
         {
-            Destroy(OTHER_MANAGERS[i].gameObject);
+            Destroy(otherManagers[i].gameObject);
         }
 
     }
@@ -36,7 +38,7 @@ public class CursorGame : MonoBehaviour
     private void Start()
     {
         
-        UpdateCursor(CursorState._NORMAL);
+        UpdateCursor(CursorState.Normal);
     }
 
     
@@ -44,13 +46,13 @@ public class CursorGame : MonoBehaviour
     {
         switch(newState) 
         {
-            case CursorState._NORMAL:
+            case CursorState.Normal:
                 {
                     NormalCursor();
                     break;
                 }
 
-            case CursorState._ATTACK:
+            case CursorState.Attack:
                 {
                    
                     AttackCursor();
@@ -67,7 +69,7 @@ public class CursorGame : MonoBehaviour
     {
         //print("cursor normal");
 
-        Cursor.SetCursor(_imageNormal, Vector2.zero,CursorMode.ForceSoftware);
+        Cursor.SetCursor(imageNormal, Vector2.zero,CursorMode.ForceSoftware);
         
         //print("cursor normal");
     }
@@ -77,10 +79,8 @@ public class CursorGame : MonoBehaviour
 
         //print("cursor Attack");
 
-        Cursor.SetCursor(_imageAttack, Vector2.zero, CursorMode.ForceSoftware);
+        Cursor.SetCursor(imageAttack, Vector2.zero, CursorMode.ForceSoftware);
         return;
-
-        print("cursor Attack");
     }
 
 }

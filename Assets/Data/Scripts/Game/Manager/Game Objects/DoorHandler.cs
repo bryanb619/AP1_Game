@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class DoorHandler : MonoBehaviour
 {
@@ -8,9 +9,10 @@ public class DoorHandler : MonoBehaviour
 
     [Header("Door Configuration")]
     [Range(1, 5)]
-    private float speed = 1f;
+    private float _speed = 1f;
 
-    [SerializeField] private GameObject door, startPos, Endpos; 
+    [SerializeField] private GameObject door, startPos;
+    [FormerlySerializedAs("Endpos")] [SerializeField] private GameObject endpos; 
 
 
     // Start is called before the first frame update
@@ -63,16 +65,16 @@ public class DoorHandler : MonoBehaviour
 
         else if (state == DoorState.Closing)
         {
-            float CloseDist = 0.1f;
+            float closeDist = 0.1f;
 
             //bool Closed = false;
 
 
             //CheatBarrier.ActivateColl();
 
-            if ((Endpos.transform.position - door.transform.position).magnitude < CloseDist)
+            if ((endpos.transform.position - door.transform.position).magnitude < closeDist)
             {
-                door.transform.position = Endpos.transform.position;
+                door.transform.position = endpos.transform.position;
                 return; 
             }
 
@@ -83,14 +85,14 @@ public class DoorHandler : MonoBehaviour
     private void DoorOpen()
     {
         //Debug.Log(
-        door.transform.Translate(Vector3.up * speed * Time.deltaTime); // move left door left
+        door.transform.Translate(Vector3.up * _speed * Time.deltaTime); // move left door left
         //doorRight.transform.Translate(Vector3.right * speed * Time.deltaTime);// move right door rigt
     }
 
     private void DoorClose()
     {
         //Debug.Log("FECHA");
-        door.transform.Translate(Vector3.down * speed * Time.deltaTime); // move left door right
+        door.transform.Translate(Vector3.down * _speed * Time.deltaTime); // move left door right
         //doorRight.transform.Translate(Vector3.left * speed * Time.deltaTime); // move right door left
     }
 

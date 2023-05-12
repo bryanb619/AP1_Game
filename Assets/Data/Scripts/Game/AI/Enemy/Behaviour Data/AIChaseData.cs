@@ -1,12 +1,14 @@
 using UnityEngine;
-using FMODUnity; 
+using FMODUnity;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Akarya/AI/Chase Data")]
-public class AIChaseData : ScriptableObject
+public class AiChaseData : ScriptableObject
 {
     #region Combat
     // Combat -------------------------------------------------------------------->
 
+    [FormerlySerializedAs("_attackDist")]
     [Header("Combat")]
 
     /*        [SerializeField] 
@@ -19,16 +21,16 @@ public class AIChaseData : ScriptableObject
     */
 
         [SerializeField]
-            private float               _attackDist = 2.5f;
-            public float                AttackDist => _attackDist;
+            private float               attackDist = 2.5f;
+            public float                AttackDist => attackDist;
 
-        [SerializeField] 
-            private GameObject          _attackEffect;
-            public GameObject           AttackEffect => _attackEffect;
+        [FormerlySerializedAs("_attackEffect")] [SerializeField] 
+            private GameObject          attackEffect;
+            public GameObject           AttackEffect => attackEffect;
 
-        [SerializeField]
-            private float               _damageEffectTime; 
-            public float                DamageTime => _damageEffectTime;
+        [FormerlySerializedAs("_damageEffectTime")] [SerializeField]
+            private float               damageEffectTime; 
+            public float                DamageTime => damageEffectTime;
 
         [Tooltip("Minimum distance to detect player or projectiles")]
         [Range(0f, 10f)]
@@ -42,11 +44,12 @@ public class AIChaseData : ScriptableObject
             private float               attackRate = 2f;
             public float                AttackRate => attackRate;
 
+        [FormerlySerializedAs("a_damage")]
         [Tooltip("Attack damage")]
         [Range(0, 30)]
         [SerializeField]
-            private int                 a_damage = 10;
-            public int                  Damage => a_damage;
+            private int                 aDamage = 10;
+            public int                  Damage => aDamage;
 
         [Tooltip("Agent Stop distance from player position")]
         [SerializeField]
@@ -63,26 +66,28 @@ public class AIChaseData : ScriptableObject
     //private float attackSpeed = 4F;
     //public float AttackSpeed => attackSpeed;
 
+        [FormerlySerializedAs("_attackTimer")]
         [Tooltip("Set this value so attacks are not duplicated")]
         [SerializeField]
-            private float               _attackTimer = 0.7f;
-            public float                AttackTimer => _attackTimer;
+            private float               attackTimer = 0.7f;
+            public float                AttackTimer => attackTimer;
 
         // Chance attack //
-        [Header("Attack Nº2 / Chance Attack")]
-        [Tooltip("Higher the number, more possible it is to use attack nº2")]
+        [FormerlySerializedAs("_percentage")]
+        [Header("Attack NÂº2 / Chance Attack")]
+        [Tooltip("Higher the number, more possible it is to use attack nÂº2")]
         [Range(0f, 1f)]
         [SerializeField]
-            private float               _percentage;
-            public float                Percentage => _percentage;
+            private float               percentage;
+            public float                Percentage => percentage;
 
-        [SerializeField]
-            private int                 b_damage;
-            public int                  B_damage => b_damage;
+        [FormerlySerializedAs("b_damage")] [SerializeField]
+            private int                 bDamage;
+            public int                  BDamage => bDamage;
 
-        [SerializeField]
-            private GameObject          s_attackEffect; 
-            public GameObject           S_attackEffect => s_attackEffect; 
+        [FormerlySerializedAs("s_attackEffect")] [SerializeField]
+            private GameObject          sAttackEffect; 
+            public GameObject           SAttackEffect => sAttackEffect; 
 
 
     //[SerializeField]
@@ -96,11 +101,12 @@ public class AIChaseData : ScriptableObject
             public GameObject           SpecialAttackEffect => specialAttackEffect;
 
 
+        [FormerlySerializedAs("s_damage")]
         [Tooltip("Special attack damage on hit")]
         [Range(0, 50)]
         [SerializeField]
-            private int                 s_damage = 20;
-            public int                  S_damage => s_damage;
+            private int                 sDamage = 20;
+            public int                  SDamage => sDamage;
 
         [Range(0, 100)]
         [SerializeField]
@@ -197,21 +203,23 @@ public class AIChaseData : ScriptableObject
     // DAMAGE--------------------------------------------------------------------> 
 
     // Stunned //
+    [FormerlySerializedAs("_stunnedTime")]
     [Header("Stunned")]
         [SerializeField] 
-            private float               _stunnedTime;
-            public float                StunnedTime => _stunnedTime;     
-        [SerializeField]
-            private float               _stunnedChance;
-            public float                SunnedChance => _stunnedChance;
+            private float               stunnedTime;
+            public float                StunnedTime => stunnedTime;     
+        [FormerlySerializedAs("_stunnedChance")] [SerializeField]
+            private float               stunnedChance;
+            public float                SunnedChance => stunnedChance;
 
 
     //  Death & Loot --------------------------------------------------------------------> 
 
+        [FormerlySerializedAs("_deathEffect")]
         [Header("Death")]
         [SerializeField] 
-            private GameObject          _deathEffect; 
-            public GameObject           DeathEffect => _deathEffect;  
+            private GameObject          deathEffect; 
+            public GameObject           DeathEffect => deathEffect;  
 
 
         [Header("Loot")]
@@ -231,51 +239,55 @@ public class AIChaseData : ScriptableObject
             private float               spawnChance;
             public float                SpawnChance => spawnChance;
 
+        [FormerlySerializedAs("_spawnHealth")]
         [Tooltip("if checked, AI will spawn health drops upon death")]
         [SerializeField]
-            private bool                _spawnHealth;
-            public bool                 SpawnHealth => _spawnHealth;    
+            private bool                spawnHealth;
+            public bool                 SpawnHealth => spawnHealth;    
 
-        [SerializeField] 
-            private GameObject          _healthDrop;
-            public GameObject           HealthDrop => _healthDrop;
+        [FormerlySerializedAs("_healthDrop")] [SerializeField] 
+            private GameObject          healthDrop;
+            public GameObject           HealthDrop => healthDrop;
 
+        [FormerlySerializedAs("_healthUnits")]
         [Range(0, 10)]
         [SerializeField]
-            private int                 _healthUnits; 
-            public int                  HealthUnits => _healthUnits;
+            private int                 healthUnits; 
+            public int                  HealthUnits => healthUnits;
 
-        [SerializeField]
-            private bool                _spawnMana;
-            internal bool               SpawnMana => _spawnMana;
+        [FormerlySerializedAs("_spawnMana")] [SerializeField]
+            private bool                spawnMana;
+            internal bool               SpawnMana => spawnMana;
 
         // Mana // 
-        [SerializeField]
-            private GameObject          _manaDrop;
-            public GameObject           ManaDrop => _manaDrop;
+        [FormerlySerializedAs("_manaDrop")] [SerializeField]
+            private GameObject          manaDrop;
+            public GameObject           ManaDrop => manaDrop;
 
+        [FormerlySerializedAs("_manaItems")]
         [Range(0, 10)]
         [SerializeField]
-            private int                 _manaItems;
-            internal int                ManaItems => _manaItems;
+            private int                 manaItems;
+            internal int                ManaItems => manaItems;
 
     #endregion
 
     #region Sounds 
     // Sound -------------------------------------------------------------------->
+    [FormerlySerializedAs("_grunt")]
     [Header("Sound")]
        
         [SerializeField]
-            private EventReference      _grunt;
-            public EventReference       grunt => _grunt;  
+            private EventReference      grunt;
+            public EventReference       Grunt => grunt;  
 
-        [SerializeField]
-            private EventReference      _scream;
-            public EventReference       Scream => _scream;
+        [FormerlySerializedAs("_scream")] [SerializeField]
+            private EventReference      scream;
+            public EventReference       Scream => scream;
 
-        [SerializeField]
-            private EventReference      _etc;
-            public EventReference       Etc => _etc;
+        [FormerlySerializedAs("_etc")] [SerializeField]
+            private EventReference      etc;
+            public EventReference       Etc => etc;
 
 
     #endregion

@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
 using TMPro;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor; 
@@ -16,22 +17,23 @@ using UnityEditor;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehaviour : MonoBehaviour
 {
+    /*
     #region  Variables
 
     // States --------------------------------------------------------------------------------------------------------->
 
-                            private enum AI                             { 
-                                                                        _GUARD, 
-                                                                        _PATROL,
-                                                                        _ATTACK,
-                                                                        _COVER, 
-                                                                        _SEARCH, 
-                                                                        _GLORYKILL, 
-                                                                        _NONE }
+                            private enum Ai                             { 
+                                                                        Guard, 
+                                                                        Patrol,
+                                                                        Attack,
+                                                                        Cover, 
+                                                                        Search, 
+                                                                        Glorykill, 
+                                                                        None }
                             
-        [SerializeField]    private AI                                  _stateAI;
+        [FormerlySerializedAs("_stateAI")] [SerializeField]    private Ai                                  stateAi;
 
-                            private enum HandleState                    { _STOPED, _NONE }
+                            private enum HandleState                    { Stoped, None }
                             private HandleState                         _currentState;
 
                             private GameState                           _gamePlay;
@@ -40,58 +42,58 @@ public class EnemyBehaviour : MonoBehaviour
     // Components ----------------------------------------------------------------------------------------------------->
         
                             // Reference to AI data
-        [SerializeField]    private AIRangedData                        data;
+        [SerializeField]    private AiRangedData                        data;
 
                             // Reference to the state machine
-                            private StateMachine                        stateMachine;
+                            private StateMachine                        _stateMachine;
 
                             // Reference to the NavMeshAgent
-                            internal NavMeshAgent                       agent;
+                            internal NavMeshAgent                       Agent;
 
         // Reference to the Outline component
         [SerializeField]    private Outline                             outlineDeactivation;
 
-                            private WarningSystemAI                     _warn;
+                            private WarningSystemAi                     _warn;
 
-        [SerializeField]    private Agents                              _agentAI;
+        [FormerlySerializedAs("_agentAI")] [SerializeField]    private Agents                              agentAi;
 
-                            private AIHandler                           _handlerAI;
-                            private bool                                _deactivateAI;
+                            private AiHandler                           _handlerAi;
+                            private bool                                _deactivateAi;
 
-                            public TMP_Text                             _dizzyText;
+                            [FormerlySerializedAs("_dizzyText")] public TMP_Text                             dizzyText;
                             private bool                                _activeDizzy;
 
-                            private GemManager                          gemManager;
+                            private GemManager                          _gemManager;
 
-                            private SkinnedMeshRenderer                 enemyMesh;
+                            private SkinnedMeshRenderer                 _enemyMesh;
 
-                            private ObjectiveUI                         objectiveUIScript;
+                            private ObjectiveUi                         _objectiveUiScript;
 
         // Combat  ---------------------------------------------------------------------------------------------------->
 
         // Attack 
 
-        [SerializeField]    private Transform                           _shootPos;
+        [FormerlySerializedAs("_shootPos")] [SerializeField]    private Transform                           shootPos;
 
-                            private GameObject                          bullet, randomBullet, specialPower;
+                            private GameObject                          _bullet, _randomBullet, _specialPower;
 
-                            private float                               fireRate = 2f;
-                            private float                               nextFire = 0f;
-                            private float                               percentage;
+                            private float                               _fireRate = 2f;
+                            private float                               _nextFire = 0f;
+                            private float                               _percentage;
 
 
 
         // special ability 
 
-                            private const float                         ABILITY_MAX_VALUE = 100F;
+                            private const float                         AbilityMaxValue = 100F;
 
-                            private float                               currentAbilityValue;
+                            private float                               _currentAbilityValue;
 
-                            private float                               abilityIncreasePerFrame;
+                            private float                               _abilityIncreasePerFrame;
 
         // Effects
 
-        [SerializeField]    private GameObject                          _targetEffect;
+        [FormerlySerializedAs("_targetEffect")] [SerializeField]    private GameObject                          targetEffect;
         
         
         // FOV ---------------------------------------------------------------------------------------------------------------->
@@ -103,20 +105,20 @@ public class EnemyBehaviour : MonoBehaviour
         [SerializeField]    private float                                   angle;
         public float                                                        Angle => angle;
 
-        private LayerMask                                                   targetMask;
-        private LayerMask                                                   obstructionMask;
+        private LayerMask                                                   _targetMask;
+        private LayerMask                                                   _obstructionMask;
         [SerializeField] private Transform                                  fov;
         public Transform                                                    EefovTransform => fov; // Enemy Editor FOV
 
-        private bool                                                        canSeePlayer;
-        public bool                                                         canSee => canSeePlayer;
+        private bool                                                        _canSeePlayer;
+        public bool                                                         CanSee => _canSeePlayer;
 
 
     // Drops & Death -------------------------------------------------------------------------------------------------->
-        [SerializeField]    private GameObject                              _death;
+        [FormerlySerializedAs("_death")] [SerializeField]    private GameObject                              death;
 
-                            private bool                                    gemSpawnOnDeath;
-                            private GameObject                              gemPrefab;
+                            private bool                                    _gemSpawnOnDeath;
+                            private GameObject                              _gemPrefab;
 
                             private bool                                _spawnHealth;
                             private int                                 _healthItems;
@@ -133,83 +135,84 @@ public class EnemyBehaviour : MonoBehaviour
 
         // UI
 
+        [FormerlySerializedAs("_healthSlider")]
         [Header("UI ")]
 
         [SerializeField] 
-        private Slider                              _healthSlider;
-        private float                               health;
+        private Slider                              healthSlider;
+        private float                               _health;
 
 
-    private Color                                                       originalColor;
+    private Color                                                       _originalColor;
     public int                                                          damageBoost = 0;
 
 
 
     // References to enemies
-    public GameObject                                                   PlayerObject;
+    [FormerlySerializedAs("PlayerObject")] public GameObject                                                   playerObject;
 
     private Transform                                                   _playerTarget;
     public Transform                                                    PlayerTarget => _playerTarget;
 
     private PlayerHealth                                                _player; 
 
-    private float                                                       minDist = 3f;
+    private float                                                       _minDist = 3f;
 
-    private Shooter                                                     shooterScript;
+    private Shooter                                                     _shooterScript;
 
     // AI SPEED
-    private float                                                       curSpeed;
-    private Vector3                                                     previousPos;
+    private float                                                       _curSpeed;
+    private Vector3                                                     _previousPos;
 
-    private float                                                       AttackRequiredDistance = 6.5f; // 6.5
+    private float                                                       _attackRequiredDistance = 6.5f; // 6.5
 
     // Patrol Points
 
-    private int destPoint = 0;
-    [SerializeField] private Transform[]                                _PatrolPoints;
+    private int _destPoint = 0;
+    [FormerlySerializedAs("_PatrolPoints")] [SerializeField] private Transform[]                                patrolPoints;
 
 
 
     // COMBAT //
 
-    private float                                                       damageEffectTime;
+    private float                                                       _damageEffectTime;
 
 
    
 
     // hide code
     [Header("Hide config")]
-    private Collider[]                                                  Colliders = new Collider[10];
+    private Collider[]                                                  _colliders = new Collider[10];
 
-    [Range(-1, 1)]
-    public float HideSensitivity = 0;
-    [Range(0.01f, 1f)][SerializeField] private float                    UpdateFrequency = 0.65f;
+    [FormerlySerializedAs("HideSensitivity")] [Range(-1, 1)]
+    public float hideSensitivity = 0;
+    [FormerlySerializedAs("UpdateFrequency")] [Range(0.01f, 1f)][SerializeField] private float                    updateFrequency = 0.65f;
 
-    [SerializeField] private LayerMask                                  HidableLayers;
+    [FormerlySerializedAs("HidableLayers")] [SerializeField] private LayerMask                                  hidableLayers;
 
     [Range(0, 5f)]
-    private float                                                       MinObstacleHeight = 0f;
+    private float                                                       _minObstacleHeight = 0f;
 
-    public SceneChecker                                                 LineOfSightChecker;
+    [FormerlySerializedAs("LineOfSightChecker")] public SceneChecker                                                 lineOfSightChecker;
 
-    private Coroutine                                                   MovementCoroutine;
+    private Coroutine                                                   _movementCoroutine;
 
 
   
 
-    [SerializeField] private Slider                                     _abilitySlider;
+    [FormerlySerializedAs("_abilitySlider")] [SerializeField] private Slider                                     abilitySlider;
 
-    private ValuesTextsScript                                           valuesTexts;
+    private ValuesTextsScript                                           _valuesTexts;
 
     // animation
     private Animator                                                    _animator;
 
     // damage over time variables
-    private float                                                       damageOverTime = 2f;
-    private float                                                       durationOfDOT = 10f;
+    private float                                                       _damageOverTime = 2f;
+    private float                                                       _durationOfDot = 10f;
 
     // stunned variables
-    private float                                                       stunnedTime = 1.5f;
+    private float                                                       _stunnedTime = 1.5f;
 
     // states & actions
     private bool                                                        _canGloryKill;
@@ -234,7 +237,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     // Debug // 
 
-    [SerializeField] private bool                                       _showExtraGizmos; 
+    [FormerlySerializedAs("_showExtraGizmos")] [SerializeField] private bool                                       showExtraGizmos; 
 
 
     #endregion
@@ -244,7 +247,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Awake()
     { 
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-        objectiveUIScript = FindObjectOfType<ObjectiveUI>();
+        _objectiveUiScript = FindObjectOfType<ObjectiveUi>();
     }
 
     #endregion
@@ -263,32 +266,32 @@ public class EnemyBehaviour : MonoBehaviour
         _canAttack          = true;
         _isAttacking        = false;
         _canPeformAttack    = true;
-        _dizzyText.enabled  = false;
-        _currentState       = HandleState._NONE; 
+        dizzyText.enabled  = false;
+        _currentState       = HandleState.None; 
     }
 
     #region Components Sync
     private void GetComponents()
     {
-        agent               = GetComponent<NavMeshAgent>();
-        _warn               = GetComponent<WarningSystemAI>();
-        _handlerAI          = GetComponent<AIHandler>();
+        Agent               = GetComponent<NavMeshAgent>();
+        _warn               = GetComponent<WarningSystemAi>();
+        _handlerAi          = GetComponent<AiHandler>();
 
-        _agentAI            = GetComponentInChildren<Agents>();
+        agentAi            = GetComponentInChildren<Agents>();
         _animator           = GetComponentInChildren<Animator>();
-        _healthSlider       = GetComponentInChildren<Slider>();
-        enemyMesh           = GetComponentInChildren<SkinnedMeshRenderer>();
+        healthSlider       = GetComponentInChildren<Slider>();
+        _enemyMesh           = GetComponentInChildren<SkinnedMeshRenderer>();
 
-        LineOfSightChecker  = GetComponentInChildren<SceneChecker>();
+        lineOfSightChecker  = GetComponentInChildren<SceneChecker>();
 
         
         _player             = FindObjectOfType<PlayerHealth>();
-        PlayerObject        = GameObject.Find("Player");
-        _playerTarget       = PlayerObject.transform;
+        playerObject        = GameObject.Find("Player");
+        _playerTarget       = playerObject.transform;
 
-        shooterScript       = PlayerObject.GetComponent<Shooter>();
+        _shooterScript       = playerObject.GetComponent<Shooter>();
 
-        valuesTexts         = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
+        _valuesTexts         = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
     }
     #endregion
 
@@ -297,29 +300,29 @@ public class EnemyBehaviour : MonoBehaviour
     {
        
         // HEALTH //
-        health = data.Health;
+        _health = data.Health;
        
         // ATTACK //
-        fireRate = data.AttackRate;
+        _fireRate = data.AttackRate;
 
-        minDist = data.MinDist;
+        _minDist = data.MinDist;
 
-        percentage = data.Percentage; 
+        _percentage = data.Percentage; 
 
         // Special attack Ability
 
-        currentAbilityValue = data.CurrentAbilityValue;
+        _currentAbilityValue = data.CurrentAbilityValue;
 
-        abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
+        _abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
 
 
         //specialDamage = data.SpecialDamage;
 
         // projectiles //
 
-        bullet          = data.N_projectile;
-        randomBullet    = data.R_projectile;
-        specialPower    = data.S_Projectile;
+        _bullet          = data.NProjectile;
+        _randomBullet    = data.RProjectile;
+        _specialPower    = data.SProjectile;
 
         // cover //
         //fleeDistance = data.FleeDistance; 
@@ -327,7 +330,7 @@ public class EnemyBehaviour : MonoBehaviour
         
         // Death & Loot //
 
-        gemPrefab = data.Gem;
+        _gemPrefab = data.Gem;
 
         _spawnHealth = data.SpawnHealth;    
         _healthDrop = data.HealthDrop;
@@ -345,13 +348,13 @@ public class EnemyBehaviour : MonoBehaviour
         
         //angle = data.Angle;
 
-        targetMask = data.TargetMask;
+        _targetMask = data.TargetMask;
 
-        obstructionMask = data.ObstructionMask; 
+        _obstructionMask = data.ObstructionMask; 
 
         // UI //
-        _healthSlider.value = health;
-        _abilitySlider.value = currentAbilityValue; 
+        healthSlider.value = _health;
+        abilitySlider.value = _currentAbilityValue; 
 
     }
     #endregion
@@ -363,46 +366,46 @@ public class EnemyBehaviour : MonoBehaviour
         // Create the states
         State onGuardState = new State("Guard" ,null);
 
-        State PatrolState = new State("On Patrol", Patrol);
+        State patrolState = new State("On Patrol", Patrol);
 
-        State ChaseState = new State("Fight",ChasePlayer);
+        State chaseState = new State("Fight",ChasePlayer);
 
-        State CoverState = new State("Cover",Cover);
+        State coverState = new State("Cover",Cover);
 
-        State GloryKillState = new State("Glory Kill",GloryKill);
+        State gloryKillState = new State("Glory Kill",GloryKill);
 
         // Add the transitions
 
         // GUARD -> CHASE
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true,
+                () => _canSeePlayer == true,
                 //() => Debug.Log(" GUARD -> CHASE"),
-                ChaseState));
+                chaseState));
 
         // CHASE->PATROL
-        ChaseState.AddTransition(
+        chaseState.AddTransition(
             new Transition(
-                () => _stateAI == AI._PATROL,
+                () => stateAi == Ai.Patrol,
                 //() => Debug.Log("CHASE -> PATROL"),
-                PatrolState));
+                patrolState));
 
        // CHASE -> GLORY KILL
-        ChaseState.AddTransition(
+        chaseState.AddTransition(
             new Transition(
                 () => _canGloryKill == true,
                // () => Debug.Log("CHASE -> GLORY KILL"),
-                GloryKillState));
+                gloryKillState));
 
         //  PATROL -> CHASE 
-        PatrolState.AddTransition(
+        patrolState.AddTransition(
            new Transition(
-               () => _stateAI == AI._ATTACK,
+               () => stateAi == Ai.Attack,
                //() => Debug.Log("PATROL -> CHASE"),
-               ChaseState));
+               chaseState));
 
         //state machine
-        stateMachine = new StateMachine(PatrolState);
+        _stateMachine = new StateMachine(patrolState);
 
 
         //CoverState.AddTransition(new Transition(() => _canAttack == true && canSeePlayer == false, ()=> Debug.Log("Cover State"), PatrolState));
@@ -418,14 +421,14 @@ public class EnemyBehaviour : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        UpdateAI();
+        UpdateAi();
     }
     #endregion
 
     #region AI update
-    private void UpdateAI()
+    private void UpdateAi()
     {
-        switch(_handlerAI.AgentOperate)
+        switch(_handlerAi.AgentOperate)
         {
             case true:
                 {
@@ -435,20 +438,20 @@ public class EnemyBehaviour : MonoBehaviour
 
                         MinimalCheck(); // Tester
 
-                        if(_stateAI != AI._ATTACK)
+                        if(stateAi != Ai.Attack)
                         {
-                            StartCoroutine(FOVRoutine());
+                            StartCoroutine(FovRoutine());
                         }
                         
 
-                        AISpeed();
+                        AiSpeed();
 
                         //Dizzy(); 
 
-                        Action actions = stateMachine.Update();
+                        Action actions = _stateMachine.Update();
                         actions?.Invoke();
 
-                        if(_currentState == HandleState._NONE)
+                        if(_currentState == HandleState.None)
                         {
                             ResumeAgent(); 
                         }
@@ -470,7 +473,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void ResumeAgent()
     {
         
-        agent.isStopped = false;
+        Agent.isStopped = false;
         return;
     }
 
@@ -479,8 +482,8 @@ public class EnemyBehaviour : MonoBehaviour
         //Agent.speed = 0f; 
         //Agent.Stop(); 
         
-        agent.velocity = Vector3.zero; 
-        agent.isStopped = true;
+        Agent.velocity = Vector3.zero; 
+        Agent.isStopped = true;
         return;
     }
 
@@ -497,13 +500,13 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void MinimalCheck()
     {
-        if (_stateAI != AI._ATTACK)
+        if (stateAi != Ai.Attack)
         {
             StartCoroutine(DistanceCheck());
          
         }
 
-        if (!_canGloryKill && _canAttack && _stateAI != AI._ATTACK)
+        if (!_canGloryKill && _canAttack && stateAi != Ai.Attack)
         {
             if ((_playerTarget.transform.position - transform.position).magnitude < 2 && _canAttack)
             {
@@ -530,13 +533,13 @@ public class EnemyBehaviour : MonoBehaviour
 
     }
 
-    private void AISpeed()
+    private void AiSpeed()
     {
-        Vector3 curMove = transform.position - previousPos;
-        curSpeed = curMove.magnitude / Time.deltaTime;
-        previousPos = transform.position;
+        Vector3 curMove = transform.position - _previousPos;
+        _curSpeed = curMove.magnitude / Time.deltaTime;
+        _previousPos = transform.position;
 
-        if (curSpeed > 0.2)
+        if (_curSpeed > 0.2)
         {
             _animator.SetBool("isWalking", true);
         }
@@ -566,11 +569,11 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void ActiveDizzy()
     {
-        _dizzyText.enabled = true;
+        dizzyText.enabled = true;
 
-        _dizzyText.ForceMeshUpdate();
+        dizzyText.ForceMeshUpdate();
         
-        var textInfo = _dizzyText.textInfo;
+        var textInfo = dizzyText.textInfo;
 
         for(int i = 0; i < textInfo.characterCount; i++) 
         {
@@ -598,7 +601,7 @@ public class EnemyBehaviour : MonoBehaviour
 
             meshInfo.mesh.vertices = meshInfo.vertices;
 
-            _dizzyText.UpdateGeometry(meshInfo.mesh, i); 
+            dizzyText.UpdateGeometry(meshInfo.mesh, i); 
         }
 
 
@@ -606,12 +609,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void DisableDizzy()
     {
-        _dizzyText.enabled = false;
+        dizzyText.enabled = false;
         return; 
     }
 
 
-    void OnPlayerWarning(Vector3 Target)
+    void OnPlayerWarning(Vector3 target)
     {
         if(_canAttack) 
         {
@@ -623,15 +626,15 @@ public class EnemyBehaviour : MonoBehaviour
     #endregion
 
     #region AI ACTIONS
-    private void HandleGainSight(Transform Target)
+    private void HandleGainSight(Transform target)
     {
-        if (MovementCoroutine != null)
+        if (_movementCoroutine != null)
         {
-            StopCoroutine(MovementCoroutine);
+            StopCoroutine(_movementCoroutine);
         }
-        _playerTarget = Target;
+        _playerTarget = target;
 
-        MovementCoroutine = StartCoroutine(Hide(Target));
+        _movementCoroutine = StartCoroutine(Hide(target));
     }
 
 
@@ -645,7 +648,7 @@ public class EnemyBehaviour : MonoBehaviour
             case true:
                 {
                     
-                    if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)  //
+                    if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRequiredDistance)  //
                     {
                         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
                         PauseAgent();
@@ -655,9 +658,9 @@ public class EnemyBehaviour : MonoBehaviour
                     }
 
                     else if ((_playerTarget.transform.position - transform.position).magnitude < 
-                             AttackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
+                             _attackRequiredDistance && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
                     {
-                        if(_canAttack && _currentState == HandleState._NONE) 
+                        if(_canAttack && _currentState == HandleState.None) 
                         { 
                             ResumeAgent();
                             GetDistance(9F);
@@ -669,7 +672,7 @@ public class EnemyBehaviour : MonoBehaviour
             case false:
                 {
                     
-                    if ((_playerTarget.transform.position - transform.position).magnitude >= AttackRequiredDistance)
+                    if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRequiredDistance)
                     {
                         transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
                         PauseAgent();
@@ -678,9 +681,9 @@ public class EnemyBehaviour : MonoBehaviour
                     }
 
                     else if ((_playerTarget.transform.position 
-                              - transform.position).magnitude < AttackRequiredDistance && !_canSpecialAttack) 
+                              - transform.position).magnitude < _attackRequiredDistance && !_canSpecialAttack) 
                     {
-                        if (_canAttack && _currentState == HandleState._NONE)
+                        if (_canAttack && _currentState == HandleState.None)
                         {
                             ResumeAgent();
                             GetDistance(3.5F);
@@ -697,9 +700,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Attack()
     {
-        agent.speed = 4f;
+        Agent.speed = 4f;
 
-        if (Time.time > nextFire)
+        if (Time.time > _nextFire)
         {
             //transform.LookAt(new Vector3(_playerTarget.position.x, 0, _playerTarget.position.z));
 
@@ -707,15 +710,15 @@ public class EnemyBehaviour : MonoBehaviour
 
             //print("percentage is: "+randomPercentage);
 
-            if(UnityEngine.Random.value < percentage && _canPeformAttack)
+            if(UnityEngine.Random.value < _percentage && _canPeformAttack)
             {
                 _animator.SetBool("isAttacking", true);
 
-                string DebugAttack = "<size=12><color=yellow>";
+                string debugAttack = "<size=12><color=yellow>";
                 string closeAttack = "</color></size>";
-                Debug.Log(DebugAttack + "Attack 2: " + closeAttack);
+                Debug.Log(debugAttack + "Attack 2: " + closeAttack);
 
-                Instantiate(randomBullet, _shootPos.position, _shootPos.rotation);
+                Instantiate(_randomBullet, shootPos.position, shootPos.rotation);
                 StartCoroutine(AttackTimer()); 
                 
             }
@@ -723,15 +726,15 @@ public class EnemyBehaviour : MonoBehaviour
             {
                 _animator.SetBool("isAttacking", true);
 
-                string DebugAttack = "<size=12><color=green>";
+                string debugAttack = "<size=12><color=green>";
                 string closeAttack = "</color></size>";
-                Debug.Log(DebugAttack + "Attack: " + closeAttack);
+                Debug.Log(debugAttack + "Attack: " + closeAttack);
 
-                Instantiate(bullet, _shootPos.position, _shootPos.rotation);
+                Instantiate(_bullet, shootPos.position, shootPos.rotation);
                 StartCoroutine(AttackTimer());
 
             }
-            nextFire = Time.time + fireRate;
+            _nextFire = Time.time + _fireRate;
         }
         else
         {
@@ -744,14 +747,14 @@ public class EnemyBehaviour : MonoBehaviour
     {
         PauseAgent();
 
-        string DebugAttack = "<size=12><color=purple>";
+        string debugAttack = "<size=12><color=purple>";
         string closeAttack = "</color></size>";
-        Debug.Log(DebugAttack + "Special Attack: " + closeAttack);
+        Debug.Log(debugAttack + "Special Attack: " + closeAttack);
 
-        Instantiate(specialPower, _shootPos.position, _shootPos.rotation);
+        Instantiate(_specialPower, shootPos.position, shootPos.rotation);
 
-        currentAbilityValue = 0;
-        _abilitySlider.value = currentAbilityValue;
+        _currentAbilityValue = 0;
+        abilitySlider.value = _currentAbilityValue;
         _canSpecialAttack = false;
         _animator.SetBool("isAttacking", false);
         StartCoroutine(SpecialAttackTimer());
@@ -762,26 +765,26 @@ public class EnemyBehaviour : MonoBehaviour
     private void CoolDoownPower()
     {
 
-        if (currentAbilityValue >= ABILITY_MAX_VALUE)
+        if (_currentAbilityValue >= AbilityMaxValue)
         {
             _canSpecialAttack = true;
         }
         else
         {
-            currentAbilityValue = Mathf.Clamp(currentAbilityValue + (abilityIncreasePerFrame * Time.deltaTime), 0.0f, ABILITY_MAX_VALUE);   
+            _currentAbilityValue = Mathf.Clamp(_currentAbilityValue + (_abilityIncreasePerFrame * Time.deltaTime), 0.0f, AbilityMaxValue);   
         }
 
-        _abilitySlider.value = currentAbilityValue;
+        abilitySlider.value = _currentAbilityValue;
         //print(currentAbilityValue);
     }
 
     private IEnumerator SpecialAttackTimer()
     {
-        bool ISRUNING = false; 
+        bool isruning = false; 
 
-        if(!ISRUNING) 
+        if(!isruning) 
         {
-            ISRUNING = true;
+            isruning = true;
             _canPeformAttack = false;
             _canAttack = false;
             _activeDizzy = true; 
@@ -790,33 +793,33 @@ public class EnemyBehaviour : MonoBehaviour
             _canAttack = true;
             _canPeformAttack = true;
             ResumeAgent();  
-            ISRUNING = false;
+            isruning = false;
         }
         
     }
 
     private IEnumerator AttackTimer()
     {
-        bool ISRUNING = false;
+        bool isruning = false;
 
-        if (!ISRUNING)
+        if (!isruning)
         {
-            ISRUNING = true;
+            isruning = true;
             _canPeformAttack = false;
             yield return new WaitForSeconds(1f);
             _canPeformAttack = true;
-            ISRUNING = false;
+            isruning = false;
         }
 
 
     }
-    private void GetDistance(float SPEED)
+    private void GetDistance(float speed)
     {
-        agent.speed = SPEED;
-        agent.acceleration = 12;
+        Agent.speed = speed;
+        Agent.acceleration = 12;
         
 
-        if (curSpeed <= 1 && canSee)          
+        if (_curSpeed <= 1 && CanSee)          
         {
             //transform.LookAt(_playerTarget.position);
             Attack();
@@ -835,58 +838,58 @@ public class EnemyBehaviour : MonoBehaviour
     
     #region Get Distance
 
-    private IEnumerator Hide(Transform Target)
+    private IEnumerator Hide(Transform target)
     {
-        WaitForSeconds Wait = new WaitForSeconds(UpdateFrequency);
+        WaitForSeconds wait = new WaitForSeconds(updateFrequency);
         while (true)
         {
-            for (int i = 0; i < Colliders.Length; i++)
+            for (int i = 0; i < _colliders.Length; i++)
             {
-                Colliders[i] = null;
+                _colliders[i] = null;
             }
 
-            int hits = Physics.OverlapSphereNonAlloc(agent.transform.position, LineOfSightChecker.Collider.radius, Colliders, HidableLayers);
+            int hits = Physics.OverlapSphereNonAlloc(Agent.transform.position, lineOfSightChecker.collider.radius, _colliders, hidableLayers);
 
             int hitReduction = 0;
             for (int i = 0; i < hits; i++)
             {
-                if (Vector3.Distance(Colliders[i].transform.position, Target.position) < AttackRequiredDistance || Colliders[i].bounds.size.y < MinObstacleHeight)
+                if (Vector3.Distance(_colliders[i].transform.position, target.position) < _attackRequiredDistance || _colliders[i].bounds.size.y < _minObstacleHeight)
                 {
-                    Colliders[i] = null;
+                    _colliders[i] = null;
                     hitReduction++;
                 }
             }
             hits -= hitReduction;
 
-            System.Array.Sort(Colliders, ColliderArraySortComparer);
+            System.Array.Sort(_colliders, ColliderArraySortComparer);
 
             for (int i = 0; i < hits; i++)
             {
-                if (NavMesh.SamplePosition(Colliders[i].transform.position, out NavMeshHit hit, 2f, agent.areaMask))
+                if (NavMesh.SamplePosition(_colliders[i].transform.position, out NavMeshHit hit, 2f, Agent.areaMask))
                 {
-                    if (!NavMesh.FindClosestEdge(hit.position, out hit, agent.areaMask))
+                    if (!NavMesh.FindClosestEdge(hit.position, out hit, Agent.areaMask))
                     {
                         Debug.LogError($"Unable to find edge close to {hit.position}");
                     }
 
-                    if (Vector3.Dot(hit.normal, (Target.position - hit.position).normalized) < HideSensitivity)
+                    if (Vector3.Dot(hit.normal, (target.position - hit.position).normalized) < hideSensitivity)
                     {
-                        agent.SetDestination(hit.position);
+                        Agent.SetDestination(hit.position);
                         break;
                     }
                     else
                     {
                         // Since the previous spot wasn't facing "away" enough from teh target, we'll try on the other side of the object
-                        if (NavMesh.SamplePosition(Colliders[i].transform.position - (Target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, agent.areaMask))
+                        if (NavMesh.SamplePosition(_colliders[i].transform.position - (target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, Agent.areaMask))
                         {
-                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, agent.areaMask))
+                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, Agent.areaMask))
                             {
                                 Debug.LogError($"Unable to find edge close to {hit2.position} (second attempt)");
                             }
 
-                            if (Vector3.Dot(hit2.normal, (Target.position - hit2.position).normalized) < HideSensitivity)
+                            if (Vector3.Dot(hit2.normal, (target.position - hit2.position).normalized) < hideSensitivity)
                             {
-                                agent.SetDestination(hit2.position);
+                                Agent.SetDestination(hit2.position);
                                 break;
                             }
                         }
@@ -894,30 +897,30 @@ public class EnemyBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError($"Unable to find NavMesh near object {Colliders[i].name} at {Colliders[i].transform.position}");
+                    Debug.LogError($"Unable to find NavMesh near object {_colliders[i].name} at {_colliders[i].transform.position}");
                 }
             }
-            yield return Wait;
+            yield return wait;
         }
     }
 
-    public int ColliderArraySortComparer(Collider A, Collider B)
+    public int ColliderArraySortComparer(Collider a, Collider b)
     {
-        if (A == null && B != null)
+        if (a == null && b != null)
         {
             return 1;
         }
-        else if (A != null && B == null)
+        else if (a != null && b == null)
         {
             return -1;
         }
-        else if (A == null && B == null)
+        else if (a == null && b == null)
         {
             return 0;
         }
         else
         {
-            return Vector3.Distance(agent.transform.position, A.transform.position).CompareTo(Vector3.Distance(agent.transform.position, B.transform.position));
+            return Vector3.Distance(Agent.transform.position, a.transform.position).CompareTo(Vector3.Distance(Agent.transform.position, b.transform.position));
         }
     }
 
@@ -928,10 +931,10 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(_canMove)
         {
-            agent.autoBraking = false;
-            agent.stoppingDistance = 0.1f;
+            Agent.autoBraking = false;
+            Agent.stoppingDistance = 0.1f;
 
-            if (!agent.pathPending && agent.remainingDistance < 0.5f)
+            if (!Agent.pathPending && Agent.remainingDistance < 0.5f)
             {
                 GotoNetPoint();
             }
@@ -941,31 +944,31 @@ public class EnemyBehaviour : MonoBehaviour
     private void GotoNetPoint()
     {
         
-        agent.speed = 3f;
+        Agent.speed = 3f;
         // Returns if no points have been set up
-        if (_PatrolPoints.Length == 0)
+        if (patrolPoints.Length == 0)
             return;
 
         // Set the agent to go to the currently selected destination.
-        agent.destination = _PatrolPoints[destPoint].position;
+        Agent.destination = patrolPoints[_destPoint].position;
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
-        destPoint = (destPoint + 1) % _PatrolPoints.Length;
+        _destPoint = (_destPoint + 1) % patrolPoints.Length;
     }
 
     private void GloryKill()
     {
         StopAttacking();
-        agent.radius = 1f;
-        agent.isStopped = true;
+        Agent.radius = 1f;
+        Agent.isStopped = true;
         return;
     }
 
     #endregion
 
     #region Field of view Routine
-    private IEnumerator FOVRoutine()
+    private IEnumerator FovRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(1f);
 
@@ -978,13 +981,13 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void FieldOfViewCheck()
     {
-        bool IsRunning = false;
+        bool isRunning = false;
 
-        if(!IsRunning) 
+        if(!isRunning) 
         {
-            IsRunning = true;
+            isRunning = true;
 
-            Collider[] rangeChecks = Physics.OverlapSphere(fov.position, radius, targetMask);
+            Collider[] rangeChecks = Physics.OverlapSphere(fov.position, radius, _targetMask);
 
             if (rangeChecks.Length != 0)
             {
@@ -995,55 +998,55 @@ public class EnemyBehaviour : MonoBehaviour
                 {
                     float distanceToTarget = Vector3.Distance(fov.position, target.position);
 
-                    if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, obstructionMask))
+                    if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, _obstructionMask))
                     {
-                        canSeePlayer = true;
+                        _canSeePlayer = true;
                         SetAttack();
                     }
 
                     else
-                        canSeePlayer = false;
+                        _canSeePlayer = false;
                 }
                 else
-                    canSeePlayer = false;
+                    _canSeePlayer = false;
             }
-            else if (canSeePlayer)
-                canSeePlayer = false;
+            else if (_canSeePlayer)
+                _canSeePlayer = false;
         }
 
-        IsRunning = false;
+        isRunning = false;
 
     }
     #endregion
 
     #region Health
-    public void TakeDamage(int _damage, WeaponType _type)
+    public void TakeDamage(int damage, WeaponType type)
     {
         //health -= (_damage + damageBoost);
        
-        if (health <= 0)
+        if (_health <= 0)
         {
             Die();
         }
 
-        else if (health > 0)
+        else if (_health > 0)
         {
             
             //GetPlayer();
-            switch (_type)
+            switch (type)
             {
                 case WeaponType.Normal:
                     {
-                        health -= _damage + damageBoost;
+                        _health -= damage + damageBoost;
 
-                        damageEffectTime = 0.5f; 
+                        _damageEffectTime = 0.5f; 
                         StartCoroutine(HitFlash());
                         break;
                     }
 
                 case WeaponType.Fire: //Q ability
                     {
-                        health -= _damage + damageBoost;
+                        _health -= damage + damageBoost;
 
                         StartCoroutine(HitFlash());
                         break;
@@ -1051,16 +1054,16 @@ public class EnemyBehaviour : MonoBehaviour
 
                 case WeaponType.Ice: //W ability
                     {
-                        health -= _damage + damageBoost;
+                        _health -= damage + damageBoost;
                         
-                        if(shooterScript.wUpgraded == true)
+                        if(_shooterScript.WUpgraded == true)
                         {
-                            damageEffectTime = 1f;
-                            StartCoroutine(DamageOverTime(damageOverTime, durationOfDOT));
+                            _damageEffectTime = 1f;
+                            StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
                         }
                         else
-                            health -= _damage + damageBoost;
-                            Instantiate(_targetEffect, transform.position, transform.rotation);
+                            _health -= damage + damageBoost;
+                            Instantiate(targetEffect, transform.position, transform.rotation);
                         StartCoroutine(HitFlash());
 
                         break;
@@ -1068,7 +1071,7 @@ public class EnemyBehaviour : MonoBehaviour
 
                 case WeaponType.Dash: //E ability
                     {
-                        health -= _damage + damageBoost;
+                        _health -= damage + damageBoost;
 
                         StartCoroutine(HitFlash());
 
@@ -1077,11 +1080,11 @@ public class EnemyBehaviour : MonoBehaviour
 
                 case WeaponType.Thunder: //R ability
                     {
-                        health -= _damage + damageBoost;
+                        _health -= damage + damageBoost;
 
-                        if(shooterScript.rUpgraded == true)
+                        if(_shooterScript.RUpgraded == true)
                         {
-                            StartCoroutine(STFS(stunnedTime));
+                            StartCoroutine(Stfs(_stunnedTime));
                         }
                         else
                             StartCoroutine(HitFlash());
@@ -1094,7 +1097,7 @@ public class EnemyBehaviour : MonoBehaviour
 
             //StartCoroutine(DamageEffect()); 
 
-            _healthSlider.value = health;
+            healthSlider.value = _health;
 
             //float randomFloat = UnityEngine.Random.value;
             /*
@@ -1105,14 +1108,14 @@ public class EnemyBehaviour : MonoBehaviour
 
                 StartCoroutine(STFS(stunnedTime));
             }
-            */
+            
             //HealthCheck();
 
             // print("damage :" + health);
 
             if (_canAttack) 
             {
-                _warn.canAlertAI = true;
+                _warn.CanAlertAi = true;
                 SetAttack();
             }
             return;
@@ -1123,18 +1126,18 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void HealthCheck()
     {
-        if(health >= 15)
+        if(_health >= 15)
         {
             SetAttack();
             return;
         }
-        else if(health <20 )
+        else if(_health <20 )
         {
             _canSpecialAttack = false;
             return;
         }
 
-        else if(health <= 14)
+        else if(_health <= 14)
         {
             SetGloryKill();
             return;
@@ -1159,7 +1162,7 @@ public class EnemyBehaviour : MonoBehaviour
             // STOP ATTACK 
             _canAttack = false;
 
-            yield return new WaitForSeconds(damageEffectTime);
+            yield return new WaitForSeconds(_damageEffectTime);
 
             // RESUME AGENT
             ResumeAgent();
@@ -1180,7 +1183,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
-        Instantiate(_death, transform.position, Quaternion.identity);
+        Instantiate(death, transform.position, Quaternion.identity);
 
 
         if(_spawnHealth)
@@ -1209,15 +1212,15 @@ public class EnemyBehaviour : MonoBehaviour
             }
         }
 
-        if (gemSpawnOnDeath)
+        if (_gemSpawnOnDeath)
         { 
-            Instantiate(gemPrefab, transform.position, Quaternion.identity);
+            Instantiate(_gemPrefab, transform.position, Quaternion.identity);
             Debug.Log("Spawned Gem");
         }
 
-        objectiveUIScript.IncreaseEnemyDefeatedCount();
+        _objectiveUiScript.IncreaseEnemyDefeatedCount();
 
-        valuesTexts.GetKill();
+        _valuesTexts.GetKill();
 
         Destroy(gameObject);
 
@@ -1229,48 +1232,48 @@ public class EnemyBehaviour : MonoBehaviour
 
     private IEnumerator HitFlash()
     {
-        bool ISRUNNING = false;
+        bool isrunning = false;
 
-        if (!ISRUNNING)
+        if (!isrunning)
         {
-            ISRUNNING = true;
-            Color COLOR = enemyMesh.material.color;
+            isrunning = true;
+            Color color = _enemyMesh.material.color;
 
-            enemyMesh.material.color = Color.red;
+            _enemyMesh.material.color = Color.red;
             yield return new WaitForSeconds(0.2f);
-            enemyMesh.material.color = COLOR;
+            _enemyMesh.material.color = color;
 
-            ISRUNNING = false;
+            isrunning = false;
         }
 
     }
 
-    private IEnumerator STFS(float value)
+    private IEnumerator Stfs(float value)
     {
-        bool STFS_EFFECT = false;
+        bool stfsEffect = false;
 
-        if (!STFS_EFFECT)
+        if (!stfsEffect)
         {
-            STFS_EFFECT = true;
+            stfsEffect = true;
 
 
             print("STARTED STFS COROUTINE SUCCESFULLY");
 
             _canAttack = false;
-            _currentState = HandleState._STOPED;
+            _currentState = HandleState.Stoped;
             StopAgent();
 
             yield return new WaitForSeconds(value);
 
 
-            _currentState = HandleState._NONE;
+            _currentState = HandleState.None;
 
             //HandleStateAI(false);
             
             ResumeAgent();
             _canAttack = true;
 
-            STFS_EFFECT = false;
+            stfsEffect = false;
         }
         
 
@@ -1283,15 +1286,15 @@ public class EnemyBehaviour : MonoBehaviour
 
         GetComponent<Renderer>().material.color = originalColor;
         _canMove = true;
-        */
+        
     }
 
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
     {
         float elapsedTime = 0f;
-        while (elapsedTime < durationOfDOT)
+        while (elapsedTime < _durationOfDot)
         {
-            health -= damagePerSecond;
+            _health -= damagePerSecond;
             StartCoroutine(HitFlash());
             yield return new WaitForSeconds(2.5f);
             elapsedTime += 2.5f;
@@ -1305,27 +1308,27 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void SetGuard()
     {
-        _stateAI = AI._GUARD;
+        stateAi = Ai.Guard;
         
     }
     private void SetPatrol()
     {
-        _stateAI = AI._PATROL;
+        stateAi = Ai.Patrol;
     }
     private void SetAttack()
     {
-        _stateAI = AI._ATTACK;
+        stateAi = Ai.Attack;
 
-        agent.speed = 4f;
+        Agent.speed = 4f;
     }
     private void SetCover()
     {
-        _stateAI = AI._COVER;
+        stateAi = Ai.Cover;
         return;
     }
     private void SetGloryKill()
     {
-        _stateAI = AI._GLORYKILL;
+        stateAi = Ai.Glorykill;
         return;
     }
 
@@ -1337,7 +1340,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
        if(!_isAttacking) 
        {
-            _agentAI.StartAttacking();
+            agentAi.StartAttacking();
             return;
        }
     }
@@ -1346,7 +1349,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(_isAttacking)
         {
-            _agentAI.StopAttacking();
+            agentAi.StopAttacking();
             SetPatrol();
             return;
         }
@@ -1363,7 +1366,7 @@ public class EnemyBehaviour : MonoBehaviour
             case GameState.Gameplay:
                 {
                     
-                    if(_currentState == HandleState._NONE)
+                    if(_currentState == HandleState.None)
                     {
                         _gamePlay = GameState.Gameplay;
                         ResumeAgent();
@@ -1374,7 +1377,7 @@ public class EnemyBehaviour : MonoBehaviour
             case GameState.Paused:
                 {
                     
-                    if (_currentState == HandleState._NONE)
+                    if (_currentState == HandleState.None)
                     {
                         _gamePlay = GameState.Paused;
                         PauseAgent();
@@ -1469,4 +1472,5 @@ public class EnemyBehaviour : MonoBehaviour
     }
     #endregion
 #endif
+*/
 }

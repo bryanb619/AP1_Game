@@ -1,14 +1,16 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Tester : MonoBehaviour
 {
+    [FormerlySerializedAs("TimeBoost")]
     [Header("Time Scale at 100 times")]
 
-    [SerializeField] private bool TimeBoost;
-    [SerializeField] private bool LightActive;
+    [SerializeField] private bool timeBoost;
+    [FormerlySerializedAs("LightActive")] [SerializeField] private bool lightActive;
 
-    [SerializeField] private GameObject GameTestLight;
-                     private GameObject Player;
+    [FormerlySerializedAs("GameTestLight")] [SerializeField] private GameObject gameTestLight;
+                     private GameObject _player;
 
     [SerializeField] private bool killCheat = false;
 
@@ -22,10 +24,10 @@ public class Tester : MonoBehaviour
 
     private void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("Player") ;
+        _player = GameObject.FindGameObjectWithTag("Player") ;
         //KillEnemy = false;
-        TimeBoost = false;
-        LightActive = false;
+        timeBoost = false;
+        lightActive = false;
     }
 
     // Start is called before the first frame update
@@ -39,26 +41,26 @@ public class Tester : MonoBehaviour
 
     private void CheckBools()
     {
-        if (TimeBoost)
+        if (timeBoost)
         {
-            AIGameTest();
+            AiGameTest();
         }
-        else if (TimeBoost == false)
+        else if (timeBoost == false)
         {
             ResetTimeScale();
         }
 
-        if (LightActive)
+        if (lightActive)
         {
             TestLight();
         }
-        else if (LightActive == false)
+        else if (lightActive == false)
         {
             DisabletestLight();
         }
     }
 
-    private void AIGameTest()
+    private void AiGameTest()
     {
         Time.timeScale = 100;
     }
@@ -71,12 +73,12 @@ public class Tester : MonoBehaviour
 
     private void TestLight()
     {
-        GameTestLight.SetActive(true);
+        gameTestLight.SetActive(true);
     }
 
     private void DisabletestLight()
     {
-        GameTestLight.SetActive(false);
+        gameTestLight.SetActive(false);
     }
 
     /*private void KillAll()
@@ -94,17 +96,19 @@ public class Tester : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Y) && killCheat == true)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(Player.transform.position, damageRadius);
+            Collider[] hitColliders = Physics.OverlapSphere(_player.transform.position, damageRadius);
             
             foreach (Collider hitCollider in hitColliders)
             {
                 if (hitCollider.CompareTag("Enemy"))
                 {
                     // Deal damage to the enemy
-                    if(hitCollider.GetComponent<EnemyBehaviour>() == true)
+                    
+                    /*
+                     if(hitCollider.GetComponent<EnemyBehaviour>() == true)
                         hitCollider.GetComponent<EnemyBehaviour>().TakeDamage(damageAmount, WeaponType.Normal);
-
-                    else if(hitCollider.GetComponent<EnemyChaseBehaviour>() == true)
+                    */
+                    if(hitCollider.GetComponent<EnemyChaseBehaviour>() == true)
                         hitCollider.GetComponent<EnemyChaseBehaviour>().TakeDamage(damageAmount, WeaponType.Normal);
                 }
             }

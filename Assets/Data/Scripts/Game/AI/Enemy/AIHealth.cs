@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class AIHealth : MonoBehaviour
+public class AiHealth : MonoBehaviour
 {
     [Header("Gem Spawn")]
     [SerializeField] private bool gemSpawnOnDeath = true;
@@ -9,21 +9,21 @@ public class AIHealth : MonoBehaviour
 
     [SerializeField] private float health;
 
-    private Color originalColor;
+    private Color _originalColor;
     public int damage = 20;
     public int damageBoost = 0;
 
-    private Transform player; 
+    private Transform _player; 
 
     
 
     private void Start()
     {
-        player = FindObjectOfType<Transform>();
+        _player = FindObjectOfType<Transform>();
     }
 
     #region AI Health 
-    public void TakeDamage(int _damage)
+    public void TakeDamage(int damage)
     {
         print(health);
 
@@ -35,10 +35,10 @@ public class AIHealth : MonoBehaviour
         if (health > 0)
         {
             //_underAttack= true;
-            transform.LookAt(new Vector3(0, player.position.y, 0));
+            transform.LookAt(new Vector3(0, _player.position.y, 0));
             StartCoroutine(HitFlash());
         }
-        health -= _damage + damageBoost;
+        health -= damage + damageBoost;
         //Debug.Log("enemy shot" + _Health);
     }
 
@@ -63,7 +63,7 @@ public class AIHealth : MonoBehaviour
 
     IEnumerator HitFlash()
     {
-        originalColor = GetComponent<Renderer>().material.color;
+        _originalColor = GetComponent<Renderer>().material.color;
         GetComponent<Renderer>().material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
         GetComponent<Renderer>().material.color = Color.magenta;

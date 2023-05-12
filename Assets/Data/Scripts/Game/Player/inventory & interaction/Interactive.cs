@@ -1,23 +1,25 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Interactive : MonoBehaviour
 {
-    public enum InteractiveType { _PICKABLE, _INTERACT_ONCE, _INTERACT_MULTI, _INDIRECT, _TextInteract, _GEM_CLEAN, _SceneChange };
+    public enum InteractiveType { Pickable, InteractOnce, InteractMulti, Indirect, TextInteract, GemClean, SceneChange };
 
-    [SerializeField] private GameObject         DEACTIVATE, ACTIVATE;
+    [FormerlySerializedAs("DEACTIVATE")] [SerializeField] private GameObject         deactivate;
+    [FormerlySerializedAs("ACTIVATE")] [SerializeField] private GameObject         activate;
     [SerializeField] internal int                levelChosen;
-    [SerializeField] private bool               _isActive;
-    [SerializeField] private InteractiveType    _type;
-    [SerializeField] private Sprite             _icon;
-    [SerializeField] private string             _requirementText;
-    [SerializeField] private Interactive[]      _requirements;
-    [SerializeField] private Interactive[]      _activationChain;
-    [SerializeField] private string[]           _interactionTexts;
-    [SerializeField] private Interactive[]      _interactionChain;
+    [FormerlySerializedAs("_isActive")] [SerializeField] private bool               isActive;
+    [FormerlySerializedAs("_type")] [SerializeField] private InteractiveType    type;
+    [FormerlySerializedAs("_icon")] [SerializeField] private Sprite             icon;
+    [FormerlySerializedAs("_requirementText")] [SerializeField] private string             requirementText;
+    [FormerlySerializedAs("_requirements")] [SerializeField] private Interactive[]      requirements;
+    [FormerlySerializedAs("_activationChain")] [SerializeField] private Interactive[]      activationChain;
+    [FormerlySerializedAs("_interactionTexts")] [SerializeField] private string[]           interactionTexts;
+    [FormerlySerializedAs("_interactionChain")] [SerializeField] private Interactive[]      interactionChain;
 
     [Range(10,30)][SerializeField] private float radius = 20f;
-    [SerializeField] private bool _canShowGizmo = true;
-    [SerializeField] private LayerMask AILayer; 
+    [FormerlySerializedAs("_canShowGizmo")] [SerializeField] private bool canShowGizmo = true;
+    [FormerlySerializedAs("AILayer")] [SerializeField] private LayerMask aiLayer; 
     private bool _canSearch;
     private bool _isGemClean; 
 
@@ -35,52 +37,52 @@ public class Interactive : MonoBehaviour
     }
     private void Update()
     {
-        if (_canSearch) { GetAI(); }
+        if (_canSearch) { GetAi(); }
         
     }
 
     public bool IsActive()
     {
-        return _isActive;
+        return isActive;
     }
 
     public InteractiveType GetInteractiveType()
     {
-        return _type;
+        return type;
     }
 
     public Sprite GetIcon()
     {
-        return _icon;
+        return icon;
     }
 
     public string GetRequirementText()
     {
-        return _requirementText;
+        return requirementText;
     }
 
     public string GetCurrentInteractionText()
     {
-        return _interactionTexts[_curInteractionTextId];
+        return interactionTexts[_curInteractionTextId];
     }
 
     public Interactive[] GetRequirements()
     {
-        return _requirements;
+        return requirements;
     }
 
     private void Activate()
     {
-        _isActive = true;
+        isActive = true;
 
         if (_animator != null)
             _animator.SetTrigger("Activate");
     }
 
-    private void GetAI()
+    private void GetAi()
     {
         // Check if the player is within the warning radius (Target layer optional)
-        Collider[] aiHits = Physics.OverlapSphere(transform.position, radius, AILayer);
+        Collider[] aiHits = Physics.OverlapSphere(transform.position, radius, aiLayer);
     
         if (aiHits.Length <= 0)
         {
@@ -93,27 +95,27 @@ public class Interactive : MonoBehaviour
 
     public void Interact()
     {
-        if (_isActive)
+        if (isActive)
         {
             if (_animator != null)
                 _animator.SetTrigger("Interact");
 
-            if (_type == InteractiveType._PICKABLE)
+            if (type == InteractiveType.Pickable)
             {
                 GetComponent<Collider>().enabled = false;
                 gameObject.SetActive(false); // 
 
             }
-            else if (_type == InteractiveType._INTERACT_ONCE)
+            else if (type == InteractiveType.InteractOnce)
                 GetComponent<Collider>().enabled = false;
-            else if (_type == InteractiveType._INTERACT_MULTI)
-                _curInteractionTextId = (_curInteractionTextId + 1) % _interactionTexts.Length;
+            else if (type == InteractiveType.InteractMulti)
+                _curInteractionTextId = (_curInteractionTextId + 1) % interactionTexts.Length;
 
-            else if(_type == InteractiveType._TextInteract)
+            else if(type == InteractiveType.TextInteract)
             {
 
             }
-            else if(_type == InteractiveType._GEM_CLEAN) 
+            else if(type == InteractiveType.GemClean) 
             {
                 
                 // Single interaction
@@ -122,7 +124,7 @@ public class Interactive : MonoBehaviour
 
                 
             }
-            else if (_type == InteractiveType._SceneChange)
+            else if (type == InteractiveType.SceneChange)
             {
                 gameObject.GetComponentInParent<SceneTransition>().FadeToLevel(levelChosen);
             }
@@ -133,29 +135,29 @@ public class Interactive : MonoBehaviour
 
     private void ProcessActivationChain()
     {
-        if (_activationChain != null)
+        if (activationChain != null)
         {
-            for (int i = 0; i < _activationChain.Length; ++i)
-                _activationChain[i].Activate();
+            for (int i = 0; i < activationChain.Length; ++i)
+                activationChain[i].Activate();
         }
     }
 
     private void ProcessInteractionChain()
     {
-        if (_interactionChain != null)
+        if (interactionChain != null)
         {
-            for (int i = 0; i < _interactionChain.Length; ++i)
-                _interactionChain[i].Interact();
+            for (int i = 0; i < interactionChain.Length; ++i)
+                interactionChain[i].Interact();
         }
     }
 
     private void ActivateFunctions()
     {
         // game object deactivate
-        DEACTIVATE.SetActive(false);
+        deactivate.SetActive(false);
 
         // game object activate
-        ACTIVATE.SetActive(true);
+        activate.SetActive(true);
 
         Destroy(this.gameObject); 
 
@@ -164,7 +166,7 @@ public class Interactive : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(_canShowGizmo)
+        if(canShowGizmo)
         {
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(transform.position,

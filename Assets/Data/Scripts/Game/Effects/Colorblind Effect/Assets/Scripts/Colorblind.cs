@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2016 Jakub Boksansky, Adam Pospisil - All Rights Reserved
 // Colorblind Effect Unity Plugin 1.0
 using UnityEngine;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -14,12 +15,12 @@ namespace Wilberforce
     public class Colorblind : MonoBehaviour
     {
         // public Parameters  
-		public int Type = 0;
+		[FormerlySerializedAs("Type")] public int type;
 
         // private Parameters
 		public Shader colorblindShader;
-        private bool isSupported;
-        private Material ColorblindMaterial;
+        private bool _isSupported;
+        private Material _colorblindMaterial;
 
 		// method for logging if something goes wrong
         private void ReportError(string error)
@@ -37,19 +38,18 @@ namespace Wilberforce
             if (colorblindShader == null)
             {
                 ReportError("Could not locate Colorblind Shader. Make sure there is 'Colorblind.shader' file added to the project.");
-                isSupported = false;
+                _isSupported = false;
                 enabled = false;
                 return;
             }
 
 			// check if image effect are supported on current setup
 
-            if (!SystemInfo.supportsImageEffects || SystemInfo.graphicsShaderLevel < 30)
+            if (SystemInfo.graphicsShaderLevel < 30)
             {
-                if (!SystemInfo.supportsImageEffects) ReportError("System does not support image effects.");
                 if (SystemInfo.graphicsShaderLevel < 30) ReportError("This effect needs at least Shader Model 3.0.");
 
-                isSupported = false;
+                _isSupported = false;
                 enabled = false;
                 return;
             }
@@ -58,15 +58,15 @@ namespace Wilberforce
             EnsureMaterials();
 
 			// check if the material was set properly
-            if (!ColorblindMaterial || ColorblindMaterial.passCount != 1)
+            if (!_colorblindMaterial || _colorblindMaterial.passCount != 1)
             {
                 ReportError("Could not create shader.");
-                isSupported = false;
+                _isSupported = false;
                 enabled = false;
                 return;
             }
 
-            isSupported = true;
+            _isSupported = true;
         }
 
         private static Material CreateMaterial(Shader shader)
@@ -88,10 +88,10 @@ namespace Wilberforce
 
         private void EnsureMaterials()
         {
-            if (!ColorblindMaterial && colorblindShader.isSupported)
+            if (!_colorblindMaterial && colorblindShader.isSupported)
             {
 				// create the material object around the shader program
-                ColorblindMaterial = CreateMaterial(colorblindShader);
+                _colorblindMaterial = CreateMaterial(colorblindShader);
             }
 
             if (!colorblindShader.isSupported)
@@ -102,7 +102,7 @@ namespace Wilberforce
 			
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            if (!isSupported || !colorblindShader.isSupported)
+            if (!_isSupported || !colorblindShader.isSupported)
             {	
 				// uncheck the component if not supported
                 enabled = false;
@@ -113,12 +113,12 @@ namespace Wilberforce
 
             // Shader pass
 			// bind the 'Type' attribute to 'type' variable in shader program
-			ColorblindMaterial.SetInt ("type", Type);
+			_colorblindMaterial.SetInt ("type", type);
 			// run the shader
 			Graphics.Blit (
 				source, // input texture
 				destination, // output texture
-				ColorblindMaterial, // which shader to use
+				_colorblindMaterial, // which shader to use
 				0 // which shader pass 
 			);
         }
@@ -145,13 +145,13 @@ namespace Wilberforce
 		private readonly int[] typeInts = new int[4] { 0, 1, 2, 3 };
 
 		// this method contains the custom gui for editor
-		override public void OnInspectorGUI()
+		public override void OnInspectorGUI()
 		{
 			// bind the connected script to local variable
 			var colorblindScript = target as Colorblind;
 
             // bind the 'Type' parameter of the Colorblind script to dropdown in GUI
-            colorblindScript.Type = EditorGUILayout.IntPopup(typeLabelContent, colorblindScript.Type, typeTexts, typeInts);
+            colorblindScript.type = EditorGUILayout.IntPopup(typeLabelContent, colorblindScript.type, typeTexts, typeInts);
 
 			// if user made some changes (selected new value from the dropdown) we have to forward the notification
 			if (GUI.changed)

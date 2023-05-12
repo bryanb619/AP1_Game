@@ -1,14 +1,15 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CompanionSpawn : MonoBehaviour
 {
-    [SerializeField] private GameObject _companion;
+    [FormerlySerializedAs("_companion")] [SerializeField] private GameObject companion;
 
     private CompanionBehaviour _companionBehaviour;
 
-    [SerializeField] private float SpawnTime = 1.5f;
-
+    [FormerlySerializedAs("SpawnTime")] [SerializeField] private float spawnTime = 1.5f;
+    
     private bool _gamePlay;
 
     private void Awake()
@@ -42,12 +43,11 @@ public class CompanionSpawn : MonoBehaviour
 
     private IEnumerator Timer()
     {
-        yield return new WaitForSeconds(SpawnTime);
+        yield return new WaitForSeconds(spawnTime);
 
-        Instantiate(_companion, transform.position, Quaternion.identity);
+        Instantiate(companion, transform.position, Quaternion.identity);
     }
-
-
+    
     private void GameManager_OnGameStateChanged(GameState state)
     {
 
@@ -67,7 +67,6 @@ public class CompanionSpawn : MonoBehaviour
 
         //throw new NotImplementedException();
     }
-
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;

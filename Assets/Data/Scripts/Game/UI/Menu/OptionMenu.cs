@@ -5,15 +5,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using TMPro;
+using UnityEngine.Serialization;
 
 public class OptionMenu : MonoBehaviour
 {
     #region Variables
     //[SerializeField] private Audio audio ;
-    [SerializeField] private Dropdown _resDropdown;
+    [FormerlySerializedAs("_resDropdown")] [SerializeField] private Dropdown resDropdown;
     Resolution[] _resolutions;
 
-    [SerializeField] private TMP_Dropdown _resDropdown2;
+    [FormerlySerializedAs("_resDropdown2")] [SerializeField] private TMP_Dropdown resDropdown2;
 
     [SerializeField] private Slider musicSlider;
     //[SerializeField] private StudioEventEmitter[] eventEmitters;  
@@ -44,7 +45,7 @@ public class OptionMenu : MonoBehaviour
         _resolutions = Screen.resolutions; 
 
         // clear
-        _resDropdown2.ClearOptions(); 
+        resDropdown2.ClearOptions(); 
 
         // create list of resolution
         List<string> resOptions = new List<string>();  
@@ -62,9 +63,9 @@ public class OptionMenu : MonoBehaviour
                 currentResolutionIndex = x;
             }
         }
-        _resDropdown2.AddOptions(resOptions);
-        _resDropdown2.value = currentResolutionIndex;
-        _resDropdown2.RefreshShownValue();
+        resDropdown2.AddOptions(resOptions);
+        resDropdown2.value = currentResolutionIndex;
+        resDropdown2.RefreshShownValue();
     }
 
     #endregion

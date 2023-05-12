@@ -1,17 +1,18 @@
 //using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class AbilityHolder : MonoBehaviour
 {  
-    [SerializeField] private Ability abilityNEW;
-    private Dashing dashCooldownVariable;
+    [FormerlySerializedAs("abilityNEW")] [SerializeField] private Ability abilityNew;
+    private Dashing _dashCooldownVariable;
 
     // used variables from "Ability script"
 
-    private float cooldownTime;
-    private float activeTime;
+    private float _cooldownTime;
+    private float _activeTime;
     [SerializeField] private float flashDelay;
 
     [SerializeField] private Slider uISlider;
@@ -19,21 +20,21 @@ public class AbilityHolder : MonoBehaviour
 
     private bool _isPaused;
 
-    private Shooter shooter; 
+    private Shooter _shooter; 
 
     private WeaponType _weaponType; 
 
     // types of ability condition
-    private enum Ability_State
+    private enum AbilityState
     {
-        ready,
-        active,
-        cooldown
+        Ready,
+        Active,
+        Cooldown
     }
 
     // Ability state
 
-    private Ability_State state = Ability_State.ready;
+    private AbilityState _state = AbilityState.Ready;
 
     // key input
     [SerializeField]
@@ -48,9 +49,9 @@ public class AbilityHolder : MonoBehaviour
 
     private void Start()
     {
-        shooter = FindObjectOfType<Shooter>();
+        _shooter = FindObjectOfType<Shooter>();
         PowerReady();
-        dashCooldownVariable = GameObject.FindGameObjectWithTag("Player").GetComponent<Dashing>();
+        _dashCooldownVariable = GameObject.FindGameObjectWithTag("Player").GetComponent<Dashing>();
     }
 
     // Update is called once per frame
@@ -85,67 +86,67 @@ public class AbilityHolder : MonoBehaviour
     {
         if(!_isPaused) 
         {
-            switch (state)
+            switch (_state)
             {
                 // ready state
-                case Ability_State.ready:
+                case AbilityState.Ready:
                     if (Input.GetKeyUp(key))
                     {
-                        if(abilityNEW)
+                        if(abilityNew)
                         {
                         // change name
-                        abilityNEW.Activate(gameObject);
-                        activeTime = abilityNEW.activeTime;
+                        abilityNew.Activate(gameObject);
+                        _activeTime = abilityNew.activeTime;
                         }
 
-                        state = Ability_State.active;
+                        _state = AbilityState.Active;
                         PowerReady();
                     }
                     break;
 
                 // activate state
-                case Ability_State.active:
+                case AbilityState.Active:
 
-                    if (activeTime > 0)
+                    if (_activeTime > 0)
                     {
-                        activeTime -= Time.deltaTime;
+                        _activeTime -= Time.deltaTime;
                     }
                     else
                     {
-                        if (abilityNEW)
+                        if (abilityNew)
                         {
-                            cooldownTime = abilityNEW.cooldownTime;
-                            abilityNEW.BeginCooldown(gameObject);
+                            _cooldownTime = abilityNew.cooldownTime;
+                            abilityNew.BeginCooldown(gameObject);
                         }
                         else
                         {
-                            cooldownTime = dashCooldownVariable.dashCd;
-                            Debug.Log("Cooldown Time = " + cooldownTime);
+                            _cooldownTime = _dashCooldownVariable.dashCd;
+                            Debug.Log("Cooldown Time = " + _cooldownTime);
                         }
                         
                         // call ability cooldown
-                        state = Ability_State.cooldown;
-                        uISlider.maxValue = cooldownTime;
+                        _state = AbilityState.Cooldown;
+                        uISlider.maxValue = _cooldownTime;
                     }
 
                     break;
 
-                case Ability_State.cooldown:
+                case AbilityState.Cooldown:
 
                     //Debug.Log("Entered Ability cooldown");
                     
-                    if (cooldownTime > 0)
+                    if (_cooldownTime > 0)
                     {
                         handleRect.GetComponent<Image>().enabled = true;
-                        cooldownTime -= Time.deltaTime;
+                        _cooldownTime -= Time.deltaTime;
                         
-                        if(cooldownTime <= 0 + flashDelay)
+                        if(_cooldownTime <= 0 + flashDelay)
                             ReadyFlash();
                     }
 
                     else
                     {
-                        state = Ability_State.ready;
+                        _state = AbilityState.Ready;
                         //cooldownTime = abilityNEW.cooldownTime;
 
                         handleRect.GetComponent<Image>().enabled = false;
@@ -164,23 +165,23 @@ public class AbilityHolder : MonoBehaviour
 
     private void PowerDisabled()
     {
-        if(state == Ability_State.cooldown)
+        if(_state == AbilityState.Cooldown)
         {   
-            uISlider.value = Mathf.Lerp(0f, cooldownTime, cooldownTime);
+            uISlider.value = Mathf.Lerp(0f, _cooldownTime, _cooldownTime);
         }
     }
 
     #region special condition
-    internal void TargetedAttackCooldownUI()
+    internal void TargetedAttackCooldownUi()
     {
-        if (abilityNEW)
+        if (abilityNew)
         {
             // change name
-            abilityNEW.Activate(gameObject);
-            activeTime = abilityNEW.activeTime;
+            abilityNew.Activate(gameObject);
+            _activeTime = abilityNew.activeTime;
         }
 
-        state = Ability_State.active;
+        _state = AbilityState.Active;
         PowerReady();
         ReadyFlash();
     }

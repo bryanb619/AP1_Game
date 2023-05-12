@@ -3,13 +3,13 @@ using UnityEngine;
 public class SaveManager : MonoBehaviour
 {
     #region Variables
-    private float x, y, z;
+    private float _x, _y, _z;
 
     // FIND PLAYER IN SCENE
-    private PlayerMovement PLAYER;
+    private PlayerMovement _playerMovement;
 
     // player transform
-    private Transform _player;
+    private Transform _playerTransform;
 
     // save animation
     private Animator _saveAnimator;
@@ -21,8 +21,8 @@ public class SaveManager : MonoBehaviour
     {
         _saveAnimator = GetComponent<Animator>();
 
-        PLAYER = FindObjectOfType<PlayerMovement>();
-        _player = PLAYER.transform;
+        PlayerMovement player = FindObjectOfType<PlayerMovement>();
+        _playerTransform = player.transform;
          
     }
     #endregion
@@ -41,14 +41,14 @@ public class SaveManager : MonoBehaviour
     {
         StartAnimation(); 
 
-        x = _player.transform.position.x;
-        y = _player.transform.position.y;
-        z = _player.transform.position.z; 
+        _x = _playerMovement.transform.position.x;
+        _y = _playerMovement.transform.position.y;
+        _z = _playerMovement.transform.position.z; 
 
         //return;
     }
 
-    public void load()
+    public void Load()
     {
        GetLoad();
     }
@@ -62,9 +62,9 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.GetFloat("y");
         PlayerPrefs.GetFloat("z");
 
-        Vector3 LoadPos = new Vector3(x, y, z);
+        Vector3 loadPos = new Vector3(_x, _y, _z);
 
-        _player.transform.position = LoadPos;
+        _playerMovement.transform.position = loadPos;
 
         //return;
     }

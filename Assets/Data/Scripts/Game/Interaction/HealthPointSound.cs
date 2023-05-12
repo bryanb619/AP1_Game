@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class HealthPointSound : MonoBehaviour
 {
-    private float elapsed;
+    private float _elapsed;
 
     private void Start()
     {
-        elapsed = 0f;
+        _elapsed = 0f;
     }
     // Update is called once per frame
     void Update()
     {
-        elapsed += Time.deltaTime;
+        _elapsed += Time.deltaTime;
         //print(elapsed); 
 
-        if (elapsed >= 3f)
+        if (_elapsed >= 3f)
         {
             Destroy(gameObject);    
         }

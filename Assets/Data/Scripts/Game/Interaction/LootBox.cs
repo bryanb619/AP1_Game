@@ -1,15 +1,19 @@
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 public class LootBox : MonoBehaviour
 {
-    [SerializeField]
-    private LootBoxData         _data;
+    [FormerlySerializedAs("_data")] [SerializeField]
+    private LootBoxData         data;
     private BoxCollider         _collider;
 
-    [SerializeField]
-    private Transform           _spawnPos, _effectPos;
+    [FormerlySerializedAs("_spawnPos")] [SerializeField]
+    private Transform           spawnPos;
+
+    [FormerlySerializedAs("_effectPos")] [SerializeField]
+    private Transform           effectPos;
 
     private GameObject          _loot;
     private GameObject          _openEffect;
@@ -24,8 +28,8 @@ public class LootBox : MonoBehaviour
 
 
 
-    [SerializeField] private bool _gizmos;
-    [SerializeField] private float _DEBUGRADIUS = 2F; 
+    [FormerlySerializedAs("_gizmos")] [SerializeField] private bool gizmos;
+    [FormerlySerializedAs("_DEBUGRADIUS")] [SerializeField] private float debugradius = 2F; 
 
 
 
@@ -35,12 +39,12 @@ public class LootBox : MonoBehaviour
         _collider               = GetComponent<BoxCollider>();
         _collider.isTrigger     = true;
 
-        _loot                   = _data.Loot;
-        _openEffect             = _data.OpenEffect;
-        _maxLoot                = _data.MaxItems;
-        _dropRadius             = _data.DropRadius;
-        _soundOpen              = _data.SoundOpen;
-        _giveImediate           = _data.GiveLoot;
+        _loot                   = data.Loot;
+        _openEffect             = data.OpenEffect;
+        _maxLoot                = data.MaxItems;
+        _dropRadius             = data.DropRadius;
+        _soundOpen              = data.SoundOpen;
+        _giveImediate           = data.GiveLoot;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -51,13 +55,13 @@ public class LootBox : MonoBehaviour
         {
             this._collider.enabled = false;
 
-            openLoot();
+            OpenLoot();
 
         }
 
     }
 
-    private void openLoot()
+    private void OpenLoot()
     {
         switch (_giveImediate)
         {
@@ -84,7 +88,7 @@ public class LootBox : MonoBehaviour
     {
         if (_openEffect != null)
         {
-            Instantiate(_openEffect, _effectPos.position, Quaternion.identity);
+            Instantiate(_openEffect, effectPos.position, Quaternion.identity);
         }
 
         RuntimeManager.PlayOneShot(_soundOpen, transform.position);
@@ -93,7 +97,7 @@ public class LootBox : MonoBehaviour
          for (int i = 0; i<_maxLoot; i++)
          {
 
-                Vector3 spawnPosition = _spawnPos.position + //transform.position +
+                Vector3 spawnPosition = spawnPos.position + //transform.position +
                     new Vector3(Random.Range(-_dropRadius, _dropRadius), 0f,
                     Random.Range(-_dropRadius, _dropRadius));
 
@@ -103,9 +107,9 @@ public class LootBox : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(_gizmos)
+        if(gizmos)
         {
-            Gizmos.DrawWireSphere(_spawnPos.position, _DEBUGRADIUS);
+            Gizmos.DrawWireSphere(spawnPos.position, debugradius);
         }
          
     }

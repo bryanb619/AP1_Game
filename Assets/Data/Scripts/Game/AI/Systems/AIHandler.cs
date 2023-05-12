@@ -1,12 +1,13 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class AIHandler : MonoBehaviour
+public class AiHandler : MonoBehaviour
 {
     private bool _agentOperate; 
     public bool AgentOperate => _agentOperate;
 
 
-    [SerializeField] SkinnedMeshRenderer _skinnedMeshRenderer;
+    [FormerlySerializedAs("_skinnedMeshRenderer")] [SerializeField] SkinnedMeshRenderer skinnedMeshRenderer;
 
     private void Update()
     {
@@ -14,7 +15,7 @@ public class AIHandler : MonoBehaviour
     }
     private void CheckVisiblity()
     {
-        switch (_skinnedMeshRenderer.isVisible)
+        switch (skinnedMeshRenderer.isVisible)
         {
             case true:
                 {

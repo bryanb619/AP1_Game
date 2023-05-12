@@ -16,8 +16,8 @@ public class LightFlick : MonoBehaviour
 
     // Continuous average calculation via FIFO queue
     // Saves us iterating every time we update, we just change by the delta
-    Queue<float> smoothQueue;
-    float lastSum = 0;
+    Queue<float> _smoothQueue;
+    float _lastSum = 0;
 
 
     /// <summary>
@@ -27,13 +27,13 @@ public class LightFlick : MonoBehaviour
     /// </summary>
     public void Reset()
     {
-        smoothQueue.Clear();
-        lastSum = 0;
+        _smoothQueue.Clear();
+        _lastSum = 0;
     }
 
     void Start()
     {
-        smoothQueue = new Queue<float>(smoothing);
+        _smoothQueue = new Queue<float>(smoothing);
         // External or internal light?
         if (light == null)
         {
@@ -50,18 +50,18 @@ public class LightFlick : MonoBehaviour
         if(light != null)
         {
             // pop off an item if too big
-            while (smoothQueue.Count >= smoothing)
+            while (_smoothQueue.Count >= smoothing)
             {
-                lastSum -= smoothQueue.Dequeue();
+                _lastSum -= _smoothQueue.Dequeue();
             }
 
             // Generate random new item, calculate new average
             float newVal = Random.Range(minIntensity, maxIntensity);
-            smoothQueue.Enqueue(newVal);
-            lastSum += newVal;
+            _smoothQueue.Enqueue(newVal);
+            _lastSum += newVal;
 
             // Calculate new smoothed average
-            light.intensity = lastSum / (float)smoothQueue.Count;
+            light.intensity = _lastSum / (float)_smoothQueue.Count;
 
             //Debug.Log("Light active");
         }

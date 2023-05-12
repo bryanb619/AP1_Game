@@ -11,7 +11,7 @@ public class SceneLoading : MonoBehaviour
     [SerializeField] private Slider loadingBar;
     //[SerializeField] private GameObject LoadPanel;
 
-    private float target; 
+    private float _target; 
 
 
     private void Awake()
@@ -36,12 +36,12 @@ public class SceneLoading : MonoBehaviour
 
     private void Update()
     {
-        loadingBar.value = Mathf.MoveTowards(loadingBar.value, target, 3 * Time.deltaTime);
+        loadingBar.value = Mathf.MoveTowards(loadingBar.value, _target, 3 * Time.deltaTime);
     }
 
     public async void LoadScene()
     {
-        target = 0;
+        _target = 0;
         loadingBar.value = 0f; 
         var scene = SceneManager.LoadSceneAsync("Game");
         scene.allowSceneActivation = false;
@@ -49,7 +49,7 @@ public class SceneLoading : MonoBehaviour
         do
         {
             await Task.Delay(2500);
-            target = scene.progress;    
+            _target = scene.progress;    
             //loadingBar.fillAmount = scene.progress;
 
         } while (scene.progress < 0.9f);

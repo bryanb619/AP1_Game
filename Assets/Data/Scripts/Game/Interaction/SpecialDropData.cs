@@ -1,58 +1,64 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Akarya/Interaction/SpecialDrop")]
 public class SpecialDropData : ScriptableObject
 {
 
-    [SerializeField] 
-    private DropType                _dropType;
-    internal DropType               Drop => _dropType;
+    [FormerlySerializedAs("_dropType")] [SerializeField] 
+    private DropType                dropType;
+    internal DropType               Drop => dropType;
 
 
+    [FormerlySerializedAs("_healthEmpower")]
     [Header("Health")]
 
         [Range(0f, 100f)]
         [SerializeField] 
-        private int                 _healthEmpower;
-        internal int                Health => _healthEmpower;
+        private int                 healthEmpower;
+        internal int                Health => healthEmpower;
 
     // Mana //
+    [FormerlySerializedAs("_manaEmpower")]
     [Header("Mana")]
     
 
         [Range(0f, 100f)]
         [SerializeField]
-        private int                 _manaEmpower;
-        internal int                Mana => _manaEmpower;
+        private int                 manaEmpower;
+        internal int                Mana => manaEmpower;
 
 
+    [FormerlySerializedAs("_heightFloat")]
     [Header("Height")]
         [SerializeField]
-            private float           _heightFloat = 1f;
-            internal float          HeightFloat => _heightFloat;
+            private float           heightFloat = 1f;
+            internal float          HeightFloat => heightFloat;
 
+    [FormerlySerializedAs("_float")]
     [Header("Float")]
 
         [SerializeField]
-            private bool            _float;
-            internal bool           Float => _float;
+            private bool            @float;
+            internal bool           Float => @float;
 
 
+    [FormerlySerializedAs("_rotate")]
     [Header("Rotate")]
         [SerializeField]
-            private bool            _rotate;
-            public bool             Rotate => _rotate;
+            private bool            rotate;
+            public bool             Rotate => rotate;
 
         [SerializeField]
             private float           rotateSpeed;
             internal float          RotateSpeed; 
 
-        [SerializeField] 
-        private bool                _canBeAttracted;
-        internal bool               CanBeattracted => _canBeAttracted;
-        [SerializeField]
-        private bool                _useStartForce;
-        internal bool               UseStartForce => _useStartForce;    
+        [FormerlySerializedAs("_canBeAttracted")] [SerializeField] 
+        private bool                canBeAttracted;
+        internal bool               CanBeattracted => canBeAttracted;
+        [FormerlySerializedAs("_useStartForce")] [SerializeField]
+        private bool                useStartForce;
+        internal bool               UseStartForce => useStartForce;    
 
         [SerializeField] 
         private int                 atractionSpeed = 2;
@@ -63,22 +69,23 @@ public class SpecialDropData : ScriptableObject
         internal float              MaxDistance => maxDistance;
 
 
-        [SerializeField] 
-        private LayerMask           _layerMask;
-        internal LayerMask          LayerMask => _layerMask;
+        [FormerlySerializedAs("_layerMask")] [SerializeField] 
+        private LayerMask           layerMask;
+        internal LayerMask          LayerMask => layerMask;
 
-        [SerializeField] 
-        private float               _pushForce;
-        internal float              PushForce => _pushForce;
+        [FormerlySerializedAs("_pushForce")] [SerializeField] 
+        private float               pushForce;
+        internal float              PushForce => pushForce;
 
 
+        [FormerlySerializedAs("_useAudio")]
         [Header("Sound")]
 
         [SerializeField]
-        private bool                _useAudio;
-        internal bool               UseAudio => _useAudio;
+        private bool                useAudio;
+        internal bool               UseAudio => useAudio;
 
-        [SerializeField]
-        private bool                _usesAudioAmbient;
-        internal bool               UseAudioAmbient => _usesAudioAmbient;
+        [FormerlySerializedAs("_usesAudioAmbient")] [SerializeField]
+        private bool                usesAudioAmbient;
+        internal bool               UseAudioAmbient => usesAudioAmbient;
 }

@@ -1,20 +1,21 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Puzzle1Manager : MonoBehaviour
 {
-    public bool LeftTriggerAnim_IsPlaying = false;
-    public bool RightTriggerAnim_IsPlaying = true;
+    [FormerlySerializedAs("LeftTriggerAnim_IsPlaying")] public bool leftTriggerAnimIsPlaying = false;
+    [FormerlySerializedAs("RightTriggerAnim_IsPlaying")] public bool rightTriggerAnimIsPlaying = true;
 
-    [SerializeField] private Animator button_1;
-    private Animator button_2;
+    [FormerlySerializedAs("button_1")] [SerializeField] private Animator button1;
+    private Animator _button2;
 
-    private DoorHandler Door;
+    private DoorHandler _door;
 
     //public GameObject Mirror;
 
     private void Start()
     {
-        Door = FindObjectOfType<DoorHandler>();       
+        _door = FindObjectOfType<DoorHandler>();       
     }
 
     // Update is called once per frame
@@ -28,10 +29,10 @@ public class Puzzle1Manager : MonoBehaviour
     private void PuzzleUpdate()
     {
         // check for Left Trigger
-        if (this.button_1.GetCurrentAnimatorStateInfo(0).IsName("left_trigger"))
+        if (this.button1.GetCurrentAnimatorStateInfo(0).IsName("left_trigger"))
         {
             // Make animation true
-            LeftTriggerAnim_IsPlaying = true;
+            leftTriggerAnimIsPlaying = true;
             // play interect sound
             //Puzzle_Interact.Play();
 
@@ -51,7 +52,7 @@ public class Puzzle1Manager : MonoBehaviour
         }
         */
         // if all true place piece of glass in UI
-        if (LeftTriggerAnim_IsPlaying && RightTriggerAnim_IsPlaying == true)
+        if (leftTriggerAnimIsPlaying && rightTriggerAnimIsPlaying == true)
         {
             // call UI 
             AtivateDoor();

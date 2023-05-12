@@ -1,18 +1,21 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Akarya/abilities/Projectiles and impact effects/Enemy Projectile data")]
 public class EnemyProjectileData : ScriptableObject
 {
+    [FormerlySerializedAs("_projectileParticles")]
     [Header("Particles")]
     [Tooltip("Select Particles")]
 
-    public ParticleSystem                       _projectileParticles;
+    public ParticleSystem                       projectileParticles;
 
+    [FormerlySerializedAs("_useRBPhysics")]
     [Header("RigidBody Physics")]
     [Tooltip("Rigidbody componet must be edited in Prefab for desired changes such as gravity")]
 
 
-    public bool                                 _useRBPhysics;
+    public bool                                 useRbPhysics;
 
     public float                                thrust; 
 
@@ -31,9 +34,10 @@ public class EnemyProjectileData : ScriptableObject
 
 
   
+    [FormerlySerializedAs("_useImpact")]
     [Header("Impact effect")]
     [Tooltip("set to true")]
-    public bool _useImpact;
+    public bool useImpact;
 
     [Tooltip("Set impact game object and previous bool must be set to true")]
 

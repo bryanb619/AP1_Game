@@ -1,22 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    private const float MAX_INTERACTION_DISTANCE = 1.0f;
+    private const float MaxInteractionDistance = 1.0f;
 
 
-    [SerializeField] private CanvasManager _canvasManager;
+    [FormerlySerializedAs("_canvasManager")] [SerializeField] private CanvasManager canvasManager;
 
-    [SerializeField]private Transform _cameraTransform;
+    [FormerlySerializedAs("_cameraTransform")] [SerializeField]private Transform cameraTransform;
     private Interactive _currentInteractive;
     private bool _playerHasRequirements;
     private List<Interactive> _inventory;
      
 
 
-    [SerializeField]
-    private AudioSource Pick_Up;
+    [FormerlySerializedAs("Pick_Up")] [SerializeField]
+    private AudioSource pickUp;
 
     void Start()
     {
@@ -34,8 +35,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void LookForInteractive()
     {
-        if (Physics.Raycast(_cameraTransform.position, _cameraTransform.forward,
-                            out RaycastHit hitInfo, MAX_INTERACTION_DISTANCE))
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward,
+                            out RaycastHit hitInfo, MaxInteractionDistance))
         {
             Interactive interactive = hitInfo.collider.GetComponent<Interactive>();
 
@@ -52,7 +53,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         _currentInteractive = null;
 
-        _canvasManager.HideInteractionPanel();
+        canvasManager.HideInteractionPanel();
     }
 
     private void SetCurrentInteractive(Interactive interactive)
@@ -60,9 +61,9 @@ public class PlayerInteraction : MonoBehaviour
         _currentInteractive = interactive;
 
         if (PlayerHasInteractionRequirements())
-            _canvasManager.ShowInteractionPanel(interactive.GetCurrentInteractionText());
+            canvasManager.ShowInteractionPanel(interactive.GetCurrentInteractionText());
         else
-            _canvasManager.ShowInteractionPanel(interactive.GetRequirementText());
+            canvasManager.ShowInteractionPanel(interactive.GetRequirementText());
 
     }
 
@@ -86,7 +87,7 @@ public class PlayerInteraction : MonoBehaviour
         // interact key is F
         if (Input.GetButtonDown("Interact") && _currentInteractive != null && _playerHasRequirements)
         {
-            if (_currentInteractive.GetInteractiveType() == Interactive.InteractiveType._PICKABLE)
+            if (_currentInteractive.GetInteractiveType() == Interactive.InteractiveType.Pickable)
                 PickCurrentInteractive();
 
 

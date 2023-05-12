@@ -1,20 +1,21 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ManaBar : MonoBehaviour
 {
-    [SerializeField] private Slider _slider;
+    [FormerlySerializedAs("_slider")] [SerializeField] private Slider slider;
 
 
 
     public void SetMana(float mana)
     {
-        _slider.value = mana;
+        slider.value = mana;
   
     }
 
     internal void SetNewMax(int add)
     {
-        _slider.maxValue += add; 
+        slider.maxValue += add; 
     }
 }

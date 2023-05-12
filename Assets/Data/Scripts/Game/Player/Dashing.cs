@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 public class Dashing : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent navmeshAgent;
     [SerializeField] private Transform orientation;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private LayerMask SeeThroughLayer;
-                     private Rigidbody rb;
-                     private PlayerHealth playerHealth;
-                     private PlayerMovement playerMovement;
-                     private NavMeshAgent playerNavMesh;
+    [FormerlySerializedAs("SeeThroughLayer")] [SerializeField] private LayerMask seeThroughLayer;
+                     private Rigidbody _rb;
+                     private PlayerHealth _playerHealth;
+                     private PlayerMovement _playerMovement;
+                     private NavMeshAgent _playerNavMesh;
 
     [Header("Dashing"), SerializeField]
                      private float dashForce;
@@ -20,11 +21,10 @@ public class Dashing : MonoBehaviour
 
     [Header("Cooldown"), SerializeField]
                      internal float dashCd;
-                     private float dashCdTimer;
+                     private float _dashCdTimer;
 
     [Header("Settings"), SerializeField]
                      private bool allowAllDirections = true; 
-                     private bool shieldUpgrade = false;
     [SerializeField] private bool disableGravity = true, resetVel = true;
     [SerializeField] private bool dashUpgraded;
     [SerializeField] private int shieldAmount = 50;
@@ -33,10 +33,10 @@ public class Dashing : MonoBehaviour
     private void Start()
     {
         navmeshAgent = GetComponent<NavMeshAgent>();
-        rb = GetComponent<Rigidbody>();
-        playerHealth = GetComponent<PlayerHealth>();
-        playerMovement = GetComponent<PlayerMovement>();
-        playerNavMesh = GetComponent<NavMeshAgent>();
+        _rb = GetComponent<Rigidbody>();
+        _playerHealth = GetComponent<PlayerHealth>();
+        _playerMovement = GetComponent<PlayerMovement>();
+        _playerNavMesh = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
@@ -46,38 +46,38 @@ public class Dashing : MonoBehaviour
 
     private void DashInput()
     {
-        if (Input.GetButtonDown("Dash") && dashCdTimer <= 0)
+        if (Input.GetButtonDown("Dash") && _dashCdTimer <= 0)
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~SeeThroughLayer))
+            if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~seeThroughLayer))
             {
                 transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
-                playerNavMesh.ResetPath();
+                _playerNavMesh.ResetPath();
                 StartCoroutine(DeactivateNavMesh(0.4f));
                 Dash(hit);
                 
                 if(dashUpgraded)
                 {
-                    playerHealth.GiveShield(shieldAmount);
+                    _playerHealth.GiveShield(shieldAmount);
                 }
             }
 
             
         }
 
-        if (dashCdTimer > 0)
-            dashCdTimer -= Time.deltaTime;
+        if (_dashCdTimer > 0)
+            _dashCdTimer -= Time.deltaTime;
     }
 
     private void Dash(RaycastHit hit)
     {
-        if (dashCdTimer > 0) return;
+        if (_dashCdTimer > 0) return;
         else
         {
-            dashCdTimer = dashCd;
+            _dashCdTimer = dashCd;
         }
-        playerMovement.dashing = true;
+        _playerMovement.dashing = true;
 
         Transform forwardT = hit.transform;
          
@@ -86,30 +86,30 @@ public class Dashing : MonoBehaviour
         Vector3 forceToApply = gameObject.transform.forward * dashForce + orientation.up * dashUpwardForce;
 
         if (disableGravity)
-            rb.useGravity = false;
+            _rb.useGravity = false;
 
-        delayedForceToApply = forceToApply;
+        _delayedForceToApply = forceToApply;
         
         Invoke(nameof(DelayedDashForce), 0.025f);
 
         Invoke(nameof(ResetDash), dashDuration);
     }
 
-    private Vector3 delayedForceToApply;
+    private Vector3 _delayedForceToApply;
     private void DelayedDashForce()
     {
         if (resetVel)
-            rb.velocity = Vector3.zero;
+            _rb.velocity = Vector3.zero;
 
-        rb.AddForce(delayedForceToApply, ForceMode.Impulse);
+        _rb.AddForce(_delayedForceToApply, ForceMode.Impulse);
     }
 
     private void ResetDash()
     {
-        playerMovement.dashing = false;
+        _playerMovement.dashing = false;
 
         if (disableGravity)
-            rb.useGravity = true;
+            _rb.useGravity = true;
     }
 
     private Vector3 GetDirection(Transform forwardT)

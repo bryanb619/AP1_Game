@@ -7,14 +7,17 @@ public class UpgradeOptimize : MonoBehaviour
     [SerializeField]    private MeshRenderer mesh;
     private RotateObject _rotate;
     //private SpecialItem _specialItem; 
-    private AbilityUpgradesManager _ability; 
+    private AbilityUpgradesManager _ability;
     //private StudioEventEmitter _event; 
-                        
+    private WaitForSeconds _wait;
+
+
     private void Start()
     {
         
         _rotate             = GetComponentInParent<RotateObject>();
         _ability            = GetComponentInParent<AbilityUpgradesManager>(); 
+        _wait                = new WaitForSeconds(1f);
         //_specialItem        = GetComponent<SpecialItem>();
 
 
@@ -33,11 +36,10 @@ public class UpgradeOptimize : MonoBehaviour
     
     private IEnumerator CheckRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(1f);
 
         while (true)
         {
-            yield return wait;
+            yield return _wait;
             CheckMesh();
         }
     }

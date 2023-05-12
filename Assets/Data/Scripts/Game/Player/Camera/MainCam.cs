@@ -4,8 +4,8 @@ using UnityEngine;
 public class MainCam : MonoBehaviour
 {
     #region Variables
-                        private GameObject              player;
-                        private Transform               playerTransform;
+                        private GameObject              _player;
+                        private Transform               _playerTransform;
 
     [SerializeField]    private LayerMask              obstructionLayer;
     [SerializeField]    private Transform              leftPos, rightPos; 
@@ -25,8 +25,8 @@ public class MainCam : MonoBehaviour
 
     private void CollectData()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerTransform = player.transform;
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _playerTransform = _player.transform;
     }
 
     #endregion
@@ -44,7 +44,7 @@ public class MainCam : MonoBehaviour
     private void UpdateRaycast()
     {
         // player position 
-        Vector3 playerPos = playerTransform.position;
+        Vector3 playerPos = _playerTransform.position;
 
         // camera position
         Vector3 cameraPos = transform.position;

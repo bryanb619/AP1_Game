@@ -8,7 +8,7 @@ public class SpecialItem : MonoBehaviour
     // Data //
     [SerializeField] private SpecialDropData    data;
 
-    private BoxCollider                         m_BoxCollider;
+    private BoxCollider                         _mBoxCollider;
     private DropType                            _dropType;   
 
     // Health //
@@ -29,10 +29,10 @@ public class SpecialItem : MonoBehaviour
     private bool                                _gamePlay;
 
     private bool                                _rotate;
-    private float                               rotateSpeed; 
+    private float                               _rotateSpeed; 
 
     // FMOD & Sound Handling //
-    private StudioEventEmitter                  m_Emitter;
+    private StudioEventEmitter                  _mEmitter;
     private bool                                _audioState;
     private bool                                _useAudio;
     private bool                                _usesAudioAmbient;
@@ -41,8 +41,8 @@ public class SpecialItem : MonoBehaviour
     private bool                                _canUseForce;
     //private float                               startForce; 
     private bool                                _canBeDrawned;
-    private int                                 attractionSpeed;
-    private float                               maxDistance;
+    private int                                 _attractionSpeed;
+    private float                               _maxDistance;
 
     private bool                                _canFloat;
 
@@ -51,14 +51,14 @@ public class SpecialItem : MonoBehaviour
     public float                                avoidanceDuration = 1.8f;
 
     private bool                                _canActivateCollider;
-    private float                               elapsed; 
+    private float                               _elapsed; 
 
     // managing // 
 
     // height of float
-    private float                               height;
+    private float                               _height;
 
-    private PlayerMovement                      player;
+    private PlayerMovement                      _player;
 
     [SerializeField] private GameObject         parent; 
 
@@ -100,12 +100,12 @@ public class SpecialItem : MonoBehaviour
     #region Components, profile & Raycast
     private void GetComponents()
     {
-        m_BoxCollider = GetComponent<BoxCollider>();   
+        _mBoxCollider = GetComponent<BoxCollider>();   
 
-        m_Emitter = GetComponent<StudioEventEmitter>();
+        _mEmitter = GetComponent<StudioEventEmitter>();
         _rb = GetComponent<Rigidbody>();
 
-        player = FindObjectOfType<PlayerMovement>();
+        _player = FindObjectOfType<PlayerMovement>();
     }
 
     private void GetProfile()
@@ -118,16 +118,16 @@ public class SpecialItem : MonoBehaviour
         _canFloat                   = data.Float; 
         _canUseForce                = data.UseStartForce;
 
-        height                      = data.HeightFloat;
+        _height                      = data.HeightFloat;
 
 
         //_rotate                     = data.Rotate;
-        rotateSpeed                 = data.RotateSpeed;
+        _rotateSpeed                 = data.RotateSpeed;
 
         _usesAudioAmbient           = data.UseAudioAmbient;
         _canBeDrawned               = data.CanBeattracted;
-        attractionSpeed             = data.AtractionSpeed;
-        maxDistance                 = data.MaxDistance;
+        _attractionSpeed             = data.AtractionSpeed;
+        _maxDistance                 = data.MaxDistance;
         _ignoreMask                 = data.LayerMask;    
     }
 
@@ -140,7 +140,7 @@ public class SpecialItem : MonoBehaviour
             if (Physics.Raycast(transform.position, Vector3.down, out groundHit, ~_ignoreMask))
             {
 
-                height = groundHit.point.y + 1f;
+                _height = groundHit.point.y + 1f;
             }
        }
         
@@ -194,7 +194,7 @@ public class SpecialItem : MonoBehaviour
 
                     if (_canFloat) 
                     {
-                        transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
+                        transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * _height + _height, transform.position.z);
                     }
 
                    
@@ -239,41 +239,41 @@ public class SpecialItem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
-        ManaManager MANA = other.GetComponent<ManaManager>();
+        PlayerHealth player = other.GetComponent<PlayerHealth>();
+        ManaManager mana = other.GetComponent<ManaManager>();
 
-        if (PLAYER != null)
+        if (player != null)
         {
             switch (_dropType)
             {
-                case DropType._SPECIAL_HEALTH:
+                case DropType.SpecialHealth:
                     {
-                        string DebugColor = "<size=14><color=green>";
+                        string debugColor = "<size=14><color=green>";
                         string closeColor = "</color></size>";
 
-                        Debug.Log(DebugColor + "HP Increased" + closeColor);
+                        Debug.Log(debugColor + "HP Increased" + closeColor);
 
                         // increase health bar
-                        PLAYER.EmpowerHealth(Health);
+                        player.EmpowerHealth(Health);
 
                         // take health
-                        PLAYER.Takehealth(Health);
+                        player.Takehealth(Health);
 
                         break;
                     }
-                case DropType._SPECIAL_MANA:
+                case DropType.SpecialMana:
                     {
-                        string DebugColor = "<size=14><color=lightblue>";
+                        string debugColor = "<size=14><color=lightblue>";
                         string closeColor = "</color></size>";
 
 
-                        Debug.Log(DebugColor + "Mana Increased" + closeColor);
+                        Debug.Log(debugColor + "Mana Increased" + closeColor);
                         
                         // Increase mana bar
-                        MANA.ManaIncrease(Mana);
+                        mana.ManaIncrease(Mana);
 
                         // take aditional mana
-                        MANA.RecoverMana(Mana);
+                        mana.RecoverMana(Mana);
 
                         break;
                     }
@@ -317,18 +317,18 @@ public class SpecialItem : MonoBehaviour
 
     private void UpdateSound()
     {
-        m_Emitter.EventInstance.setPaused(_audioState); // set audio
+        _mEmitter.EventInstance.setPaused(_audioState); // set audio
     }
 
 
     private void OnDraw()
     {
-        var step = attractionSpeed * Time.deltaTime;
-        if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
+        var step = _attractionSpeed * Time.deltaTime;
+        if (Vector3.Distance(transform.position, _player.transform.position) < _maxDistance)
         {
 
             _canFloat = false; 
-            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position, Time.deltaTime);
+            transform.position = Vector3.LerpUnclamped(transform.position, _player.transform.position, Time.deltaTime);
             //print("player"); 
         }
         else { _canFloat = true; return;}

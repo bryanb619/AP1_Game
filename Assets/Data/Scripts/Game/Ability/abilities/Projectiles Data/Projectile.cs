@@ -11,29 +11,29 @@ public class Projectile : MonoBehaviour
     [SerializeField] ProjectileData     data;
 
     private bool                        _gamePlay;
-    public bool                         gamePlay => _gamePlay;
+    public bool                         Gameplay => _gamePlay;
 
     private GameState                   _state; 
 
     private WeaponType                  _weaponType;
 
     private Rigidbody                   _rb;
-    private float                       thrust; 
+    private float                       _thrust; 
     private bool                        _useRb;
 
-    private float                       elapsed = 0F;
-    private int                         speed;
+    private float                       _elapsed = 0F;
+    private int                         _speed;
 
-    private int                         rangedDamage, chaseDamage, bossDamage;
+    private int                         _rangedDamage, _chaseDamage, _bossDamage;
 
     private bool                        _impactEffet;
-    private GameObject                  impactObject;
+    private GameObject                  _impactObject;
 
     //private EventInstance               effectSound;
     //[SerializeField]
     private StudioEventEmitter          _emitter;
 
-    private float                       volume;
+    private float                       _volume;
 
     private float                       _destroyTime; 
 
@@ -50,7 +50,7 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         CollectData();
-        UseRB();
+        UseRb();
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public class Projectile : MonoBehaviour
 
         #region Scriptable object data
         // speed 
-        speed = data.Speed;
+        _speed = data.Speed;
 
         _destroyTime = data.DestroyTime; 
 
@@ -92,18 +92,18 @@ public class Projectile : MonoBehaviour
         // playShootSound = data.MagicSound;
 
         // rigidbody 
-        _useRb = data.UseRBPhysics;
+        _useRb = data.UseRbPhysics;
         //  weapon type
-        _weaponType = data.weapon;
+        _weaponType = data.Weapon;
 
         // enemies damage
-        rangedDamage = data.EnemyRangedDamage;
-        chaseDamage = data.EnemyChaseDamage;
-        bossDamage = data.EnemybossDamage;
+        _rangedDamage = data.EnemyRangedDamage;
+        _chaseDamage = data.EnemyChaseDamage;
+        _bossDamage = data.EnemybossDamage;
 
         // impact
         _impactEffet = data.UseImpact;
-        impactObject = data.ImpactEffect;
+        _impactObject = data.ImpactEffect;
 
         //effectSound = RuntimeManager.CreateInstance("event:/path/to/your/sound");
         //effectSound.start();
@@ -111,7 +111,7 @@ public class Projectile : MonoBehaviour
         #endregion
     }
 
-    private void UseRB()
+    private void UseRb()
     {
         if (_useRb)
         {
@@ -141,22 +141,22 @@ public class Projectile : MonoBehaviour
     #region Collision
     private void OnTriggerEnter(Collider hitInfo)
     {
-        EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
-        EnemyChaseBehaviour ChaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
+        //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
+        EnemyChaseBehaviour chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
 
         //PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
 
-        if (enemy != null)
+       /* if (enemy != null)
         {
-            enemy.TakeDamage(rangedDamage, _weaponType);
+            enemy.TakeDamage(_rangedDamage, _weaponType);
             
             DestroyBullet();
             //Debug.Log("HIT");
 
-        }
-        else if (ChaseEnemy != null)
+        }*/
+        if (chaseEnemy != null)
         {
-            ChaseEnemy.TakeDamage(chaseDamage, _weaponType);
+            chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
             
             DestroyBullet();
             
@@ -192,9 +192,9 @@ public class Projectile : MonoBehaviour
     {
         if (_useRb)
         {
-            if(gamePlay)
+            if(Gameplay)
             {
-                _rb.velocity = transform.forward * speed;
+                _rb.velocity = transform.forward * _speed;
                 return; 
             }
             else if (!_gamePlay)
@@ -212,10 +212,10 @@ public class Projectile : MonoBehaviour
 
         if (_gamePlay && _useRb)
         {
-            elapsed += Time.deltaTime;
+            _elapsed += Time.deltaTime;
 
             //Debug.Log(elapsed);
-            if (elapsed >= _destroyTime)
+            if (_elapsed >= _destroyTime)
             {
                 DestroyOnDistance();
             }
@@ -228,7 +228,7 @@ public class Projectile : MonoBehaviour
         {
             if (_gamePlay)
             {
-                transform.Translate(Vector3.forward * speed * Time.deltaTime);
+                transform.Translate(Vector3.forward * _speed * Time.deltaTime);
 
                 StartCoroutine(DestroyOnDistanceV());
                 
@@ -277,14 +277,14 @@ public class Projectile : MonoBehaviour
     
     private void Setvolume(float newVolume)
     {
-        volume = newVolume; 
-        _emitter.SetParameter("volume", volume);
+        _volume = newVolume; 
+        _emitter.SetParameter("volume", _volume);
     }
 
     private void ImpactEffect()
     {
         // spawn projectile
-        Instantiate(impactObject, transform.position, Quaternion.identity);
+        Instantiate(_impactObject, transform.position, Quaternion.identity);
     }
     #endregion
 

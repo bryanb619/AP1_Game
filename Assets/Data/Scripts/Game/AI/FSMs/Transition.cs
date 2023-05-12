@@ -25,7 +25,7 @@ namespace LibGameAI.FSMs
         public State TargetState { get; }
 
         // The condition for triggering this transition
-        private Func<bool> condition;
+        private Func<bool> _condition;
 
         /// <summary>
         /// Is this transition triggered?
@@ -35,7 +35,7 @@ namespace LibGameAI.FSMs
         /// </returns>
         public bool IsTriggered()
         {
-            return condition();
+            return _condition();
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace LibGameAI.FSMs
             //Func<bool> condition, Action actions, State targetState)
             Func<bool> condition, State targetState)
         {
-            this.condition = condition;
+            this._condition = condition;
             //Actions = actions;
             TargetState = targetState;
         }

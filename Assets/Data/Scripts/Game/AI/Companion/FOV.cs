@@ -1,10 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class FOV : MonoBehaviour
+public class Fov : MonoBehaviour
 {
-    private bool canSeePlayer;
-    public bool CanSee => canSeePlayer;
+    private bool _canSeePlayer;
+    public bool CanSee => _canSeePlayer;
 
     [Header("Target for debug only")]
     [SerializeField]private Transform target; 
@@ -21,17 +21,17 @@ public class FOV : MonoBehaviour
     public LayerMask targetMask;
     public LayerMask obstructionMask;
     [SerializeField] private Transform fov;
-    public Transform pfovPoS => fov; // Enemy Editor FOV
+    public Transform PfovPoS => fov; // Enemy Editor FOV
 
 
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(FOVRoutine());
+        StartCoroutine(FovRoutine());
     }
 
     #region Field of view Routine
-    private IEnumerator FOVRoutine()
+    private IEnumerator FovRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(0.2f);
 
@@ -56,15 +56,15 @@ public class FOV : MonoBehaviour
                 float distanceToTarget = Vector3.Distance(fov.position, target.position);
 
                 if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, obstructionMask))
-                    canSeePlayer = true;
+                    _canSeePlayer = true;
                 else
-                    canSeePlayer = false;
+                    _canSeePlayer = false;
             }
             else
-                canSeePlayer = false;
+                _canSeePlayer = false;
         }
-        else if (canSeePlayer)
-            canSeePlayer = false;
+        else if (_canSeePlayer)
+            _canSeePlayer = false;
     }
 
     #endregion

@@ -13,8 +13,8 @@ public class StartMenu : MonoBehaviour
     [SerializeField]    private EventReference hover, click, music;
 
                         // Debug Color
-                        private string DebugColor = "<size=14><color=green>";
-                        private string closeColor = "</color></size>";
+                        private string _debugColor = "<size=14><color=green>";
+                        private string _closeColor = "</color></size>";
 
 
     void Start()
@@ -57,7 +57,7 @@ public class StartMenu : MonoBehaviour
     public void LoadGame()
     {
         SceneManager.LoadScene(loadMenu);
-        Debug.Log(DebugColor + "Game Loading!" + closeColor);
+        Debug.Log(_debugColor + "Game Loading!" + _closeColor);
 
     }
     public void Options()
@@ -71,7 +71,7 @@ public class StartMenu : MonoBehaviour
     {
 
         Application.Quit();
-        Debug.Log(DebugColor + "Game quit!" + closeColor);
+        Debug.Log(_debugColor + "Game quit!" + _closeColor);
     }
 
 

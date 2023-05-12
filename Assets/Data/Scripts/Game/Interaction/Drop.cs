@@ -1,5 +1,6 @@
 using UnityEngine;
-using FMODUnity; 
+using FMODUnity;
+using UnityEngine.Serialization;
 
 
 public class Drop : MonoBehaviour
@@ -20,15 +21,15 @@ public class Drop : MonoBehaviour
                         public int Mana => _mana;
 
 
-    [SerializeField]    private GameObject m_prefab;
-                        private Rigidbody rb;
+    [FormerlySerializedAs("m_prefab")] [SerializeField]    private GameObject mPrefab;
+                        private Rigidbody _rb;
 
                         // Game State //
                         private GameState _state;
                         private bool _gamePlay;
 
     // FMOD & Sound Handling --------------------------------------------------->
-    private StudioEventEmitter m_Emitter;
+    private StudioEventEmitter _mEmitter;
                         private bool _audioState;
                         private bool _useAudio;
                         private bool _usesAudioAmbient;
@@ -37,8 +38,8 @@ public class Drop : MonoBehaviour
                         private bool _canUseForce;
                         //private float                               startForce; 
                         private bool _canBeDrawned;
-                        private int attractionSpeed;
-                        private float maxDistance;
+                        private int _attractionSpeed;
+                        private float _maxDistance;
                         private bool _canIgnorePlayerMaHealth;
 
                         private bool _canFloat;
@@ -50,9 +51,9 @@ public class Drop : MonoBehaviour
 
     // managing --------------------------------------------------->
                         // height of float 
-                        private float height;
+                        private float _height;
 
-                        private PlayerMovement player;
+                        private PlayerMovement _player;
 
 
 
@@ -95,10 +96,10 @@ public class Drop : MonoBehaviour
     private void GetComponents()
     {
         //m_BoxCollider = GetComponent<BoxCollider>();
-        m_Emitter                   = GetComponent<StudioEventEmitter>();
-        rb                         = GetComponent<Rigidbody>();
+        _mEmitter                   = GetComponent<StudioEventEmitter>();
+        _rb                         = GetComponent<Rigidbody>();
 
-        player                      = FindObjectOfType<PlayerMovement>();
+        _player                      = FindObjectOfType<PlayerMovement>();
         //manaManager = FindObjectOfType<ManaManager>();    
     }
 
@@ -112,12 +113,12 @@ public class Drop : MonoBehaviour
         _canFloat                   = data.Float;
         _canUseForce                = data.UseStartForce;
         _canIgnorePlayerMaHealth    = data.CanIgnoreHealth;
-        height                      = data.HeightFloat;
+        _height                      = data.HeightFloat;
         _usesAudioAmbient           = data.UseAudioAmbient;
        
         _canBeDrawned               = data.CanBeattracted;
-        attractionSpeed             = data.AtractionSpeed;
-        maxDistance                 = data.MaxDistance;
+        _attractionSpeed             = data.AtractionSpeed;
+        _maxDistance                 = data.MaxDistance;
         _ignoreMask                 = data.LayerMask;
 
 
@@ -132,7 +133,7 @@ public class Drop : MonoBehaviour
             if (Physics.Raycast(transform.position, Vector3.down, out groundHit, ~_ignoreMask))
             {
 
-                height = groundHit.point.y + 0.5f;
+                _height = groundHit.point.y + 0.5f;
             }
         }
 
@@ -182,7 +183,7 @@ public class Drop : MonoBehaviour
 
                     if (_canFloat)
                     {
-                        transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * height + height, transform.position.z);
+                        transform.position = new Vector3(transform.position.x, Mathf.Sin(Time.time) * 0.1f * _height + _height, transform.position.z);
                     }
 
 
@@ -212,7 +213,7 @@ public class Drop : MonoBehaviour
 
                         if (_canBeDrawned)
                         {
-                            rb.Sleep();
+                            _rb.Sleep();
                         }
                         UpdateSound();
                         return;
@@ -225,45 +226,45 @@ public class Drop : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        PlayerHealth PLAYER = other.GetComponent<PlayerHealth>();
-        ManaManager MANA = other.GetComponent<ManaManager>();   
+        PlayerHealth player = other.GetComponent<PlayerHealth>();
+        ManaManager mana = other.GetComponent<ManaManager>();   
 
-        if (PLAYER != null)
+        if (player != null)
         {
             //m_BoxCollider.enabled = false;
             switch (_dropType)
             {
-                case DropType._HP:
+                case DropType.Hp:
                     {
                         //player.Takehealth(Health);
                         //PLAYER.Takehealth(Health);
-                        string DebugColor = "<size=12><color=green>";
+                        string debugColor = "<size=12><color=green>";
                         string closeColor = "</color></size>";
 
-                        Debug.Log(DebugColor + "HP picked" + closeColor);
-                        PLAYER.Takehealth(Health);
+                        Debug.Log(debugColor + "HP picked" + closeColor);
+                        player.Takehealth(Health);
 
                         break;
                     }
-                case DropType._MANA:
+                case DropType.Mana:
                     {
                         //print("NOT LINKED UP MANA");
-                        string DebugColor = "<size=12><color=lightblue>";
+                        string debugColor = "<size=12><color=lightblue>";
                         string closeColor = "</color></size>";
 
-                        Debug.Log(DebugColor + "Mana picked" + closeColor);
+                        Debug.Log(debugColor + "Mana picked" + closeColor);
 
                        
-                        MANA.RecoverMana(Mana);
+                        mana.RecoverMana(Mana);
                         break;
                     }
                 default: { break; }
 
             }
 
-            if (_useAudio && m_prefab != null)
+            if (_useAudio && mPrefab != null)
             {
-                Instantiate(m_prefab, transform.position, Quaternion.identity);
+                Instantiate(mPrefab, transform.position, Quaternion.identity);
             }
 
             //Destroy(m_BoxCollider);
@@ -277,7 +278,7 @@ public class Drop : MonoBehaviour
 
             Vector3 avoidanceDirection = transform.position - other.transform.position;
 
-            rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
+            _rb.AddForce(avoidanceDirection.normalized * avoidanceForce);
 
             Invoke("StopForce", avoidanceDuration);
         }
@@ -288,8 +289,8 @@ public class Drop : MonoBehaviour
     private void StopForce()
     {
         //print("no one found");
-        rb.velocity = Vector3.zero;
-        rb.Sleep();
+        _rb.velocity = Vector3.zero;
+        _rb.Sleep();
 
         //_canFloat = true;
     }
@@ -297,17 +298,17 @@ public class Drop : MonoBehaviour
 
     private void UpdateSound()
     {
-        m_Emitter.EventInstance.setPaused(_audioState); // set audio
+        _mEmitter.EventInstance.setPaused(_audioState); // set audio
     }
 
 
     private void OnDraw()
     {
 
-        if (Vector3.Distance(transform.position, player.transform.position) < maxDistance)
+        if (Vector3.Distance(transform.position, _player.transform.position) < _maxDistance)
         {
             _canFloat = false;
-            transform.position = Vector3.LerpUnclamped(transform.position, player.transform.position,attractionSpeed * Time.deltaTime);
+            transform.position = Vector3.LerpUnclamped(transform.position, _player.transform.position,_attractionSpeed * Time.deltaTime);
             //print("player"); 
         }
         else { _canFloat = true; return; }

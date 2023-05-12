@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
@@ -7,11 +8,11 @@ public class HealthBar : MonoBehaviour
 
     [SerializeField]
     private float criticalSliderVelocity;
-    private float time;
+    private float _time;
         
     //public Gradient _gradient;
 
-    public Image _fill;
+    [FormerlySerializedAs("_fill")] public Image fill;
 
     private void Update()
     {
@@ -28,18 +29,18 @@ public class HealthBar : MonoBehaviour
     }
     internal void SetHealth(int health, int shield)
     {
-        time = 0f;
+        _time = 0f;
         healthSlider.value = health;
         //shieldSlider.value = health + shield;
         //_fill.color = _gradient.Evaluate(_slider.normalizedValue);
     }
 
-    public void TakeDamageUI(int damage)
+    public void TakeDamageUi(int damage)
     {
 
     }
 
-    public void TakeHealthUI(int heal)
+    public void TakeHealthUi(int heal)
     {
 
     }
@@ -53,11 +54,11 @@ public class HealthBar : MonoBehaviour
 
     private void  SetCriticalHealth()
     {
-        time += Time.deltaTime * criticalSliderVelocity;
+        _time += Time.deltaTime * criticalSliderVelocity;
 
         if (criticalSlider.value < healthSlider.value)
             criticalSlider.value = healthSlider.value;
         else
-            criticalSlider.value = Mathf.Lerp(criticalSlider.value, healthSlider.value, time);
+            criticalSlider.value = Mathf.Lerp(criticalSlider.value, healthSlider.value, _time);
     }
 }

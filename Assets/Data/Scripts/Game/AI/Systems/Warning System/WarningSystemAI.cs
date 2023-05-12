@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class WarningSystemAI : MonoBehaviour
+public class WarningSystemAi : MonoBehaviour
 {
+    [FormerlySerializedAs("_activateGizmo")]
     [Header("Warning AI zone Gizmo")]
     [SerializeField] 
-    private bool _activateGizmo = true; 
+    private bool activateGizmo = true; 
 
     // Set this to the layer that the player is on
     [SerializeField] private LayerMask targetLayer;
@@ -13,31 +15,31 @@ public class WarningSystemAI : MonoBehaviour
     [SerializeField] private LayerMask aiLayer;
 
     //  radius in which the AI can alert
-    [Range(0, 30)][SerializeField] private float AiRadius = 20.0f;
+    [FormerlySerializedAs("AiRadius")] [Range(0, 30)][SerializeField] private float aiRadius = 20.0f;
 
-    private EnemyChaseBehaviour enemy;
-    private EnemyBehaviour enemy2;
+    private EnemyChaseBehaviour _enemy;
+    private EnemyBehaviour _enemy2;
 
-    private enum EnemyType {enemyChase, enemyRanged}
-    private EnemyType type;
+    private enum EnemyType {EnemyChase, EnemyRanged}
+    private EnemyType _type;
 
-    internal bool canAlertAI;
+    internal bool CanAlertAi;
 
     private void Start()
     {
         if (TryGetComponent(out EnemyChaseBehaviour e))
         {
-            type = EnemyType.enemyChase;
+            _type = EnemyType.EnemyChase;
 
-            enemy = GetComponent<EnemyChaseBehaviour>();
+            _enemy = GetComponent<EnemyChaseBehaviour>();
 
             //Debug.Log(type.ToString());
         }
 
         if (TryGetComponent(out EnemyBehaviour r))
         {
-            type = EnemyType.enemyRanged;
-            enemy2 = GetComponent<EnemyBehaviour>();
+            _type = EnemyType.EnemyRanged;
+            _enemy2 = GetComponent<EnemyBehaviour>();
             //Debug.Log(type.ToString());
         }
 
@@ -46,45 +48,48 @@ public class WarningSystemAI : MonoBehaviour
 
     private void Update()
     {
-        if(canAlertAI) 
+        if(CanAlertAi) 
         {
-            AlertAI();
+            AlertAi();
         }
 
-        if (type == EnemyType.enemyChase)
+        if (_type == EnemyType.EnemyChase)
         {
-            if (enemy.canSee)
+            if (_enemy.CanSee)
             {
-                canAlertAI = true;
+                CanAlertAi = true;
 
                 //Debug.Log("Can Alert Enemy Chase");
             }
           
         }
-        if (type == EnemyType.enemyRanged)
+        
+        /*
+         if (_type == EnemyType.EnemyRanged)
         {
-            if (enemy2.canSee)
+            if (_enemy2.CanSee)
             {
-                canAlertAI = true;
+                CanAlertAi = true;
             }
         }
+        */
     }
 
 
-    private void AlertAI()
+    private void AlertAi()
     {
 
-        bool IsRunning = false;
+        bool isRunning = false;
 
         
 
-        if(!IsRunning) 
+        if(!isRunning) 
         {
             
             //print("WARNING");
 
             // Check if the player is within the warning radius
-            Collider[] aiHits = Physics.OverlapSphere(transform.position, AiRadius, aiLayer);
+            Collider[] aiHits = Physics.OverlapSphere(transform.position, aiRadius, aiLayer);
             if (aiHits.Length > 0)
             {
                 // Iterate through the list of AI game objects and send a warning message
@@ -93,7 +98,7 @@ public class WarningSystemAI : MonoBehaviour
                     aiHit.gameObject.SendMessage("OnPlayerWarning", transform.position, SendMessageOptions.DontRequireReceiver);
                 }
             }
-            IsRunning = true;
+            isRunning = true;
         }
         
         
@@ -101,11 +106,11 @@ public class WarningSystemAI : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(_activateGizmo)
+        if(activateGizmo)
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position,
-            AiRadius);
+            aiRadius);
         }
       
     }
