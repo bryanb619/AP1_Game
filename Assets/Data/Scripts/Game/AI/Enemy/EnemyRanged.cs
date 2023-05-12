@@ -72,6 +72,7 @@ public class EnemyRanged : MonoBehaviour
                         // Patrol Points
                         private int                                     _destPoint = 0;
     [SerializeField]    private Transform[]                             patrolPoints;
+                        private float _patrolSpeed; 
     #endregion
     
     #region Cover
@@ -101,6 +102,7 @@ public class EnemyRanged : MonoBehaviour
                         // Combat  ---------------------------------------------------------------------------------------------------->
 
         // Attack 
+                            private float _attackSpeed; 
 
         [SerializeField]    private Transform                           shootPos;
 
@@ -195,7 +197,15 @@ public class EnemyRanged : MonoBehaviour
     [SerializeField]        private bool                                       showExtraGizmos; 
     
     #endregion
+
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged
+    }
     
+    private 
+
+    #region Start
     void Start()
     {
         GetComponents();
@@ -280,22 +290,19 @@ public class EnemyRanged : MonoBehaviour
     #region States
     private void GetStates()
     {
-        
         // Create the states
         State onGuardState = new State("Guard" ,null);
 
         State PatrolState = new State("On Patrol", PatrolAction);
 
         State ChaseState = new State("Fight",AttackAction);
-
-        State GloryKillState = new State("Glory Kill",GloryKill);
-
+        
         // Add the transitions
 
         // GUARD -> CHASE
         onGuardState.AddTransition(
             new Transition(
-                () => canSeePlayer == true,
+                () => stateAI == AI.Attack,
                 //() => Debug.Log(" GUARD -> CHASE"),
                 ChaseState));
 
@@ -303,30 +310,18 @@ public class EnemyRanged : MonoBehaviour
         ChaseState.AddTransition(
             new Transition(
                 () => stateAI == AI.Patrol,
-                //() => Debug.Log("CHASE -> PATROL"),
                 PatrolState));
         
         //  PATROL -> CHASE 
         PatrolState.AddTransition(
             new Transition(
                 () => stateAI == AI.Attack,
-                //() => Debug.Log("PATROL -> CHASE"),
                 ChaseState));
-
-       // CHASE -> GLORY KILL
-        ChaseState.AddTransition(
-            new Transition(
-                () => stateAI == AI.GloryKill,
-               // () => Debug.Log("CHASE -> GLORY KILL"),
-                GloryKillState));
-
         
-
         //state machine
-        stateMachine = new StateMachine(PatrolState);
+        _stateMachine = new StateMachine(PatrolState);
     }
     #endregion
-    
     
     #region State Set 
     
@@ -355,6 +350,8 @@ public class EnemyRanged : MonoBehaviour
     {
         _agent.speed = _attackSpeed; 
     }
+    
+    #endregion
     #endregion
     #region Update
     // Request actions to the FSM and perform them
@@ -363,17 +360,27 @@ public class EnemyRanged : MonoBehaviour
         //UpdateAI();
     }
 
+    #region Patrol
     private void PatrolAction()
     {
         
         
     }
+    #endregion
 
+
+    #region Attack
     private void AttackAction()
     {
         
     }
-    
+
+
+    private void Attack()
+    {
+        
+    }
+    #endregion
     #endregion
     
     
