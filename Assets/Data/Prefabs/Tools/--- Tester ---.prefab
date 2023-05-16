@@ -126,14 +126,14 @@ GameObject:
   - component: {fileID: 4795243931530587337}
   - component: {fileID: 4795243931530587188}
   - component: {fileID: 4795243931530587338}
-  - component: {fileID: 568512283}
+  - component: {fileID: 5772012533863252914}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4795243931530587337
 Transform:
   m_ObjectHideFlags: 0
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!114 &568512283
+--- !u!114 &5772012533863252914
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,11 +234,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 4795243931530587336}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ae42c8f78c60684aab6be6c18bd7a9b, type: 3}
+  m_Script: {fileID: 11500000, guid: acec9b90724bf0644b4864271024f2b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 3
-  colorblindShader: {fileID: 4800000, guid: b35b8f7ae8cf168488129d5f5f39ebf4, type: 3}
+  acceleration: 50
+  accSprintMultiplier: 4
+  lookSensitivity: 1
+  dampingCoefficient: 5
+  focusOnEnable: 1
 --- !u!1 &4795243932058726400
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,9 +320,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d336b878d9c05014a9238e08b8e07bc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeBoost: 0
-  LightActive: 0
-  GameTestLight: {fileID: 4795243931436588108}
+  timeBoost: 0
+  lightActive: 0
+  gameTestLight: {fileID: 4795243931436588108}
   killCheat: 1
   damageRadius: 10
   damageAmount: 30

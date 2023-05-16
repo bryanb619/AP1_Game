@@ -126,16 +126,14 @@ public class CompanionBehaviour : MonoBehaviour
     private void Awake()
     {
         GameManager.OnGameStateChanged += OnGameStateChanged;
+
+        GetComponents();
     }
 
     #endregion
 
-    #region Start
-
-    // Create the FSM
-    private void Start()
+    private void GetComponents()
     {
-
         //_StateAI                    = CompanionState._idle;
 
         Companion = GetComponent<NavMeshAgent>();
@@ -149,7 +147,8 @@ public class CompanionBehaviour : MonoBehaviour
 
         _companionMesh = GetComponent<MeshRenderer>();
 
-        _mainCamera = FindObjectOfType<Camera>();
+        //_mainCamera = FindObjectOfType<Camera>();
+        _mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
 
         _point = FindObjectOfType<CompanionSpawn>();
 
@@ -186,6 +185,15 @@ public class CompanionBehaviour : MonoBehaviour
                 break;
             }
         }
+    }
+
+    #region Start
+
+    // Create the FSM
+    private void Start()
+    {
+
+     
 
         //CompanionMesh = GetComponent<MeshRenderer>();
         //_MiniMapCollor = FindObjectOfType<mini>();
@@ -324,6 +332,8 @@ public class CompanionBehaviour : MonoBehaviour
     }
 
     private (bool success, Vector3 position) GetMousePosition()
+    
+    
     {
         var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
