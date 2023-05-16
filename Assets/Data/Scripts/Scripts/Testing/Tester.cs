@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -17,17 +18,27 @@ public class Tester : MonoBehaviour
     [SerializeField] private float damageRadius = 10f;
     [SerializeField] private int damageAmount = 30;
 
-    private bool _show; 
+
+    [SerializeField] private GameObject cam;
+    private bool _isCamActive; 
+
+    private bool _show;
 
 
+    private void Awake()
+    {
+        _player         = GameObject.FindGameObjectWithTag("Player") ;
+        //KillEnemy = false;
+      
 
+    }
 
     private void Start()
     {
-        _player = GameObject.FindGameObjectWithTag("Player") ;
-        //KillEnemy = false;
-        timeBoost = false;
-        lightActive = false;
+        timeBoost       = false;
+        lightActive     = false;
+        _isCamActive    = false; 
+     
     }
 
     // Start is called before the first frame update
@@ -57,6 +68,26 @@ public class Tester : MonoBehaviour
         else if (lightActive == false)
         {
             DisabletestLight();
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            switch (_isCamActive)
+            {
+                case true:
+                {
+                    _isCamActive = false; 
+                    
+                    ActionOnCamera(_isCamActive);
+                    break; 
+                }
+                case false:
+                {
+                    _isCamActive = true; 
+                    ActionOnCamera(_isCamActive);
+                    break; 
+                }
+            }
         }
     }
 
@@ -113,5 +144,25 @@ public class Tester : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void ActionOnCamera(bool activate)
+    {
+
+        switch (activate)
+        {
+            case true:
+            {
+                cam.SetActive(false);
+                break;
+            }
+            case false:
+            {
+                cam.SetActive(true);
+                break; 
+            }
+            
+        }
+        
     }
 }
