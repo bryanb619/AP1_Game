@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0991b72efd43cd34fa5df6de481be407, type: 3}
-  m_Name: AI Ranged Data
+  m_Name: Ai Ranged Data
   m_EditorClassIdentifier: 
   minDist: 7
-  n_projectile: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
+  nProjectile: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
   attackRate: 2
-  _percentage: 0.402
-  r_projectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
-  s_projectile: {fileID: 6932023443711188527, guid: 62e48711e6083d245be419a3164fafb1, type: 3}
+  percentage: 0.402
+  rProjectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
+  sProjectile: {fileID: 6932023443711188527, guid: 62e48711e6083d245be419a3164fafb1, type: 3}
   attackTimeOut: 2
   currentAbilityValue: 17
   abilityIncreasePerFrame: 2
   specialDamage: 32
-  s_damageEffect: {fileID: 1965343156803978, guid: aa8d6482d70a23445b4b2a928ed1b845, type: 3}
+  sDamageEffect: {fileID: 1965343156803978, guid: aa8d6482d70a23445b4b2a928ed1b845, type: 3}
   specialTimeOut: 2
   radius: 12
   angle: 90
@@ -44,10 +44,10 @@ MonoBehaviour:
   gemSpawnOnDeath: 1
   gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
   spawnChance: 0
-  _spawnHealth: 1
-  _healthItems: 2
-  _healthDrop: {fileID: 2109320882222824309, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
-  _spawnMana: 1
-  _manaItems: 2
-  _manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
-  _dropRadius: 2
+  spawnHealth: 1
+  healthItems: 2
+  healthDrop: {fileID: 2109320882222824309, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
+  spawnMana: 1
+  manaItems: 2
+  manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
+  dropRadius: 2

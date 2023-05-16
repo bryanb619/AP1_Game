@@ -145,8 +145,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [SerializeField]    private float                       angle;
                         public float                        Angle => angle;
-                        private LayerMask                   _targetMask;
-                        private LayerMask                   _obstructionMask;
+                        
+    [SerializeField]    private LayerMask                   targetMask;
+    [SerializeField]    private LayerMask                   obstructionMask;
     
                         private bool                        _canSeePlayer;
                         public bool                         CanSee => _canSeePlayer;
@@ -378,16 +379,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // combat events
         //_spawnOtherAI               = data.CanSpawnOthers;
         //quantityOfSpawn             = data.Quantity;
-
-        // FOV ------------------------------------------------------->
-        //radius                      = data.Radius;
-        //angle                       = data.Angle
-        _targetMask                  = data.TargetMask;
-        _obstructionMask             = data.ObstructionMask;
-
-        // Cover ------------------------------------------------------->
-        _hidableLayers               = data.HidableLayers;
-        //minDistInCover            = data.MindistIncover;
+        
 
         // Health ------------------------------------------------------->
 
@@ -554,7 +546,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         if (_gameState == GameState.Gameplay && !_deactivateAi) //|| !_deactivateAI)
         {
-            MinimalCheck();
+            //MinimalCheck();
 
             HealthCheck();
 
@@ -641,7 +633,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         
         // collider check
-        Collider[] rangeChecks = Physics.OverlapSphere(fov.position, radius, _targetMask);
+        Collider[] rangeChecks = Physics.OverlapSphere(fov.position, radius, targetMask);
 
 
         if (rangeChecks.Length != 0)
@@ -653,7 +645,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 float distanceToTarget = Vector3.Distance(fov.position, target.position);
 
-                if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, _obstructionMask))
+                if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, obstructionMask))
                 {
                     if(_canAttack)
                     {
@@ -927,7 +919,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             {
                                 //print("chose random");
 
-                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, _targetMask);
+                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, targetMask);
 
                                 foreach (Collider collider in hitEnemies)
                                 {
@@ -964,7 +956,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             else
                             {
 
-                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, _targetMask);
+                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, targetMask);
 
                                 foreach (Collider collider in hitEnemies)
                                 {
@@ -1043,7 +1035,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             PauseAgent();
 
-            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, _targetMask);
+            Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, targetMask);
 
             foreach (Collider collider in hitEnemies)
             {
@@ -1481,8 +1473,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
            
             if (_canAttack)
             {
-                _warn.CanAlertAi = true;
-                //SetAttack();
+                //_warn.CanAlertAi = true;
+                SetAttack();
                 return;
             }
         }

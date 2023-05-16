@@ -605,6 +605,12 @@ MonoBehaviour:
   fov: {fileID: 1831208982663463918}
   radius: 6
   angle: 60
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 1049153
   targetEffect: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
   spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
   enemyChase: {fileID: 1831208983068165615}
