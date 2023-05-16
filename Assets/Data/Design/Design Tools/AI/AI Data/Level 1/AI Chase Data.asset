@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f164e7accfd96c24bbae33016d80036f, type: 3}
-  m_Name: AI Chase Data
+  m_Name: Ai Chase Data
   m_EditorClassIdentifier: 
-  _attackDist: 2.5
-  _attackEffect: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
-  _damageEffectTime: 0.4
+  attackDist: 3
+  attackEffect: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
+  damageEffectTime: 0.4
   minDist: 3
-  attackRate: 5
-  a_damage: 2
+  attackRate: 1.5
+  aDamage: 2
   stopDistance: 3
   attackDistOffset: 4
-  _attackTimer: 1
-  _percentage: 0.4
-  b_damage: 5
-  s_attackEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
+  attackTimer: 1
+  percentage: 0.4
+  bDamage: 5
+  sAttackEffect: {fileID: 100004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
   specialAttackEffect: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
-  s_damage: 15
+  sDamage: 15
   currentAbilityValue: 32
   abilityIncreasePerFrame: 2
   patrolSpeed: 50
@@ -42,33 +42,33 @@ MonoBehaviour:
   health: 385
   healthRegen: 2
   maxHealthRegen: 70
-  _stunnedTime: 2
-  _stunnedChance: 0.05
-  _deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
+  stunnedTime: 2
+  stunnedChance: 0.05
+  deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
   gemSpawnOnDeath: 1
   gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
   spawnChance: 0.317
-  _spawnHealth: 1
-  _healthDrop: {fileID: 2109320882222824309, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
-  _healthUnits: 3
-  _spawnMana: 1
-  _manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
-  _manaItems: 1
-  _grunt:
+  spawnHealth: 1
+  healthDrop: {fileID: 2109320882222824309, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
+  healthUnits: 3
+  spawnMana: 1
+  manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
+  manaItems: 1
+  grunt:
     Guid:
       Data1: 0
       Data2: 0
       Data3: 0
       Data4: 0
     Path: 
-  _scream:
+  scream:
     Guid:
       Data1: -1275480890
       Data2: 1130123641
       Data3: -370192724
       Data4: 668594108
     Path: event:/Enemy/Chase/Scream
-  _etc:
+  etc:
     Guid:
       Data1: 0
       Data2: 0

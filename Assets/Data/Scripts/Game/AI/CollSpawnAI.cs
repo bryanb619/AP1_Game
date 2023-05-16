@@ -16,10 +16,13 @@ public class CollSpawnAi : MonoBehaviour
 
     [SerializeField]    private GameObject              ranged;
 
-    [FormerlySerializedAs("_spawnEffect")] [SerializeField]    private GameObject              spawnEffect;
+    [FormerlySerializedAs("_spawnEffect")] 
+    [SerializeField]    private GameObject              spawnEffect;
 
-    [FormerlySerializedAs("_chaseCount")] [SerializeField]    private int                     chaseCount;
-    [FormerlySerializedAs("_rangedCount")] [SerializeField]    private int                     rangedCount;
+    [FormerlySerializedAs("_chaseCount")] [
+        SerializeField]    private int                     chaseCount;
+    [FormerlySerializedAs("_rangedCount")] [
+        SerializeField]    private int                     rangedCount;
 
     // Radius & Components ----------------------------------------------------------------->
     [FormerlySerializedAs("_dropRadius")]
@@ -27,18 +30,24 @@ public class CollSpawnAi : MonoBehaviour
 
     [SerializeField]    private float                   dropRadius; 
 
-    [FormerlySerializedAs("_transform_a")] [SerializeField]    private Transform               transformA;
-    [FormerlySerializedAs("_transform_b")] [SerializeField]    private Transform               transformB;
+    [FormerlySerializedAs("_transform_a")] 
+    [SerializeField]    private Transform               transformA;
+    [FormerlySerializedAs("_transform_b")] 
+    [SerializeField]    private Transform               transformB;
 
     [SerializeField]    private bool                    secondTransform; 
 
                         private BoxCollider             _collider;
 
-    [FormerlySerializedAs("_useSound")] [SerializeField]    private bool                    useSound; 
+    [FormerlySerializedAs("_useSound")] 
+    [SerializeField]    private bool                    useSound; 
 
-    [FormerlySerializedAs("_soundAISpawn")] [SerializeField]    private EventReference          soundAiSpawn;
+     
+    [SerializeField]    private EventReference          soundAiSpawn;
+    
 
-    [FormerlySerializedAs("objectiveUIScript")] [SerializeField] private ObjectiveUi                objectiveUiScript;
+    [FormerlySerializedAs("objectiveUIScript")] 
+    [SerializeField] private ObjectiveUi                objectiveUiScript;
 
     // Time -------------------------------------------------------------------------------->
     [FormerlySerializedAs("_startWait")]
@@ -56,7 +65,8 @@ public class CollSpawnAi : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         _collider                   = GetComponent<BoxCollider>();
         _collider.enabled           = true;
@@ -64,7 +74,7 @@ public class CollSpawnAi : MonoBehaviour
 
         objectiveUiScript.RecieveEnemyCountInfo(chaseCount, rangedCount);
     }
-
+    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -81,21 +91,22 @@ public class CollSpawnAi : MonoBehaviour
 
     private IEnumerator SpawnAi()
     {
-        bool running    = false;
+        bool running        = false;
 
         if (!running)
         {
-            
-            running = true;
-
-            _collider.enabled = false;
-
+            running             = true;
             int i;
 
-            if( useSound)
+            _collider.enabled   = false;
+
+            
+
+            if( !useSound)
             {
-                RuntimeManager.PlayOneShot(soundAiSpawn);
+                //PlaySound();
             }
+            
 
             for (i = 0; i < chaseCount; i++)
             {
@@ -104,8 +115,8 @@ public class CollSpawnAi : MonoBehaviour
                     yield return new WaitForSeconds(waitTime);
                 }
                 Vector3 spawnPosition = transformA.position +
-                    new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
-                    UnityEngine.Random.Range(-dropRadius, dropRadius));
+                        new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
+                        UnityEngine.Random.Range(-dropRadius, dropRadius));
 
 
                 Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
@@ -113,9 +124,7 @@ public class CollSpawnAi : MonoBehaviour
 
                 yield return new WaitForSeconds(spawnTime);
                 Instantiate(chase, spawnPosition, transform.rotation);
-
-
-                //print(i);
+                
             }
 
             if (secondTransform)
@@ -136,20 +145,17 @@ public class CollSpawnAi : MonoBehaviour
 
                     yield return new WaitForSeconds(spawnTime);
                     Instantiate(ranged, spawnPosition, transform.rotation);
-
-
-                    //print(i);
+                    
                 }
             }
-
             
-
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            Destroy(_collider);
             running = false;
-
-           
+            
         }
     }
+
 
 
 }

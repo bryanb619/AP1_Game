@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,37 +10,26 @@ public class UpgradeOptimize : MonoBehaviour
     //private SpecialItem _specialItem; 
     private AbilityUpgradesManager _ability;
     //private StudioEventEmitter _event; 
-    private WaitForSeconds _wait;
 
-
-    private void Start()
+    private void Awake()
     {
-        
         _rotate             = GetComponentInParent<RotateObject>();
-        _ability            = GetComponentInParent<AbilityUpgradesManager>(); 
-        _wait                = new WaitForSeconds(1f);
-        //_specialItem        = GetComponent<SpecialItem>();
-
-
-        //_event              = GetComponent<StudioEventEmitter>();  
+        _ability            = GetComponentInParent<AbilityUpgradesManager>();
     }
-
-
+    
     private void Update()
     {
-        StartCoroutine(CheckRoutine());
+        CheckMesh();
+        //StartCoroutine(CheckRoutine());
     }
-
-
-    #region Mesh check 
-
     
+
+    #region Mesh check
     private IEnumerator CheckRoutine()
     {
-
         while (true)
         {
-            yield return _wait;
+            yield return new WaitForSecondsRealtime(1f);
             CheckMesh();
         }
     }
@@ -47,14 +37,19 @@ public class UpgradeOptimize : MonoBehaviour
     
     private void CheckMesh()
     {
-        
-        if(mesh.isVisible)
+        switch (mesh.isVisible)
         {
-            ComponentState(true);
-        }
-        else if (!mesh.isVisible)
-        {
-            ComponentState(false);
+            case true:
+            {
+                ComponentState(true);
+                
+                break; 
+            }
+            case false:
+            {
+                ComponentState(false);
+                break;
+            }
         }
     }
     

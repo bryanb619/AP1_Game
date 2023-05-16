@@ -1,18 +1,16 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class RotateObject : MonoBehaviour
 {
-    [FormerlySerializedAs("_rotate")]
     [Header("Rotation")]
 
     [SerializeField]
     private bool            rotate;
 
-    [FormerlySerializedAs("_rotateSpeed")] [SerializeField]
+    [SerializeField]
     private float           rotateSpeed;
 
-    private bool            _gamePlay;
+    private GameState       _gamePlay;
 
 
     private void Awake()
@@ -26,7 +24,7 @@ public class RotateObject : MonoBehaviour
     void Update()
     {
 
-        if(rotate && _gamePlay) 
+        if(rotate && _gamePlay == GameState.Gameplay) 
         {
             transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime );
         }
@@ -39,12 +37,12 @@ public class RotateObject : MonoBehaviour
         {
             case GameState.Gameplay:
                 {
-                    _gamePlay = true;
+                    _gamePlay = GameState.Gameplay;
                     break;
                 }
             case GameState.Paused:
                 {
-                    _gamePlay = false;
+                    _gamePlay = GameState.Paused;
                     break;
                 }
         }

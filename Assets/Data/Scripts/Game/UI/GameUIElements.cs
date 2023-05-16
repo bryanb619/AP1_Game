@@ -1,19 +1,21 @@
+using System;
 using UnityEngine;
 
-public class GameUiElements : MonoBehaviour
+public class GameUIElements: MonoBehaviour
 {
     private Camera              _mainCamera;
     private Transform           _camTransform;
 
-    private Vector3             _desiredTarget; 
+    private Vector3             _desiredTarget;
+    
+    
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        _mainCamera              = FindObjectOfType<Camera>();
-        _camTransform           = _mainCamera.transform;
+        _mainCamera                 = FindObjectOfType<Camera>();
+        _camTransform               = _mainCamera.transform;
     }
-  
+    
     // Update is called once per frame
     void LateUpdate()
     {

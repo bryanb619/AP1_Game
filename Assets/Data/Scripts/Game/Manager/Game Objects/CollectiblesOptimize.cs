@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using FMODUnity;
-using UnityEngine.UIElements;
 
 public class CollectiblesOptimize : MonoBehaviour
 {
@@ -10,16 +8,13 @@ public class CollectiblesOptimize : MonoBehaviour
                         private RotateObject _rotate;
                         private SpecialItem _specialItem; 
                         //private StudioEventEmitter _event; 
-                        
-    private void Start()
+
+                       
+    private void Awake()
     {
-        
         _rotate             = GetComponentInParent<RotateObject>();
         _specialItem        = GetComponent<SpecialItem>();
-        
-        //_event              = GetComponent<StudioEventEmitter>();  
     }
-
 
     private void Update()
     {
@@ -32,26 +27,32 @@ public class CollectiblesOptimize : MonoBehaviour
     
     private IEnumerator CheckRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(1f);
-
+        
         while (true)
         {
-            yield return wait;
+            yield return new WaitForSecondsRealtime(1f);
             CheckMesh();
+            
         }
+        
     }
 
     
     private void CheckMesh()
     {
         
-        if(mesh.isVisible)
+        switch (mesh.isVisible)
         {
-            ComponentState(true);
-        }
-        else if (!mesh.isVisible)
-        {
-            ComponentState(false);
+            case true:
+            {
+                ComponentState(true);
+                break; 
+            }
+            case false:
+            {
+                ComponentState(false);
+                break;
+            }
         }
     }
     
@@ -62,15 +63,16 @@ public class CollectiblesOptimize : MonoBehaviour
         {
             case true:
             {
-                print(gameObject); 
                 _rotate.enabled         = true;
                 _specialItem.enabled    = true; 
+                
                 break; 
             }
             case false:
             {
                 _rotate.enabled         = false;
                 _specialItem.enabled    = false;
+                
                 break;
             }
             

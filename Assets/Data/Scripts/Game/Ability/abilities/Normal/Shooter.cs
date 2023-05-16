@@ -214,7 +214,7 @@ public class Shooter : MonoBehaviour
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 50f))
             if (_hit.collider.CompareTag("Enemy"))
             {
-                Debug.Log(_hit.collider.gameObject + " hightlight on");
+                //Debug.Log(_hit.collider.gameObject + " hightlight on");
                 _hit.collider.gameObject.GetComponent<Outline>().enabled = true;
             }
                 

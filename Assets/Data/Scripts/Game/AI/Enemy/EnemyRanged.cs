@@ -6,6 +6,10 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.PlayerLoop;
+using State = LibGameAI.FSMs.State;
+using StateMachine = LibGameAI.FSMs.StateMachine;
 
 #if UNITY_EDITOR
 using UnityEditor; 
@@ -13,22 +17,21 @@ using UnityEditor;
 
 #endregion
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class EnemyRanged : MonoBehaviour
 {
+    /*
     #region Variabless
     
     #region AI States
 
-    private enum AI                             { 
+    private enum Ai                             { 
         Guard, 
         Patrol,
         Attack,
-        Cover, 
-        Search, 
-        GloryKill, 
-        None }
+        None}
     
-    [SerializeField]    private AI               stateAI;
+    [SerializeField]    private Ai               stateAi;
 
                         private enum HandleState                    { Stoped, None }
                         private HandleState                         _currentState;
@@ -49,11 +52,11 @@ public class EnemyRanged : MonoBehaviour
                         // Reference to the NavMeshAgent
                         private NavMeshAgent                       _agent;
                         
-                        private WarningSystemAi                     _warn;
+                        //private WarningSystemAi                     _warn;
 
     [SerializeField]    private Agents                              agentAI;
 
-                        private AiHandler                           _handlerAI;
+                        private AiHandler                           _handlerAi;
                         private bool                                _deactivateAI;
                         
                         private ObjectiveUi                         _objectiveUIScript;
@@ -93,13 +96,14 @@ public class EnemyRanged : MonoBehaviour
     [Range(0, 5f)]
     [SerializeField]        private float                                   MinObstacleHeight = 0f;
 
-    public SceneChecker                             LineOfSightChecker;
+                            public SceneChecker                             LineOfSightChecker;
 
     private Coroutine                               _movementCoroutine;
     #endregion
     
     #region Combat
-                        // Combat  ---------------------------------------------------------------------------------------------------->
+    
+    // Combat  -------------------------------------------------------------------------------------------------------->
 
         // Attack 
                             private float _attackSpeed; 
@@ -133,7 +137,7 @@ public class EnemyRanged : MonoBehaviour
                             private float                                     _stunnedTime = 1.5f;
         
     
-                            
+                            //TODO Add effects to Scriptable object
         // FOV -------------------------------------------------------------------------------------------------------->
                
         [Range(10, 150)]
@@ -169,7 +173,7 @@ public class EnemyRanged : MonoBehaviour
                             #endregion
 
     #region  Health & UI
-                            // Health --------------------------------------------------------------------------------------------------------->
+    // Health --------------------------------------------------------------------------------------------------------->
 
         // UI
         [Header("UI ")]
@@ -178,7 +182,7 @@ public class EnemyRanged : MonoBehaviour
                             
                             public int                                      damageBoost = 0;
                             
-    [SerializeField]        private Slider          abilitySlider;
+    [SerializeField]        private Slider                                  abilitySlider;
 
                             private ValuesTextsScript                        _valuesTexts;
 
@@ -189,37 +193,79 @@ public class EnemyRanged : MonoBehaviour
                             private Transform                               _playerTarget;
                             public Transform                                PlayerTarget => _playerTarget;
 
-                            private PlayerHealth                            _player; 
+                            //private PlayerHealth                            _player; 
                             
                             #endregion
-                            
-    // Debug // 
-    [SerializeField]        private bool                                       showExtraGizmos; 
-    
+
+#if  UNITY_EDITOR
+    #region Game DEBUG
+
+    // Debug ---------------------------------------------------------------------------------------------------------->
+    [SerializeField]        private bool                                   showAttackGizmos, showLabelGizmo, 
+        showWireGizmo;
+    #endregion
+#endif
+    //----------------------------------------------------------------------------------------------------------------->
     #endregion
 
     private void Awake()
     {
-        //GameManager.OnGameStateChanged;
-    }
-    
-    private 
-
-    #region Start
-    void Start()
-    {
+        // Accept Game Manager State
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        // accept components
         GetComponents();
+        // Accept AI Profile values
         GetProfile();
-        StateCheck();
+    }
+    #region GameState
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+            {
+                    
+                if(_currentState == HandleState.None)
+                {
+                    _gamePlay = GameState.Gameplay;
+                    ResumeAgent();
+                }
+                    
+                break;
+            }
+            case GameState.Paused:
+            {
+                    
+                if (_currentState == HandleState.None)
+                {
+                    _gamePlay = GameState.Paused;
+                    PauseAgent();
+                }
+                break;
+            }
+        }
+
+        throw new NotImplementedException();
     }
 
+    private void ResumeAgent()
+    {
+        
+    }
+
+    private void PauseAgent()
+    {
+        
+    }
+    #endregion
     
-#region Components Sync
+    #region Components Sync
     private void GetComponents()
     {
         _agent              = GetComponent<NavMeshAgent>();
-        _warn               = GetComponent<WarningSystemAi>();
-        _handlerAI          = GetComponent<AiHandler>();
+        //_warn               = GetComponent<WarningSystemAi>();
+        _handlerAi          = GetComponent<AiHandler>();
 
         agentAI            = GetComponentInChildren<Agents>();
         animator           = GetComponentInChildren<Animator>();
@@ -229,7 +275,7 @@ public class EnemyRanged : MonoBehaviour
         LineOfSightChecker  = GetComponentInChildren<SceneChecker>();
 
         
-        _player             = FindObjectOfType<PlayerHealth>();
+        //_player             = FindObjectOfType<PlayerHealth>();
         playerObject        = GameObject.Find("Player");
         _playerTarget       = playerObject.transform;
         //_shooterScript      = PlayerObject.GetComponent<Shooter>();
@@ -286,6 +332,14 @@ public class EnemyRanged : MonoBehaviour
 
     }
     #endregion
+    
+    private 
+
+    #region Start
+    void Start()
+    {
+        StateCheck();
+    }
 
     #region States
     private void GetStates()
@@ -302,20 +356,20 @@ public class EnemyRanged : MonoBehaviour
         // GUARD -> CHASE
         onGuardState.AddTransition(
             new Transition(
-                () => stateAI == AI.Attack,
+                () => stateAi == Ai.Attack,
                 //() => Debug.Log(" GUARD -> CHASE"),
                 ChaseState));
 
         // CHASE->PATROL
         ChaseState.AddTransition(
             new Transition(
-                () => stateAI == AI.Patrol,
+                () => stateAi == Ai.Patrol,
                 PatrolState));
         
         //  PATROL -> CHASE 
         PatrolState.AddTransition(
             new Transition(
-                () => stateAI == AI.Attack,
+                () => stateAi == Ai.Attack,
                 ChaseState));
         
         //state machine
@@ -327,14 +381,14 @@ public class EnemyRanged : MonoBehaviour
     
     private void StateCheck()
     {
-        switch (stateAI)
+        switch (stateAi)
         {
-            case AI.Patrol:
+            case Ai.Patrol:
             {
                 SetPatrol();
                 break;
             }
-            case AI.Attack:
+            case Ai.Attack:
             {
                 SetAttack();
                 break; 
@@ -357,13 +411,50 @@ public class EnemyRanged : MonoBehaviour
     // Request actions to the FSM and perform them
     private void Update()
     {
-        //UpdateAI();
+       UpdateStateAI();
     }
 
+    #region AI Actions
+
+    private void UpdateStateAI()
+    {
+        switch (_handlerAi.AgentOperate)
+        {
+            case true:
+            {
+                if (_gamePlay == GameState.Gameplay)
+                {
+                    //ResumeAgent(); 
+                    outlineDeactivation.enabled = false;
+
+                    //MinimalCheck(); // Tester
+
+                    if (_currentState == HandleState.None)
+                    {
+                        if (stateAi != Ai.Attack)
+                        {
+                            //StartCoroutine(FovRoutine());
+                        }
+
+                        Action actions = _stateMachine.Update();
+                        actions?.Invoke();
+
+                    }
+                }
+
+                break;
+            }
+            case false:
+            {
+                //StopAgent();
+                break;
+            }
+        }
+    }
+    
     #region Patrol
     private void PatrolAction()
     {
-        
         
     }
     #endregion
@@ -374,15 +465,122 @@ public class EnemyRanged : MonoBehaviour
     {
         
     }
+    #endregion
+    
+    #endregion
 
+    
+    #region FOV & Hide coroutines 
 
-    private void Attack()
+ 
+    #region FOV
+
+    #endregion
+
+    #region Hide
+
+    
+
+    #endregion
+    
+    #endregion
+    #endregion
+
+    #region AI Health
+
+    #region Health Check
+    public void TakeDamage(int damage, WeaponType type)
     {
+        //health -= (_damage + damageBoost);
         
+        if (_health > 0)
+        {
+            ApplyDamage(damage, type);
+        }
+        else
+        {
+            // call dead void
+        }
+    }
+
+    private void ApplyDamage(int damage, WeaponType type)
+    {
+        //GetPlayer();
+        switch (type)
+        {
+            case WeaponType.Normal:
+            {
+                _health -= damage + damageBoost;
+
+                //_damageEffectTime = 0.5f;
+                StartCoroutine(HitFlash());
+                break;
+            }
+
+            case WeaponType.Fire: //Q ability
+            {
+                _health -= damage + damageBoost;
+
+                StartCoroutine(HitFlash());
+                break;
+            }
+
+            case WeaponType.Ice: //W ability
+            {
+                _health -= damage + damageBoost;
+
+                if (_shooterScript.WUpgraded == true)
+                {
+                    _damageEffectTime = 1f;
+                    StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
+                }
+                else
+                    _health -= damage + damageBoost;
+
+                Instantiate(targetEffect, transform.position, transform.rotation);
+                StartCoroutine(HitFlash());
+
+                break;
+            }
+
+            case WeaponType.Dash: //E ability
+            {
+                _health -= damage + damageBoost;
+
+                StartCoroutine(HitFlash());
+
+                break;
+            }
+
+            case WeaponType.Thunder: //R ability
+            {
+                _health -= damage + damageBoost;
+
+                if (_shooterScript.RUpgraded == true)
+                {
+                    StartCoroutine(Stfs(_stunnedTime));
+                }
+                else
+                    StartCoroutine(HitFlash());
+
+                break;
+            }
+
+            default: break;
+        }
     }
     #endregion
+
+    #region Visual Effect Coroutintes
+
+    
     #endregion
+    #endregion
+
+    private void OnDestroy()
+    {
+        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged; 
+    }
     
-    
-    
+    */
 }

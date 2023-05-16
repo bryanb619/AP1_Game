@@ -40,25 +40,21 @@ public class Projectile : MonoBehaviour
     #endregion
 
     #region Awake
-    private void Awake()
-    {
-        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-    }
-    #endregion
-
-    #region Start
-    private void Start()
-    {
-        CollectData();
-        UseRb();
-    }
-
+    
     /// <summary>
     ///  Data collection of:
     ///  Components
     ///  Variables
     ///  Game State
     /// </summary>
+    private void Awake()
+    {
+        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        
+        CollectData();
+        UseRb();
+    }
+    
     private void CollectData()
     {
         #region Check Game State at start
@@ -84,26 +80,26 @@ public class Projectile : MonoBehaviour
 
         #region Scriptable object data
         // speed 
-        _speed = data.Speed;
+        _speed          = data.Speed;
 
-        _destroyTime = data.DestroyTime; 
+        _destroyTime    = data.DestroyTime; 
 
         // sound
         // playShootSound = data.MagicSound;
 
         // rigidbody 
-        _useRb = data.UseRbPhysics;
+        _useRb              = data.UseRbPhysics;
         //  weapon type
-        _weaponType = data.Weapon;
+        _weaponType         = data.Weapon;
 
         // enemies damage
-        _rangedDamage = data.EnemyRangedDamage;
-        _chaseDamage = data.EnemyChaseDamage;
-        _bossDamage = data.EnemybossDamage;
+        _rangedDamage       = data.EnemyRangedDamage;
+        _chaseDamage        = data.EnemyChaseDamage;
+        _bossDamage         = data.EnemybossDamage;
 
         // impact
-        _impactEffet = data.UseImpact;
-        _impactObject = data.ImpactEffect;
+        _impactEffet        = data.UseImpact;
+        _impactObject       = data.ImpactEffect;
 
         //effectSound = RuntimeManager.CreateInstance("event:/path/to/your/sound");
         //effectSound.start();
@@ -143,17 +139,7 @@ public class Projectile : MonoBehaviour
     {
         //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
         EnemyChaseBehaviour chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
-
-        //PlayerMovement player = hitInfo.GetComponent<PlayerMovement>();
-
-       /* if (enemy != null)
-        {
-            enemy.TakeDamage(_rangedDamage, _weaponType);
-            
-            DestroyBullet();
-            //Debug.Log("HIT");
-
-        }*/
+        
         if (chaseEnemy != null)
         {
             chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
@@ -162,17 +148,7 @@ public class Projectile : MonoBehaviour
             
 
         }
-        /*
-        else if (player != null)
-        {
-            DestroyBullet();
-        }
         
-        else if (hitInfo.tag == "Wall" || hitInfo.tag == "Default")
-        {
-            DestroyBullet();
-        }
-        */
     }
     /*
     private void OnCollisionEnter(Collision collision)
@@ -183,7 +159,7 @@ public class Projectile : MonoBehaviour
             DestroyBullet();
         }
         
-}
+    }
     */
     #endregion
 
@@ -208,8 +184,7 @@ public class Projectile : MonoBehaviour
 
     private void UpdatePhysicstTime()
     {
-       
-
+        
         if (_gamePlay && _useRb)
         {
             _elapsed += Time.deltaTime;
@@ -228,7 +203,7 @@ public class Projectile : MonoBehaviour
         {
             if (_gamePlay)
             {
-                transform.Translate(Vector3.forward * _speed * Time.deltaTime);
+                transform.Translate(Vector3.forward * (_speed * Time.deltaTime));
 
                 StartCoroutine(DestroyOnDistanceV());
                 
