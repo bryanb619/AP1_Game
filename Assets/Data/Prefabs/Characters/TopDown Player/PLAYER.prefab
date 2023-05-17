@@ -162,8 +162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 4
   m_FollowOffset: {x: 0, y: 10.60658, z: -10.60658}
-  m_XDamping: 0
-  m_YDamping: 0
+  m_XDamping: 1
+  m_YDamping: 1
   m_ZDamping: 0
   m_AngularDampingMode: 0
   m_PitchDamping: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
     m_Bits: 1572864
   leftPos: {fileID: 0}
   rightPos: {fileID: 3043553457570586193}
-  alphaValue: 0.07
+  alphaValue: 0.15
 --- !u!114 &1104454313920517157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -883,34 +883,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdfe597381384f94295686d649883118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stateAI: 0
+  stateAi: 0
   speed: 0.5
   floatPos: {fileID: 3043553457880655255}
-  _lowPos: {fileID: 3043553458145888202}
-  _highPos: {fileID: 3043553457880655255}
-  _l_lTarget: {fileID: 6678346607333031599}
-  _u_rTarget: {fileID: 8046069384479668746}
-  _nextPos: 0
-  _currentPos: 0
+  lowPos: {fileID: 3043553458145888202}
+  highPos: {fileID: 3043553457880655255}
+  lLTarget: {fileID: 6678346607333031599}
+  uRTarget: {fileID: 8046069384479668746}
+  nextPos: 0
+  currentPos: 0
   rotateDirection: 40
   rotateSpeed: 20
   x: 0
   y: 0
   followSpeed: 4
   attackSpeed: 5
-  AlphaLow: {fileID: 2100000, guid: 9b9a335a9064f5c4db212ee5cddfcd21, type: 2}
+  alphaLow: {fileID: 2100000, guid: 9b9a335a9064f5c4db212ee5cddfcd21, type: 2}
   normal: {fileID: 2100000, guid: 2e9574c5cd0f32f4cba7e4b06e40547a, type: 2}
-  _walkMask:
+  walkMask:
     serializedVersion: 2
     m_Bits: 512
-  _attackMask:
+  attackMask:
     serializedVersion: 2
     m_Bits: 128
-  _playerMask:
+  playerMask:
     serializedVersion: 2
     m_Bits: 2048
   detectionRadius: 30
-  _playerDirection: 0
+  playerDirection: 0
   testGame: {fileID: 0}
 --- !u!195 &4524846763543379544
 NavMeshAgent:
@@ -1250,8 +1250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6749635b6755df34293b14cc9a7e76a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _companion: {fileID: 1510856066898559175, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
-  SpawnTime: 1.5
+  companion: {fileID: 1510856066898559175, guid: 534cacd9d2ef6904db7050eaa0c30bc3, type: 3}
+  spawnTime: 1.5
 --- !u!1 &6678346608154083805
 GameObject:
   m_ObjectHideFlags: 0
@@ -1375,14 +1375,14 @@ MonoBehaviour:
   groundDrag: 4
   moveSpeed: 0
   maxSpeed: 12
-  _ignoreLayer:
+  ignoreLayer:
     serializedVersion: 2
     m_Bits: 1464551
   playerAcceleration: 2000
-  _turnSpeed: 20
-  _clickEffect: {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
+  turnSpeed: 20
+  clickEffect: {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
   heightOffset: 0.3
-  _maxRange: 20
+  maxRange: 20
   playerHeight: 2
   whatIsGround:
     serializedVersion: 2
@@ -1391,12 +1391,12 @@ MonoBehaviour:
   aiLayer:
     serializedVersion: 2
     m_Bits: 128
-  CanMove: 0
+  canMove: 0
   dashing: 0
   explosionForce: 100
   playerMaterial: {fileID: 0}
   effect: {fileID: 100000, guid: 3156817f64ec68948ad6bb26569b9ef5, type: 3}
-  SeeThroughLayer:
+  seeThroughLayer:
     serializedVersion: 2
     m_Bits: 1988851
   playerMesh: {fileID: 0}
@@ -1423,7 +1423,7 @@ MonoBehaviour:
   shieldDecayRate: 0.5
   currentShield: 0
   healthShield: {fileID: 0}
-  _currentHealth: 0
+  currentHealth: 0
 --- !u!114 &6678346608331204954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1439,7 +1439,7 @@ MonoBehaviour:
   navmeshAgent: {fileID: 6678346608331204955}
   orientation: {fileID: 4597398040035555969}
   mainCamera: {fileID: 1104454313920517161}
-  SeeThroughLayer:
+  seeThroughLayer:
     serializedVersion: 2
     m_Bits: 1988855
   dashForce: 50
@@ -1465,7 +1465,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1104454313920517161}
   cleansedCrystal: {fileID: 2100000, guid: 9308a0e99b31eca4c8c3fddb0445871e, type: 2}
-  _areaEffect: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+  areaEffect: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
   defaultFirePrefab: {fileID: 2646837571204449996, guid: 358a9e9a785ebb846abde0cf67b9bb47, type: 3}
   defaultIcePrefab: {fileID: 2646837571204449996, guid: 8f8791d117d386f44a2568855124e77d, type: 3}
   defaultThunderPrefab: {fileID: 2646837571204449996, guid: ec857e43d8f1a484083a2c899198816c, type: 3}
@@ -1479,7 +1479,7 @@ MonoBehaviour:
   iceTimer: {fileID: 11400000, guid: 82d7e15523c3de345a9609094b3c516a, type: 2}
   thunderTimer: {fileID: 11400000, guid: 7c301c1b61c35a14daaa59142473799b, type: 2}
   rAbilityTelegraph: {fileID: 5486935878111784149}
-  objectiveUI: {fileID: 0}
+  objectiveUi: {fileID: 0}
   targetedAttackAbilityHolder: {fileID: 0}
 --- !u!114 &392293411361660105
 MonoBehaviour:
@@ -1501,7 +1501,7 @@ MonoBehaviour:
   manaRegenRate: 0.2
   manaRegenAmount: 1
   waitTime: 5
-  manaUI: {fileID: 0}
+  manaUi: {fileID: 0}
   shooter: {fileID: 7592993385176409868}
   manaCheat: 0
 --- !u!195 &6678346608331204955
@@ -1638,10 +1638,10 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0.9906761, b: 0.8528302, a: 1}
-  m_Intensity: 20
-  m_Range: 19.4
-  m_SpotAngle: 150.30951
-  m_InnerSpotAngle: 116.62685
+  m_Intensity: 27
+  m_Range: 25
+  m_SpotAngle: 170
+  m_InnerSpotAngle: 130
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -1672,7 +1672,7 @@ Light:
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 1837701
@@ -2538,7 +2538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
-  CANMOVE: 0
+  canmove: 0
   velocityChanger: 3
 --- !u!4 &6654223146679108337 stripped
 Transform:

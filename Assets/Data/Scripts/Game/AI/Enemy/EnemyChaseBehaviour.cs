@@ -157,7 +157,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         // Health //
                         private float                       _health;
-                        private int                         _maxhealth = 100;
+                        private int                         _maxhealth;
                         private float                       _healthInCreasePerFrame;
 
                         // Death //
@@ -278,6 +278,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break;
                 }
         }
+
+        GetComponents(); 
+        GetProfile();
+        AbilityCheck();
+        
+        _color = enemyMesh.material.color;
+
+        _currentState = HandleState.None;
+        _canAttack = true;
+        //_useFOV = true;
+
+        _enemyMask = LayerMask.GetMask("AI_Enemy_Layer");
+        _playerMask = LayerMask.GetMask("PlayerTarget");
+        
     }
     #endregion
 
@@ -292,21 +306,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     /// 
     /// </summary>
     private void Start()
-    { 
-        GetComponents();
-        GetProfile();
+    {
         GetStates();
-        AbilityCheck();
-
-        _color = enemyMesh.material.color;
-
-        _currentState = HandleState.None;
-        _canAttack = true;
-        //_useFOV = true;
-
-        _enemyMask = LayerMask.GetMask("AI_Enemy_Layer");
-        _playerMask = LayerMask.GetMask("PlayerTarget");
-
+        
     }
 
     #region Components Sync
@@ -338,7 +340,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         _shooterScript               = _playerObject.GetComponent<Shooter>();
 
-        _valuesTexts                 = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
+        // UI 
+        
+        _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
+
+
     }
     #endregion
 
@@ -384,7 +390,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Health ------------------------------------------------------->
 
         _health                      = data.Health;
-        healthSlider.value          = _health;
+        _maxhealth                  = data.Health;
+        
+        
+        healthSlider.value          = _maxhealth;
+        healthSlider.maxValue       = _maxhealth;
+        
+        
         _healthInCreasePerFrame      = data.HealthRegen;
         abilitySlider.value         = _currentAbilityValue;
 

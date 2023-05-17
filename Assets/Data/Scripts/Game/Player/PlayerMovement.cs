@@ -38,7 +38,8 @@ public class PlayerMovement : MonoBehaviour
                         private Vector3                 _direction;
 
     // Enemy detection ----------------------------------------------------->
-    [FormerlySerializedAs("_maxRange")] [SerializeField]    private float                   maxRange = 20f;
+    [FormerlySerializedAs("_maxRange")] 
+    [SerializeField]    private float                   maxRange;
 
 
     [Header("Ground Check"), SerializeField]

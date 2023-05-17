@@ -78,12 +78,14 @@ public class CollSpawnAi : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        objectiveUiScript.PassedThroughCollider();
+       
 
         PlayerMovement player       = other.GetComponent<PlayerMovement>();
 
         if (player != null ) 
         {
+            objectiveUiScript.PassedThroughCollider();
+            
             StartCoroutine(SpawnAi());
         }
     }
