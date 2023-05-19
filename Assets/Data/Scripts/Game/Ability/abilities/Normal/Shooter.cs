@@ -39,7 +39,7 @@ public class Shooter : MonoBehaviour
 
     private RaycastHit _hit;
     private Vector3 _enemyPosition;
-
+    private float maxDistanceToCrystal;
     private bool _gameplay;
 
     private void Awake()
@@ -145,7 +145,10 @@ public class Shooter : MonoBehaviour
                     //Cleanse Crystal
                     if (_hit.collider.name == "Crystal" && _hit.collider.GetComponent<Outline>().enabled == true)
                     {
-                        if (Input.GetKeyUp(KeyCode.Mouse0))
+                        float distance = Vector3.Distance(_hit.collider.gameObject.transform.position, 
+                                                          gameObject.transform.position);
+                        
+                        if (Input.GetKeyUp(KeyCode.Mouse0) && distance < maxDistanceToCrystal)
                         {
                             _hit.collider.GetComponent<MeshRenderer>().material.Lerp(_hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                             _hit.collider.GetComponent<Outline>().enabled = false;
