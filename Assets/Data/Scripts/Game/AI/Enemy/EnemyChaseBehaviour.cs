@@ -64,7 +64,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private ObjectiveUi                 _objectiveUiScript;
 
                         private Rigidbody                   _rb;
-
+                        
     // Handling --------------------------------------------------------------------------------->
 
                         // defines when agent is active
@@ -195,10 +195,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         private bool                        _spawnOtherAi;
                         private int                         _quantityOfSpawn; 
-    [FormerlySerializedAs("_targetEffect")] [SerializeField]    private GameObject                  targetEffect;
-    [FormerlySerializedAs("_spawnEffect")] [SerializeField]    private GameObject                  spawnEffect;
+                        
+    [FormerlySerializedAs("_targetEffect")] 
+    [SerializeField]    private GameObject                  targetEffect;
+    [FormerlySerializedAs("_spawnEffect")] 
+    [SerializeField]    private GameObject                  spawnEffect;
 
-    [FormerlySerializedAs("_enemyChase")] [SerializeField]    private GameObject                  enemyChase;
+    [FormerlySerializedAs("_enemyChase")] 
+    [SerializeField]    private GameObject                  enemyChase;
     [SerializeField]    private GameObject                  enemyRaged;
 
 
@@ -273,7 +277,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break;
                 }
             case GameState.Paused:
-                {
+                {   
                     _gameState = GameState.Paused;
                     break;
                 }

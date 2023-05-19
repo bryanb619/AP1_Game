@@ -151,6 +151,7 @@ public class Shooter : MonoBehaviour
                             _hit.collider.GetComponent<Outline>().enabled = false;
                             objectiveUi.Passed();
                             _valuesTexts.GetCrystal();
+                            
                             break;
                         }
                         else
