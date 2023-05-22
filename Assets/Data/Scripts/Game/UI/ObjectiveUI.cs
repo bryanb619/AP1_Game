@@ -56,8 +56,10 @@ public class ObjectiveUi : MonoBehaviour
 
     public void PassedThroughCollider()
     {
+        if(_passedThroughCollider == true)
+            TextAnimation(1);
+        
         _passedThroughCollider = true;
-        TextAnimation(1);
     }
 
     public void RecieveEnemyCountInfo(int chaseCount, int rangedCount)

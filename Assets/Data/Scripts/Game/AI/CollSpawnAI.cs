@@ -117,8 +117,8 @@ public class CollSpawnAi : MonoBehaviour
                     yield return new WaitForSeconds(waitTime);
                 }
                 Vector3 spawnPosition = transformA.position +
-                        new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
-                        UnityEngine.Random.Range(-dropRadius, dropRadius));
+                        new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
+                        Random.Range(-dropRadius, dropRadius));
 
 
                 Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
@@ -139,8 +139,8 @@ public class CollSpawnAi : MonoBehaviour
                     }
 
                     Vector3 spawnPosition = transformB.position +
-                                            new Vector3(UnityEngine.Random.Range(-dropRadius, dropRadius), 0f,
-                                                UnityEngine.Random.Range(-dropRadius, dropRadius));
+                                            new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
+                                                Random.Range(-dropRadius, dropRadius));
 
 
                     Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);

@@ -1,5 +1,3 @@
-//using DG.Tweening;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -173,6 +171,20 @@ public class AbilityHolder : MonoBehaviour
 
     #region special condition
     internal void TargetedAttackCooldownUi()
+    {
+        if (abilityNew)
+        {
+            // change name
+            abilityNew.Activate(gameObject);
+            _activeTime = abilityNew.activeTime;
+        }
+
+        _state = AbilityState.Active;
+        PowerReady();
+        ReadyFlash();
+    }
+    
+    internal void AreaAttackCooldownUi()
     {
         if (abilityNew)
         {
