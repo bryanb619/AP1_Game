@@ -20,7 +20,9 @@ public class CompanionBehaviour : MonoBehaviour
         Combat
     }
 
-    [FormerlySerializedAs("_stateAI")] [Header("State")] public CompanionState stateAi;
+    [FormerlySerializedAs("_stateAI")]
+    [Header("State")] 
+    public CompanionState stateAi;
     private StateMachine _stateMachine;
     internal NavMeshAgent Companion;
 
@@ -37,23 +39,30 @@ public class CompanionBehaviour : MonoBehaviour
 
     // Movement ------------------------------------------------->
 
-    [Header("Float")] [SerializeField] private float speed = 0.3f;
+    [Header("Float")] 
+    [SerializeField] private float speed = 0.3f;
 
     private float _t = 0f;
 
     [SerializeField] private Transform floatPos;
 
-    [FormerlySerializedAs("_lowPos")] [SerializeField] private Transform lowPos;
-    [FormerlySerializedAs("_highPos")] [SerializeField] private Transform highPos;
+    [FormerlySerializedAs("_lowPos")] 
+    [SerializeField] private Transform lowPos;
+    [FormerlySerializedAs("_highPos")] 
+    [SerializeField] private Transform highPos;
 
     private Vector3 _targetPosition;
 
     private float _acceleration = 2000f;
 
-    [FormerlySerializedAs("_l_lTarget")] [Header("Positions")] [SerializeField] private Transform //_l_rTarget, // low right
+    [FormerlySerializedAs("_l_lTarget")]
+    [Header("Positions")] 
+    [SerializeField] private Transform //_l_rTarget, // low right
         lLTarget; // up right
 
-    [FormerlySerializedAs("_u_rTarget")] [Header("Positions")] [SerializeField] private Transform //_l_rTarget, // low right
+    [FormerlySerializedAs("_u_rTarget")]
+    [Header("Positions")] 
+    [SerializeField] private Transform //_l_rTarget, // low right
         // low left
         uRTarget; // up right
     //_u_lTarget; // up left
@@ -69,8 +78,10 @@ public class CompanionBehaviour : MonoBehaviour
         URPos
     }
 
-    [FormerlySerializedAs("_nextPos")] [SerializeField] private CompanionPos nextPos;
-    [FormerlySerializedAs("_currentPos")] [SerializeField] private CompanionPos currentPos;
+    [FormerlySerializedAs("_nextPos")] 
+    [SerializeField] private CompanionPos nextPos;
+    [FormerlySerializedAs("_currentPos")]
+    [SerializeField] private CompanionPos currentPos;
 
     private bool _changePos;
     public bool ChangePos => _changePos;
@@ -78,7 +89,8 @@ public class CompanionBehaviour : MonoBehaviour
     private bool _enemiesInRange; 
 
 
-    [Header("Rotation")] [SerializeField] private float rotateDirection;
+    [Header("Rotation")] 
+    [SerializeField] private float rotateDirection;
     [SerializeField] private float rotateSpeed;
 
     [SerializeField] private float x;
@@ -95,14 +107,21 @@ public class CompanionBehaviour : MonoBehaviour
 
     private MeshRenderer _companionMesh;
 
-    [FormerlySerializedAs("AlphaLow")] [Header("Material")] [SerializeField] private Material alphaLow;
-    [Header("Material")] [SerializeField] private Material normal;
+    [FormerlySerializedAs("AlphaLow")] 
+    [Header("Material")]
+    [SerializeField] private Material alphaLow;
+    [SerializeField] private Material normal;
 
     // Combat ------------------------------------------------------------------------>
 
-    [FormerlySerializedAs("_walkMask")] [Header("Masks")] [SerializeField] private LayerMask walkMask;
-    [FormerlySerializedAs("_attackMask")] [Header("Masks")] [SerializeField] private LayerMask attackMask;
-    [FormerlySerializedAs("_playerMask")] [Header("Masks")] [SerializeField] private LayerMask playerMask;
+    [FormerlySerializedAs("_walkMask")] 
+    [Header("Masks")] 
+    [SerializeField] private LayerMask walkMask;
+    [FormerlySerializedAs("_attackMask")]
+    [SerializeField] private LayerMask attackMask;
+    [FormerlySerializedAs("_playerMask")]
+    
+    [SerializeField] private LayerMask playerMask;
 
     [Header("Detection")] [SerializeField] private float detectionRadius;
 
@@ -128,6 +147,7 @@ public class CompanionBehaviour : MonoBehaviour
         GameManager.OnGameStateChanged += OnGameStateChanged;
 
         GetComponents();
+        
     }
 
     #endregion
@@ -502,7 +522,7 @@ public class CompanionBehaviour : MonoBehaviour
         //Companion.speed = 3.4f;
 
         //Companion.speed = 8f;
-        Companion.speed = 5f;
+        Companion.speed = 7f;
         //Companion.acceleration = 10f; 
 
 

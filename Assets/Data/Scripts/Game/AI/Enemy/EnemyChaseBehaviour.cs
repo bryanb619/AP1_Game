@@ -5,12 +5,13 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using LibGameAI.FSMs;
-using TMPro;
 using FMODUnity;
-using UnityEngine.Serialization;
+using TMPro;
 
-#if UNITY_EDITOR
-using UnityEditor; // comment this before build
+
+#if UNITY_EDITOR // EDITOR ONLY CODE
+using UnityEngine.Serialization;
+using UnityEditor; 
 #endif
 
 #endregion
@@ -19,11 +20,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 {
     #region Variables
 
-    // States ------------------------------------------------------------------------------------->
+    // States --------------------------------------------------------------------------------------------------------->
 
                         // AI states
                         private enum Ai                     {Guard, Patrol, Attack, Cover, Glorykill, None}
-    [FormerlySerializedAs("_stateAI")] [SerializeField]    private Ai                          stateAi;
+                        
+
+    [SerializeField]    private Ai                          stateAi;
             
                         // Handle state avoids conflict with _gameState variable
                         private enum HandleState            {Stoped, None}
@@ -33,7 +36,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         // Game State
                         private GameState                   _gameState;
 
-    // Components --------------------------------------------------------------------------------->
+    // Components ----------------------------------------------------------------------------------------------------->
 
     [Header("AI Profile")]
 
@@ -65,12 +68,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         private Rigidbody                   _rb;
                         
-    // Handling --------------------------------------------------------------------------------->
+    // Handling ------------------------------------------------------------------------------------------------------->
 
                         // defines when agent is active
                         private bool                        _deactivateAi;
 
-    // AI ACTIONS -------------------------------------AI ACTIONS------------------------------>
+    // AI ACTIONS -------------------------------------AI ACTIONS------------------------------------------------------>
 
     // Patrol //
 
@@ -80,7 +83,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _destPoint = 0;
     [SerializeField]    private Transform[]                 patrolPoints;
 
-    // Cover // --------------------------------------------------------------------------------->
+    // Cover // ------------------------------------------------------------------------------------------------------->
                         private Collider[]                  _colliders = new Collider[10];
 
             //Lower is a better hiding spot
@@ -91,9 +94,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private SceneChecker                _lineOfSightChecker;
                         private Coroutine                   _movementCoroutine;
 
-    // Combat // --------------------------------------------------------------------------------->
+    // Combat // ------------------------------------------------------------------------------------------------------>
 
-    [FormerlySerializedAs("_attackPoint")]
+
     [Header("Attack")]
           
         [SerializeField]
@@ -133,7 +136,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _specialDamage;
                         private bool                        _canSpecialAttack;
 
-    // FOV --------------------------------------------------------------------------------->
+                        private int _randomPriority; 
+                        
+    // FOV ------------------------------------------------------------------------------------------------------------>
 
     [SerializeField]    private Transform                   fov;
                         public Transform                    Eefov => fov; // Enemy Editor FOV
@@ -153,7 +158,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         public bool                         CanSee => _canSeePlayer;
 
 
-    // Combat Events --------------------------------------------------------------------->
+    // Combat Events -------------------------------------------------------------------------------------------------->
 
                         // Health //
                         private float                       _health;
@@ -196,17 +201,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private bool                        _spawnOtherAi;
                         private int                         _quantityOfSpawn; 
                         
-    [FormerlySerializedAs("_targetEffect")] 
-    [SerializeField]    private GameObject                  targetEffect;
-    [FormerlySerializedAs("_spawnEffect")] 
-    [SerializeField]    private GameObject                  spawnEffect;
 
-    [FormerlySerializedAs("_enemyChase")] 
+    [SerializeField]    private GameObject                  targetEffect;
+
+    [SerializeField]    private GameObject                  spawnEffect;
+    
     [SerializeField]    private GameObject                  enemyChase;
     [SerializeField]    private GameObject                  enemyRaged;
 
 
-    // Sound FMOD --------------------------------------------------------------------------------->
+    // Sound FMOD ----------------------------------------------------------------------------------------------------->
             
                         // grunt sounds
                         private EventReference              _gruntSoundA;
@@ -222,7 +226,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField]    private EventReference              testAttack; 
 
 
-    // UI -------------------------------------------------------------------------------------->
+    // UI ------------------------------------------------------------------------------------------------------------->
 
     [Header("UI Sliders")] 
 
@@ -235,30 +239,27 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private ValuesTextsScript           _valuesTexts;
 
 
-    // Animator --------------------------------------------------------------------------------->
+    // Animator ------------------------------------------------------------------------------------------------------->
                         private Animator                    _animator;
 
 
-    // DEBUG ------------------------------------------------------------------------------------>
-    [FormerlySerializedAs("_showExtraGizmos")]
+    // DEBUG ---------------------------------------------------------------------------------------------------------->
     [Header("Debug")]
 
     [SerializeField]    private bool                        showExtraGizmos;
-
-    [FormerlySerializedAs("_showLabelGizmos")]
+    
     [Header("Debug")]
 
     [SerializeField]    private bool                        showLabelGizmos;
 
 
-    private Vector3                     _previousPos;
+                        private Vector3                     _previousPos;
                         private float                       _curSpeed;
 
 
                         private int                         _enemyMask;
                         private int                         _playerMask;
-
-
+                        
     #endregion
 
     #region Awake 
@@ -330,8 +331,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _rb                          = GetComponent<Rigidbody>();
 
         _lineOfSightChecker          = GetComponentInChildren<SceneChecker>();
-
-        _animator                   = GetComponentInChildren<Animator>();
+        _animator                    = GetComponentInChildren<Animator>();
 
         _damageText                  = GetComponentInChildren<TextMeshProUGUI>();
 
@@ -345,10 +345,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _shooterScript               = _playerObject.GetComponent<Shooter>();
 
         // UI 
-        
         _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
-
-
+        
+        // random priority
+        _randomPriority             = UnityEngine.Random.Range(55, 99);
+        _agent.avoidancePriority    = _randomPriority; 
+        
     }
     #endregion
 
@@ -1329,19 +1331,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
       
         if(_agent.enabled) 
         {
-            //agent.speed = attackSpeed;
-            //agent.stoppingDistance = 3.9f;
-            _agent.speed = _attackSpeed;
+            _agent.speed            = _attackSpeed;
+            _agent.angularSpeed     = 0f;
+            _agent.updateRotation   = false;
+            _agent.radius           = 5F;
+            
+            _canAttack              = true;
+            
+            stateAi                 = Ai.Attack;
 
-            _agent.angularSpeed = 0f;
-            _agent.updateRotation = false;
-            _agent.radius = 2F; 
-
-            //StartAttacking();
-            _canAttack = true;
-            stateAi = Ai.Attack;
-
-            _useFov = false;
+            _useFov                 = false;
             StopCoroutine(FovRoutine());
 
             return;

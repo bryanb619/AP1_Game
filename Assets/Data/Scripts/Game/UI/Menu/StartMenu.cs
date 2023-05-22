@@ -15,6 +15,8 @@ public class StartMenu : MonoBehaviour
                         // Debug Color
                         private string _debugColor = "<size=14><color=green>";
                         private string _closeColor = "</color></size>";
+                        
+                        private bool _run;
 
 
     void Start()
@@ -32,18 +34,17 @@ public class StartMenu : MonoBehaviour
 
     private void Update()
     {
-        bool run = false;
-
-        if (startText)
+        
+        if (startText && !_run)
         {
-            if (Input.anyKeyDown && !run)
+            if (Input.anyKeyDown )
             {
-                
+                _run = true; 
                 startText.SetActive(false);
                 
                 menu.SetActive(true);
 
-                run = true; 
+               
             } 
         }
         

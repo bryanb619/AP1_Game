@@ -3,20 +3,21 @@ using FMODUnity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 using TMPro;
-using UnityEngine.Serialization;
-
 public class OptionMenu : MonoBehaviour
 {
     #region Variables
     //[SerializeField] private Audio audio ;
-    [FormerlySerializedAs("_resDropdown")] [SerializeField] private Dropdown resDropdown;
-    Resolution[] _resolutions;
+   
+    [SerializeField]    private TMP_Dropdown        resDropdown;
+                        private Resolution[]        _resolutions;
 
-    [FormerlySerializedAs("_resDropdown2")] [SerializeField] private TMP_Dropdown resDropdown2;
-
-    [SerializeField] private Slider musicSlider;
+    [SerializeField]    private GameObject          warningBox; 
+                        
+    
+    [SerializeField]    private Slider musicSlider;
     //[SerializeField] private StudioEventEmitter[] eventEmitters;  
 
     private MusicManager _musicManager; 
@@ -27,11 +28,11 @@ public class OptionMenu : MonoBehaviour
     private void Start()
     {
         ResolutionSetup();
-        Screen.fullScreen = true;
-        
-        musicSlider.onValueChanged.AddListener(MusicVolume);
 
-        _musicManager = FindObjectOfType<MusicManager>(); 
+        
+        //musicSlider.onValueChanged.AddListener(MusicVolume);
+
+        //_musicManager = FindObjectOfType<MusicManager>(); 
 
     }
     #endregion
@@ -45,7 +46,7 @@ public class OptionMenu : MonoBehaviour
         _resolutions = Screen.resolutions; 
 
         // clear
-        resDropdown2.ClearOptions(); 
+        resDropdown.ClearOptions(); 
 
         // create list of resolution
         List<string> resOptions = new List<string>();  
@@ -63,9 +64,9 @@ public class OptionMenu : MonoBehaviour
                 currentResolutionIndex = x;
             }
         }
-        resDropdown2.AddOptions(resOptions);
-        resDropdown2.value = currentResolutionIndex;
-        resDropdown2.RefreshShownValue();
+        resDropdown.AddOptions(resOptions);
+        resDropdown.value = currentResolutionIndex;
+        resDropdown.RefreshShownValue();
     }
 
     #endregion
@@ -75,21 +76,76 @@ public class OptionMenu : MonoBehaviour
     }
 
     #region Quality
-    public void SetQuality(int index)
+    
+    public void Quality(int qualityIndex)
     {
-        QualitySettings.SetQualityLevel(index);
+        // Set Game graphical quality 
+        QualitySettings.SetQualityLevel(qualityIndex);
+        
+          
+#if UNITY_EDITOR
+        Debug.Log("Current Quality: " + QualitySettings.GetQualityLevel());
+#endif
+        
     }
-    #endregion
-
+    #endregion 
     public void SetFullscreen(bool isFullscreen)
     {
+        
         Screen.fullScreen = isFullscreen;
+        
+#if UNITY_EDITOR
+        Debug.Log("Fullscreen: " + isFullscreen);
+#endif
+        
     }
 
-    public void SetResolution(int resIndex)
+    public void SetResolution()//(int resIndex)
     {
-        Resolution resolution = _resolutions[resIndex];
+        // 
+        
+        //Resolution resolution = _resolutions[resIndex];
+        //Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        //
+        
+
+    }
+
+    public void SettingNewRes()
+    {
+        warningBox.SetActive(true);
+        
+        print("run");
+    }
+
+    public void SetNewRes(bool change)
+    {
+        if (change)
+        {
+            
+            int resIndex = resDropdown.value;
+            Resolution resolution = _resolutions[resIndex];
+            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+            warningBox.SetActive(false);
+            
+#if UNITY_EDITOR
+            Debug.Log("Resolution: " + resolution.width + " x " + resolution.height);
+#endif
+        }
+        else
+        {
+            warningBox.SetActive(false);
+        }
+        
+
+    }
+    
+    private  void ChangeResolution(int index)
+    {
+        Resolution resolution = _resolutions[index];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        
+
     }
 
     #endregion
@@ -97,7 +153,7 @@ public class OptionMenu : MonoBehaviour
     #region Buttons
     public void BackToMainMenu()
     {
-        SceneManager.LoadScene("Main Menu");
+        //SceneManager.LoadScene("MainMenu");
     }
 
     #endregion

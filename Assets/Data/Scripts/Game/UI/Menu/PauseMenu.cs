@@ -20,12 +20,13 @@ public class PauseMenu : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        GameManager.OnGameStateChanged          += GameManager_OnGameStateChanged;
+        _manager                                = FindObjectOfType<GameManager>();
     }
 
     private void Start()
     {
-        _manager                                        = FindObjectOfType<GameManager>();
+        
 
         pauseCanvas.SetActive(true);
         pauseMenu.SetActive(false);
