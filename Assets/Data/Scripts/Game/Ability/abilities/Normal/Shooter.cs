@@ -103,7 +103,7 @@ public class Shooter : MonoBehaviour
             {
                 
             }
-            else if (Input.GetKey(KeyCode.R))
+            else if (Input.GetKey(KeyCode.R) && !ThunderCooldown)
             {
                 rAbilityTelegraph.SetActive(true);
             }
@@ -196,11 +196,7 @@ public class Shooter : MonoBehaviour
                 {
                     if(!ThunderCooldown)
                     {
-                        if (_manaManager.ManaCheck(MagicType) == true)
-                        {
-                            //Instantiate(thunderPrefab, firePoint.position, firePoint.rotation);
                             AreaAttack();
-                        }
                             break;
                     }
                     else
@@ -218,7 +214,6 @@ public class Shooter : MonoBehaviour
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 50f))
             if (_hit.collider.CompareTag("Enemy"))
             {
-                //Debug.Log(_hit.collider.gameObject + " hightlight on");
                 _hit.collider.gameObject.GetComponent<Outline>().enabled = true;
             }
                 
@@ -237,11 +232,11 @@ public class Shooter : MonoBehaviour
 
     private void TargetAttack()
     {
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 500))
         {
             if (_hit.collider.CompareTag("Enemy"))
             {
-                    if (_manaManager.ManaCheck(MagicType) == true)
+                    if (_manaManager.ManaCheck(MagicType))
                     {
                         StartCoroutine(IceAttackCooldown());
                         Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
@@ -257,18 +252,21 @@ public class Shooter : MonoBehaviour
     private void AreaAttack()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaAttackRadius);
-        
+
         foreach (Collider hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Enemy"))
             {
-                // Deal damage to the enemy
-                Instantiate(_thunderPrefab, hitCollider.transform.position, _firePoint.rotation);
-
-                Instantiate(areaEffect, transform.position, Quaternion.identity);
+                if (_manaManager.ManaCheck(MagicType))
+                {
+                    // Deal damage to the enemy
+                    Instantiate(_thunderPrefab, hitCollider.transform.position, _firePoint.rotation);
+                    Instantiate(areaEffect, transform.position, Quaternion.identity);
+                    targetedAttackAbilityHolder.AreaAttackCooldownUi();
+                    StartCoroutine(ThunderAttackCooldown());
+                }
             }
         }
-        StartCoroutine(ThunderAttackCooldown());
     }
   
     internal void UpgradeChecker(int abilityNumber)
