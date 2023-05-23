@@ -14,7 +14,7 @@ public class PlayerMainMovement : MonoBehaviour
         GameManager.OnGameStateChanged  += OnGameStateChanged; 
         
         _rb                             = GetComponent<Rigidbody>();
-        _rb.constraints                 = RigidbodyConstraints.FreezeRotationX & RigidbodyConstraints.FreezeRotationZ;
+        //_rb.constraints                 = RigidbodyConstraints.FreezeRotationX & RigidbodyConstraints.FreezeRotationZ;
         
         
     }

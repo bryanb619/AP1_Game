@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using FMODUnity;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 using UnityEngine.UI;
 using TMPro;
 
@@ -99,29 +99,22 @@ public class OptionMenu : MonoBehaviour
 #endif
         
     }
-
-    public void SetResolution()//(int resIndex)
-    {
-        // 
-        
-        //Resolution resolution = _resolutions[resIndex];
-        //Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        //
-        
-
-    }
-
-    public void SettingNewRes()
+    
+    public void OpenWarningRes()
     {
         warningBox.SetActive(true);
         
+    #if UNITY_EDITOR
         print("run");
+    #endif
     }
+
 
     public void SetNewRes(bool change)
     {
         if (change)
         {
+            //warningBox.SetActive(true);
             
             int resIndex = resDropdown.value;
             Resolution resolution = _resolutions[resIndex];
@@ -132,12 +125,12 @@ public class OptionMenu : MonoBehaviour
             Debug.Log("Resolution: " + resolution.width + " x " + resolution.height);
 #endif
         }
+        
         else
         {
             warningBox.SetActive(false);
         }
         
-
     }
     
     private  void ChangeResolution(int index)
@@ -149,6 +142,11 @@ public class OptionMenu : MonoBehaviour
     }
 
     #endregion
+    
+    private void SetNewControlSelection()
+    {
+        
+    }
 
     #region Buttons
     public void BackToMainMenu()
