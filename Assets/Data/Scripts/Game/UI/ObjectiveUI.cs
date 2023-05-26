@@ -90,7 +90,7 @@ public class ObjectiveUi : MonoBehaviour
 
             foreach (GameObject crystal in crystals)
             {
-                //crystal.GetComponent<Outline>().enabled = true;
+                crystal.GetComponent<Outline>().enabled = true;
             }
         }
     }

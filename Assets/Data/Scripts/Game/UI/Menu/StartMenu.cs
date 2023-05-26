@@ -19,6 +19,11 @@ public class StartMenu : MonoBehaviour
                         private bool _run;
 
 
+    private void Awake()
+    {
+        Screen.fullScreen = true;
+    }
+
     void Start()
     {
         // Cursor Lock state
