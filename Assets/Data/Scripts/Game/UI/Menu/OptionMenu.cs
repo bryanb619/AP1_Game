@@ -11,10 +11,10 @@ public class OptionMenu : MonoBehaviour
     #region Variables
     //[SerializeField] private Audio audio ;
    
-    [SerializeField]    private TMP_Dropdown        resDropdown;
+    [SerializeField]    private Dropdown             resDropdown;
                         private Resolution[]        _resolutions;
 
-    [SerializeField]    private GameObject          warningBox; 
+    [SerializeField]    private GameObject            warningBox; 
                         
     
     [SerializeField]    private Slider musicSlider;
