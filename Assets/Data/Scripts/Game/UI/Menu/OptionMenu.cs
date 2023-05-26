@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FMODUnity;
 using UnityEngine;
@@ -20,15 +21,21 @@ public class OptionMenu : MonoBehaviour
     [SerializeField]    private Slider musicSlider;
     //[SerializeField] private StudioEventEmitter[] eventEmitters;  
 
-    private MusicManager _musicManager; 
+                        private MusicManager _musicManager;
+
+                        private PlayerControl _playerControl;
 
     #endregion
+
+    private void Awake()
+    {
+        ResolutionSetup();
+        _playerControl = FindObjectOfType<PlayerControl>();
+    }
 
     #region Start
     private void Start()
     {
-        ResolutionSetup();
-
         
         //musicSlider.onValueChanged.AddListener(MusicVolume);
 
@@ -142,11 +149,65 @@ public class OptionMenu : MonoBehaviour
     }
 
     #endregion
-    
-    private void SetNewControlSelection()
+
+    #region Player Input
+
+    public void PlayerInputType(int newInputType)
     {
+
+        PlayerInput newControl; 
+        
+        switch (newInputType)
+        {
+            case 0:
+            {
+                
+ #if UNITY_EDITOR
+                Debug.Log("Keyboard");
+#endif
+                // set control to keyboard
+                newControl = PlayerInput.Keyboard;
+                SetNewControlSelection(newControl);
+                break;
+            }
+            case 1:
+            {
+#if UNITY_EDITOR
+                Debug.Log("mouse");
+#endif
+                // set control to Mouse
+                newControl = PlayerInput.Mouse;
+                SetNewControlSelection(newControl);
+                break;
+            }
+        }
         
     }
+    
+    private void SetNewControlSelection(PlayerInput newControl)
+    {
+
+        switch (newControl)
+        {
+            case PlayerInput.Keyboard:
+            {
+                // call Player control to update for Keyboard
+                _playerControl.UpdatePlayerControl(newControl);
+                
+                break;
+            }
+            case PlayerInput.Mouse:
+            {
+                // Call Player control to update for Mouse
+                _playerControl.UpdatePlayerControl(newControl);
+                break;
+            }
+
+        }
+        //newControl.playerInput = (PlayerInput) newInputType;
+    }
+    
+    #endregion
 
     #region Buttons
     public void BackToMainMenu()

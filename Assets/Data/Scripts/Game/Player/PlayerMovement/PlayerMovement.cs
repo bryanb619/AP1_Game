@@ -10,7 +10,11 @@ public class PlayerMovement : MonoBehaviour
                         internal float                  walkSpeed;
     [SerializeField]    internal float                  dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
 
+    [Header("Keyboard/Joystick Movement")]
+    [SerializeField]    private float                   kSpeed = 6f;
 
+    [SerializeField]    private float                   rotationSpeed;
+    
     // Components ----------------------------------------------------->
                         private Camera                  _mainCamera;
                         internal NavMeshAgent           Agent;
@@ -91,6 +95,8 @@ public class PlayerMovement : MonoBehaviour
                         private SkinnedMeshRenderer[]   _skinnedMeshRenderers;
                         private Color[]                 _originalColors;
                         private bool                    _gamePlay;
+                        
+                        private PlayerInput            _playerInput;
 
                         private NavMeshPath             _path;
                         //private float elapsed = 0.0f;
@@ -108,6 +114,9 @@ public class PlayerMovement : MonoBehaviour
                      
                         private bool                    _isMoving; 
                         public bool                     IsMoving => _isMoving;
+                        
+    
+    private Vector3 lastPosition;
 
     private enum MovementState
     {
@@ -118,32 +127,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
-    }
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
-
-        switch (state)
-        {
-            case GameState.Gameplay:
-                {
-                    _gamePlay = true;
-                    break;
-                }
-            case GameState.Paused:
-                {
-                    _gamePlay = false;
-                    break;
-                }
-        }
-
-        //throw new NotImplementedException();
-    }
-
-
-
-    private void Start()
-    {
+        GameManager.OnGameStateChanged      += GameManager_OnGameStateChanged;
+        
+        PlayerControl.OnPlayerInputChanged  += PlayerController_OnPlayerInputChanged; 
+        
         this.enabled = true;
 
         // Make a list of all SkinnedMeshRender in the character
@@ -176,6 +163,70 @@ public class PlayerMovement : MonoBehaviour
 
         Components();
         PlayerProfile();
+    }
+    private void GameManager_OnGameStateChanged(GameState state)
+    {
+
+        switch (state)
+        {
+            case GameState.Gameplay:
+                {
+                    _gamePlay = true;
+                    break;
+                }
+            case GameState.Paused:
+                {
+                    _gamePlay = false;
+                    break;
+                }
+        }
+
+        //throw new NotImplementedException();
+    }
+
+    private void PlayerController_OnPlayerInputChanged(PlayerInput input)
+    {
+        switch (input)
+        {
+            case PlayerInput.Keyboard:
+            {
+                HandleKeyBoard(); 
+                break;
+            }
+            case PlayerInput.Mouse:
+            {
+                HandleMouse(); 
+                break;
+            }
+
+        }
+    }
+
+    private void HandleKeyBoard()
+    {
+        _playerInput = PlayerInput.Keyboard;
+        Agent.enabled = false;
+
+#if UNITY_EDITOR
+        Debug.Log("Keyboard");
+#endif
+    }
+    private void HandleMouse()
+    {
+        
+        _playerInput = PlayerInput.Mouse;
+        Agent.enabled = true;
+        
+#if UNITY_EDITOR
+        Debug.Log("mouse");
+#endif
+    }
+
+
+
+    private void Start()
+    {
+        
     }
 
 
@@ -217,11 +268,84 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        
+        KeyboardMove(); 
         MovePlayer();
-        PlayerSpeed();     
+        PlayerSpeed();
+
+        
     }
 
+    private void KeyboardMove()
+    {
+        if (_playerInput == PlayerInput.Keyboard)
+        {
+            if (_gamePlay)
+            {
+                float moveHoz = Input.GetAxisRaw("Horizontal");
+                float moveVer = Input.GetAxisRaw("Vertical");
+        
+                Vector3 movement = new Vector3(moveHoz, 0, moveVer);
+                
+                _rb.AddForce(movement * kSpeed);
+                
+                if (movement != Vector3.zero)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(movement);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                }
+                
+                Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+                
+                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+                float rayDistance = 100f;
+
+                RaycastHit hit;
+
+                // Perform the raycast
+                if (Physics.Raycast(ray, out hit, 50F, ~seeThroughLayer))
+                {
+                    // Print the name of the object hit by the ray
+
+                    //Debug.Log(hit.transform.name);
+                  
+                    //transform.LookAt(hit.point);
+        
+                }
+                    
+                    
+                
+                /*
+                Vector3 position = 
+                    new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                
+                _rb.velocity    = position * kSpeed;
+                */
+            }
+        }
+    }
+
+    private void KeyboardOnMove()
+    {
+        
+       
+        
+        
+        /*
+        
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        Vector3 movement = transform.forward * vertical + transform.right * horizontal;
+
+        transform.position += movement * kSpeed * Time.deltaTime;
+*/
+       
+        
+        
+        //float angle = Mathf.Atan2(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal")) * Mathf.Rad2Deg;
+        //transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
+    }
+   
     private float _desiredMoveSpeed, _lastDesiredMoveSpeed;
     private MovementState _lastState;
     private bool _keepMomentum;
@@ -302,45 +426,57 @@ public class PlayerMovement : MonoBehaviour
 
     private void MyInput()
     {
-
         switch(_gamePlay)
         {
             case true:
                 {
                     MoveInput();
                     NewDirection();
+                    KeyboardOnMove();
                     break;
                 }
             case false:
                 {
-                    Agent.velocity = Vector3.zero;
-                    Agent.isStopped = true;
-
+                    if (Agent.enabled)
+                    {
+                        Agent.velocity = Vector3.zero;
+                        Agent.isStopped = true;
+                    }
+                      
                     break;
 
                 }
         }
-
     }
 
     #region Player Movement AI
     private void MoveInput()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (_playerInput == PlayerInput.Mouse)
         {
-            Destination(true);
+            if (Input.GetMouseButtonDown(1))
+            {
+                Destination(true);
+            }
+
+            else if (Input.GetMouseButton(1))
+            {
+                _cursorState = EffectState.Clicked;
+            }
+            else
+            {
+                _cursorState = EffectState.Unclicked;
+            }
         }
 
-        else if (Input.GetMouseButton(1))
+        if (_playerInput == PlayerInput.Keyboard)
         {
-            _cursorState = EffectState.Clicked;
+           // Aim();
         }
-        else
-        {
-            _cursorState = EffectState.Unclicked;
-        }
+         
     }
-
+    
+    
     private void NewDirection()
     {
         if (Agent.enabled)
@@ -405,8 +541,6 @@ public class PlayerMovement : MonoBehaviour
 
                         //_isMoving = false;
                     }
-
-
                     else
                     {
                         _isMoving = true;
@@ -496,17 +630,16 @@ public class PlayerMovement : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(_moveDirection, _slopeHit.normal).normalized;
     }
-
-
-
+    
     private void PlayerSpeed()
     {
-        //speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
-        //lastPosition = transform.position;
+        float speed; 
+        
+        speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
+        lastPosition = transform.position;
         
 
-        //if (speed >= 1.5f)
-        if(Agent.velocity.magnitude > 2f)
+        if (speed >= 0.5f)
         {
            _isMoving = true;
            //print("walk");
@@ -518,7 +651,6 @@ public class PlayerMovement : MonoBehaviour
             _isMoving = false;
             //_CompanionMovement._playerIsMoving = false;
         }
-        
     }
 
     void OnCollisionEnter(Collision other) 
@@ -604,7 +736,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
+        GameManager.OnGameStateChanged          -= GameManager_OnGameStateChanged;
+        PlayerControl.OnPlayerInputChanged      -= PlayerController_OnPlayerInputChanged;
     }
 
 }

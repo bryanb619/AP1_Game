@@ -43,13 +43,7 @@ public class PlayerMainMovement : MonoBehaviour
     private void FixedUpdate()
     {
 
-        if (_gameState == GameState.Gameplay)
-        {
-            Vector3 position = 
-                new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-
-            _rb.velocity = position * speed;
-        }
+        
        
         
     }

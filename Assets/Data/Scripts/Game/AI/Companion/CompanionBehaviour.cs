@@ -812,7 +812,6 @@ private void StartIdle()
             case GameState.Paused:
                 {
                     _gameplay = false;
-
                     _gameState = GameState.Paused;
                     
                     break;
@@ -821,6 +820,7 @@ private void StartIdle()
                 {
                     _gameState = GameState.Gameplay;
                     _gameplay = true;
+                    
                     break;
                 }
         }
@@ -833,12 +833,12 @@ private void StartIdle()
             {
 
                 Companion.isStopped = true;
-                return;
+                
             }
             else
             {
                 Companion.isStopped = false;
-                return;
+                
             }
         }
         
