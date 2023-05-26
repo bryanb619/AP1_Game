@@ -206,8 +206,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     [SerializeField]    private GameObject                  spawnEffect;
     
-    [SerializeField]    private GameObject                  enemyChase;
-    [SerializeField]    private GameObject                  enemyRaged;
+    //[SerializeField]    private GameObject                  enemyChase;
+    //[SerializeField]    private GameObject                  enemyRaged;
 
 
     // Sound FMOD ----------------------------------------------------------------------------------------------------->
@@ -348,7 +348,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
         
         // random priority
-        _randomPriority             = UnityEngine.Random.Range(55, 99);
+        _randomPriority             = UnityEngine.Random.Range(51, 99);
         _agent.avoidancePriority    = _randomPriority; 
         
     }
@@ -1128,7 +1128,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
 
 
-                Instantiate(enemyChase, spawnPosition, transform.rotation); 
+                //Instantiate(enemyChase, spawnPosition, transform.rotation); 
 
                 StartCoroutine(StopForSeconds(2F));
 
@@ -1307,22 +1307,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void SetPatrol()
     {
         //print("patrol FIRED");
-        stateAi = Ai.Patrol;
+        stateAi                 = Ai.Patrol;
 
-        _agent.autoBraking = false;
-        _agent.updateRotation = true;
+        _agent.autoBraking      = false;
+        _agent.updateRotation   = true;
 
         _agent.stoppingDistance = 0.1f;
-        _agent.speed = _patrolSpeed;
+        _agent.speed            = _patrolSpeed;
 
-        _agent.radius = 0.5f;
+        _agent.radius           = 0.5f;
 
         if(_hanlderAi.AgentOperate)
         {
             _useFov = true;
         }
-       
-        return;
+        
     }
 
     private void SetAttack()
@@ -1331,19 +1330,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
       
         if(_agent.enabled) 
         {
-            _agent.speed            = _attackSpeed;
-            _agent.angularSpeed     = 0f;
-            _agent.updateRotation   = false;
-            _agent.radius           = 5F;
+            _agent.speed                    = _attackSpeed;
+            _agent.angularSpeed             = 0f;
+            _agent.updateRotation           = false;
+            _agent.radius                   = 0.4f;
+            _agent.obstacleAvoidanceType    = ObstacleAvoidanceType.GoodQualityObstacleAvoidance;
             
-            _canAttack              = true;
+            _canAttack                      = true;
             
-            stateAi                 = Ai.Attack;
+            stateAi                         = Ai.Attack;
 
-            _useFov                 = false;
-            StopCoroutine(FovRoutine());
-
-            return;
+            _useFov                         = false;
+            //StopCoroutine(FovRoutine());
         }
         
     }
@@ -1377,7 +1375,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _agent.radius = 0.5f;
         _useFov = false;
         StopCoroutine(FovRoutine());
-        return;
+     
     }
 
     #endregion
@@ -1395,7 +1393,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             switch (type)
             {
-
                 case WeaponType.Normal:
                     {
                         _health -= damage + DamageBoost;
@@ -1411,11 +1408,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         if (_shooterScript.WUpgraded == true)
                         {
                             StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
-                        } 
+                            StartCoroutine(HitFlash());
+                        }
                         else
+                        {
                             _health -= damage + DamageBoost;
                             Instantiate(targetEffect, transform.position, transform.rotation);
                             StartCoroutine(HitFlash());
+                        }
+                        
                         break;
                     }
 
@@ -1453,32 +1454,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
             if (_spawnHealth || _spawnMana && !_spawnOtherAi)
             {
                 DropSpawnCheck();
-
-                /*
-                 
-                //float HEALTH = player.CurretHealth;
-
-                //float PROBABILITY = 1.0f / HEALTH;
-                if(UnityEngine.Random.value < PROBABILITY)
-                {
-                    
-                }
-                */
+                
             }
-
-            /*
-            if (_spawnOtherAI)
-            {
-                float randomFloat = UnityEngine.Random.value;
-
-                if (randomFloat <= 0.1f)
-                {
-                    StartCoroutine(SpawnAI());
-                }
-                    
-            }
-            */
-
+            
             _damageText.text = damage.ToString();
 
             StartCoroutine(DamageTextDisappear());
@@ -1511,8 +1489,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 SpawnDrop(_manaDrop);
             }
-
-       }
+        }
     }
 
     private void Die()
@@ -1568,19 +1545,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         if (_canAttack)
         {
             SetAttack();
-
-            return;
-        }
-
-    }
-
-    public void ReceiveWarning()
-    {
-        if (_canAttack)
-        {
-            SetAttack();
-
-            return;
         }
     }
     #endregion
