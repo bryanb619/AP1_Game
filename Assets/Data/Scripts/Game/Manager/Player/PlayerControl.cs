@@ -29,6 +29,11 @@ public class PlayerControl : MonoBehaviour
         {
             Destroy(otherManagers[i].gameObject);
         }
+
+        playerInput = PlayerInput.Mouse; 
+        
+        UpdatePlayerControl(playerInput);
+
     }
     
     public void UpdatePlayerControl(PlayerInput newControl)

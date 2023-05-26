@@ -259,6 +259,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         private int                         _enemyMask;
                         private int                         _playerMask;
+
+                        private int                         _randomRadiusValue; 
                         
     #endregion
 
@@ -349,8 +351,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         // random priority
         _randomPriority             = UnityEngine.Random.Range(51, 99);
-        _agent.avoidancePriority    = _randomPriority; 
+        _agent.avoidancePriority    = _randomPriority;
         
+        _randomRadiusValue         = UnityEngine.Random.Range(2, 6);
+
     }
     #endregion
 
@@ -1009,6 +1013,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             _canPerformAttack = false;
                             _nextAttack = Time.time + _attackRate;
                         }
+                    }
+                    else if ((_playerTarget.transform.position - transform.position).magnitude >= 7.5F)
+                    {
+                        if (_agent.enabled)
+                        {
+                            _agent.radius = _randomRadiusValue;
+                            ResumeAgent();
+                        }
+                            
                     }
                     else
                     {
