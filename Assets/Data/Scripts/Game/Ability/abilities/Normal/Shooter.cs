@@ -131,6 +131,7 @@ public class Shooter : MonoBehaviour
             {
                 MagicType = WeaponType.Thunder;
                 rAbilityTelegraph.SetActive(false);
+                
                 Shoot();
             }
         }
