@@ -101,19 +101,14 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            //Debug.Log("DEAD");
-            //restartMenu.LoadRestart();
-            //SceneManager.LoadScene("RestartScene");
-            //RestarMenu.SetActive(true);
-            
             _coroutineCaller.StopMovement();
             _playerAnim.DeathAnim();
 
             _gameManager.UpdateGameState(GameState.Death);
-            
-            //deathMessage.SetActive(true);
-
-            //Time.timeScale = 0f;
+        }
+        else
+        {
+            _playerAnim.HitAnim();
         }
     }
 

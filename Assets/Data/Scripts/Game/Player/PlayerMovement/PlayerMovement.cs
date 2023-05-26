@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -687,6 +687,12 @@ public class PlayerMovement : MonoBehaviour
     {
         Agent.isStopped = true;
         this.enabled = false;
+    }
+
+    public void RestartMovement()
+    {
+        Agent.isStopped = false;
+        this.enabled = true;
     }
 
 

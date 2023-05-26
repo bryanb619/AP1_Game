@@ -134,6 +134,26 @@ public class PlayerAnimationHandler : MonoBehaviour
     {
         _playerAnimator.SetBool("isDead", true);
     }
+
+    public void HitAnim()
+    {
+        _playerAnimator.SetTrigger("isHit");
+    }
+
+    public void QAttack()
+    {
+        _playerAnimator.SetTrigger("qAbility");
+    }
+
+    public void RAttack()
+    {
+        _playerAnimator.SetTrigger("rAbility");
+    }
+
+    public void NormalAttack()
+    {
+        _playerAnimator.SetTrigger("normalAttack");
+    }
     
     private void OnDestroy()
     {
