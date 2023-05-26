@@ -134,6 +134,11 @@ public class PlayerAnimationHandler : MonoBehaviour
     {
         _playerAnimator.SetBool("isDead", true);
     }
+
+    public void HitAnim()
+    {
+        _playerAnimator.SetTrigger("isHit");
+    }
     
     private void OnDestroy()
     {
