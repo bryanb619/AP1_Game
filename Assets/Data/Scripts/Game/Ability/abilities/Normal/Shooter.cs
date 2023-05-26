@@ -36,7 +36,10 @@ public class Shooter : MonoBehaviour
     [FormerlySerializedAs("objectiveUI")] [SerializeField] private ObjectiveUi objectiveUi;
     private ValuesTextsScript _valuesTexts;
     [SerializeField] private AbilityHolder targetedAttackAbilityHolder;
+    private PlayerAnimationHandler _playerAnim; 
+    private PlayerMovement  _coroutineCaller;
 
+    
     private RaycastHit _hit;
     private Vector3 _enemyPosition;
     private float maxDistanceToCrystal;
@@ -49,6 +52,9 @@ public class Shooter : MonoBehaviour
     }
     private void Start()
     {
+        _playerAnim                         = GetComponentInChildren<PlayerAnimationHandler>();
+        _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
+
         MagicType = WeaponType.Fire;
 
         _firePoint = GameObject.Find("CompanionShootPos").transform;
@@ -95,15 +101,15 @@ public class Shooter : MonoBehaviour
             if (Input.GetKey(KeyCode.Mouse0))
             {
             }
-            else if (Input.GetKey(KeyCode.Q))
+            else if (Input.GetKey(KeyCode.Alpha1))
             {
                 
             }
-            else if (Input.GetKey(KeyCode.W))
+            else if (Input.GetKey(KeyCode.Alpha2))
             {
                 
             }
-            else if (Input.GetKey(KeyCode.R) && !ThunderCooldown)
+            else if (Input.GetKey(KeyCode.Alpha3) && !ThunderCooldown)
             {
                 rAbilityTelegraph.SetActive(true);
             }
@@ -113,25 +119,30 @@ public class Shooter : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
-                Debug.Log("Shot auto");
+                _playerAnim.NormalAttack();                
                 MagicType = WeaponType.Normal;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Q))
+            else if (Input.GetKeyUp(KeyCode.Alpha1))
             {
+                _playerAnim.QAttack();
                 MagicType = WeaponType.Fire;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.W))
+            else if (Input.GetKeyUp(KeyCode.Alpha2))
             {
+                _playerAnim.QAttack();
                 MagicType = WeaponType.Ice;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.R))
+            else if (Input.GetKeyUp(KeyCode.Alpha3))
             {
+                _playerAnim.RAttack();
+                    //needs to be fixed
+                    _coroutineCaller.StopMovement();
+                    _coroutineCaller.RestartMovement();
                 MagicType = WeaponType.Thunder;
                 rAbilityTelegraph.SetActive(false);
-                
                 Shoot();
             }
         }

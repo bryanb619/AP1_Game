@@ -557,6 +557,12 @@ public class PlayerMovement : MonoBehaviour
         this.enabled = false;
     }
 
+    public void RestartMovement()
+    {
+        Agent.isStopped = false;
+        this.enabled = true;
+    }
+
 
     #region Enumerators
 
