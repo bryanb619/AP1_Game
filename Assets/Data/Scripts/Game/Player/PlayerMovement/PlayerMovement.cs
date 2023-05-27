@@ -268,7 +268,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        KeyboardMove(); 
+        //KeyboardMove(); 
         MovePlayer();
         PlayerSpeed();
 
@@ -452,28 +452,21 @@ public class PlayerMovement : MonoBehaviour
     #region Player Movement AI
     private void MoveInput()
     {
-        if (_playerInput == PlayerInput.Mouse)
+       
+        if (Input.GetMouseButtonDown(1))
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                Destination(true);
-            }
-
-            else if (Input.GetMouseButton(1))
-            {
-                _cursorState = EffectState.Clicked;
-            }
-            else
-            {
-                _cursorState = EffectState.Unclicked;
-            }
+            Destination(true);
         }
 
-        if (_playerInput == PlayerInput.Keyboard)
+        else if (Input.GetMouseButton(1))
         {
-           // Aim();
+            _cursorState = EffectState.Clicked;
         }
-         
+        else
+        {
+            _cursorState = EffectState.Unclicked;
+        } 
+        
     }
     
     
