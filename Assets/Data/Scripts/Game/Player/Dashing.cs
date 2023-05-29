@@ -46,7 +46,7 @@ public class Dashing : MonoBehaviour
 
     private void DashInput()
     {
-        if (Input.GetButtonDown("Dash") && _dashCdTimer <= 0)
+        if (Input.GetKeyUp(KeyCode.Alpha3) && _dashCdTimer <= 0)
         {
             RaycastHit hit;
 
