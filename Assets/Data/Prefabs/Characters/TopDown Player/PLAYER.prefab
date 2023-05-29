@@ -55,15 +55,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104454313354119808}
-  m_LocalRotation: {x: 0.3826837, y: -0, z: -0, w: 0.92387944}
-  m_LocalPosition: {x: -5.7493896, y: 19.81358, z: -54.79657}
+  m_LocalRotation: {x: 0.38268343, y: -0.00000072964446, z: 0.0000003022286, w: 0.92387956}
+  m_LocalPosition: {x: -5.7493725, y: 19.207, z: -54.190002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1104454313733606037}
   m_Father: {fileID: 1104454313930022508}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 41.836, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.575, y: 360, z: 0}
 --- !u!114 &1104454313354119868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +113,7 @@ GameObject:
   - component: {fileID: 1104454313733606037}
   - component: {fileID: 1104454313733606034}
   - component: {fileID: 1104454313733606035}
-  - component: {fileID: 4067327208881388927}
+  - component: {fileID: 424223151}
   m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 10.60658, z: -10.60658}
+  m_FollowOffset: {x: 0, y: 10, z: 10}
   m_XDamping: 1.5
   m_YDamping: 1
   m_ZDamping: 1
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_YawDamping: 0
   m_RollDamping: 0
   m_AngularDamping: 0
---- !u!114 &4067327208881388927
+--- !u!114 &424223151
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -210,8 +210,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104454313920517164}
-  m_LocalRotation: {x: 0.3826837, y: -0, z: -0, w: 0.92387944}
-  m_LocalPosition: {x: -5.7493896, y: 19.81358, z: -54.79657}
+  m_LocalRotation: {x: 0.38268343, y: -0.00000072964446, z: 0.0000003022286, w: 0.92387956}
+  m_LocalPosition: {x: -5.7493725, y: 19.207, z: -54.190002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1376,6 +1376,8 @@ MonoBehaviour:
   groundDrag: 4
   moveSpeed: 0
   maxSpeed: 12
+  kSpeed: 6
+  rotationSpeed: 0
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 1464551
@@ -1482,6 +1484,7 @@ MonoBehaviour:
   rAbilityTelegraph: {fileID: 6244185092990608440}
   objectiveUi: {fileID: 0}
   targetedAttackAbilityHolder: {fileID: 0}
+  maxDistanceToCrystal: 10
 --- !u!114 &392293411361660105
 MonoBehaviour:
   m_ObjectHideFlags: 0
