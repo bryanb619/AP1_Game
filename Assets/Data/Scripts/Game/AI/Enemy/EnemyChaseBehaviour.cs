@@ -72,8 +72,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         // defines when agent is active
                         private bool                        _deactivateAi;
+                        
 
     // AI ACTIONS -------------------------------------AI ACTIONS------------------------------------------------------>
+
+
+                        //  AI 
+                        private float                       _pathUpdateDeadLine = 0.2f; // time to path update
+    
 
     // Patrol //
 
@@ -290,7 +296,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetProfile();
         AbilityCheck();
         
-        _color = enemyMesh.material.color;
+        
 
         _currentState = HandleState.None;
         _canAttack = true;
@@ -327,7 +333,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
         _warn                        = GetComponent<WarningSystemAi>();
-
         _hanlderAi                   = GetComponent<AiHandler>();
 
         _rb                          = GetComponent<Rigidbody>();
@@ -338,13 +343,17 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _damageText                  = GetComponentInChildren<TextMeshProUGUI>();
 
         _controller                  = GetComponentInParent<AiController>();
-
+        
+        // Player refs 
         _playerObject                = GameObject.Find("Player");
         _playerTarget                = _playerObject.transform;
         _targetPosition              = _playerTarget.position;
         _player                      = FindObjectOfType<PlayerHealth>();
 
         _shooterScript               = _playerObject.GetComponent<Shooter>();
+        
+        // MESH
+        _color                      = enemyMesh.material.color;
 
         // UI 
         _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
@@ -353,7 +362,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _randomPriority             = UnityEngine.Random.Range(51, 99);
         _agent.avoidancePriority    = _randomPriority;
         
-        _randomRadiusValue         = UnityEngine.Random.Range(2, 6);
+        _randomRadiusValue         = UnityEngine.Random.Range(2, 3);
 
     }
     #endregion
@@ -434,13 +443,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         // Sound ------------------------------------------------------->
         _screamSound                = data.Scream;
-
-        //enemyMesh.material.color    = Color.red; 
-
-        // Weakness
-        //_iceWeak = data.Ice;
-        //_fireWeak = data.Fire;
-        //_thunderWeak = data.Thunder;
     }
 
     #region  States Sync 
@@ -533,11 +535,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Ability state starting check
     private void AbilityCheck()
     {
-        if (_currentAbilityValue >= AbilityMaxValue) { 
-            _canSpecialAttack = true;}
+        if (_currentAbilityValue >= AbilityMaxValue) 
+        { _canSpecialAttack = true;}
 
-        else { 
-            _canSpecialAttack = false;}
+        else 
+        { _canSpecialAttack = false;}
     }
     #endregion
 
@@ -869,7 +871,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_canAttack) 
         {
-          
             if(_agent.enabled)
             {
                 // get player direction
@@ -879,9 +880,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                 // apply rotation to AI 
                 transform.rotation = disaredrot;
-
+                
                 // set destination
-                _agent.SetDestination(_playerTarget.position);
+                UpdatePath();
 
                 switch (_canSpecialAttack)
                 {
@@ -892,7 +893,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             if (_currentAbilityValue <= AbilityMaxValue)
                             {
                                 Cooldown();
-                                return;
+                                
                             }
 
                             break;
@@ -903,15 +904,24 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         {
                             // special attack
                             HabilityAttack();
-
-
                             break;
                         }
                 }
 
             }
 
-            _warn.CanAlertAi = true;
+       //     _warn.CanAlertAi = true;
+        }
+    }
+
+    private void UpdatePath()
+    {
+        if(Time.time >= _pathUpdateDeadLine)
+        {
+            _pathUpdateDeadLine = Time.time + 0; 
+            
+            _agent.SetDestination(_playerTarget.position);
+            
         }
     }
 
@@ -928,15 +938,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     if ((_playerTarget.transform.position - transform.position).magnitude <= 3.5F)
                     {
                         PauseAgent();
-                        
-
                         if (Time.time > _nextAttack)
                         {
-
-                            //print("2nd step");
-                            //float randomFloat = UnityEngine.Random.value;
                             
-
                             if (UnityEngine.Random.value < _percentage && _canPerformAttack)
                             {
                                 //print("chose random");
@@ -1021,7 +1025,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             _agent.radius = _randomRadiusValue;
                             ResumeAgent();
                         }
-                            
                     }
                     else
                     {
@@ -1036,7 +1039,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break;
                 }
         }
-        return;
     }
 
     private void AttackAnim()
@@ -1058,8 +1060,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         
         //agent.acceleration = 14f;
-
-
+        
         //if ((playerTarget.transform.position - transform.position).magnitude <= 6F) // define min distance
 
         if (_agent.remainingDistance <= _stopDistance)
@@ -1093,7 +1094,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
         else
         {
-            
             ResumeAgent();
         }
     }
@@ -1108,7 +1108,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         abilitySlider.value = _currentAbilityValue;
 
 
-        if (_currentAbilityValue >= AbilityMaxValue) { _canSpecialAttack = true; return; }
+        if (_currentAbilityValue >= AbilityMaxValue) { //_canSpecialAttack = true; return;
+        }
 
         //else { _canSpecialAttack = false; return; }
     }
