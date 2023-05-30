@@ -204,6 +204,11 @@ public class AbilityHolder : MonoBehaviour
         uISlider.GetComponent<Animation>().Play();
     }
 
+    public void KeyChanger(KeyCode option)
+    {
+        key = option;
+    }
+    
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;

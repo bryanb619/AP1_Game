@@ -61,7 +61,7 @@ public class PauseMenu : MonoBehaviour
 
             
         }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             _manager.UpdateGameState(GameState.Death);
         }

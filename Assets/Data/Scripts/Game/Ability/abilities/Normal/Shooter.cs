@@ -28,6 +28,7 @@ public class Shooter : MonoBehaviour
 
     [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
     [SerializeField] private GameObject rAbilityTelegraph;
+    private KeyCode qKey = KeyCode.Q, wKey = KeyCode.W, rKey = KeyCode.R;
 
     internal bool NormalCooldown, FireCooldown, IceCooldown, ThunderCooldown = false;
 
@@ -100,6 +101,7 @@ public class Shooter : MonoBehaviour
             //When you press the key (telegraph of the ability)
             if (Input.GetKey(KeyCode.Mouse0))
             {
+                
             }
             else if (Input.GetKey(KeyCode.Alpha1))
             {
@@ -109,7 +111,11 @@ public class Shooter : MonoBehaviour
             {
                 
             }
-            else if (Input.GetKey(KeyCode.Alpha3) && !ThunderCooldown)
+            else if (Input.GetKey(KeyCode.Alpha3))
+            {
+                
+            }
+            else if (Input.GetKey(rKey) && !ThunderCooldown)
             {
                 rAbilityTelegraph.SetActive(true);
             }
@@ -119,28 +125,24 @@ public class Shooter : MonoBehaviour
 
             if (Input.GetKeyUp(KeyCode.Mouse0))
             {
-                _playerAnim.NormalAttack();                
                 MagicType = WeaponType.Normal;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha1))
+            else if (Input.GetKeyUp(qKey))    
             {
-                _playerAnim.QAttack();
                 MagicType = WeaponType.Fire;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha2))
+            else if (Input.GetKeyUp(wKey))
             {
-                _playerAnim.QAttack();
                 MagicType = WeaponType.Ice;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha3))
+            else if (Input.GetKeyUp(rKey))
             {
-                _playerAnim.RAttack();
-                    //needs to be fixed
-                    _coroutineCaller.StopMovement();
-                    _coroutineCaller.RestartMovement();
+                //needs to be fixed
+                _coroutineCaller.StopMovement();
+                _coroutineCaller.RestartMovement();
                 MagicType = WeaponType.Thunder;
                 rAbilityTelegraph.SetActive(false);
                 Shoot();
@@ -178,6 +180,7 @@ public class Shooter : MonoBehaviour
                     {
                         if (!NormalCooldown && Input.GetKeyUp(KeyCode.Mouse0))
                         {
+                            _playerAnim.NormalAttack();
                             StartCoroutine(NormalAttackCooldown());
                             Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
                         }
@@ -190,6 +193,7 @@ public class Shooter : MonoBehaviour
                     { 
                         if (_manaManager.ManaCheck(MagicType) == true)
                         {
+                            _playerAnim.QAttack();
                             StartCoroutine(FireAttackCooldown());
                             Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
                         }
@@ -201,7 +205,8 @@ public class Shooter : MonoBehaviour
             case WeaponType.Ice: // input nº3 (W)
                 {
                     if(!IceCooldown)
-                        //Instantiate inside the TargetAttack function to avoid unecessary code
+                        //Instantiate inside the TargetAttack function to avoid unnecessary code
+                        _playerAnim.QAttack();
                         TargetAttack();
                     
                     break;
@@ -276,11 +281,12 @@ public class Shooter : MonoBehaviour
                     // Deal damage to the enemy
                     Instantiate(_thunderPrefab, hitCollider.transform.position, _firePoint.rotation);
                     Instantiate(areaEffect, transform.position, Quaternion.identity);
-                    targetedAttackAbilityHolder.AreaAttackCooldownUi();
-                    StartCoroutine(ThunderAttackCooldown());
                 }
             }
         }
+        targetedAttackAbilityHolder.AreaAttackCooldownUi();
+        StartCoroutine(ThunderAttackCooldown());
+        _playerAnim.RAttack();
     }
   
     internal void UpgradeChecker(int abilityNumber)
@@ -306,6 +312,23 @@ public class Shooter : MonoBehaviour
                 break;
         }
     }
+
+    public void KeyChanger(int option)
+    {
+        if (option == 1)
+        {
+            qKey = KeyCode.Q;
+            wKey = KeyCode.W;
+            rKey = KeyCode.R;
+        }
+        else if (option == 2)
+        {
+            qKey = KeyCode.Alpha1;
+            wKey = KeyCode.Alpha2;
+            rKey = KeyCode.Alpha4;
+        }
+    }
+    
 
     #region Enumerators
 
