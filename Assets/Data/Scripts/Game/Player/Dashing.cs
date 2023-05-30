@@ -28,6 +28,7 @@ public class Dashing : MonoBehaviour
     [SerializeField] private bool disableGravity = true, resetVel = true;
     [SerializeField] private bool dashUpgraded;
     [SerializeField] private int shieldAmount = 50;
+    private KeyCode eKey;
 
 
     private void Start()
@@ -46,7 +47,7 @@ public class Dashing : MonoBehaviour
 
     private void DashInput()
     {
-        if (Input.GetKeyUp(KeyCode.Alpha3) && _dashCdTimer <= 0)
+        if (Input.GetKeyUp(eKey) && _dashCdTimer <= 0)
         {
             RaycastHit hit;
 
@@ -142,6 +143,18 @@ public class Dashing : MonoBehaviour
     internal void EnableUpgrade()
     {
         dashUpgraded = true;
+    }
+    
+    public void KeyChanger(int option)
+    {
+        if (option == 1)
+        {
+            eKey = KeyCode.E;
+        }
+        else if (option == 2)
+        {
+            eKey = KeyCode.Alpha3;
+        }
     }
 
 }

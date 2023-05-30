@@ -161,23 +161,25 @@ public class OptionMenu : MonoBehaviour
         {
             case 0:
             {
+#if UNITY_EDITOR
+                Debug.Log("mouse");
+#endif
+                // set control to Mouse
+                newControl = PlayerInput.Mouse;
+                _playerControl.UpdatePlayerControl(newControl);
+                //SetNewControlSelection(newControl);
+                break;
+            }
+            case 1:
+            {
                 
  #if UNITY_EDITOR
                 Debug.Log("Keyboard");
 #endif
                 // set control to keyboard
                 newControl = PlayerInput.Keyboard;
-                SetNewControlSelection(newControl);
-                break;
-            }
-            case 1:
-            {
-#if UNITY_EDITOR
-                Debug.Log("mouse");
-#endif
-                // set control to Mouse
-                newControl = PlayerInput.Mouse;
-                SetNewControlSelection(newControl);
+                _playerControl.UpdatePlayerControl(newControl);
+                //SetNewControlSelection(newControl);
                 break;
             }
         }

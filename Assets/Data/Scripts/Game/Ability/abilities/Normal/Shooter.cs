@@ -28,6 +28,7 @@ public class Shooter : MonoBehaviour
 
     [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
     [SerializeField] private GameObject rAbilityTelegraph;
+    private KeyCode qKey = KeyCode.Q, wKey = KeyCode.W, rKey = KeyCode.R;
 
     internal bool NormalCooldown, FireCooldown, IceCooldown, ThunderCooldown = false;
 
@@ -114,7 +115,7 @@ public class Shooter : MonoBehaviour
             {
                 
             }
-            else if (Input.GetKey(KeyCode.Alpha4) && !ThunderCooldown)
+            else if (Input.GetKey(rKey) && !ThunderCooldown)
             {
                 rAbilityTelegraph.SetActive(true);
             }
@@ -127,17 +128,17 @@ public class Shooter : MonoBehaviour
                 MagicType = WeaponType.Normal;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha1))    
+            else if (Input.GetKeyUp(qKey))    
             {
                 MagicType = WeaponType.Fire;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha2))
+            else if (Input.GetKeyUp(wKey))
             {
                 MagicType = WeaponType.Ice;
                 Shoot();
             }
-            else if (Input.GetKeyUp(KeyCode.Alpha4))
+            else if (Input.GetKeyUp(rKey))
             {
                 //needs to be fixed
                 _coroutineCaller.StopMovement();
@@ -311,6 +312,23 @@ public class Shooter : MonoBehaviour
                 break;
         }
     }
+
+    public void KeyChanger(int option)
+    {
+        if (option == 1)
+        {
+            qKey = KeyCode.Q;
+            wKey = KeyCode.W;
+            rKey = KeyCode.R;
+        }
+        else if (option == 2)
+        {
+            qKey = KeyCode.Alpha1;
+            wKey = KeyCode.Alpha2;
+            rKey = KeyCode.Alpha4;
+        }
+    }
+    
 
     #region Enumerators
 
