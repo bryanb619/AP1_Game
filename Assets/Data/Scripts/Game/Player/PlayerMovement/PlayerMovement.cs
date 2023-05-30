@@ -20,19 +20,22 @@ public class PlayerMovement : MonoBehaviour
                         internal NavMeshAgent           Agent;
 
     // Player Movement ------------------------------------------------>
-    [FormerlySerializedAs("_ignoreLayer")] [SerializeField]    private LayerMask               ignoreLayer;
+    [FormerlySerializedAs("_ignoreLayer")] 
+    [SerializeField]    private LayerMask               ignoreLayer;
 
                         private float                   _maxAngle = 30f;
                         private float                   _playerSpeed = 5f;
     [SerializeField]    private float                   playerAcceleration = 2000f;
-    [FormerlySerializedAs("_turnSpeed")] [SerializeField]    private float                   turnSpeed;
+    [FormerlySerializedAs("_turnSpeed")] 
+    [SerializeField]    private float                   turnSpeed;
     //private bool _isMoving;
 
     // Click ------------------------------------------------------------>
                         private enum EffectState        { Clicked, Unclicked }
                         private EffectState             _cursorState;
 
-    [FormerlySerializedAs("_clickEffect")] [SerializeField]    private GameObject              clickEffect;
+    [FormerlySerializedAs("_clickEffect")]
+    [SerializeField]    private GameObject              clickEffect;
 
                         private float                   _height = 0;
     [SerializeField]    private float                   heightOffset;
@@ -89,7 +92,8 @@ public class PlayerMovement : MonoBehaviour
                         private MeshRenderer            playerMaterial;
     //[SerializeField] private Camera mainCamera; 
     [SerializeField]    private GameObject              effect;
-    [FormerlySerializedAs("SeeThroughLayer")] [SerializeField]    private LayerMask               seeThroughLayer; 
+    [FormerlySerializedAs("SeeThroughLayer")] 
+     [SerializeField]    private LayerMask               seeThroughLayer; 
     [SerializeField]    private GameObject              playerMesh;
 
                         private SkinnedMeshRenderer[]   _skinnedMeshRenderers;
