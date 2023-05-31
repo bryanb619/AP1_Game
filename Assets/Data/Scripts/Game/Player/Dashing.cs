@@ -9,26 +9,28 @@ public class Dashing : MonoBehaviour
     [SerializeField] private NavMeshAgent navmeshAgent;
     [SerializeField] private Transform orientation;
     [SerializeField] private Camera mainCamera;
-    [FormerlySerializedAs("SeeThroughLayer")] [SerializeField] private LayerMask seeThroughLayer;
+    
+    [FormerlySerializedAs("SeeThroughLayer")] 
+    [SerializeField] private LayerMask seeThroughLayer;
                      private Rigidbody _rb;
                      private PlayerHealth _playerHealth;
                      private PlayerMovement _playerMovement;
                      private NavMeshAgent _playerNavMesh;
 
-    [Header("Dashing"), SerializeField]
-                     private float dashForce;
+    [Header("Dashing")] 
+    [SerializeField] private float dashForce;
     [SerializeField] private float dashUpwardForce, dashDuration;
 
-    [Header("Cooldown"), SerializeField]
-                     internal float dashCd;
+    [Header("Cooldown")] 
+    [SerializeField] internal float dashCd;
                      private float _dashCdTimer;
 
-    [Header("Settings"), SerializeField]
-                     private bool allowAllDirections = true; 
+    [Header("Settings")] 
+    [SerializeField] private bool allowAllDirections = true; 
     [SerializeField] private bool disableGravity = true, resetVel = true;
     [SerializeField] private bool dashUpgraded;
     [SerializeField] private int shieldAmount = 50;
-    private KeyCode eKey;
+    private KeyCode eKey = KeyCode.E;
 
 
     private void Start()

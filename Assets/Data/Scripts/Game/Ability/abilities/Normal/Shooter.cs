@@ -39,7 +39,6 @@ public class Shooter : MonoBehaviour
     [SerializeField] private AbilityHolder targetedAttackAbilityHolder;
     private PlayerAnimationHandler _playerAnim; 
     private PlayerMovement  _coroutineCaller;
-
     
     private RaycastHit _hit;
     private Vector3 _enemyPosition;
@@ -270,23 +269,29 @@ public class Shooter : MonoBehaviour
 
     private void AreaAttack()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaAttackRadius);
+        int maxColliders = 20;
+        Collider[] hitColliders = new Collider[maxColliders];
+        int numColliders = Physics.OverlapSphereNonAlloc(transform.position, areaAttackRadius, hitColliders);
 
-        foreach (Collider hitCollider in hitColliders)
+        for (int i = 0; i < numColliders; i++)
         {
-            if (hitCollider.CompareTag("Enemy"))
+            if (hitColliders[i].CompareTag("Enemy"))
             {
                 if (_manaManager.ManaCheck(MagicType))
                 {
                     // Deal damage to the enemy
-                    Instantiate(_thunderPrefab, hitCollider.transform.position, _firePoint.rotation);
+                    Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
                     Instantiate(areaEffect, transform.position, Quaternion.identity);
+                    targetedAttackAbilityHolder.AreaAttackCooldownUi();
+                    _playerAnim.RAttack();
+                    StartCoroutine(ThunderAttackCooldown());
                 }
             }
+            else
+            {
+                break;
+            }
         }
-        targetedAttackAbilityHolder.AreaAttackCooldownUi();
-        StartCoroutine(ThunderAttackCooldown());
-        _playerAnim.RAttack();
     }
   
     internal void UpgradeChecker(int abilityNumber)
