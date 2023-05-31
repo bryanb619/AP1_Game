@@ -575,7 +575,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             HealthCheck();
 
             AiSpeed();
-
+            
             Action actions = _stateMachine.Update();
             actions?.Invoke();
 
@@ -871,19 +871,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_canAttack) 
         {
+            DistanceOnAttackCheck();
+            
             if(_agent.enabled)
             {
-                // get player direction
-                Vector3 direction = _playerTarget.position - transform.position;
-                //rotation 
-                Quaternion disaredrot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
-
-                // apply rotation to AI 
-                transform.rotation = disaredrot;
-                
                 // set destination
                 UpdatePath();
-
+                
                 switch (_canSpecialAttack)
                 {
                     case false:
@@ -909,21 +903,72 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
 
             }
-
-       //     _warn.CanAlertAi = true;
         }
+        
     }
 
     private void UpdatePath()
     {
         if(Time.time >= _pathUpdateDeadLine)
         {
+            // update time
             _pathUpdateDeadLine = Time.time + 0; 
+            
+            // get player direction
+            Vector3 direction = _playerTarget.position - transform.position;
+            //rotation 
+            Quaternion disaredRot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
+
+            // apply rotation to AI 
+            transform.rotation = disaredRot;
             
             _agent.SetDestination(_playerTarget.position);
             
         }
     }
+
+    private void DistanceOnAttackCheck()
+    {
+        const float rate = 0.5f;
+
+        if ((_playerTarget.transform.position - transform.position).magnitude <= 1.5f)
+        {
+            // DISABLE AGENT
+            EnableAgent(false);
+            
+            if (Time.time > _nextAttack)
+            {
+                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.2f, targetMask);
+
+                foreach (Collider collider in hitEnemies)
+                {
+                    PlayerHealth player = collider.GetComponent<PlayerHealth>();    
+
+                    if (player != null)
+                    {
+#if UNITY_EDITOR
+                        string debugColor = "<size=14><color=red>";
+                        string closeColor = "</color></size>";
+                        Debug.Log(debugColor + "Close attack" + closeColor);
+#endif  
+                                        
+                        RuntimeManager.PlayOneShot(testAttack);
+                        player.TakeDamage(35);
+                        Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+  
+                    }
+                                    
+                }
+                _nextAttack = Time.time + _attackRate;
+            }
+        }
+        else
+        {
+            // ENABLE AGENT
+            EnableAgent(true);
+        }
+    }
+    
 
     // * Attack & Chance Attack -------------------------------->
     private void Attack()
@@ -949,33 +994,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                                 foreach (Collider collider in hitEnemies)
                                 {
-                                    string debugColor = "<size=12><color=yellow>";
-                                    string closeColor = "</color></size>";
-
-                                    
-
                                     PlayerHealth player = collider.GetComponent<PlayerHealth>();    
 
                                     if (player != null)
                                     {
-                                        //print("2nd step");
-                                        //AttackAnim();
+#if UNITY_EDITOR
+                                        string debugColor = "<size=12><color=yellow>";
+                                        string closeColor = "</color></size>";
+                                        Debug.Log(debugColor + "Attack 2" + closeColor);
+#endif  
                                         
                                         RuntimeManager.PlayOneShot(testAttack);
                                         player.TakeDamage(_bDamage);
-
                                         Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
   
                                     }
-
-                                    Debug.Log(debugColor + "Attack 2" + closeColor);
                                     
-                                    //_Player.TakeDamage(b_damage);
-
-                                    //Instantiate(_s_attackEffect, _attackPoint.transform.position, Quaternion.identity);
                                 }
-
-
                                 //StartCoroutine(AttackTimer());
                             }
 
@@ -1005,8 +1040,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                         Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
 
                                     }
-
-
                                     //Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
                                 }
 
@@ -1482,7 +1515,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 //_warn.CanAlertAi = true;
                 SetAttack();
-                return;
+              
             }
         }
     }
@@ -1631,7 +1664,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Damage over time
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
     {
+#if UNITY_EDITOR
+        
         Debug.Log("Started DOT coroutine");
+#endif
         float elapsedTime = 0f;
         while (elapsedTime < durationOfdamage)
         {
@@ -1639,7 +1675,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             StartCoroutine(HitFlash());
             yield return new WaitForSeconds(damagePerSecond);
             elapsedTime += 2.5f;
-
         }
 
     }
@@ -1707,6 +1742,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
     #endregion
+    
+    private void EnableAgent(bool active)
+    {
+        switch (active)
+        {
+            case true:
+                {
+                    _agent.enabled = true;
+                    break;
+                }
+            case false:
+                {
+                    _agent.enabled = false;
+                    break;
+                }
+        }
+    }
 
     #region Agents Info Exchange
 
@@ -1740,12 +1792,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     #endregion
 
+#if UNITY_EDITOR
     #region Editor Gizmos
+
     private void OnDrawGizmos()
     {
-
-#if UNITY_EDITOR
-
+        
         GUIStyle red = new GUIStyle();
         red.normal.textColor = Color.red;
 
@@ -1772,10 +1824,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, _minDist);
-
-
+            
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, 2);
+            Gizmos.DrawWireSphere(transform.position, 1);
         }
 
         #region AI State Label 
@@ -1825,7 +1876,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         #endregion
 
         #endregion
-#endif
     }
+
     #endregion
+#endif
 }

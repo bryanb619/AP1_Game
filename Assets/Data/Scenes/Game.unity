@@ -1269,6 +1269,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85c18c7c7d94e664e9f4da3d5d7d0fca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chase: {fileID: 0}
+  ranged: {fileID: 0}
+  spawnEffect: {fileID: 0}
+  chaseCount: 0
+  rangedCount: 0
+  dropRadius: 0
+  transformA: {fileID: 0}
+  transformB: {fileID: 0}
+  secondTransform: 0
+  useSound: 0
+  soundAiSpawn:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  objectiveUiScript: {fileID: 0}
+  startWait: 0
+  waitTime: 0
+  spawnTime: 0
 --- !u!65 &108527002
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14739,6 +14760,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4632817032733320561, guid: 52071118b0076fe4596bcb26d7d6cb52, type: 3}
+      propertyPath: m_text
+      value: Mouse
+      objectReference: {fileID: 0}
     - target: {fileID: 8445046001559236549, guid: 52071118b0076fe4596bcb26d7d6cb52, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -15613,6 +15638,10 @@ PrefabInstance:
     - target: {fileID: 4261007979827736606, guid: 0c3095e8002178548ac28bef4772f781, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.008
+      objectReference: {fileID: 0}
+    - target: {fileID: 4261007979926422246, guid: 0c3095e8002178548ac28bef4772f781, type: 3}
+      propertyPath: chaseCount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4261007979926422246, guid: 0c3095e8002178548ac28bef4772f781, type: 3}
       propertyPath: dropRadius

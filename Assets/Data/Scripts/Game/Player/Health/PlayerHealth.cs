@@ -112,6 +112,12 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void BigDamage(float damagePercentage)
+    {
+        
+        
+    }
+
     internal void RegenerateHealth(int health)
     {
         currentHealth += health;
