@@ -44,6 +44,7 @@ public class Shooter : MonoBehaviour
     private Vector3 _enemyPosition;
     [SerializeField] private float maxDistanceToCrystal = 10f;
     private bool _gameplay;
+    private bool rTelegraphIsOn = false;
 
     private void Awake()
     {
@@ -97,56 +98,41 @@ public class Shooter : MonoBehaviour
     {
         if (_firePoint != null)
         {
-            //When you press the key (telegraph of the ability)
-            if (Input.GetKey(KeyCode.Mouse0))
-            {
-                
-            }
-            else if (Input.GetKey(KeyCode.Alpha1))
-            {
-                
-            }
-            else if (Input.GetKey(KeyCode.Alpha2))
-            {
-                
-            }
-            else if (Input.GetKey(KeyCode.Alpha3))
-            {
-                
-            }
-            else if (Input.GetKey(rKey) && !ThunderCooldown)
-            {
-                rAbilityTelegraph.SetActive(true);
-            }
-
             //--------------------------------------
             //When you release the key
 
-            if (Input.GetKeyUp(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0) && !NormalCooldown)
             {
+                _playerAnim.NormalAttack();
                 MagicType = WeaponType.Normal;
-                Shoot();
             }
-            else if (Input.GetKeyUp(qKey))    
+            else if (Input.GetKeyDown(qKey) && !FireCooldown)    
             {
+                _playerAnim.QAttack();
                 MagicType = WeaponType.Fire;
-                Shoot();
             }
-            else if (Input.GetKeyUp(wKey))
+            else if (Input.GetKeyDown(wKey) && !IceCooldown)
             {
+                _playerAnim.QAttack();
                 MagicType = WeaponType.Ice;
-                Shoot();
             }
-            else if (Input.GetKeyUp(rKey))
+            else if (Input.GetKeyDown(rKey) && !ThunderCooldown)
             {
                 //needs to be fixed
-                _coroutineCaller.StopMovement();
-                _coroutineCaller.RestartMovement();
+                _playerAnim.RAttack();
                 MagicType = WeaponType.Thunder;
-                rAbilityTelegraph.SetActive(false);
-                Shoot();
             }
         }
+    }
+
+    public void RAbilityTelegraphActivation()
+    {
+        rTelegraphIsOn = !rTelegraphIsOn;
+        
+        if (rTelegraphIsOn)
+            rAbilityTelegraph.SetActive(true);
+        else
+            rAbilityTelegraph.SetActive(false);
     }
 
     public void Shoot()

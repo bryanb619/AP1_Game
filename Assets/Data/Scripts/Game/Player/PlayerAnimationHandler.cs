@@ -25,7 +25,9 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private float _velocity;
 
-
+    private Shooter shooter;
+    private PlayerMovement playerMovement;
+    
     private void Awake()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
@@ -47,6 +49,9 @@ public class PlayerAnimationHandler : MonoBehaviour
          _stateInfo = _playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         _velocity = 0f;
+
+        shooter = FindObjectOfType<Shooter>();
+        playerMovement = FindObjectOfType<PlayerMovement>();
     }
     // Update is called once per frame
     void Update()
@@ -140,21 +145,60 @@ public class PlayerAnimationHandler : MonoBehaviour
         _playerAnimator.SetTrigger("isHit");
     }
 
+    public void DealDamage()
+    {
+        shooter.Shoot();
+        Debug.Log("Dealt Damage");
+    }
+
     public void QAttack()
     {
-        _playerAnimator.SetTrigger("qAbility");
+        if (_playerAnimator.GetBool("qAbility") == false)
+            _playerAnimator.SetBool("qAbility", true);
+    }
+
+    public void QAttackStop()
+    {
+        _playerAnimator.SetBool("qAbility", false);
     }
 
     public void RAttack()
     {
-        _playerAnimator.SetTrigger("rAbility");
+        if(_playerAnimator.GetBool("rAbility") == false)
+            _playerAnimator.SetBool("rAbility", true);
+    }
+    
+    public void RAttackStop()
+    {
+        _playerAnimator.SetBool("rAbility", false);
     }
 
     public void NormalAttack()
     {
-        _playerAnimator.SetTrigger("normalAttack");
+        if(_playerAnimator.GetBool("normalAttack") == false)
+            _playerAnimator.SetBool("normalAttack", true);
+    }
+
+    public void NormalAttackStop()
+    {
+        _playerAnimator.SetBool("normalAttack", false);
     }
     
+    public void StopMovement()
+    {
+        playerMovement.StopMovement();
+    }
+
+    public void RestartMovement()
+    {
+        playerMovement.RestartMovement();
+    }
+
+    public void RCircle()
+    {
+        shooter.RAbilityTelegraphActivation();
+    }
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
