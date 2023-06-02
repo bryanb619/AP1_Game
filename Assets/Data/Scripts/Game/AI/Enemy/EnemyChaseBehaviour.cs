@@ -142,7 +142,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _specialDamage;
                         private bool                        _canSpecialAttack;
 
-                        private int _randomPriority; 
+                        private int                         _randomPriority; 
                         
     // FOV ------------------------------------------------------------------------------------------------------------>
 
@@ -211,6 +211,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField]    private GameObject                  targetEffect;
 
     [SerializeField]    private GameObject                  spawnEffect;
+                        private float                       _closeAttack  = 0f;
+                        private float                       _rate = 1f;
+    
     
     //[SerializeField]    private GameObject                  enemyChase;
     //[SerializeField]    private GameObject                  enemyRaged;
@@ -875,8 +878,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             
             if(_agent.enabled)
             {
-                // set destination
                 UpdatePath();
+                UpdateRotation();
                 
                 switch (_canSpecialAttack)
                 {
@@ -891,7 +894,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             }
 
                             break;
-
                         }
 
                     case true:
@@ -913,32 +915,80 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             // update time
             _pathUpdateDeadLine = Time.time + 0; 
-            
-            // get player direction
-            Vector3 direction = _playerTarget.position - transform.position;
-            //rotation 
-            Quaternion disaredRot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
-
-            // apply rotation to AI 
-            transform.rotation = disaredRot;
-            
+            // set destination
             _agent.SetDestination(_playerTarget.position);
             
         }
     }
 
+    private void UpdateRotation()
+    {
+        // get player direction
+        Vector3 direction = _playerTarget.position - transform.position;
+        //rotation 
+        Quaternion disaredRot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
+
+        // apply rotation to AI 
+        transform.rotation = disaredRot;
+    }
+
     private void DistanceOnAttackCheck()
     {
-        const float rate = 0.5f;
-
-        if ((_playerTarget.transform.position - transform.position).magnitude <= 1.5f)
+        
+        if ((_playerTarget.transform.position - transform.position).magnitude <= 1.8f)
         {
+            //print("under 1.8 units");
+            
             // DISABLE AGENT
             EnableAgent(false);
             
+
+            if (Time.time > _closeAttack)
+            {
+                //print("CLOSE ATTACK enabled");
+          
+                var hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.4f, targetMask);
+                
+                foreach (Collider coll in hitEnemies)
+                {
+                    PlayerHealth player = coll.GetComponent<PlayerHealth>();
+
+                    if (player == null) continue;
+                    
+                    print("PLAYER FOUND");
+                    
+                                        
+                    // EFFECTS (SOUND & PARTICLES)
+                    RuntimeManager.PlayOneShot(testAttack);
+                    Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+                    
+                    // DAMAGE
+                    player.TakeDamage(35);
+                    
+#if UNITY_EDITOR
+                    
+                    // DEBUG ------------------------------------------------------------------------------------------>
+                    const string debugColor = "<size=14><color=red>";
+                    const string closeColor = "</color></size>";
+                    Debug.Log(debugColor + "Close attack" + closeColor);
+#endif
+                     
+                }
+                _closeAttack = Time.time + _rate;
+            }
+        }
+        
+        
+        else
+        {
+            // ENABLE AGENT
+            EnableAgent(true);
+        }
+            
+        /*
             if (Time.time > _nextAttack)
             {
-                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.2f, targetMask);
+                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.6f, targetMask);
 
                 foreach (Collider collider in hitEnemies)
                 {
@@ -946,6 +996,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                     if (player != null)
                     {
+                        EnableAgent(false);
 #if UNITY_EDITOR
                         string debugColor = "<size=14><color=red>";
                         string closeColor = "</color></size>";
@@ -955,18 +1006,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         RuntimeManager.PlayOneShot(testAttack);
                         player.TakeDamage(35);
                         Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-  
                     }
                                     
                 }
-                _nextAttack = Time.time + _attackRate;
+                _nextAttack +=  rate;
             }
-        }
-        else
-        {
-            // ENABLE AGENT
-            EnableAgent(true);
-        }
+            */
     }
     
 
@@ -1794,7 +1839,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 #if UNITY_EDITOR
     #region Editor Gizmos
-
     private void OnDrawGizmos()
     {
         
