@@ -125,8 +125,7 @@ public class PlayerMovement : MonoBehaviour
     private enum MovementState
     {
         Walking,
-        Dashing,
-        Air
+        Dashing
     }
 
     private void Awake()
@@ -366,16 +365,6 @@ public class PlayerMovement : MonoBehaviour
         {
             _state = MovementState.Walking;
             _desiredMoveSpeed = walkSpeed;
-        }
-
-        else
-        {
-            _state = MovementState.Air;
-
-            if (_desiredMoveSpeed < maxSpeed)
-                _desiredMoveSpeed = walkSpeed;
-            else
-                _desiredMoveSpeed = maxSpeed;
         }
 
         bool desiredMoveSpeedHasChanged = _desiredMoveSpeed != _lastDesiredMoveSpeed;
