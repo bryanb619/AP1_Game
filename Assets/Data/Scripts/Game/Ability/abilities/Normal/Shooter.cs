@@ -163,12 +163,9 @@ public class Shooter : MonoBehaviour
                     }
                     else
                     {
-                        if (!NormalCooldown && Input.GetKeyUp(KeyCode.Mouse0))
-                        {
-                            _playerAnim.NormalAttack();
-                            StartCoroutine(NormalAttackCooldown());
-                            Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
-                        }
+                        _playerAnim.NormalAttack();
+                        StartCoroutine(NormalAttackCooldown());
+                        Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
                         break;
                     }
                 }
