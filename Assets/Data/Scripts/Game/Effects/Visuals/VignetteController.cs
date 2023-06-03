@@ -1,29 +1,43 @@
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class VignetteController : MonoBehaviour
 {
-    /*
-    PostProcessVolume m_Volume;
-    Vignette m_Vignette
-   void Start()
-   {
-        // Create an instance of a vignette
-        m_Vignette = ScriptableObject.CreateInstance<Vignette>();
-        m_Vignette.enabled.Override(true);
-        m_Vignette.intensity.Override(1f);
-        // Use the QuickVolume method to create a volume with a priority of 100, and assign the vignette to this volume
-        m_Volume = PostProcessManager.instance.QuickVolume(gameObject.layer, 100f, m_Vignette);
-       
-   }
-    void Update()
+   //[SerializeField] 
+
+   private Image _vignette;
+   private Color _color; 
+   
+    
+    private void Awake()
     {
-        // Change vignette intensity using a sinus curve
-        m_Vignette.intensity.value = Mathf.Sin(Time.realtimeSinceStartup);
+        //_vignette = GetComponent<Image>(); 
+        
+        //
     }
-    void OnDestroy()
+
+    private void Update()
     {
-        RuntimeUtilities.DestroyVolume(m_Volume, true, true);
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            SetIntensity(0.6f);
+        }
+        
     }
+
+    public void SetIntensity(float intensity)
+    {
+        /*
+        _color = _vignette.color; 
+        
+        _color.a = intensity;
+        _vignette.color = _color;
     */
+        
+        var tempColor = _vignette.color;
+        tempColor.a = intensity;
+        _vignette.color = tempColor;
+
+    }
+    
 }

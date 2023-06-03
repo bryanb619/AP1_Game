@@ -66,9 +66,7 @@ public class PlayerHealth : MonoBehaviour
         
         currentHealth += powerUp;
         _healthBar.HealthEmpower(powerUp);
-
-
-
+        
         //PlayerPrefs()
         //print(_maxHealth);
     }
@@ -115,6 +113,11 @@ public class PlayerHealth : MonoBehaviour
     public void BigDamage(float damagePercentage)
     {
         
+        
+    }
+
+    private void CallForVignette()
+    {
         
     }
 
