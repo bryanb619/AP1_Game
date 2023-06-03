@@ -3,41 +3,48 @@ using UnityEngine.UI;
 
 public class VignetteController : MonoBehaviour
 {
-   //[SerializeField] 
+    private Image _vignette;
 
-   private Image _vignette;
-   private Color _color; 
-   
-    
+    private float _rColor, _gColor, _bColor, _aColor; 
+
     private void Awake()
     {
-        //_vignette = GetComponent<Image>(); 
+        GetComponents();
+    }
+    
+    private void GetComponents()
+    {
         
-        //
+        // get image & colors
+        _vignette   = GetComponent<Image>();
+        _rColor     = _vignette.color.r;
+        _gColor     = _vignette.color.g;
+        _bColor     = _vignette.color.b;
+        _aColor     = _vignette.color.a;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            SetIntensity(0.6f);
+            SetIntensity(0.5f);
+        }
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            ResetIntensity();
         }
         
     }
 
     public void SetIntensity(float intensity)
     {
-        /*
-        _color = _vignette.color; 
         
-        _color.a = intensity;
-        _vignette.color = _color;
-    */
-        
-        var tempColor = _vignette.color;
-        tempColor.a = intensity;
-        _vignette.color = tempColor;
-
+        _vignette.color = new Color(_rColor, _gColor , _bColor , intensity);
+    }
+    
+    private void ResetIntensity()
+    {
+        _vignette.color = new Color(_rColor, _gColor , _bColor , _aColor);
     }
     
 }

@@ -345,15 +345,9 @@ public class CompanionBehaviour : MonoBehaviour
                 _player.transform.forward = direction;
             }
         }
-        //if(Input.GetMouseButtonDown(0)) 
-        //{
-
-        //}
     }
 
     private (bool success, Vector3 position) GetMousePosition()
-    
-    
     {
         var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -390,12 +384,12 @@ public class CompanionBehaviour : MonoBehaviour
             // Print the name of the object hit by the ray
 
             //Debug.Log(hit.transform.name);
-            _cursor.UpdateCursor(CursorGame.CursorState.Attack);
+            //_cursor.UpdateCursor(CursorGame.CursorState.Attack);
 
         }
         else
         {
-            _cursor.UpdateCursor(CursorGame.CursorState.Normal);
+            //_cursor.UpdateCursor(CursorGame.CursorState.Normal);
         }
     }
 

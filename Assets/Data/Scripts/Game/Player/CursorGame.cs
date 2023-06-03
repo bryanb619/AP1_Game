@@ -1,48 +1,68 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
-
 
 public class CursorGame : MonoBehaviour
 {
-                        public enum CursorState                         { Normal, Attack }
+                        private enum CursorState                         { Normal, Attack }
+                        [SerializeField]    private CursorState                             state;
+    
+    [SerializeField]    private Texture2D                               imageNormal;
+    [SerializeField]    private Texture2D                               imageAttack;
 
-    [FormerlySerializedAs("_state")] [SerializeField]    private CursorState                             state;
-
-    [FormerlySerializedAs("_imageNormal")] [SerializeField]    private Texture2D                               imageNormal;
-    [FormerlySerializedAs("_imageAttack")] [SerializeField]    private Texture2D                               imageAttack;
-
-    public static CursorGame                        Instance;
-
-                        public static event Action<CursorState>         OnCursorStateChanged;
-
-
-
+                        public static CursorGame                        Instance;
+                        private static event Action<CursorState>         OnCursorStateChanged;
+                        
+                        
+                        private Camera                                  _mainCamera;
+    [Header("Layer")]
+    [SerializeField]    private LayerMask attackMask;
+                        private bool                                    _isAttackCursor;
+                        
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
 
-        Instance                            = this;
-
-        CursorGame[] otherManagers         = FindObjectsOfType<CursorGame>();
-
-
-
-        for (int i = 1; i < otherManagers.Length; i++)
+        Instance                                = this;
+        var otherManagers            = FindObjectsOfType<CursorGame>();
+        _mainCamera                             = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
+        
+        for (var i = 1; i < otherManagers.Length; i++)
         {
             Destroy(otherManagers[i].gameObject);
         }
-
-    }
-
-    private void Start()
-    {
         
         UpdateCursor(CursorState.Normal);
     }
-
     
-    public void UpdateCursor(CursorState newState)
+    private void Update()
+    {
+        CastHandler(); 
+    }
+    
+    private void CastHandler()
+    {
+        var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit hit;
+        
+        _isAttackCursor = Physics.Raycast(ray, out hit, 100f, attackMask);
+
+        switch (_isAttackCursor)
+        {
+            case true:
+            {
+                UpdateCursor(CursorState.Attack);
+                break;
+            }
+            case false:
+            {
+                UpdateCursor(CursorState.Normal);
+                break;
+            }
+        }
+    }
+
+    private void UpdateCursor(CursorState newState)
     {
         switch(newState) 
         {
@@ -54,7 +74,6 @@ public class CursorGame : MonoBehaviour
 
             case CursorState.Attack:
                 {
-                   
                     AttackCursor();
                     break;
                 }
@@ -62,25 +81,16 @@ public class CursorGame : MonoBehaviour
             default: { throw new ArgumentOutOfRangeException(nameof(newState), newState, null); }
         }
         OnCursorStateChanged?.Invoke(newState);
-
     }
 
     private void NormalCursor()
     {
         //print("cursor normal");
-
         Cursor.SetCursor(imageNormal, Vector2.zero,CursorMode.ForceSoftware);
-        
-        //print("cursor normal");
     }
-
     private void AttackCursor() 
     {
-
         //print("cursor Attack");
-
         Cursor.SetCursor(imageAttack, Vector2.zero, CursorMode.ForceSoftware);
-        return;
     }
-
 }
