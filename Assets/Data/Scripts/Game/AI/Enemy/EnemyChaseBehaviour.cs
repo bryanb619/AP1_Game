@@ -10,7 +10,6 @@ using TMPro;
 
 
 #if UNITY_EDITOR // EDITOR ONLY CODE
-using UnityEngine.Serialization;
 using UnityEditor; 
 #endif
 
@@ -86,7 +85,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [Header("Patrol")]
 
                         private float                       _patrolSpeed; 
-                        private int                         _destPoint = 0;
+                        private int                         _destPoint;
     [SerializeField]    private Transform[]                 patrolPoints;
 
     // Cover // ------------------------------------------------------------------------------------------------------->
@@ -110,6 +109,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private Transform                   attackPoint;
                         // attack range
                         private float                       _attackRange;
+                        
+                        // random attack range
+                        private float                       _minAttackRange;
                         // attack rate of AI 
                         private float                       _attackRate;
                         // time out between attacks
@@ -129,7 +131,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         private float                       _minDist;
 
-                        private Vector3                     _targetPosition;
+                        //private Vector3                     _targetPosition;
 
                         // random attack
                         private float                       _percentage;
@@ -211,10 +213,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [SerializeField]    private GameObject                  targetEffect;
 
     [SerializeField]    private GameObject                  spawnEffect;
-                        private float                       _closeAttack  = 0f;
+    
+                        private float                       _closeAttack;
                         private float                       _rate = 1f;
-    
-    
+                        
+                        
+                        
     //[SerializeField]    private GameObject                  enemyChase;
     //[SerializeField]    private GameObject                  enemyRaged;
 
@@ -227,10 +231,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         // special attack sound
                         private EventReference              _screamSound;
-
+                        
                         // attack sounds
                         private EventReference              _soundAttackA;
                         private EventReference              _soundAttackB;
+                        
                         
     [SerializeField]    private EventReference              testAttack; 
 
@@ -264,8 +269,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         private Vector3                     _previousPos;
                         private float                       _curSpeed;
-
-
+    
                         private int                         _enemyMask;
                         private int                         _playerMask;
 
@@ -350,7 +354,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Player refs 
         _playerObject                = GameObject.Find("Player");
         _playerTarget                = _playerObject.transform;
-        _targetPosition              = _playerTarget.position;
+        //_targetPosition              = _playerTarget.position;
         _player                      = FindObjectOfType<PlayerHealth>();
 
         _shooterScript               = _playerObject.GetComponent<Shooter>();
@@ -365,7 +369,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _randomPriority             = UnityEngine.Random.Range(51, 99);
         _agent.avoidancePriority    = _randomPriority;
         
-        _randomRadiusValue         = UnityEngine.Random.Range(2, 3);
+        _randomRadiusValue          = UnityEngine.Random.Range(2, 3);
+        
+        _minAttackRange             = UnityEngine.Random.Range(2.5f, 3.5f);
 
     }
     #endregion
@@ -590,7 +596,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         else if (_deactivateAi)
         {
             StopAgent();
-            return;
         }
     }
     #endregion
@@ -803,9 +808,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Speed
     private void AiSpeed()
     {
-        Vector3 curMove = transform.position - _previousPos;
+        var position = transform.position;
+        var curMove = position - _previousPos;
         _curSpeed = curMove.magnitude / Time.deltaTime;
-        _previousPos = transform.position;
+        _previousPos = position;
 
         if(_curSpeed >= 0.8f)
         {
@@ -972,7 +978,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     const string closeColor = "</color></size>";
                     Debug.Log(debugColor + "Close attack" + closeColor);
 #endif
-                     
                 }
                 _closeAttack = Time.time + _rate;
             }
@@ -984,34 +989,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             // ENABLE AGENT
             EnableAgent(true);
         }
-            
-        /*
-            if (Time.time > _nextAttack)
-            {
-                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.6f, targetMask);
-
-                foreach (Collider collider in hitEnemies)
-                {
-                    PlayerHealth player = collider.GetComponent<PlayerHealth>();    
-
-                    if (player != null)
-                    {
-                        EnableAgent(false);
-#if UNITY_EDITOR
-                        string debugColor = "<size=14><color=red>";
-                        string closeColor = "</color></size>";
-                        Debug.Log(debugColor + "Close attack" + closeColor);
-#endif  
-                                        
-                        RuntimeManager.PlayOneShot(testAttack);
-                        player.TakeDamage(35);
-                        Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-                    }
-                                    
-                }
-                _nextAttack +=  rate;
-            }
-            */
     }
     
 
@@ -1023,11 +1000,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case true:
                 {
                     SetAttack();
-                    //if ((playerTarget.transform.position - transform.position).magnitude <= 6F)
-                    //if (agent.remainingDistance <= stopDistance)
-                    if ((_playerTarget.transform.position - transform.position).magnitude <= 3.5F)
+                    if ((_playerTarget.transform.position - transform.position).magnitude <= _minAttackRange)
                     {
                         PauseAgent();
+                        
                         if (Time.time > _nextAttack)
                         {
                             
@@ -1035,7 +1011,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             {
                                 //print("chose random");
 
-                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, targetMask);
+                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
 
                                 foreach (Collider collider in hitEnemies)
                                 {
@@ -1044,8 +1020,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                     if (player != null)
                                     {
 #if UNITY_EDITOR
-                                        string debugColor = "<size=12><color=yellow>";
-                                        string closeColor = "</color></size>";
+                                        const string debugColor = "<size=12><color=yellow>";
+                                        const string closeColor = "</color></size>";
                                         Debug.Log(debugColor + "Attack 2" + closeColor);
 #endif  
                                         
@@ -1062,7 +1038,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             else
                             {
 
-                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _attackRange, targetMask);
+                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
 
                                 foreach (Collider collider in hitEnemies)
                                 {
