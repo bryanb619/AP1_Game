@@ -1054,9 +1054,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                                     if (player != null)
                                     {
                                         //AttackAnim();
-                                        RuntimeManager.PlayOneShot(testAttack);
+                                        _animator.SetTrigger("Attack");
 
-                                        player.TakeDamage(_damage);
+                                        //DealDamage(player);
 
                                         Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
 
@@ -1095,6 +1095,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
 
+    public void DealDamage(PlayerHealth player)
+    {
+        player.TakeDamage(_damage);
+    }
+    
     private void AttackAnim()
     {
         _animator.SetBool("Attack", true);
