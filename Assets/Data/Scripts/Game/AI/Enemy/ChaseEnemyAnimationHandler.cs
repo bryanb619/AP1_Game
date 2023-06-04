@@ -15,6 +15,6 @@ public class ChaseEnemyAnimationHandler : MonoBehaviour
 
     private void AttackPlayerAnimationEvent()
     {
-        enemyChaseScript.DealDamage(player);
+        //enemyChaseScript.DealDamage(player);
     }
 }
