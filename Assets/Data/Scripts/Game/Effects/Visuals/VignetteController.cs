@@ -1,50 +1,50 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VignetteController : MonoBehaviour
+namespace Data.Scripts.Game.Effects.Visuals
 {
-    private Image _vignette;
-
-    private float _rColor, _gColor, _bColor, _aColor; 
-
-    private void Awake()
+    public class VignetteController : MonoBehaviour
     {
-        GetComponents();
-    }
-    
-    private void GetComponents()
-    {
-        
-        // get image & colors
-        _vignette   = GetComponent<Image>();
-        _rColor     = _vignette.color.r;
-        _gColor     = _vignette.color.g;
-        _bColor     = _vignette.color.b;
-        _aColor     = _vignette.color.a;
-    }
+        private Image _vignette;
+        private float _rColor, _gColor, _bColor, _aColor; 
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
+        private void Awake()
         {
-            SetIntensity(0.5f);
+            GetComponents();
         }
-        if (Input.GetKeyDown(KeyCode.N))
+    
+        private void GetComponents()
         {
-            ResetIntensity();
+            // get image & colors
+            _vignette   = GetComponent<Image>();
+            _rColor     = _vignette.color.r;
+            _gColor     = _vignette.color.g;
+            _bColor     = _vignette.color.b;
+            _aColor     = _vignette.color.a; // or ZERO 
         }
-        
-    }
 
-    public void SetIntensity(float intensity)
-    {
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                SetIntensity(0.5f);
+            }
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                ResetIntensity();
+            }
+        }
+
+        public void SetIntensity(float intensity)
+        {
         
-        _vignette.color = new Color(_rColor, _gColor , _bColor , intensity);
+            _vignette.color = new Color(_rColor, _gColor , _bColor , intensity);
+        }
+
+        private void ResetIntensity()
+        {
+            _vignette.color = new Color(_rColor, _gColor, _bColor, 0);
+        }
+
     }
-    
-    private void ResetIntensity()
-    {
-        _vignette.color = new Color(_rColor, _gColor , _bColor , _aColor);
-    }
-    
 }

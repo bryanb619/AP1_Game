@@ -1,4 +1,5 @@
 using System.Collections;
+using Data.Scripts.Game.AI.Companion;
 using UnityEngine;
 using UnityEngine.Serialization;
 

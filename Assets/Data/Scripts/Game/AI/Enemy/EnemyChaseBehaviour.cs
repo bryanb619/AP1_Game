@@ -1817,23 +1817,45 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Editor Gizmos
     private void OnDrawGizmos()
     {
-        
-        GUIStyle red = new GUIStyle();
-        red.normal.textColor = Color.red;
+        var red = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.red
+            }
+        };
 
-        GUIStyle yellow = new GUIStyle();
-        yellow.normal.textColor = Color.yellow;
+        var yellow = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.yellow
+            }
+        };
 
-        GUIStyle blue = new GUIStyle();
-        blue.normal.textColor = Color.blue;
+        var blue = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.blue
+            }
+        };
 
-        GUIStyle green = new GUIStyle();
-        green.normal.textColor = Color.green;
+        var green = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.green
+            }
+        };
 
-        GUIStyle cyan = new GUIStyle();
-        cyan.normal.textColor = Color.cyan;
-
-
+        var cyan = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.cyan
+            }
+        };
 
         #region Gizmos code
 
@@ -1843,10 +1865,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
             Gizmos.DrawWireSphere(attackPoint.position, _attackRange);
 
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, _minDist);
+            var position = transform.position;
+            Gizmos.DrawWireSphere(position, _minDist);
             
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, 1);
+            Gizmos.DrawWireSphere(position, 1);
         }
 
         #region AI State Label 
