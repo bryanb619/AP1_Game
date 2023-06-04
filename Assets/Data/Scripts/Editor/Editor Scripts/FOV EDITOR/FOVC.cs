@@ -1,3 +1,4 @@
+using Data.Scripts.Game.AI.Companion;
 using UnityEditor;
 using UnityEngine;
 
