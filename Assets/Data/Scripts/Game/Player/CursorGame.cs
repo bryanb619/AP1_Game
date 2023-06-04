@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class CursorGame : MonoBehaviour
 {
-                        private enum CursorState                         { Normal, Attack }
-                        [SerializeField]    private CursorState                             state;
+    
+    [Header("Cursor State")]
+    [SerializeField]    private CursorState                             state;
+                        private enum CursorState                        { Normal, Attack }
     
     [SerializeField]    private Texture2D                               imageNormal;
     [SerializeField]    private Texture2D                               imageAttack;
@@ -15,7 +17,7 @@ public class CursorGame : MonoBehaviour
                         
                         private Camera                                  _mainCamera;
     [Header("Layer")]
-    [SerializeField]    private LayerMask attackMask;
+    [SerializeField]    private LayerMask                               attackMask, tooltipMask;
                         private bool                                    _isAttackCursor;
                         
     private void Awake()
@@ -59,6 +61,11 @@ public class CursorGame : MonoBehaviour
                 UpdateCursor(CursorState.Normal);
                 break;
             }
+        }
+
+        if (Physics.Raycast(ray, out hit, 100f, tooltipMask))
+        {
+            
         }
     }
 

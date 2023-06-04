@@ -7,20 +7,9 @@ public class AiChaseData : ScriptableObject
 {
     #region Combat
     // Combat -------------------------------------------------------------------->
-
-    [FormerlySerializedAs("_attackDist")]
     [Header("Combat")]
-
-    /*        [SerializeField] 
-            private bool                _canSpawnOthers;
-            internal bool               CanSpawnOthers => _canSpawnOthers;
+    [FormerlySerializedAs("_attackDist")]
     [SerializeField]
-            private int                 quantity; 
-            internal int                Quantity => quantity;
-
-    */
-
-        [SerializeField]
             private float               attackDist = 2.5f;
             public float                AttackDist => attackDist;
 
@@ -89,12 +78,8 @@ public class AiChaseData : ScriptableObject
             private GameObject          sAttackEffect; 
             public GameObject           SAttackEffect => sAttackEffect; 
 
-
-    //[SerializeField]
-    //private float cooldownSpeed = 3F;
-    //public float CooldownSpeed => cooldownSpeed;    
-
-    // Special attack //
+            
+        // Special attack //
         [Header("Special Attack")]
         [SerializeField]
             private GameObject          specialAttackEffect;
