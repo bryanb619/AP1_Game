@@ -21,7 +21,6 @@ public class EnemyBehaviour : MonoBehaviour
     #region  Variables
 
     // States --------------------------------------------------------------------------------------------------------->
-
                             private enum Ai                             { 
                                                                         Guard, 
                                                                         Patrol,

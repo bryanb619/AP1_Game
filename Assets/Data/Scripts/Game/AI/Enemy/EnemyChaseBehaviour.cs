@@ -379,79 +379,75 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region profile Sync
     private void GetProfile()
     {
-        // Patrol ------------------------------------------------------->
+        // Patrol ----------------------------------------------------------------------------------------------------->
 
-        _patrolSpeed                 = data.PatrolSpeed; 
+        _patrolSpeed                    = data.PatrolSpeed; 
 
-        // COMBAT ------------------------------------------------------->
+        // COMBAT ----------------------------------------------------------------------------------------------------->
 
-        _stopDistance                = data.StopDistance;
-
-        _attackEffect               = data.AttackEffect;    
-         _attackRange               = data.AttackDist;
-        _attackTimer                = data.AttackTimer;
-        _attackSpeed                 = data.AttackSpeed;
-        _damage                      = data.Damage;
-        _attackRate                  = data.AttackRate;
-        
-        _minDist                     = data.MinDist;
+        _stopDistance                   = data.StopDistance;
+        _attackEffect                   = data.AttackEffect;    
+         _attackRange                   = data.AttackDist;
+        _attackTimer                    = data.AttackTimer;
+        _attackSpeed                    = data.AttackSpeed;
+        _damage                         = data.Damage;
+        _attackRate                     = data.AttackRate;
+        _minDist                        = data.MinDist;
 
         // ** ATTACK 2 (CHANCE) **
     
-        _percentage                  = data.Percentage;   
-        _bDamage                    = data.BDamage;   
-        _sAttackEffect             = data.SAttackEffect;
+        _percentage                     = data.Percentage;   
+        _bDamage                        = data.BDamage;   
+        _sAttackEffect                  = data.SAttackEffect;
 
         // ** SPECIAL ATTACK **
-        _abilityIncreasePerFrame     = data.AbilityIncreasePerFrame;
-        _currentAbilityValue         = data.CurrentAbilityValue;
-        _specialAttackEffect        = data.SpecialAttackEffect;    
-        _specialDamage               = data.SDamage;
-
-
-
+        _abilityIncreasePerFrame        = data.AbilityIncreasePerFrame;
+        _currentAbilityValue            = data.CurrentAbilityValue;
+        _specialAttackEffect            = data.SpecialAttackEffect;    
+        _specialDamage                  = data.SDamage;
+        
         // combat events
         //_spawnOtherAI               = data.CanSpawnOthers;
         //quantityOfSpawn             = data.Quantity;
         
 
-        // Health ------------------------------------------------------->
+        // Health ----------------------------------------------------------------------------------------------------->
 
-        _health                      = data.Health;
-        _maxhealth                  = data.Health;
+        _health                         = data.Health;
+        _maxhealth                      = data.Health;
         
         
-        healthSlider.value          = _maxhealth;
-        healthSlider.maxValue       = _maxhealth;
+        healthSlider.value              = _maxhealth;
+        healthSlider.maxValue           = _maxhealth;
         
         
-        _healthInCreasePerFrame      = data.HealthRegen;
-        abilitySlider.value         = _currentAbilityValue;
+        _healthInCreasePerFrame         = data.HealthRegen;
+        abilitySlider.value             = _currentAbilityValue;
 
-        // Death & Damage ------------------------------------------------------->
+        // Death & Damage --------------------------------------------------------------------------------------------->
 
         // death
-        _death                       = data.DeathEffect;
-        _damageEffectTime            = data.DamageTime;
+        _death                          = data.DeathEffect;
+        _damageEffectTime               = data.DamageTime;
 
         // stunned
-        _stunnedTime                 = data.StunnedTime;
-        _stunedChance                = data.SunnedChance;
+        _stunnedTime                    = data.StunnedTime;
+        _stunedChance                   = data.SunnedChance;
 
-        // Loot ------------------------------------------------------->
-        _gemSpawnOnDeath             = data.GemSpawnOnDeath;
-        _gemPrefab                   = data.Gem;
+        // Loot ------------------------------------------------------------------------------------------------------->
+        _gemSpawnOnDeath                = data.GemSpawnOnDeath;
+        _gemPrefab                      = data.Gem;
 
-        _spawnHealth                 = data.SpawnHealth;
-        _healthItems                 = data.HealthUnits;
-        _healthDrop                  = data.HealthDrop;
+        _spawnHealth                    = data.SpawnHealth;
+        _healthItems                    = data.HealthUnits;
+        _healthDrop                     = data.HealthDrop;
         
-        _spawnMana                   = data.SpawnMana;
-        _manaItems                   = data.ManaItems;
-        _manaDrop                    = data.ManaDrop;
+        _spawnMana                      = data.SpawnMana;
+        _manaItems                      = data.ManaItems;
+        _manaDrop                       = data.ManaDrop;
 
         // Sound ------------------------------------------------------->
-        _screamSound                = data.Scream;
+        _screamSound                    = data.Scream;
     }
 
     #region  States Sync 
@@ -463,28 +459,28 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         // Non Combat states
 
-        State onGuardState = new State("GUARD",
+        var onGuardState = new State("GUARD",
             null);
           
 
-        State patrolState = new State("Patrol",
+        var patrolState = new State("Patrol",
             Patrol);//,
     
 
         // Combat states
 
-        State chaseState = new State("Chase",
+        var chaseState = new State("Chase",
             ChasePlayer);//,
      
-        State findCover = new State("Cover",
+        var findCover = new State("Cover",
             Cover);
 
-        State gloryKillState = new State("Glory Kill",
+        var gloryKillState = new State("Glory Kill",
             null);
 
         #endregion
 
-        // Trasitions --------------------------------------------------->
+        // Trasitions ------------------------------------------------------------------------------------------------->
 
         #region Trasition of states
         // Add the transitions
@@ -562,20 +558,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void Update()
     {
         // Get bool value from AI performance manager
-        switch(_hanlderAi.AgentOperate)
+        _deactivateAi = _hanlderAi.AgentOperate switch
         {
-            case true:
-                {
-                    _deactivateAi = false;
-                    break; 
-                }
-            case false: 
-                {
-                    _deactivateAi = true;
-                    break; 
-                }
-        }
-
+            true => false,
+            false => true
+        };
 
         if (_gameState == GameState.Gameplay && !_deactivateAi) //|| !_deactivateAI)
         {
@@ -585,7 +572,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             AiSpeed();
             
-            Action actions = _stateMachine.Update();
+            var actions = _stateMachine.Update();
             actions?.Invoke();
 
             if (_useFov)
@@ -716,10 +703,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
             
             for (int i = 0; i < enemyColliders; ++i)
             {
-                EnemyChaseBehaviour chaseai = 
+                var chaseai = 
                     aiColliders[i].GetComponent<EnemyChaseBehaviour>();
 
-                PlayerMovement player = 
+                var player = 
                     aiColliders[i].GetComponent <PlayerMovement>();
 
                 if (chaseai != null && chaseai.gameObject != gameObject)
@@ -917,22 +904,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void UpdatePath()
     {
-        if(Time.time >= _pathUpdateDeadLine)
-        {
-            // update time
-            _pathUpdateDeadLine = Time.time + 0; 
-            // set destination
-            _agent.SetDestination(_playerTarget.position);
-            
-        }
+        if (!(Time.time >= _pathUpdateDeadLine)) return;
+        
+        // update time
+        _pathUpdateDeadLine = Time.time + 0; 
+        // set destination
+        _agent.SetDestination(_playerTarget.position);
     }
 
     private void UpdateRotation()
     {
         // get player direction
-        Vector3 direction = _playerTarget.position - transform.position;
+        var direction = _playerTarget.position - transform.position;
         //rotation 
-        Quaternion disaredRot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
+        var disaredRot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
 
         // apply rotation to AI 
         transform.rotation = disaredRot;
@@ -940,7 +925,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void DistanceOnAttackCheck()
     {
-        
         if ((_playerTarget.transform.position - transform.position).magnitude <= 1.8f)
         {
             //print("under 1.8 units");
@@ -948,46 +932,50 @@ public class EnemyChaseBehaviour : MonoBehaviour
             // DISABLE AGENT
             EnableAgent(false);
             
-
             if (Time.time > _closeAttack)
             {
-                //print("CLOSE ATTACK enabled");
-          
-                var hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.4f, targetMask);
-                
-                foreach (Collider coll in hitEnemies)
-                {
-                    PlayerHealth player = coll.GetComponent<PlayerHealth>();
-
-                    if (player == null) continue;
-                    
-                    print("PLAYER FOUND");
-                    
-                                        
-                    // EFFECTS (SOUND & PARTICLES)
-                    RuntimeManager.PlayOneShot(testAttack);
-                    Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-                    
-                    // DAMAGE
-                    player.TakeDamage(35);
-                    
-#if UNITY_EDITOR
-                    
-                    // DEBUG ------------------------------------------------------------------------------------------>
-                    const string debugColor = "<size=14><color=red>";
-                    const string closeColor = "</color></size>";
-                    Debug.Log(debugColor + "Close attack" + closeColor);
-#endif
-                }
-                _closeAttack = Time.time + _rate;
+                CloseAttack();
             }
+            _closeAttack = Time.time + _rate;
         }
-        
-        
+
         else
         {
             // ENABLE AGENT
             EnableAgent(true);
+        }
+    }
+
+
+    private void CloseAttack()
+    {
+        //print("CLOSE ATTACK enabled");
+          
+        var hitEnemies = Physics.OverlapSphere(attackPoint.position, 1.4f, targetMask);
+
+        foreach (Collider coll in hitEnemies)
+        {
+            var player = coll.GetComponent<PlayerHealth>();
+
+            if (player == null) continue;
+
+            print("PLAYER FOUND");
+
+
+            // EFFECTS (SOUND & PARTICLES)
+            RuntimeManager.PlayOneShot(testAttack);
+            Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+
+            // DAMAGE
+            player.TakeDamage(35);
+
+#if UNITY_EDITOR
+
+            // DEBUG ------------------------------------------------------------------------------------------>
+            const string debugColor = "<size=14><color=red>";
+            const string closeColor = "</color></size>";
+            Debug.Log(debugColor + "Close attack" + closeColor);
+#endif
         }
     }
     
@@ -1006,70 +994,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         
                         if (Time.time > _nextAttack)
                         {
-                            
-                            if (UnityEngine.Random.value < _percentage && _canPerformAttack)
-                            {
-                                //print("chose random");
+                            StartAttack();
 
-                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
-
-                                foreach (Collider collider in hitEnemies)
-                                {
-                                    PlayerHealth player = collider.GetComponent<PlayerHealth>();    
-
-                                    if (player != null)
-                                    {
-#if UNITY_EDITOR
-                                        const string debugColor = "<size=12><color=yellow>";
-                                        const string closeColor = "</color></size>";
-                                        Debug.Log(debugColor + "Attack 2" + closeColor);
-#endif  
-                                        
-                                        RuntimeManager.PlayOneShot(testAttack);
-                                        player.TakeDamage(_bDamage);
-                                        Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-  
-                                    }
-                                    
-                                }
-                                //StartCoroutine(AttackTimer());
-                            }
-
-                            else
-                            {
-
-                                Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
-
-                                foreach (Collider collider in hitEnemies)
-                                {
-                                    string debugColor = "<size=12><color=green>";
-                                    string closeColor = "</color></size>";
-                                    Debug.Log(debugColor + "Attack" + closeColor);
-                                    //AttackAnim();
-                                    //_Player.TakeDamage(damage);
-                                   
-
-                                    PlayerHealth player = collider.GetComponent<PlayerHealth>();
-
-                                    if (player != null)
-                                    {
-                                        //AttackAnim();
-                                        _animator.SetTrigger("Attack");
-
-                                        //DealDamage(player);
-
-                                        Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-
-                                    }
-                                    //Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
-                                }
-
-                                //StartCoroutine(AttackTimer());
-
-                            }
-
-                            _canPerformAttack = false;
-                            _nextAttack = Time.time + _attackRate;
                         }
                     }
                     else if ((_playerTarget.transform.position - transform.position).magnitude >= 7.5F)
@@ -1094,10 +1020,72 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 }
         }
     }
-
-    public void DealDamage(PlayerHealth player)
+    
+    private void StartAttack()
     {
-        player.TakeDamage(_damage);
+        if (UnityEngine.Random.value < _percentage && _canPerformAttack)
+        {
+            PercentageAttack();
+
+            //StartCoroutine(AttackTimer());
+        }
+
+        else
+        {
+            NormalAttack();
+        }
+        _canPerformAttack = false;
+        _nextAttack = Time.time + _attackRate;
+    }
+
+    private void PercentageAttack()
+    {
+        var hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
+
+        foreach (var col in hitEnemies)
+        {
+            var player = col.GetComponent<PlayerHealth>();
+            
+            if (player == null) continue;
+            
+#if UNITY_EDITOR
+            const string debugColor = "<size=12><color=yellow>";
+            const string closeDebug = "</color></size>";
+            Debug.Log(debugColor + "Chance attack" + closeDebug);
+#endif
+            RuntimeManager.PlayOneShot(testAttack);
+            Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+            player.TakeDamage(_bDamage);
+        }
+    }
+
+    private void NormalAttack()
+    {
+        var hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
+
+        foreach (Collider collider in hitEnemies)
+        {
+
+            var player = collider.GetComponent<PlayerHealth>();
+
+            if (player != null)
+            {
+                //AttackAnim();
+                RuntimeManager.PlayOneShot(testAttack);
+
+                player.TakeDamage(_damage);
+
+                Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+
+#if UNITY_EDITOR
+                const string debugColor = "<size=12><color=green>";
+                const string closeColor = "</color></size>";
+                Debug.Log(debugColor + "Attack" + closeColor);
+#endif
+
+            }
+            //Instantiate(_attackEffect, _attackPoint.transform.position, Quaternion.identity);
+        }
     }
     
     private void AttackAnim()
@@ -1217,18 +1205,16 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // * Attack time outs -------------------------------->
     private IEnumerator AttackTimer()
     {
-        bool running = false;   
+        bool running = false;
 
-        if(!running) 
-        {
-            running = true;
-            _canPerformAttack = false;
-            yield return new WaitForSeconds(_attackTimer);
+        if (running) yield break;
+        running = true;
+        _canPerformAttack = false;
+        yield return new WaitForSeconds(_attackTimer);
 
-            _canPerformAttack = true;
-            running = false;
-        }
-        
+        _canPerformAttack = true;
+        running = false;
+
     }
     /*
     private IEnumerator timeBetweenAttack()
