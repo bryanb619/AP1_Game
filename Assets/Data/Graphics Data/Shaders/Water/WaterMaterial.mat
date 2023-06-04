@@ -35,7 +35,7 @@ Material:
     m_TexEnvs:
     - _SurfaceNoise:
         m_Texture: {fileID: 2800000, guid: b980f01f55bb4644bb8cee8d9952eadc, type: 3}
-        m_Scale: {x: 50, y: 50}
+        m_Scale: {x: 10, y: 20}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
@@ -51,14 +51,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DepthMaxDistance: 0
-    - _FoamDistance: 2.51
+    - _DepthMaxDistance: 4
+    - _FoamDistance: 3.26
     - _NoiseCutoff: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
-    - _DepthGradiantShallow: {r: 0.5970096, g: 0.86250603, b: 0.9811321, a: 0.8235294}
-    - _DepthGradientDepth: {r: 0.051681694, g: 0, b: 0.1981132, a: 0.87058824}
+    - _DepthGradiantShallow: {r: 0.55460125, g: 0.84401524, b: 0.9716981, a: 0.8235294}
+    - _DepthGradientDepth: {r: 0.18845673, g: 0.19661495, b: 0.5188679, a: 0.87058824}
     - _FoamColor: {r: 0.4177198, g: 0.5399951, b: 0.5943396, a: 0.6745098}
     - _FoamSpeed: {r: 0.001, g: 0.002, b: 0, a: 0}
   m_BuildTextureStacks: []
