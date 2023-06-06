@@ -55,7 +55,7 @@ public class Dashing : MonoBehaviour
 
             if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100, ~seeThroughLayer))
             {
-                transform.LookAt(new Vector3(hit.point.x, 0, hit.point.z));
+                transform.LookAt(new Vector3(hit.point.x, gameObject.transform.position.y, hit.point.z));
                 _playerNavMesh.ResetPath();
                 StartCoroutine(DeactivateNavMesh(0.4f));
                 Dash(hit);
