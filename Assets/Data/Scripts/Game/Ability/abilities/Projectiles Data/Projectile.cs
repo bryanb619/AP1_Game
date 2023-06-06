@@ -138,17 +138,12 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter(Collider hitInfo)
     {
         //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
-        EnemyChaseBehaviour chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
-        
-        if (chaseEnemy != null)
-        {
-            chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
-            
-            DestroyBullet();
-            
+        var chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
 
-        }
-        
+        if (chaseEnemy == null) return;
+        chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
+        DestroyBullet();
+
     }
     /*
     private void OnCollisionEnter(Collision collision)

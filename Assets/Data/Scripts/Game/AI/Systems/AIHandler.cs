@@ -3,17 +3,16 @@ using UnityEngine.Serialization;
 
 public class AiHandler : MonoBehaviour
 {
-    private bool _agentOperate; 
-    public bool AgentOperate => _agentOperate;
+    public bool AgentOperate { get; private set; }
 
 
-    [FormerlySerializedAs("_skinnedMeshRenderer")] [SerializeField] SkinnedMeshRenderer skinnedMeshRenderer;
+    [SerializeField] MeshRenderer skinnedMeshRenderer;
 
     private void Update()
     {
-        CheckVisiblity();
+        CheckVisibility();
     }
-    private void CheckVisiblity()
+    private void CheckVisibility()
     {
         switch (skinnedMeshRenderer.isVisible)
         {
@@ -32,13 +31,13 @@ public class AiHandler : MonoBehaviour
 
     private void Visable()
     {
-        _agentOperate = true;
+        AgentOperate = true;
         return;
     }
 
     private void Invisble()
     {
-        _agentOperate = false;
+        AgentOperate = false;
         return; 
     }
 }
