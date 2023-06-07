@@ -6,7 +6,7 @@ public class AiHandler : MonoBehaviour
     public bool AgentOperate { get; private set; }
 
 
-    [SerializeField] MeshRenderer skinnedMeshRenderer;
+    [SerializeField] SkinnedMeshRenderer skinnedMeshRenderer;
 
     private void Update()
     {

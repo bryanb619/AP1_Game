@@ -371,7 +371,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         _randomRadiusValue          = UnityEngine.Random.Range(2, 3);
         
-        _minAttackRange             = UnityEngine.Random.Range(2.5f, 3.5f);
+        _minAttackRange             = UnityEngine.Random.Range(3f, 5f);
 
     }
     #endregion
