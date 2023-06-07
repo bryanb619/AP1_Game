@@ -255,7 +255,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // Animator ------------------------------------------------------------------------------------------------------->
                         private Animator                    _animator;
-
+                        private int                         _randomForAttacks;    
+                        private ChaseEnemyAnimationHandler  _enemyAnimationHandler;
 
     // DEBUG ---------------------------------------------------------------------------------------------------------->
     [Header("Debug")]
@@ -334,6 +335,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region Components Sync
     private void GetComponents()
     {
+
+        _enemyAnimationHandler       = GetComponent<ChaseEnemyAnimationHandler>();
         _agent                       = GetComponent<NavMeshAgent>();
         _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         _agent.updateRotation        = false;
@@ -956,6 +959,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         foreach (Collider coll in hitEnemies)
         {
             var player = coll.GetComponent<PlayerHealth>();
+            
 
             if (player == null) continue;
 
@@ -991,7 +995,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     if ((_playerTarget.transform.position - transform.position).magnitude <= _minAttackRange)
                     {
                         PauseAgent();
-                        
+
                         if (Time.time > _nextAttack)
                         {
                             StartAttack();
@@ -1019,12 +1023,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break;
                 }
         }
+        
     }
     
     private void StartAttack()
     {
-        _animator.SetTrigger("Attack");
-
         if (UnityEngine.Random.value < _percentage && _canPerformAttack)
         {
             PercentageAttack();
@@ -1040,24 +1043,49 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _nextAttack = Time.time + _attackRate;
     }
 
+    public void ActualAttack()
+    {
+        int i = UnityEngine.Random.Range(1, 3);
+
+        PlayerHealth player = FindObjectOfType<PlayerHealth>();
+
+        switch (i)
+        {
+            case 1:
+                
+                RuntimeManager.PlayOneShot(testAttack);
+                player.TakeDamage(_damage);
+                Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+                break;
+            case 2:
+                
+                RuntimeManager.PlayOneShot(testAttack);
+                Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+                player.TakeDamage(_bDamage);
+                break;
+            default:
+                break;
+        }
+    }
+
     private void PercentageAttack()
     {
         var hitEnemies = Physics.OverlapSphere(attackPoint.position, _minAttackRange, targetMask);
 
         foreach (var col in hitEnemies)
         {
-            var player = col.GetComponent<PlayerHealth>();
-            
-            if (player == null) continue;
+            PlayerHealth player = col.GetComponent<PlayerHealth>();
+
+            if (player == null) return; ;
             
 #if UNITY_EDITOR
             const string debugColor = "<size=12><color=yellow>";
             const string closeDebug = "</color></size>";
             Debug.Log(debugColor + "Chance attack" + closeDebug);
 #endif
-            RuntimeManager.PlayOneShot(testAttack);
-            Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-            player.TakeDamage(_bDamage);
+            //_enemyAnimationHandler.RecievePlayerCollision(player);
+            _animator.SetTrigger("Attack2");
+            
         }
     }
 
@@ -1072,12 +1100,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             if (player != null)
             {
-                AttackAnim();
-                RuntimeManager.PlayOneShot(testAttack);
-
-                player.TakeDamage(_damage);
-
-                Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
+                //AttackAnim();
+                _animator.SetTrigger("Attack");
 
 #if UNITY_EDITOR
                 const string debugColor = "<size=12><color=green>";

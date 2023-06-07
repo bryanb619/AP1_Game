@@ -10,11 +10,16 @@ public class ChaseEnemyAnimationHandler : MonoBehaviour
     private void Awake()
     {
         enemyChaseScript = GetComponentInParent<EnemyChaseBehaviour>();
-        player = GetComponent<PlayerHealth>();
+        player = FindObjectOfType<PlayerHealth>();
     }
 
-    private void AttackPlayerAnimationEvent()
+    public void RecievePlayerCollision(PlayerHealth playerHealth)
     {
-        //enemyChaseScript.DealDamage(player);
+        player = playerHealth;
+    }
+
+    public void AttackPlayerAnimationEvent()
+    {
+        enemyChaseScript.ActualAttack();
     }
 }
