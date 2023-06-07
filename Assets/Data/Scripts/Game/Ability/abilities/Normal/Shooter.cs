@@ -29,7 +29,6 @@ public class Shooter : MonoBehaviour
     [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
     [SerializeField] private GameObject rAbilityTelegraph;
     private KeyCode qKey = KeyCode.Q, wKey = KeyCode.W, rKey = KeyCode.R;
-
     internal bool NormalCooldown, FireCooldown, IceCooldown, ThunderCooldown = false;
 
     [Header("Script References")]
@@ -173,7 +172,7 @@ public class Shooter : MonoBehaviour
                 {
                     if(!FireCooldown)
                     { 
-                        if (_manaManager.ManaCheck(MagicType) == true)
+                        if (_manaManager.ManaCheck(MagicType))
                         {
                             _playerAnim.QAttack();
                             StartCoroutine(FireAttackCooldown());
@@ -239,10 +238,11 @@ public class Shooter : MonoBehaviour
             {
                     if (_manaManager.ManaCheck(MagicType))
                     {
+                        //Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
                         StartCoroutine(IceAttackCooldown());
-                        Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
                         targetedAttackAbilityHolder.TargetedAttackCooldownUi();
                         Debug.Log("Enemy Hit with Ice");
+                        return;
                     }
                 else
                     Debug.Log("Not enough mana");
