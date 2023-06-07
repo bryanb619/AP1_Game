@@ -50,7 +50,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private WarningSystemAi             _warn;
                         // AI controller for performance AI actions
                         private AiController                _controller;
-                        private AiHandler                   _hanlderAi;
+                        private AIHandler                   _hanlderAi;
 
                         // AI Mesh
     [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
@@ -343,7 +343,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
 
         _warn                        = GetComponent<WarningSystemAi>();
-        _hanlderAi                   = GetComponent<AiHandler>();
+        _hanlderAi                   = GetComponent<AIHandler>();
 
         _rb                          = GetComponent<Rigidbody>();
 
@@ -563,6 +563,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         // Get bool value from AI performance manager
         _deactivateAi = _hanlderAi.AgentOperate switch
+            
         {
             true => false,
             false => true
@@ -876,31 +877,31 @@ public class EnemyChaseBehaviour : MonoBehaviour
             if(_agent.enabled)
             {
                 UpdatePath();
-                UpdateRotation();
-                
-                switch (_canSpecialAttack)
+            }
+            
+            UpdateRotation();
+            
+            switch (_canSpecialAttack)
+            {
+                case false:
                 {
-                    case false:
-                        {
-                            Attack(); // call attack and random attack
+                    Attack(); // call attack and random attack
 
-                            if (_currentAbilityValue <= AbilityMaxValue)
-                            {
-                                Cooldown();
+                    if (_currentAbilityValue <= AbilityMaxValue)
+                    {
+                        Cooldown();
                                 
-                            }
+                    }
 
-                            break;
-                        }
-
-                    case true:
-                        {
-                            // special attack
-                            HabilityAttack();
-                            break;
-                        }
+                    break;
                 }
 
+                case true:
+                {
+                    // special attack
+                    HabilityAttack();
+                    break;
+                }
             }
         }
         
