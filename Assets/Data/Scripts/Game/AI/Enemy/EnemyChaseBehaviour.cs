@@ -1023,6 +1023,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     
     private void StartAttack()
     {
+        _animator.SetTrigger("Attack");
+
         if (UnityEngine.Random.value < _percentage && _canPerformAttack)
         {
             PercentageAttack();
@@ -1070,7 +1072,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             if (player != null)
             {
-                //AttackAnim();
+                AttackAnim();
                 RuntimeManager.PlayOneShot(testAttack);
 
                 player.TakeDamage(_damage);
@@ -1090,7 +1092,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     
     private void AttackAnim()
     {
-        _animator.SetBool("Attack", true);
+        _animator.SetTrigger("Attack");
     }
 
     internal void ReceiveAnim()
