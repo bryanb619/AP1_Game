@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class AiHandler : MonoBehaviour
+public class AIHandler : MonoBehaviour
 {
     public bool AgentOperate { get; private set; }
 
@@ -32,12 +32,11 @@ public class AiHandler : MonoBehaviour
     private void Visable()
     {
         AgentOperate = true;
-        return;
+        
     }
 
     private void Invisble()
     {
         AgentOperate = false;
-        return; 
     }
 }
