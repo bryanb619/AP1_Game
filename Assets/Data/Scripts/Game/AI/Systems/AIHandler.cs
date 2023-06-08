@@ -3,6 +3,9 @@ using UnityEngine.Serialization;
 
 public class AIHandler : MonoBehaviour
 {
+    
+    public enum ActiveAi { Active, Inactive }
+    public ActiveAi activeAi;
     public bool AgentOperate { get; private set; }
 
 
@@ -18,25 +21,28 @@ public class AIHandler : MonoBehaviour
         {
             case true:
                 {
-                    Visable();
+                    Visible();
                     break;
                 }
             case false:
                 {
-                    Invisble();
+                    Invisible();
                     break;
                 }
         }
     }
 
-    private void Visable()
+    private void Visible()
     {
         AgentOperate = true;
+        activeAi = ActiveAi.Active;
+        
         
     }
 
-    private void Invisble()
+    private void Invisible()
     {
         AgentOperate = false;
+        activeAi = ActiveAi.Inactive;
     }
 }

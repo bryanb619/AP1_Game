@@ -130,10 +130,10 @@ public class Drop : MonoBehaviour
         {
             RaycastHit groundHit;
 
-            if (Physics.Raycast(transform.position, Vector3.down, out groundHit, ~_ignoreMask))
+            if (Physics.Raycast(transform.position, Vector3.down, out groundHit, _ignoreMask))
             {
 
-                _height = groundHit.point.y + 0.5f;
+                _height = groundHit.point.y + 1.3f;
             }
         }
 

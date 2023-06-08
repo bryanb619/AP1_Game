@@ -1,71 +1,64 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class AiHealth : MonoBehaviour
 {
-    [Header("Gem Spawn")]
-    [SerializeField] private bool gemSpawnOnDeath = true;
-    [SerializeField] private GameObject gemPrefab;
-
-    [SerializeField] private float health;
-
-    private Color _originalColor;
-    public int damage = 20;
-    public int damageBoost = 0;
-
-    private Transform _player; 
-
+   
     
+    [Header("Health Bar")]
+    [SerializeField]    private Image           fill; 
+                        private Slider          _healthBar;
+                        
+                        private float           _healthPercentage;
+         
+    [Header("Color Values")]
+    [SerializeField] private float              yellowValue, redValue, greenValue; 
 
-    private void Start()
+    private void Awake()
     {
-        _player = FindObjectOfType<Transform>();
+        _healthBar = GetComponentInChildren<Slider>();  
     }
+    
+    #region AI Health
 
-    #region AI Health 
-    public void TakeDamage(int damage)
+    public void HealthValueSet(float maxHealth)
     {
-        print(health);
+        _healthBar.maxValue = maxHealth;
+        _healthBar.value = _healthBar.maxValue;
+    }
+    public void HandleBar(int damage)
+    {
+        _healthBar.value -= damage;
+        //fill.color = _healthBar.value <= 25 ? Color.red : Color.green;
 
+        _healthPercentage = _healthBar.value / _healthBar.maxValue * 100f;
 
-        if (health <= 0)
+#if UNITY_EDITOR
+        //Debug.Log("Health Percentage: "+_healthPercentage);
+#endif
+        
+        if(_healthPercentage <= redValue)
         {
-            Die();
+            fill.color = Color.red;
         }
-        if (health > 0)
+        else if(_healthPercentage <= yellowValue)
         {
-            //_underAttack= true;
-            transform.LookAt(new Vector3(0, _player.position.y, 0));
-            StartCoroutine(HitFlash());
+            fill.color = Color.yellow;
         }
-        health -= damage + damageBoost;
-        //Debug.Log("enemy shot" + _Health);
     }
-
-
-
-    private void Die()
+    
+    public void IncrementHealth(float health)
     {
-
-        if (gemSpawnOnDeath)
-            Instantiate(gemPrefab, transform.position, Quaternion.identity);
-
-
-        //Instantiate(transform.position, Quaternion.identity);
-        Destroy(gameObject);
-
-        // call for AI event
-        //DieEvent.Invoke();
-
-        // Debug.Log("Enemy died");
+        _healthBar.value += health;
+        
+        if(_healthPercentage >= greenValue)
+        {
+            fill.color = Color.green;
+        }
+        
     }
+    
     #endregion
-
-    IEnumerator HitFlash()
-    {
-        _originalColor = GetComponent<Renderer>().material.color;
-        GetComponent<Renderer>().material.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        GetComponent<Renderer>().material.color = Color.magenta;
-    }
 }
