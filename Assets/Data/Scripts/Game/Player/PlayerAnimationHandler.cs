@@ -156,6 +156,11 @@ public class PlayerAnimationHandler : MonoBehaviour
         if (_playerAnimator.GetBool("qAbility") == false)
             _playerAnimator.SetBool("qAbility", true);
     }
+    public void WAttack()
+    {
+        if (_playerAnimator.GetBool("wAbility") == false)
+            _playerAnimator.SetBool("wAbility", true);  
+    }
 
     public void QAttackStop()
     {
@@ -171,6 +176,11 @@ public class PlayerAnimationHandler : MonoBehaviour
     public void RAttackStop()
     {
         _playerAnimator.SetBool("rAbility", false);
+    }
+
+    public void WAttackStop()
+    {
+        _playerAnimator.SetBool("wAbility", false);
     }
 
     public void NormalAttack()
