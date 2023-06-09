@@ -291,6 +291,7 @@ namespace Data.Scripts.Game.AI.Companion
                 ResumeAgent();
             
                 Aim();
+                
                 StartCoroutine(EnemyCheckRoutine());
 
                 if (!_enemiesInRange)
@@ -298,7 +299,7 @@ namespace Data.Scripts.Game.AI.Companion
                     CheckMoveBool();
                 }
             
-                Action actions = _stateMachine.Update();
+                var actions = _stateMachine.Update();
                 actions?.Invoke();
             
             }
@@ -366,7 +367,7 @@ namespace Data.Scripts.Game.AI.Companion
         #region Enemy detection
         private IEnumerator EnemyCheckRoutine()
         {
-            WaitForSeconds wait = new WaitForSeconds(2f);
+            WaitForSeconds wait = new WaitForSeconds(1f);
 
             while (true)
             {
