@@ -2651,6 +2651,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a508ddfe050afaf4dbf277d99ff7b6ed, type: 3}
   m_PrefabInstance: {fileID: 246305129}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &250605580 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c2ebe1cb94af584db787ad61a1d5c7d, type: 3}
+  m_PrefabInstance: {fileID: 1714510402}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &250605584
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250605580}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9.5069275, y: 7.372115, z: 9.270599}
+  m_Center: {x: -0.071210146, y: -0.11137867, z: -0.1512537}
 --- !u!4 &252199446 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b6b3c95f14e0dcc4181eb3b8de1a6ff5, type: 3}
@@ -12953,6 +12971,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4c2ebe1cb94af584db787ad61a1d5c7d, type: 3}
       propertyPath: m_Name
       value: statuegirls
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c2ebe1cb94af584db787ad61a1d5c7d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c2ebe1cb94af584db787ad61a1d5c7d, type: 3}
