@@ -187,7 +187,7 @@ public class Shooter : MonoBehaviour
                 {
                     if(!IceCooldown)
                         //Instantiate inside the TargetAttack function to avoid unnecessary code
-                        _playerAnim.QAttack();
+                        _playerAnim.WAttack();
                         TargetAttack();
                     
                     break;
