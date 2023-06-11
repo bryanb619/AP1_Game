@@ -20,7 +20,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &354192632
 Transform:
@@ -114,8 +114,8 @@ MonoBehaviour:
   profileSync: 1
   useCustomBounds: 0
   bounds:
-    m_Center: {x: 395.00168, y: 5.2263336, z: 279.45}
-    m_Extent: {x: 4.9786706, y: 4.9999995, z: 4.9786706}
+    m_Center: {x: 439.9517, y: 5.2263336, z: 335.71997}
+    m_Extent: {x: 4.978669, y: 4.9999995, z: 4.978669}
   profile: {fileID: 0}
   customRange: 5
   targetCamera: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   m_Name: Torch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5743942683626403346
@@ -383,7 +383,7 @@ GameObject:
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 2147483647
   m_IsActive: 0
 --- !u!4 &5743942683850998359
@@ -513,7 +513,7 @@ GameObject:
   m_Name: Yellow-FireWood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5743942684079049119
@@ -591,7 +591,7 @@ GameObject:
   m_Name: Fire_Yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5743942684555700021
@@ -5520,9 +5520,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: LowPolyFire_withSmoke_steven
       objectReference: {fileID: 0}
+    - target: {fileID: 6370722215694158249, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370722215694158249, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 6370722216892514420, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
       propertyPath: stopAction
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370722216892514423, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6370722216892514423, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 8943842722375799943, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
       propertyPath: ColorModule.gradient.maxGradient.atime3
@@ -5539,6 +5555,14 @@ PrefabInstance:
     - target: {fileID: 8943842722375800185, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
       propertyPath: m_Name
       value: Smoke System
+      objectReference: {fileID: 0}
+    - target: {fileID: 8943842722375800185, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8943842722375800185, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 637c7388649849841ae5b467dfd156b3, type: 3}
