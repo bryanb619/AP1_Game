@@ -1025,7 +1025,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Gradient, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"colorKeys":[{"color":{"r":0.8679245114326477,"g":0.6185872554779053,"b":0.2898539900779724,"a":1.0},"time":0.0},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":0.0,"time":0.0},{"alpha":1.0,"time":0.10000763088464737},{"alpha":1.0,"time":0.800000011920929},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
+      m_SerializableObject: '{"colorKeys":[{"color":{"r":0.8679245114326477,"g":0.6185872554779053,"b":0.2898539900779724,"a":1.0},"time":0.0},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":0.0,"time":0.00588998245075345},{"alpha":1.0,"time":0.1264667809009552},{"alpha":0.8274509906768799,"time":0.800000011920929},{"alpha":0.0,"time":0.9353017210960388}],"gradientMode":0}'
     m_Space: 2147483647
   m_Property:
     name: Color
@@ -2792,7 +2792,7 @@ MonoBehaviour:
       slotIndex: 0
   m_OutputFlowSlot:
   - link: []
-  blendMode: 0
+  blendMode: 1
   useAlphaClipping: 0
   generateMotionVector: 0
   excludeFromTAA: 0
@@ -2931,7 +2931,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Gradient, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"colorKeys":[{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":0.0,"time":0.0},{"alpha":1.0,"time":0.47058823704719546},{"alpha":1.0,"time":0.8058899641036987},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
+      m_SerializableObject: '{"colorKeys":[{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":0.9150943160057068,"g":0.760152280330658,"b":0.5395603179931641,"a":1.0},"time":0.5647059082984924}],"alphaKeys":[{"alpha":0.0,"time":0.03529411926865578},{"alpha":0.3921568691730499,"time":0.3205920457839966},{"alpha":1.0,"time":0.43529412150382998},{"alpha":1.0,"time":0.5588311553001404},{"alpha":1.0,"time":0.6470588445663452},{"alpha":0.0,"time":0.9382314682006836}],"gradientMode":0}'
     m_Space: 2147483647
   m_Property:
     name: Color
@@ -3406,8 +3406,9 @@ MonoBehaviour:
     - outputSlot: {fileID: 8926484042661614726}
       inputSlot: {fileID: 8926484042661614732}
     position: {x: 2017, y: 1120}
-    expandedSlots: []
-    expanded: 0
+    expandedSlots:
+    - {fileID: 8926484042661614726}
+    expanded: 1
   - m_Id: 2
     linkedSlots:
     - outputSlot: {fileID: 8926484042661614726}
@@ -3634,7 +3635,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614734}
   - {fileID: 8926484042661614735}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661614732}
   m_MasterData:
@@ -5589,7 +5590,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Gradient, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"colorKeys":[{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":0.0,"time":0.0},{"alpha":1.0,"time":0.47100022435188296},{"alpha":1.0,"time":0.8058899641036987},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
+      m_SerializableObject: '{"colorKeys":[{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":1.0,"g":1.0,"b":1.0,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":0.0,"time":0.050003815442323688},{"alpha":1.0,"time":0.47100022435188296},{"alpha":0.7411764860153198,"time":0.8058899641036987},{"alpha":0.0,"time":0.9323567748069763}],"gradientMode":0}'
     m_Space: 2147483647
   m_Property:
     name: Color
@@ -6362,7 +6363,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"b3dcd31d45de2e54a854b381d67b907f","type":3}}'
+      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"782769a80ad7d1d46bfb9aaf356eb265","type":3}}'
     m_Space: 2147483647
   m_Property:
     name: mainTexture
@@ -6450,7 +6451,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.08673095703125,"inTangent":0.402862548828125,"outTangent":0.402862548828125,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false},{"time":1.0,"value":0.489593505859375,"inTangent":0.402862548828125,"outTangent":0.402862548828125,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.08673095703125,"inTangent":0.2894418239593506,"outTangent":0.2894418239593506,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false},{"time":1.0333251953125,"value":0.3858184814453125,"inTangent":0.2894418239593506,"outTangent":0.2894418239593506,"tangentMode":0,"leftTangentMode":1,"rightTangentMode":1,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
     m_Space: 2147483647
   m_Property:
     name: Size
@@ -7324,7 +7325,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614893}
   - {fileID: 8926484042661614894}
   m_UIPosition: {x: 0, y: 0}
-  m_UICollapsed: 1
+  m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_MasterSlot: {fileID: 8926484042661614891}
   m_MasterData:
@@ -7557,7 +7558,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Gradient, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"colorKeys":[{"color":{"r":0.15884651243686677,"g":0.36479929089546206,"b":0.8679245114326477,"a":1.0},"time":0.4588235318660736},{"color":{"r":1.0,"g":0.6346255540847778,"b":0.29803919792175295,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":0.0,"time":0.0},{"alpha":1.0,"time":0.10000763088464737},{"alpha":1.0,"time":0.46471351385116579},{"alpha":0.800000011920929,"time":0.8352941274642944},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
+      m_SerializableObject: '{"colorKeys":[{"color":{"r":0.9433962106704712,"g":0.7635180354118347,"b":0.4672481119632721,"a":1.0},"time":0.21176470816135407},{"color":{"r":0.45430153608322146,"g":0.44499823451042178,"b":0.7547169923782349,"a":1.0},"time":0.7088273167610169}],"alphaKeys":[{"alpha":0.0,"time":0.0},{"alpha":0.3132402300834656,"time":0.04118410125374794},{"alpha":0.3803921639919281,"time":0.46471351385116579},{"alpha":0.0,"time":0.8235294222831726},{"alpha":0.0,"time":1.0}],"gradientMode":0}'
     m_Space: 2147483647
   m_Property:
     name: Color
