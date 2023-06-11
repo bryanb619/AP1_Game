@@ -401,9 +401,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f01baa56add3a3b4daec6e083130d0c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Collider: {fileID: 1520560322554408966}
-  FieldOfView: 360
-  LineOfSightLayers:
+  collider: {fileID: 1520560322554408966}
+  fieldOfView: 360
+  lineOfSightLayers:
     serializedVersion: 2
     m_Bits: 16384
 --- !u!1 &1859353050376330911
@@ -2480,8 +2480,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7207599054140134841}
-  - component: {fileID: 7207599054140134842}
-  - component: {fileID: 8509414447558435098}
+  - component: {fileID: 7938186165781407835}
   - component: {fileID: 3580100482103403493}
   - component: {fileID: 7104561059900989825}
   - component: {fileID: 7207599054140134843}
@@ -2515,7 +2514,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7207599054140134842
+--- !u!114 &7938186165781407835
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2524,52 +2523,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7207599054140134840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84a9d630ffe925545bc71e6948f84df1, type: 3}
+  m_Script: {fileID: 11500000, guid: 86cb5ec92dad7404c888145714732408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stateAI: 2
-  data: {fileID: 11400000, guid: 738d4912b6204b647ade59f70fd96a91, type: 2}
-  outlineDeactivation: {fileID: 3580100482103403493}
-  _agentAI: {fileID: 0}
-  _dizzyText: {fileID: 4334578369805648240}
-  _shootPos: {fileID: 7207599052140597720}
-  _targetEffect: {fileID: 2504214343621411470, guid: 3ed0d324122d7b24eaec75c55c74aafc, type: 3}
-  radius: 14.5
-  angle: 74
-  fov: {fileID: 7207599052736451569}
-  _death: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
-  _healthSlider: {fileID: 8617100147548000472}
-  damageBoost: 20
-  PlayerObject: {fileID: 0}
-  _PatrolPoints: []
-  HideSensitivity: -0.06
-  UpdateFrequency: 0.415
-  HidableLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  LineOfSightChecker: {fileID: 1520560322554408967}
-  _abilitySlider: {fileID: 2727053215894217272}
-  _showExtraGizmos: 0
---- !u!114 &8509414447558435098
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7207599054140134840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e2107a526c0e924f8e295af17a56062, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activateGizmo: 0
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 2048
-  aiLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  AiRadius: 5.5
 --- !u!114 &3580100482103403493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2690,7 +2646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dd657b62ff723844882f746602004d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skinnedMeshRenderer: {fileID: 4955824466518648613}
+  activeAi: 0
+  skinnedMeshRenderer: {fileID: 0}
 --- !u!195 &7207599054140134843
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2709,7 +2666,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 2
+  m_Height: 2.55
   m_BaseOffset: 1
   m_WalkableMask: 5
   m_ObstacleAvoidanceType: 4

@@ -339,6 +339,11 @@ namespace Data.Scripts.Game.AI.Companion
 
         private (bool success, Vector3 position) GetMousePosition()
         {
+            
+            _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            
+            // subtrair altura das balas do chao pela altura da camara
+            
             var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, walkMask))
