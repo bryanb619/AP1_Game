@@ -1,19 +1,21 @@
 using FMODUnity;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 
 public class LootBox : MonoBehaviour
-{
-    [FormerlySerializedAs("_data")] [SerializeField]
+{ [SerializeField]
     private LootBoxData         data;
     private BoxCollider         _collider;
 
-    [FormerlySerializedAs("_spawnPos")] [SerializeField]
+  [SerializeField]
     private Transform           spawnPos;
 
-    [FormerlySerializedAs("_effectPos")] [SerializeField]
+ [SerializeField]
     private Transform           effectPos;
+
+    private DropType            _dropType; 
 
     private GameObject          _loot;
     private GameObject          _openEffect;
@@ -24,36 +26,64 @@ public class LootBox : MonoBehaviour
     private EventReference      _soundOpen;
 
     private bool                _giveImediate;
+    private int                 _empower; 
+    
+    // player
+    private PlayerHealth _playerHealth;
+    private ManaManager _playerMana;
+
+
+#if UNITY_EDITOR
+    [SerializeField] private bool gizmos;
+[SerializeField] private float debugradius = 2F;
+    
+#endif
 
 
 
+private void Awake()
+{
+    _collider               = GetComponent<BoxCollider>();
+    _collider.isTrigger     = true;
+    
+    _dropType              = data.DropType;
 
-    [FormerlySerializedAs("_gizmos")] [SerializeField] private bool gizmos;
-    [FormerlySerializedAs("_DEBUGRADIUS")] [SerializeField] private float debugradius = 2F; 
+    _loot                   = data.Loot;
+    _openEffect             = data.OpenEffect;
+    _maxLoot                = data.MaxItems;
+    _dropRadius             = data.DropRadius;
+    _soundOpen              = data.SoundOpen;
+    
+    _giveImediate           = data.GiveLoot;
+    _empower               = data.Empower;
+    
+}
 
 
-
-    // Start is called before the first frame update
-    void Start()
+// Start is called before the first frame update
+    private void Start()
     {
-        _collider               = GetComponent<BoxCollider>();
-        _collider.isTrigger     = true;
-
-        _loot                   = data.Loot;
-        _openEffect             = data.OpenEffect;
-        _maxLoot                = data.MaxItems;
-        _dropRadius             = data.DropRadius;
-        _soundOpen              = data.SoundOpen;
-        _giveImediate           = data.GiveLoot;
+        if (_dropType == DropType.SpecialHealth)
+        {
+            _playerHealth = FindObjectOfType<PlayerHealth>(); 
+        }
+        
+        if(_dropType == DropType.SpecialMana)
+        {
+            _playerMana = FindObjectOfType<ManaManager>();
+            
+        }
+        
     }
 
     private void OnTriggerEnter(Collider other)
     {
         PlayerMovement player = other.GetComponent<PlayerMovement>();
-
+        
+        
         if (player!=null)
         {
-            this._collider.enabled = false;
+            _collider.enabled = false;
 
             OpenLoot();
 
@@ -67,7 +97,7 @@ public class LootBox : MonoBehaviour
         {
             case true:
                 {
-                    GieveLoot();
+                    GiveLoot(); 
                     break;
                 }
             case false:
@@ -79,9 +109,26 @@ public class LootBox : MonoBehaviour
 
     }
 
-    private void GieveLoot()
+    private void GiveLoot()
     {
         print("LOOT DELIVERED");
+
+        switch (_dropType)
+        {
+            case DropType.SpecialHealth:
+            {
+                _playerHealth.EmpowerHealth(_empower);
+                
+                break;
+            }
+            case DropType.SpecialMana:
+            {
+                _playerMana.ManaIncrease(_empower);
+                
+                break;
+            }
+            
+        }
     }
 
     private void PickLoot()
@@ -89,6 +136,7 @@ public class LootBox : MonoBehaviour
         if (_openEffect != null)
         {
             Instantiate(_openEffect, effectPos.position, Quaternion.identity);
+            
         }
 
         RuntimeManager.PlayOneShot(_soundOpen, transform.position);
@@ -105,6 +153,8 @@ public class LootBox : MonoBehaviour
          }
     }
 
+#if UNITY_EDITOR
+
     private void OnDrawGizmos()
     {
         if(gizmos)
@@ -113,5 +163,7 @@ public class LootBox : MonoBehaviour
         }
          
     }
+#endif
+
 
 }

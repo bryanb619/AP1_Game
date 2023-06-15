@@ -56,7 +56,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104454313354119808}
   m_LocalRotation: {x: -0.3826837, y: 0.0000027258411, z: -0.0000011290813, w: -0.92387944}
-  m_LocalPosition: {x: -5.749321, y: 19.81358, z: -54.79657}
+  m_LocalPosition: {x: -5.749321, y: 20.59658, z: -54.79657}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -211,7 +211,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104454313920517164}
   m_LocalRotation: {x: -0.3826837, y: 0.0000027258411, z: -0.0000011290813, w: -0.92387944}
-  m_LocalPosition: {x: -5.749321, y: 19.81358, z: -54.79657}
+  m_LocalPosition: {x: -5.749321, y: 20.59658, z: -54.79657}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1233,7 +1233,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6678346608262817875}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.577, z: 0}
+  m_LocalPosition: {x: 0, y: 3.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1350,6 +1350,8 @@ MonoBehaviour:
   currentShield: 0
   healthShield: {fileID: 0}
   currentHealth: 0
+  maxHealth: 100
+  healthText: {fileID: 0}
 --- !u!114 &6678346608331204954
 MonoBehaviour:
   m_ObjectHideFlags: 0

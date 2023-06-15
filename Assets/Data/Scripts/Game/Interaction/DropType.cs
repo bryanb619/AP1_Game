@@ -1,4 +1,4 @@
-internal enum DropType { 
+public enum DropType { 
     Hp, 
     Mana,
     SpecialHealth, 

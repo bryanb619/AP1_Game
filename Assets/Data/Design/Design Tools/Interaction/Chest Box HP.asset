@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73557a31991406c44bb1c2f1aa6c9045, type: 3}
   m_Name: Chest Box HP
   m_EditorClassIdentifier: 
-  _loot: {fileID: 6466797524158734624, guid: c1e0bba5da695f749a8401cf2272c312, type: 3}
-  _openEffect: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
-  _maxItems: 1
-  _dropRadius: 0.1
-  _giveLoot: 0
-  _soundOpen:
+  loot: {fileID: 6466797524158734624, guid: c1e0bba5da695f749a8401cf2272c312, type: 3}
+  dropType: 2
+  openEffect: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
+  maxItems: 1
+  dropRadius: 0.1
+  giveLoot: 1
+  empower: 70
+  soundOpen:
     Guid:
       Data1: -867561172
       Data2: 1227050083

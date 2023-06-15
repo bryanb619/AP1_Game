@@ -19,9 +19,10 @@ public class HealthBar : MonoBehaviour
         SetCriticalHealth();
     }
 
-    internal void SetMaxHealth(int health, int shield)
+    internal void SetMaxHealth(int empower, int shield)
     {
-        healthSlider.maxValue = health;
+
+        healthSlider.maxValue += empower; 
         //criticalSlider.maxValue = health + shield;
         //shieldSlider.maxValue = health + shield;    
         //_fill.color = _gradient.Evaluate(1f);
