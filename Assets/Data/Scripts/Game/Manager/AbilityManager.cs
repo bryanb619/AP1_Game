@@ -46,14 +46,14 @@ public class AbilityManager : MonoBehaviour
     
     [Header("Enemies")]
     //Chase
-    [SerializeField]    private int chaseEnemyMaxHealth;
-    [SerializeField]    private int chaseEnemyDamage1;
-    [SerializeField]    private int chaseEnemyDamage2;
-    [SerializeField]    private int chaseEnemyDamageSpecial;
+    //[SerializeField]    private int chaseEnemyMaxHealth;
+    //[SerializeField]    private int chaseEnemyDamage1;
+    //[SerializeField]    private int chaseEnemyDamage2;
+    //[SerializeField]    private int chaseEnemyDamageSpecial;
     //Ranged
-    [SerializeField]    private int rangedEnemyMaxHealth;
-    [SerializeField]    private int rangedEnemyDamage1;
-    [SerializeField]    private int rangedEnemyDamage2;
+    //[SerializeField]    private int rangedEnemyMaxHealth;
+    //[SerializeField]    private int rangedEnemyDamage1;
+    //[SerializeField]    private int rangedEnemyDamage2;
     //Boss
     //[SerializeField]    private float bossEnemyMaxHealth;
     //[SerializeField]    private float bossEnemyDamage;
@@ -69,8 +69,8 @@ public class AbilityManager : MonoBehaviour
                         private Shooter        shooterScript;
                         private ManaManager    manaManagerScript;
                         private PlayerHealth   playerHealthScript;
-                        private EnemyChaseBehaviour[] enemyChaseScript;
-                        private EnemyRangedBehaviour[] enemyRangedScript;
+                        //private EnemyChaseBehaviour[] enemyChaseScript;
+                        //private EnemyRangedBehaviour[] enemyRangedScript;
     
 
 
@@ -83,21 +83,21 @@ public class AbilityManager : MonoBehaviour
         shooterScript = FindObjectOfType<Shooter>();
         manaManagerScript = FindObjectOfType<ManaManager>();
         playerHealthScript = FindObjectOfType<PlayerHealth>();
-        enemyChaseScript = FindObjectsOfType<EnemyChaseBehaviour>();
-        enemyRangedScript = FindObjectsOfType<EnemyRangedBehaviour>();
+        //enemyChaseScript = FindObjectsOfType<EnemyChaseBehaviour>();
+        //enemyRangedScript = FindObjectsOfType<EnemyRangedBehaviour>();
 
-        foreach (EnemyChaseBehaviour enemyChaseBehaviour in enemyChaseScript)
-        {
-            enemyChaseBehaviour.health = chaseEnemyMaxHealth;
-            enemyChaseBehaviour._healthBar.HealthValueSet(chaseEnemyMaxHealth);
-        }
+        //foreach (EnemyChaseBehaviour enemyChaseBehaviour in enemyChaseScript)
+       // {
+       //     enemyChaseBehaviour.health = chaseEnemyMaxHealth;
+       //     enemyChaseBehaviour._healthBar.HealthValueSet(chaseEnemyMaxHealth);
+        //}
 
         UpdateValues();
     }
 
     private void UpdateValues()
     {
-        foreach (EnemyChaseBehaviour enemyChaseBehaviour in enemyChaseScript)
+       /* foreach (EnemyChaseBehaviour enemyChaseBehaviour in enemyChaseScript)
         {
             enemyChaseBehaviour.maxhealth = chaseEnemyMaxHealth;
             enemyChaseBehaviour.damage = chaseEnemyDamage1;
@@ -109,10 +109,10 @@ public class AbilityManager : MonoBehaviour
         {
             enemyRangedBehaviour.health = rangedEnemyMaxHealth;
         }
-
         rangedProjectile1.damage = rangedEnemyDamage1;
         rangedProjectile2.damage = rangedEnemyDamage2;
         
+*/
         //enemyBossScript.maxHealth = bossEnemyMaxHealth;
         //enemyBossScript.damage = bossEnemyDamage;
         
