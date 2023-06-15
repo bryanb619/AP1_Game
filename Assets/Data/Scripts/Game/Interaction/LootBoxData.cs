@@ -1,5 +1,5 @@
-using FMODUnity;
 using UnityEngine;
+using FMODUnity;
 
 [CreateAssetMenu (menuName = "Akarya/Interaction/Loot Box")]
 public class LootBoxData : ScriptableObject

@@ -17,6 +17,17 @@ public class ChaseEnemyAnimationHandler : MonoBehaviour
     {
         player = playerHealth;
     }
+    
+    public void StopAi()
+    {
+        //enemyChaseScript.StopAi();
+        enemyChaseScript.SetAiAfterAttack(false);
+    }
+    public void ResumeAi()
+    {
+        //enemyChaseScript.StartAi();
+        enemyChaseScript.SetAiAfterAttack(true);
+    }
 
     public void AttackPlayerAnimationEvent()
     {
