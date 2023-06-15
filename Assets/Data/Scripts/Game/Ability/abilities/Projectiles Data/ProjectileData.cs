@@ -40,21 +40,21 @@ public class ProjectileData : ScriptableObject
     [Header("Enemy damage")]
     [Tooltip("value for ranged damage")]
     [SerializeField]
-    private int                                                             enemyRangedDamage;
+    public int                                                             enemyRangedDamage;
 
     public int                                                              EnemyRangedDamage => enemyRangedDamage;
 
     [FormerlySerializedAs("_enemyChaseDamage")]
     [Tooltip("Value for Chase damage")]
     [SerializeField]
-    private int                                                             enemyChaseDamage;
+    public int                                                             enemyChaseDamage;
 
     public int                                                              EnemyChaseDamage => enemyChaseDamage;
 
     [FormerlySerializedAs("_enemyBossDamage")]
     [Tooltip("Value for Booss damage")]
     [SerializeField]
-    private int                                                             enemyBossDamage;
+    public int                                                             enemyBossDamage;
 
     public int                                                              EnemybossDamage => enemyBossDamage;
 

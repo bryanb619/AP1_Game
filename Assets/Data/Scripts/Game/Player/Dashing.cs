@@ -29,8 +29,9 @@ public class Dashing : MonoBehaviour
     [SerializeField] private bool allowAllDirections = true; 
     [SerializeField] private bool disableGravity = true, resetVel = true;
     [SerializeField] private bool dashUpgraded;
-    [SerializeField] private int shieldAmount = 50;
+    [SerializeField] public int shieldAmount = 50;
     private KeyCode eKey = KeyCode.E;
+    private Animator _animator;
 
 
     private void Start()
@@ -40,6 +41,7 @@ public class Dashing : MonoBehaviour
         _playerHealth = GetComponent<PlayerHealth>();
         _playerMovement = GetComponent<PlayerMovement>();
         _playerNavMesh = GetComponent<NavMeshAgent>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -64,6 +66,7 @@ public class Dashing : MonoBehaviour
                 {
                     _playerHealth.GiveShield(shieldAmount);
                 }
+                _animator.SetTrigger("Dash");
             }
 
             

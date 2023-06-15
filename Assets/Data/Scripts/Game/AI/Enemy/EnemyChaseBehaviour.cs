@@ -52,7 +52,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         // AI controller for performance AI actions
                         //private AiController                _controller;
                         private AIHandler                   _hanlderAi;
-                        private AiHealth                    _healthBar;
+                        public AiHealth                    _healthBar;
 
                         // AI Mesh
     [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
@@ -136,13 +136,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         // random attack
                         private float                       _percentage;
-                        private int                         _bDamage; 
+                        public int                          bDamage; 
 
                         // special attack
                         private const float                 AbilityMaxValue = 100F;
                         private float                       _currentAbilityValue;
                         private float                       _abilityIncreasePerFrame;
-                        private int                         _specialDamage;
+                        public int                         specialDamage;
                         private bool                        _canSpecialAttack;
 
                         private int                         _randomPriority;
@@ -172,12 +172,12 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Combat Events -------------------------------------------------------------------------------------------------->
 
                         // Health //
-                        private float                       _health;
-                        private int                         _maxhealth;
+                        public float                       health;
+                        public int                         maxhealth;
                         private float                       _healthInCreasePerFrame;
 
                         // Death //
-                        private GameObject                  _death;
+                        //private GameObject                  _death;
 
                         // Drops & Loot //
                         private bool                        _spawnHealth;
@@ -200,7 +200,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private float                       _damageOverTime = 2f;
                         private float                       _durationOfDot = 10f;
 
-                        private int                         _damage;
+                        public int                          damage;
                         internal int                        DamageBoost;
                         private float                       _damageEffectTime = 0.5f;
 
@@ -285,6 +285,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Get references to enemies
     private void Awake()
     {
+        health = maxhealth;
+        
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         _objectiveUiScript = FindObjectOfType<ObjectiveUi>();
@@ -341,7 +343,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         _warn                        = GetComponent<WarningSystemAi>();
         _hanlderAi                   = GetComponent<AIHandler>();
-        _healthBar                  = GetComponentInChildren<AiHealth>();
+        _healthBar                   = GetComponentInChildren<AiHealth>();
 
         _rb                          = GetComponent<Rigidbody>();
 
@@ -392,21 +394,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
          _attackRange                   = data.AttackDist;
         _attackTimer                    = data.AttackTimer;
         _attackSpeed                    = data.AttackSpeed;
-        _damage                         = data.Damage;
+        damage                         = data.Damage;
         _attackRate                     = data.AttackRate;
         _minDist                        = data.MinDist;
 
         // ** ATTACK 2 (CHANCE) **
     
         _percentage                     = data.Percentage;   
-        _bDamage                        = data.BDamage;   
+        bDamage                        = data.BDamage;   
         _sAttackEffect                  = data.SAttackEffect;
 
         // ** SPECIAL ATTACK **
         _abilityIncreasePerFrame        = data.AbilityIncreasePerFrame;
         _currentAbilityValue            = data.CurrentAbilityValue;
         _specialAttackEffect            = data.SpecialAttackEffect;    
-        _specialDamage                  = data.SDamage;
+        specialDamage                  = data.SDamage;
         
         // combat events
         //_spawnOtherAI               = data.CanSpawnOthers;
@@ -415,8 +417,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         // Health ----------------------------------------------------------------------------------------------------->
 
-        _health                         = data.Health;
-        _maxhealth                      = data.Health;
+        health                         = data.Health;
+        maxhealth                       = data.Health;
         _healthInCreasePerFrame         = data.HealthRegen;
         abilitySlider.value             = _currentAbilityValue;
         
@@ -430,7 +432,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Death & Damage --------------------------------------------------------------------------------------------->
 
         // death
-        _death                          = data.DeathEffect;
+        //_death                          = data.DeathEffect;
         _damageEffectTime               = data.DamageTime;
 
         // stunned
@@ -458,7 +460,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void Start()
     {
         GetStates();
-        _healthBar.HealthValueSet(_health);
+        _healthBar.HealthValueSet(maxhealth);
         
     }
     private void GetStates()
@@ -1049,7 +1051,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case 1:
             {
                 RuntimeManager.PlayOneShot(testAttack);
-                player.TakeDamage(_damage);
+                player.TakeDamage(damage);
                 Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
                 break;
             }
@@ -1058,7 +1060,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 RuntimeManager.PlayOneShot(testAttack);
                 Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-                player.TakeDamage(_bDamage);
+                player.TakeDamage(bDamage);
                 break; 
             }
                 
@@ -1155,7 +1157,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 _currentAbilityValue = 0;
                 //_AbilitySlider.value = currentAbilityValue;
 
-                _player.TakeDamage(_specialDamage);
+                _player.TakeDamage(specialDamage);
 
                 
                 Instantiate(_specialAttackEffect, attackPoint.transform.position, Quaternion.identity);
@@ -1262,20 +1264,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
         HandleGainSight(PlayerTarget);
 
         //print(curSpeed); 
-        if (_curSpeed <= 0.5 && _health >= 16)
+        if (_curSpeed <= 0.5 && health >= 16)
         {
-            _health = Mathf.Clamp(_health + (_healthInCreasePerFrame * Time.deltaTime), 0.0f, _maxhealth);
+            health = Mathf.Clamp(health + (_healthInCreasePerFrame * Time.deltaTime), 0.0f, maxhealth);
             //Debug.Log("Chase health: " + _health);
 
-            healthSlider.value = _health;
+            healthSlider.value = health;
 
 
-            if ( _health >= 50 && _currentAbilityValue >= 65) { _canAttack = true; return;}
+            if ( health >= 50 && _currentAbilityValue >= 65) { _canAttack = true; return;}
 
             else {_canAttack = false; return;}
 
         }
-        else if(_health < 15) { SetGloryKill();}
+        else if(health < 15) { SetGloryKill();}
 
         //else if(_canAttack){ SetAttack();}
     }
@@ -1470,18 +1472,18 @@ public class EnemyChaseBehaviour : MonoBehaviour
     public void TakeDamage(int damage, WeaponType type)
     {
         
-        if (_health <= 0)
+        if (health <= 0)
         {
             Die();
         }
 
-        else if (_health > 0)
+        else if (health > 0)
         {
             switch (type)
             {
                 case WeaponType.Normal:
                     {
-                        _health -= damage + DamageBoost;
+                        health -= damage + DamageBoost;
 
                         StartCoroutine(HitFlash());
 
@@ -1498,7 +1500,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            _health -= damage + DamageBoost;
+                            health -= damage + DamageBoost;
                             Instantiate(targetEffect, transform.position, transform.rotation);
                             StartCoroutine(HitFlash());
                         }
@@ -1508,7 +1510,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                 case WeaponType.Fire:
                     {
-                        _health -= damage + DamageBoost;
+                        health -= damage + DamageBoost;
 
                         StartCoroutine(HitFlash());
 
@@ -1519,7 +1521,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                 case WeaponType.Thunder:
                     {
-                        _health -= damage + DamageBoost;
+                        health -= damage + DamageBoost;
 
                         if (_shooterScript.RUpgraded == true)
                             StartCoroutine(StopForSeconds(_stunnedTime));
@@ -1530,7 +1532,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                 case WeaponType.Dash:
                     {
-                        _health -= damage + DamageBoost;
+                        health -= damage + DamageBoost;
 
                         StartCoroutine(HitFlash());
                         break;
@@ -1599,7 +1601,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             Instantiate(_gemPrefab, dropPos.position, Quaternion.identity);
         }
 
-        Instantiate(_death, transform.position, Quaternion.identity);
+        //Instantiate(_death, transform.position, Quaternion.identity);
 
         _valuesTexts.GetKill();
 
@@ -1709,7 +1711,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         float elapsedTime = 0f;
         while (elapsedTime < durationOfdamage)
         {
-            _health -= damagePerSecond;
+            health -= damagePerSecond;
             StartCoroutine(HitFlash());
             yield return new WaitForSeconds(damagePerSecond);
             elapsedTime += 2.5f;

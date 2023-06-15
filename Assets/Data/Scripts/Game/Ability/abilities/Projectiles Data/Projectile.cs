@@ -26,8 +26,6 @@ public class Projectile : MonoBehaviour
 
     private int                         _rangedDamage, _chaseDamage, _bossDamage;
 
-    private int _damageBoost; 
-
     private bool                        _impactEffet;
     private GameObject                  _impactObject;
 
@@ -139,32 +137,12 @@ public class Projectile : MonoBehaviour
     #region Collision
     private void OnTriggerEnter(Collider hitInfo)
     {
-        //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
-        var chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
-        var rangedEnemy = hitInfo.GetComponent<EnemyRangedBehaviour>();
-        var bossEnemy = hitInfo.GetComponent<RangedBossBehaviour>();
-        
+        //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyRangedBehaviour>();
+        EnemyChaseBehaviour chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
 
-        if (chaseEnemy != null)
-        {
-            chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
-            DestroyBullet();
-            
-        }
-
-        if (rangedEnemy != null )
-        {
-            rangedEnemy.TakeDamage(_rangedDamage, _weaponType, _damageBoost);
-            DestroyBullet();
-        }
-        
-        if(bossEnemy != null)
-        {
-            //bossEnemy.TakeDamage(_bossDamage, _weaponType, _damageBoost);
-            DestroyBullet();
-        }
-
-        
+        if (chaseEnemy == null) return;
+        chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
+        DestroyBullet();
 
     }
     /*
