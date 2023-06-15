@@ -238,7 +238,7 @@ private float _stunnedTime;
         _color                      = _mesh.material.color;
         
         // animator
-        _animator                   = GetComponentInChildren<Animator>();
+        //_animator                   = GetComponentInChildren<Animator>();
         
         // Player 
         _player                     = GameObject.Find("Player");
@@ -519,7 +519,7 @@ private float _stunnedTime;
          //abilitySlider.value = _currentAbilityValue;
          //_canSpecialAttack = false;
         
-         _animator.SetBool("isAttacking", false);
+        // _animator.SetBool("isAttacking", false);
          // StartCoroutine(SpecialAttackTimer());
          _canSpecialAttack = false;
 #if UNITY_EDITOR                                                                              
@@ -570,7 +570,7 @@ private float _stunnedTime;
 
                  if(Random.value < _percentage && _canAttack)
                  {
-                     _animator.SetBool("isAttacking", true);
+                     //_animator.SetBool("isAttacking", true);
                      RandomAttack();
                  }
                  
@@ -582,9 +582,10 @@ private float _stunnedTime;
              }
          }
          
+  
          else
          {
-             _animator.SetBool("isAttacking", false);
+             //_animator.SetBool("isAttacking", false);
             
          }
      }
@@ -620,7 +621,7 @@ private float _stunnedTime;
     
      private void NormalAttack()
     {
-             _animator.SetBool("isAttacking", true);
+             //_animator.SetBool("isAttacking", true);
              
              _aiShoot.Shoot(_playerTarget, _projectile); 
                     
