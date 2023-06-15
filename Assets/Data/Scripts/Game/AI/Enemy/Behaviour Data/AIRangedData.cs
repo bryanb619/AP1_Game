@@ -120,7 +120,7 @@ public class AiRangedData : ScriptableObject
     // HEALTH //
     [Header("Health")]
     [Tooltip("Set AI Health")]
-    [Range(0, 150)]
+    [Range(0, 9999)]
     [SerializeField] private int        health;
     public int                          Health => health;
 

@@ -83,7 +83,7 @@ public class RangedBossBehaviour : MonoBehaviour
                     private float                               _minRange, _maxRange;
                     private GameObject                          _teleportEffect;
                     private float                              _nextTeleport;
-                    private float                               _teleportRate = 3f;
+                    private float                               _teleportRate;
 
                     private int                                 _areaAttackDamage; 
                     private float                               _areaAttackRange; 
@@ -238,6 +238,8 @@ private float _stunnedTime;
         _player                     = GameObject.Find("Player");
         _playerTarget               = _player.transform;
         _shooterScript              = _player.GetComponent<Shooter>();
+        
+        _damageText                = GetComponentInChildren<TextMeshProUGUI>();
     }
     
     private void ProfileSync()
@@ -256,7 +258,7 @@ private float _stunnedTime;
         _currentAbilityValue        = data.CurrentAbilityValue;
         _abilityIncreasePerFrame    = data.AbilityIncreasePerFrame;
         
-        
+        _teleportRate              = data.TeleportTime;
         _areaAttackDamage           = data.AreaDamageAttack;
         _areaAttackRange            = data.AreaDamageRadius;
         
@@ -389,7 +391,7 @@ private float _stunnedTime;
     
     private void InactiveAi()
     {
-        if (agent)
+        if (agent.enabled == true)
         {
             agent.velocity = Vector3.zero;
             agent.isStopped = true;
@@ -403,6 +405,12 @@ private float _stunnedTime;
     {
         var actions = _fsm.Update();
         actions?.Invoke();
+
+        if ((_playerTarget.transform.position - transform.position).magnitude <= 2)
+        {
+            agent.enabled = false;
+            
+        }
     }
     
     private void Paused()
@@ -423,8 +431,8 @@ private float _stunnedTime;
         if (_canAttack)
         {
             BossAttack();
-                    
             UpdateRotation(); 
+            
         }            
         
     }   
@@ -435,6 +443,16 @@ private float _stunnedTime;
         {
             case true:
                 {
+                    if ((_playerTarget.transform.position - transform.position).magnitude <= _areaAttackRange) 
+                    {
+                        PauseAi();
+                        
+                        if (Time.time > _nextSpecialAttack)
+                        {
+                            AreaAttack();
+                            _nextSpecialAttack = Time.time + _specialAttackRate;
+                        }
+                    }
                     
                     if ((_playerTarget.transform.position - transform.position).magnitude >= _safeDistance)  //
                     {
@@ -448,19 +466,7 @@ private float _stunnedTime;
 
                         
                     }
-                    else if ((_playerTarget.transform.position - transform.position).magnitude <= _safeDistance) 
-                    {
-                        PauseAi();
-                        
-                        if (Time.time > _nextSpecialAttack)
-                        {
-                            AreaAttack();
-                            _nextSpecialAttack = Time.time + _specialAttackRate;
-                        }
-
-                        
-                        
-                    }
+                    
                     break;
                 }
                 
@@ -507,7 +513,7 @@ private float _stunnedTime;
         
          _animator.SetBool("isAttacking", false);
          // StartCoroutine(SpecialAttackTimer());
-        
+         _canSpecialAttack = false;
 #if UNITY_EDITOR                                                                              
                                                                                               
          const string debugAttack = "<size=14><color=purple>";                                 
@@ -527,8 +533,11 @@ private float _stunnedTime;
 
              if (player == null) return;
              
+             Instantiate(_areaAttack, transform.position, _areaAttack.transform.rotation);
              player.TakeDamage(_areaAttackDamage);
-            
+             
+             _currentAbilityValue = 0;
+            _canSpecialAttack = false;
 #if UNITY_EDITOR
              const string debugColor = "<size=14><color=red>";
              const string closeDebug = "</color></size>";
@@ -612,7 +621,7 @@ private float _stunnedTime;
     #if UNITY_EDITOR   
                     const string debugAttack = "<size=12><color=green>";
                     const string closeAttack = "</color></size>";
-                    Debug.Log(debugAttack + "Attack: " + closeAttack);
+                    Debug.Log(debugAttack + "Normal Attack: " + closeAttack);
     #endif
     
      }
@@ -627,7 +636,7 @@ private float _stunnedTime;
 #if UNITY_EDITOR                     
                 const string debugAttack = "<size=12><color=yellow>";
                 const string closeAttack = "</color></size>";
-                Debug.Log(debugAttack + "Attack 2: " + closeAttack);
+                Debug.Log(debugAttack + "chance attack: " + closeAttack);
 #endif
      }
 
@@ -637,7 +646,6 @@ private float _stunnedTime;
 
     private void CoolDoownPower()
     {
-
         if (_currentAbilityValue >= AbilityMaxValue)
         {
             _canSpecialAttack = true;
@@ -733,12 +741,11 @@ private float _stunnedTime;
         
         agent.enabled = false;
         transform.position = teleportPos;
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.2f);
+        
         agent.enabled = true;
-        
-        yield return new WaitForSeconds(0.5f);
-        
         _canAttack = true;
+        
     }
     
     #endregion
@@ -813,7 +820,7 @@ private float _stunnedTime;
                 DropSpawnCheck();
             }
             
-            //_damageText.text = damage.ToString();
+            _damageText.text = damage.ToString();
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
