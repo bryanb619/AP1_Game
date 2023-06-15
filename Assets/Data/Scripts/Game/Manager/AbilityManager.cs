@@ -46,7 +46,7 @@ public class AbilityManager : MonoBehaviour
     
     [Header("Enemies")]
     //Chase
-    [SerializeField]    private float chaseEnemyMaxHealth;
+    [SerializeField]    private int chaseEnemyMaxHealth;
     [SerializeField]    private int chaseEnemyDamage1;
     [SerializeField]    private int chaseEnemyDamage2;
     [SerializeField]    private int chaseEnemyDamageSpecial;
@@ -70,7 +70,7 @@ public class AbilityManager : MonoBehaviour
                         private ManaManager    manaManagerScript;
                         private PlayerHealth   playerHealthScript;
                         private EnemyChaseBehaviour enemyChaseScript;
-                        private AiRangedData enemyRangedScript;
+                        private EnemyRangedBehaviour enemyRangedScript;
     
 
 
@@ -84,7 +84,7 @@ public class AbilityManager : MonoBehaviour
         manaManagerScript = GetComponent<ManaManager>();
         playerHealthScript = GetComponent<PlayerHealth>();
         enemyChaseScript = GetComponent<EnemyChaseBehaviour>();
-        enemyRangedScript = GetComponent<AiRangedData>();
+        enemyRangedScript = GetComponent<EnemyRangedBehaviour>();
 
         UpdateValues();
     }
@@ -92,7 +92,7 @@ public class AbilityManager : MonoBehaviour
     private void UpdateValues()
     {
         
-        enemyChaseScript.health = chaseEnemyMaxHealth;
+        enemyChaseScript.maxhealth = chaseEnemyMaxHealth;
         enemyChaseScript.damage = chaseEnemyDamage1;
         enemyChaseScript.bDamage = chaseEnemyDamage2;
         enemyChaseScript.specialDamage = chaseEnemyDamageSpecial;

@@ -6,13 +6,13 @@ using UnityEngine.Serialization;
 public class ManaManager : MonoBehaviour
 {
     [Header("Values")]
-    [SerializeField] private float maxMana = 100;
+    [SerializeField] public float maxMana = 100;
     [SerializeField] private float mana;
 
     [Header("Ability Mana Cost")]
-    [SerializeField] private int fireAttackCost;
-    [SerializeField] private int iceAttackCost;
-    [SerializeField] private int thunderAttackCost;
+    [SerializeField] public int fireAttackCost;
+    [SerializeField] public int iceAttackCost;
+    [SerializeField] public int thunderAttackCost;
     
     [Header ("Regeneration")]
     [SerializeField] private float manaRegenRate = 1f;

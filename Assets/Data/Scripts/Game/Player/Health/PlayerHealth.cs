@@ -27,7 +27,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField]        internal int            currentHealth;
                             private HealthBar       _healthBar;
                             internal bool             HealthSetAtMax;
-                            private int             _maxHealth = 100;
+                            public int             maxHealth = 100;
                             internal int            CurretHealth => currentHealth;
                            
                             private PlayerMovement  _coroutineCaller;
@@ -50,9 +50,9 @@ public class PlayerHealth : MonoBehaviour
         _gameManager                        = FindObjectOfType<GameManager>();
         _playerAnim                         = GetComponentInChildren<PlayerAnimationHandler>();
 
-        currentHealth                      = _maxHealth;
+        currentHealth                      = maxHealth;
         _healthBar.healthSlider.value       = currentHealth;
-        _healthBar.healthSlider.maxValue    = _maxHealth;
+        _healthBar.healthSlider.maxValue    = maxHealth;
         HealthSetAtMax                      = true;
         currentHealth                      = 100;
     }
@@ -60,7 +60,7 @@ public class PlayerHealth : MonoBehaviour
     internal void EmpowerHealth(int powerUp)
     {
 
-        _maxHealth = _maxHealth + powerUp;
+        maxHealth = maxHealth + powerUp;
 
         //_healthBar._slider.maxValue = _maxHealth; 
         
@@ -85,8 +85,8 @@ public class PlayerHealth : MonoBehaviour
             currentShield -= damage;
         }
 
-        if ((currentShield + currentHealth) > _maxHealth)
-            _healthBar.SetMaxHealth(_maxHealth, currentShield);
+        if ((currentShield + currentHealth) > maxHealth)
+            _healthBar.SetMaxHealth(maxHealth, currentShield);
         else
             _healthBar.SetHealth(currentHealth, currentShield);
 
@@ -127,14 +127,14 @@ public class PlayerHealth : MonoBehaviour
 
         StartCoroutine(_coroutineCaller.VisualFeedbackHeal());
 
-        _healthBar.SetMaxHealth(_maxHealth, currentShield);
+        _healthBar.SetMaxHealth(maxHealth, currentShield);
 
         _healthBar.SetHealth(currentHealth, currentShield);
 
-        if (currentHealth >= _maxHealth)
+        if (currentHealth >= maxHealth)
         {
             HealthSetAtMax = true;
-            currentHealth = _maxHealth;
+            currentHealth = maxHealth;
             _healthBar.SetHealth(currentHealth, currentShield);
         }
 
@@ -144,7 +144,7 @@ public class PlayerHealth : MonoBehaviour
     internal void GiveShield(int shieldAmount)
     {
         this.currentShield = shieldAmount;
-        _healthBar.SetMaxHealth(_maxHealth, currentShield);
+        _healthBar.SetMaxHealth(maxHealth, currentShield);
         _healthBar.SetHealth(currentHealth, currentShield);
 
         StopCoroutine(DecayTimer());
@@ -155,11 +155,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth += health;
 
-        if (currentHealth > _maxHealth)
+        if (currentHealth > maxHealth)
         {
-            currentHealth = _maxHealth;
+            currentHealth = maxHealth;
         }
-            _healthBar.SetHealth(_maxHealth, currentShield);
+            _healthBar.SetHealth(maxHealth, currentShield);
     }
 
     private void Update()

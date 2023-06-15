@@ -136,13 +136,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         // random attack
                         private float                       _percentage;
-                        private int                         _bDamage; 
+                        public int                          bDamage; 
 
                         // special attack
                         private const float                 AbilityMaxValue = 100F;
                         private float                       _currentAbilityValue;
                         private float                       _abilityIncreasePerFrame;
-                        private int                         _specialDamage;
+                        public int                         specialDamage;
                         private bool                        _canSpecialAttack;
 
                         private int                         _randomPriority;
@@ -173,7 +173,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         // Health //
                         private float                       _health;
-                        private int                         _maxhealth;
+                        public int                         maxhealth;
                         private float                       _healthInCreasePerFrame;
 
                         // Death //
@@ -200,7 +200,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private float                       _damageOverTime = 2f;
                         private float                       _durationOfDot = 10f;
 
-                        private int                         _damage;
+                        public int                          damage;
                         internal int                        DamageBoost;
                         private float                       _damageEffectTime = 0.5f;
 
@@ -392,21 +392,21 @@ public class EnemyChaseBehaviour : MonoBehaviour
          _attackRange                   = data.AttackDist;
         _attackTimer                    = data.AttackTimer;
         _attackSpeed                    = data.AttackSpeed;
-        _damage                         = data.Damage;
+        damage                         = data.Damage;
         _attackRate                     = data.AttackRate;
         _minDist                        = data.MinDist;
 
         // ** ATTACK 2 (CHANCE) **
     
         _percentage                     = data.Percentage;   
-        _bDamage                        = data.BDamage;   
+        bDamage                        = data.BDamage;   
         _sAttackEffect                  = data.SAttackEffect;
 
         // ** SPECIAL ATTACK **
         _abilityIncreasePerFrame        = data.AbilityIncreasePerFrame;
         _currentAbilityValue            = data.CurrentAbilityValue;
         _specialAttackEffect            = data.SpecialAttackEffect;    
-        _specialDamage                  = data.SDamage;
+        specialDamage                  = data.SDamage;
         
         // combat events
         //_spawnOtherAI               = data.CanSpawnOthers;
@@ -416,7 +416,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         // Health ----------------------------------------------------------------------------------------------------->
 
         _health                         = data.Health;
-        _maxhealth                      = data.Health;
+        maxhealth                      = data.Health;
         _healthInCreasePerFrame         = data.HealthRegen;
         abilitySlider.value             = _currentAbilityValue;
         
@@ -1049,7 +1049,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case 1:
             {
                 RuntimeManager.PlayOneShot(testAttack);
-                player.TakeDamage(_damage);
+                player.TakeDamage(damage);
                 Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
                 break;
             }
@@ -1058,7 +1058,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 RuntimeManager.PlayOneShot(testAttack);
                 Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
-                player.TakeDamage(_bDamage);
+                player.TakeDamage(bDamage);
                 break; 
             }
                 
@@ -1155,7 +1155,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 _currentAbilityValue = 0;
                 //_AbilitySlider.value = currentAbilityValue;
 
-                _player.TakeDamage(_specialDamage);
+                _player.TakeDamage(specialDamage);
 
                 
                 Instantiate(_specialAttackEffect, attackPoint.transform.position, Quaternion.identity);
@@ -1264,7 +1264,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         //print(curSpeed); 
         if (_curSpeed <= 0.5 && _health >= 16)
         {
-            _health = Mathf.Clamp(_health + (_healthInCreasePerFrame * Time.deltaTime), 0.0f, _maxhealth);
+            _health = Mathf.Clamp(_health + (_healthInCreasePerFrame * Time.deltaTime), 0.0f, maxhealth);
             //Debug.Log("Chase health: " + _health);
 
             healthSlider.value = _health;

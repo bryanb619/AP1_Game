@@ -26,7 +26,7 @@ public class Shooter : MonoBehaviour
     [Header("Abilities options")]
     [SerializeField] private float areaAttackRadius = 5f;
 
-    [SerializeField] private Ability normalTimer, fireTimer, iceTimer, thunderTimer;
+    [SerializeField] public Ability normalTimer, fireTimer, iceTimer, thunderTimer;
     [SerializeField] private GameObject rAbilityTelegraph;
     private KeyCode qKey = KeyCode.Q, wKey = KeyCode.W, rKey = KeyCode.R;
     internal bool NormalCooldown, FireCooldown, IceCooldown, ThunderCooldown = false;
