@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using LibGameAI.FSMs;
 using TMPro;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
 using StateMachine = LibGameAI.FSMs.StateMachine;
@@ -90,6 +91,8 @@ public class RangedBossBehaviour : MonoBehaviour
                     private float                              _nextSpecialAttack;
                     private float                               _specialAttackRate = 2f;
                     
+                    private bool                                _canIncreaseAbility;
+                    
                     
     // projectiles
                     private GameObject                          _projectile, _randomProjectile,
@@ -125,7 +128,8 @@ public class RangedBossBehaviour : MonoBehaviour
                     
     // UI ------------------------------------------------------------------------------------------------------------->
     
-                        private TextMeshProUGUI             _damageText;
+                            private TextMeshProUGUI             _damageText;
+        [SerializeField]    private Slider                      abilitySlider;
 
 
 
@@ -144,6 +148,7 @@ private float _stunnedTime;
         
         _currentState = HandleState.None;
         _canAttack = true;
+        _canIncreaseAbility = true; 
         
         GetAiComponents(); 
         ProfileSync();
@@ -316,6 +321,8 @@ private float _stunnedTime;
     private void Start()
     {
         _healthBar.HealthValueSet(_health);
+        abilitySlider.maxValue = 100; 
+        abilitySlider.value = _currentAbilityValue;
     }
 
     private void StateSet()
@@ -649,10 +656,18 @@ private float _stunnedTime;
         if (_currentAbilityValue >= AbilityMaxValue)
         {
             _canSpecialAttack = true;
+            
         }
         else
         {
-            _currentAbilityValue = Mathf.Clamp(_currentAbilityValue + (_abilityIncreasePerFrame * Time.deltaTime), 0.0f, AbilityMaxValue);   
+            if (_canIncreaseAbility)
+            {
+                print(_currentAbilityValue);
+                _currentAbilityValue = Mathf.Clamp(_currentAbilityValue + (_abilityIncreasePerFrame * Time.deltaTime), 0.0f, AbilityMaxValue);   
+            
+                abilitySlider.value = _currentAbilityValue;
+            }
+           
         }
 
         //abilitySlider.value = _currentAbilityValue;
@@ -735,7 +750,7 @@ private float _stunnedTime;
         
         Instantiate(_teleportEffect, teleportPos, _teleportEffect.transform.rotation);
         
-        
+        _canIncreaseAbility = false;
         _canAttack = false;
         yield return new WaitForSeconds(0.5f);
         
@@ -745,6 +760,7 @@ private float _stunnedTime;
         
         agent.enabled = true;
         _canAttack = true;
+        _canIncreaseAbility = true;
         
     }
     
