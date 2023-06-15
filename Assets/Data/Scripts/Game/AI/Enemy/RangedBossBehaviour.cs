@@ -703,12 +703,7 @@ private float _stunnedTime;
     #region Health
     public void TakeDamage(int damage, WeaponType type, int damageBoost)
     {
-        if (_health <= 0)
-        {
-            Die();
-        }
-
-        else if (_health > 0)
+        if (_health > 0)
         {
             switch (type)
             {
@@ -779,13 +774,7 @@ private float _stunnedTime;
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
-            //_healthBar.HandleBar(damage);
-            
-            if (_canAttack)
-            {
-                //_warn.CanAlertAi = true;
-                //SetAttack();
-            }
+            _healthBar.HandleBar(damage);
         }
     }
     

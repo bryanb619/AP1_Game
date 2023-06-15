@@ -583,7 +583,7 @@ private float _stunnedTime;
              }
             
              //  CALCULATE HEALTH 
-             // ADD DEATH
+             _healthBar.HandleBar(damage);
             
              _damageText.text = damage.ToString();
              StartCoroutine(DamageTextDisappear());
