@@ -1074,7 +1074,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             PlayerHealth player = col.GetComponent<PlayerHealth>();
 
-            if (player == null) return; ;
+            if (player == null) return;
             
 #if UNITY_EDITOR
             const string debugColor = "<size=12><color=yellow>";

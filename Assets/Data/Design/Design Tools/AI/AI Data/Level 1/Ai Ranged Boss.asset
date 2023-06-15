@@ -25,16 +25,14 @@ MonoBehaviour:
   currentAbilityValue: 17
   abilityIncreasePerFrame: 2
   specialTimeOut: 2
+  specialAttackRate: 3
+  areaDamageAttack: 30
+  areaDamageRadius: 10
   teleportMinRange: 12
   teleportMaxRange: 17
   teleportTime: 0
   teleportEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
-  hidableLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  minDistInCover: 12
-  coverMoveSpeed: 5
-  fleeDistance: 15
+  areaAttack: {fileID: 1892078723244562, guid: 46876a2780737ec45a19d62f88e5ce56, type: 3}
   health: 150
   healthRegen: 10
   maxHealthRegen: 75

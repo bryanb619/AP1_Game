@@ -56,6 +56,7 @@ public class RangedBossBehaviour : MonoBehaviour
                         private GameObject                          _player;
                         private Transform                          _playerTarget;
                         private Shooter                             _shooterScript;
+    [SerializeField]    private LayerMask                          playerLayer;
    
     
     // Combat --------------------------------------------------------------------------------------------------------->
@@ -63,7 +64,7 @@ public class RangedBossBehaviour : MonoBehaviour
     // General combat variables
     
                     private bool                                _canAttack;
-                    private float                               _attackRange;         
+                    private float                               _safeDistance;  
     
                     private float                               _fireRate = 2f;
                     private float                               _nextFire;
@@ -82,11 +83,17 @@ public class RangedBossBehaviour : MonoBehaviour
                     private float                               _minRange, _maxRange;
                     private GameObject                          _teleportEffect;
                     private float                              _nextTeleport;
-                    private float                               teleportRate = 5f;
+                    private float                               _teleportRate = 3f;
+
+                    private int                                 _areaAttackDamage; 
+                    private float                               _areaAttackRange; 
+                    private float                              _nextSpecialAttack;
+                    private float                               _specialAttackRate = 2f;
                     
-    
+                    
     // projectiles
-                    private GameObject                          _projectile, _randomProjectile ,_specialProjectile;
+                    private GameObject                          _projectile, _randomProjectile,
+                        _specialProjectile, _areaAttack;
     
            
     // Health/Death --------------------------------------------------------------------------------------------------->
@@ -231,7 +238,6 @@ private float _stunnedTime;
         _player                     = GameObject.Find("Player");
         _playerTarget               = _player.transform;
         _shooterScript              = _player.GetComponent<Shooter>();
-        
     }
     
     private void ProfileSync()
@@ -239,7 +245,7 @@ private float _stunnedTime;
         
         
         // combat 
-        _attackRange                = data.MinDist;
+        _safeDistance               = data.MinDist;
         
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
@@ -249,6 +255,13 @@ private float _stunnedTime;
 
         _currentAbilityValue        = data.CurrentAbilityValue;
         _abilityIncreasePerFrame    = data.AbilityIncreasePerFrame;
+        
+        
+        _areaAttackDamage           = data.AreaDamageAttack;
+        _areaAttackRange            = data.AreaDamageRadius;
+        
+        _areaAttack                = data.AreaAttack;
+        
         
         // Drops ------------------------------------------------------------------------------------------------------>
         
@@ -362,7 +375,6 @@ private float _stunnedTime;
             }
             case GameState.Paused:
             {
-                
                 InactiveAi(); 
                 break;
             }
@@ -377,11 +389,12 @@ private float _stunnedTime;
     
     private void InactiveAi()
     {
-        if (agent.enabled)
+        if (agent)
         {
+            agent.velocity = Vector3.zero;
             agent.isStopped = true;
+            
         }
-        
     }
 
 
@@ -394,7 +407,7 @@ private float _stunnedTime;
     
     private void Paused()
     {
-        
+       
     }
     #endregion
     
@@ -423,19 +436,31 @@ private float _stunnedTime;
             case true:
                 {
                     
-                    if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)  //
+                    if ((_playerTarget.transform.position - transform.position).magnitude >= _safeDistance)  //
                     {
                         PauseAi();
-                        if (_canAttack) { SpecialAttack();}
+                        
+                        if (Time.time > _nextSpecialAttack)
+                        {
+                            SpecialAttack();
+                            _nextSpecialAttack = Time.time + _specialAttackRate;
+                        }
+
+                        
                     }
-                    else
+                    else if ((_playerTarget.transform.position - transform.position).magnitude <= _safeDistance) 
                     {
-                        ResumeAi();
-                        UpdatePath();
+                        PauseAi();
+                        
+                        if (Time.time > _nextSpecialAttack)
+                        {
+                            AreaAttack();
+                            _nextSpecialAttack = Time.time + _specialAttackRate;
+                        }
+
+                        
+                        
                     }
-                    
-                    
-                   
                     break;
                 }
                 
@@ -471,10 +496,54 @@ private float _stunnedTime;
                 }
         }
      }
+     
+     private void SpecialAttack()
+     {
+         _aiShoot.Shoot(_playerTarget, _specialProjectile);
+        
+         _currentAbilityValue = 0;
+         //abilitySlider.value = _currentAbilityValue;
+         //_canSpecialAttack = false;
+        
+         _animator.SetBool("isAttacking", false);
+         // StartCoroutine(SpecialAttackTimer());
+        
+#if UNITY_EDITOR                                                                              
+                                                                                              
+         const string debugAttack = "<size=14><color=purple>";                                 
+         const string closeAttack = "</color></size>";                                         
+         Debug.Log(debugAttack + "Target Attack: " + closeAttack);                            
+                                                                                              
+#endif                                                                                        
+     }
+
+     private void AreaAttack()
+     {
+         var hitEnemies = Physics.OverlapSphere(transform.position, _areaAttackRange, playerLayer);
+
+         foreach (var col in hitEnemies)
+         {
+             PlayerHealth player = col.GetComponent<PlayerHealth>();
+
+             if (player == null) return;
+             
+             player.TakeDamage(_areaAttackDamage);
+            
+#if UNITY_EDITOR
+             const string debugColor = "<size=14><color=red>";
+             const string closeDebug = "</color></size>";
+             Debug.Log(debugColor + "Area Attack" + closeDebug);
+#endif
+             //_enemyAnimationHandler.RecievePlayerCollision(player);
+            // _animator.SetTrigger("Attack2");
+            
+         }
+
+     }
     
      private void Attack()
      {
-         if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
+         if ((_playerTarget.transform.position - transform.position).magnitude >= _safeDistance)
          {
              if (Time.time > _nextFire)
              {
@@ -563,27 +632,7 @@ private float _stunnedTime;
      }
 
      
-    private void SpecialAttack()
-    {
-        PauseAi();   
-        
-        _aiShoot.Shoot(_playerTarget, _specialProjectile);
-        
-        _currentAbilityValue = 0;
-        //abilitySlider.value = _currentAbilityValue;
-        //_canSpecialAttack = false;
-        
-        _animator.SetBool("isAttacking", false);
-       // StartCoroutine(SpecialAttackTimer());
-        
-#if UNITY_EDITOR                                                                              
-                                                                                              
-        const string debugAttack = "<size=12><color=purple>";                                 
-        const string closeAttack = "</color></size>";                                         
-        Debug.Log(debugAttack + "Special Attack: " + closeAttack);                            
-                                                                                              
-#endif                                                                                        
-    }
+    
 
 
     private void CoolDoownPower()
@@ -648,7 +697,7 @@ private float _stunnedTime;
         {
             TeleportProcess(); 
             
-            _nextTeleport = Time.time + teleportRate;
+            _nextTeleport = Time.time + _teleportRate;
         }
     }
 
@@ -692,8 +741,6 @@ private float _stunnedTime;
         _canAttack = true;
     }
     
-    
-
     #endregion
     
     #region Health
@@ -766,7 +813,7 @@ private float _stunnedTime;
                 DropSpawnCheck();
             }
             
-            _damageText.text = damage.ToString();
+            //_damageText.text = damage.ToString();
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;

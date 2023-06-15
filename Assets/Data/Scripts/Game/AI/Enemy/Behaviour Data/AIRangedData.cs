@@ -69,7 +69,15 @@ public class AiRangedData : ScriptableObject
     [SerializeField]
     private float                       specialTimeOut;
     public float                        SpecialTimeOut => specialTimeOut;
-
+    
+    [SerializeField] private float      specialAttackRate = 3f;
+    public float                        SpecialAttackRate => specialAttackRate;
+    
+    [SerializeField] private int      areaDamageAttack = 30;
+    public int                          AreaDamageAttack => areaDamageAttack;
+    
+    [SerializeField] private float      areaDamageRadius = 10;
+    public float                        AreaDamageRadius => areaDamageRadius;
     
     [SerializeField] private float      teleportMinRange, teleportMaxRange;
     public float                        TeleportMinRange => teleportMinRange;
@@ -81,7 +89,10 @@ public class AiRangedData : ScriptableObject
     [SerializeField] private GameObject teleportEffect;
     public GameObject                   TeleportEffect => teleportEffect;
 
-    
+    [SerializeField] private GameObject areaAttack; 
+    public GameObject                   AreaAttack => areaAttack;
+
+    /*
     // COVER //
     [Header("Cover")]
     [Tooltip("Hidable masks layers for AI (Walls is one by default")]
@@ -104,7 +115,7 @@ public class AiRangedData : ScriptableObject
     [Range(1f, 50f)]
     [SerializeField] private float      fleeDistance = 15f;
     public float                        FleeDistance => fleeDistance;
-
+*/
 
     // HEALTH //
     [Header("Health")]
