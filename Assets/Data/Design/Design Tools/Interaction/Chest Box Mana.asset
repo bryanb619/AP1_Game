@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73557a31991406c44bb1c2f1aa6c9045, type: 3}
   m_Name: Chest Box Mana
   m_EditorClassIdentifier: 
-  _loot: {fileID: 4656834486788138440, guid: dba03214d0b311d4c9ab022865c8d7a4, type: 3}
-  _openEffect: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
-  _maxItems: 1
-  _dropRadius: 0.1
-  _giveLoot: 0
-  _soundOpen:
+  loot: {fileID: 0}
+  dropType: 3
+  openEffect: {fileID: 0}
+  maxItems: 0
+  dropRadius: 0
+  giveLoot: 1
+  empower: 80
+  soundOpen:
     Guid:
-      Data1: -867561172
-      Data2: 1227050083
-      Data3: -2128052563
-      Data4: -1076204070
-    Path: event:/Interactions/Chest/Open
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 

@@ -578,8 +578,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         */
         
-        
-        
         if (_gameState == GameState.Gameplay && _hanlderAi.activeAi == AIHandler.ActiveAi.Active) //|| !_deactivateAI)
         {
             _agent.enabled = true;
@@ -789,7 +787,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
 
     #endregion
-
     
     #region Speed
     private void AiSpeed()
@@ -938,7 +935,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             _closeAttack = Time.time + _rate;
         }
 
-        else
+        else if(!_isAttacking)
         {
             // ENABLE AGENT
             EnableAgent(true);
@@ -973,7 +970,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             const string debugColor = "<size=14><color=red>";
             const string closeColor = "</color></size>";
             Debug.Log(debugColor + "Close attack" + closeColor);
-            
 #endif
         }
     }
@@ -1049,6 +1045,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case 1:
             {
                 RuntimeManager.PlayOneShot(testAttack);
+                _agent.velocity = Vector3.zero;
                 player.TakeDamage(_damage);
                 Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
                 break;
@@ -1057,6 +1054,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case 2:
             {
                 RuntimeManager.PlayOneShot(testAttack);
+                _agent.velocity = Vector3.zero;
                 Instantiate(_attackEffect, attackPoint.transform.position, Quaternion.identity);
                 player.TakeDamage(_bDamage);
                 break; 
@@ -1064,6 +1062,33 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 
             default: break;
         }
+    }
+    
+    public void SetAiAfterAttack(bool canMove)
+    {
+        switch (canMove)
+        {
+            case true:
+            {
+                //ResumeAgent();
+                _isAttacking = false;
+                _agent.enabled = true;
+                
+                //_agent.isStopped = false;
+                break; 
+            }
+            case false:
+            {
+                _isAttacking = true;
+                _agent.enabled = false;
+                //_agent.velocity = Vector3.zero;
+                //_agent.isStopped = true;
+                //PauseAgent();
+                break;
+            }
+                
+        }
+
     }
 
     private void PercentageAttack()
