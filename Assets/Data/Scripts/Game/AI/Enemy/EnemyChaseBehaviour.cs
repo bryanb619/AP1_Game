@@ -540,7 +540,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         #endregion
 
-        _stateMachine = new StateMachine(patrolState);
+            _stateMachine = new StateMachine(patrolState);
     }
     #endregion
 
@@ -1540,7 +1540,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             if (_spawnHealth || _spawnMana && !_spawnOtherAi)
             {
                 DropSpawnCheck();
-                
             }
             
             _damageText.text = damage.ToString();
@@ -1548,6 +1547,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             //healthSlider.value = _health;
             _healthBar.HandleBar(damage);
+            
             if (_canAttack)
             {
                 //_warn.CanAlertAi = true;
@@ -1604,8 +1604,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _valuesTexts.GetKill();
 
         _objectiveUiScript.IncreaseEnemyDefeatedCount();
+        
+        
 
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
     }
 
     // Drop area
@@ -1652,7 +1654,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     }
 
-    IEnumerator DamageTextDisappear()
+    private IEnumerator DamageTextDisappear()
     {
         yield return new WaitForSeconds(2f);
         _damageText.text = " ";

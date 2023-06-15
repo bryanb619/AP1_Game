@@ -4,10 +4,14 @@ using UnityEngine.Serialization;
 [CreateAssetMenu (menuName ="Akarya/AI/Ranged Data")]
 public class AiRangedData : ScriptableObject
 {
+  
+    [Header("AI Type")]
+    public EnemyType                    enemyType;
+    
     // ATTACK //
     [Header("Attack")]
     [Tooltip("Minimum distance to player or projectiles")]
-    [Range(0f, 10f)]
+    [Range(0f, 30)]
     [SerializeField] private float      minDist = 7f;
     public float                        MinDist => minDist;
 
@@ -21,7 +25,7 @@ public class AiRangedData : ScriptableObject
     public float                        AttackRate => attackRate;
 
     // ATTACK  2//
-    [FormerlySerializedAs("_percentage")]
+ 
     [Header("Attack Nº2")]
     [Tooltip("Higher the number, more possible it is to use attack nº2")]
     [Range(0f, 1f)]
@@ -43,9 +47,14 @@ public class AiRangedData : ScriptableObject
     [SerializeField]
     private float                       attackTimeOut;
     public float                        AttackTimeOut => attackTimeOut;
+    
+    [SerializeField] private float     accuracy = 0.6f;
+    public float                       Accuracy => accuracy;
+    [SerializeField] private float    shootSpread = 0.1f;
+    public float                       ShootSpread => shootSpread;
 
     // SPECIAL ATTACK //
-    [Header("Special Attack")]
+    [Header(" BossAttack")]
     [SerializeField]
     private float                       currentAbilityValue = 50f;
     public float                        CurrentAbilityValue => currentAbilityValue;    
@@ -53,41 +62,26 @@ public class AiRangedData : ScriptableObject
     [SerializeField]
     private float                       abilityIncreasePerFrame = 3f;
     public float                        AbilityIncreasePerFrame => abilityIncreasePerFrame; 
-
-    [SerializeField] 
-    private int                         specialDamage = 25;
-    public int                          SpecialDamage => specialDamage;
-
-    [FormerlySerializedAs("s_damageEffect")] [SerializeField]
+    
     private GameObject                  sDamageEffect; 
     public GameObject                   SDamageEffect => sDamageEffect;
-
     [Range(0f, 10f)]
     [SerializeField]
     private float                       specialTimeOut;
     public float                        SpecialTimeOut => specialTimeOut;
 
+    
+    [SerializeField] private float      teleportMinRange, teleportMaxRange;
+    public float                        TeleportMinRange => teleportMinRange;
+    public float                        TeleportMaxRange => teleportMaxRange;
+    
+    [SerializeField] private float      teleportTime;
+    public float                        TeleportTime => teleportTime;
+    
+    [SerializeField] private GameObject teleportEffect;
+    public GameObject                   TeleportEffect => teleportEffect;
 
-    // FOV //
-    [Header("FOV")]
-    [Tooltip("Radius of FOV")]
-    [Range(10f, 150f)]
-    [SerializeField] private float      radius;
-    public float                        Radius => radius;
-
-    [Tooltip("Angle of FOV")]
-    [Range(0f, 360f)]
-    [SerializeField] private float      angle;
-    public float                        Angle => angle;
-
-    [Tooltip("Select target Layer masks so AI can identify targets in FOV")]
-    [SerializeField] private LayerMask targetMask;
-    public LayerMask                   TargetMask => targetMask;
-
-    [Tooltip("Select target Layer masks so AI can identify obstrutions in FOV")]
-    [SerializeField] private LayerMask obstructionMask;
-    public LayerMask                   ObstructionMask => obstructionMask;
-
+    
     // COVER //
     [Header("Cover")]
     [Tooltip("Hidable masks layers for AI (Walls is one by default")]
@@ -138,27 +132,6 @@ public class AiRangedData : ScriptableObject
     //[Header("AI Weakness")]
     //[Tooltip("Set AI weaknesses")]
     
-    //[SerializeField] 
-    private bool       _ice;
-    public bool                         Ice => _ice;
-
-    //[SerializeField] 
-    private bool       _fire;
-    public bool                         Fire => _fire;
-
-    //[SerializeField]
-    private bool       _thunder;
-    public bool                         Thunder => _thunder;
-
-    [Header("Gem")]
-    [Tooltip("Set true to spawn Gem")]
-    [SerializeField] private bool       gemSpawnOnDeath;
-    public bool                         GemSpawnOnDeath => gemSpawnOnDeath;
-
-    [Tooltip("Select Gem prefab")]
-    [SerializeField] 
-    private GameObject                  gem;
-    public GameObject                   Gem => gem;
 
     [Tooltip("Select Spawn chance")]
     [Range(0f, 100f)]
@@ -167,29 +140,33 @@ public class AiRangedData : ScriptableObject
 
     [FormerlySerializedAs("_spawnHealth")] [SerializeField]
     private bool                        spawnHealth;
-    internal bool                       SpawnHealth => spawnHealth; 
+    public bool                       SpawnHealth => spawnHealth; 
     
     [FormerlySerializedAs("_healthItems")] [SerializeField]
     private int                         healthItems;
-    internal int                        HealthItems => healthItems;   
+    public int                        HealthItems => healthItems;   
 
     [FormerlySerializedAs("_healthDrop")] [SerializeField]
     private GameObject                  healthDrop;
-    internal GameObject                 HealthDrop => healthDrop; 
+    public GameObject                 HealthDrop => healthDrop; 
     
     [FormerlySerializedAs("_spawnMana")] [SerializeField]
     private bool                        spawnMana;
-    internal bool                       SpawnMana => spawnMana;
+    public bool                       SpawnMana => spawnMana;
 
     [FormerlySerializedAs("_manaItems")] [SerializeField]
     private int                         manaItems;
-    internal int                        ManaItems => manaItems;
+    public int                        ManaItems => manaItems;
 
     [FormerlySerializedAs("_manaDrop")] [SerializeField]
     private GameObject                  manaDrop;
-    internal GameObject                 ManaDrop => manaDrop;
+    public GameObject                 ManaDrop => manaDrop;
 
     [FormerlySerializedAs("_dropRadius")] [SerializeField]
     private int                         dropRadius;
     internal int                        DropRadius => dropRadius; 
+    
+    
+    [SerializeField] private GameObject deathEffect;
+    public GameObject DeathEffect => deathEffect;
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,10 +16,32 @@ public class AiHealth : MonoBehaviour
          
     [Header("Color Values")]
     [SerializeField] private float              yellowValue, redValue, greenValue; 
+    
+    private Animator _aiAnimator;
+    
+    private EnemyChaseBehaviour _enemyChaseBehaviour;
+    private EnemyBehaviour _enemyBehaviour;
+    
+    private enum AiType { Chase, Ranged }
+    private AiType _aiType;
+    
 
     private void Awake()
     {
-        _healthBar = GetComponentInChildren<Slider>();  
+        _healthBar = GetComponentInChildren<Slider>();
+        _aiAnimator = GetComponentInParent<Animator>();
+
+        if (TryGetComponent(out EnemyChaseBehaviour chaseBehaviour))
+        {
+            _enemyChaseBehaviour = chaseBehaviour;
+            //_aiType = AiType.Chase;
+        }
+
+        if (TryGetComponent(out EnemyBehaviour rangedBehaviour))
+        {
+            _enemyBehaviour = rangedBehaviour;
+        }
+
     }
     
     #region AI Health
@@ -38,6 +61,10 @@ public class AiHealth : MonoBehaviour
 #if UNITY_EDITOR
         //Debug.Log("Health Percentage: "+_healthPercentage);
 #endif
+        if ( _healthPercentage <= 0)
+        {
+           KillAi();
+        }
         
         if(_healthPercentage <= redValue)
         {
@@ -59,6 +86,21 @@ public class AiHealth : MonoBehaviour
         }
         
     }
-    
+
+    private void KillAi()
+    {
+        _aiAnimator.enabled = false;
+
+        if (_enemyChaseBehaviour)
+        {
+            _enemyChaseBehaviour.enabled = false;
+        }
+
+        if (_enemyBehaviour)
+        {
+            _enemyBehaviour.enabled = false;
+        }
+    }
+
     #endregion
 }
