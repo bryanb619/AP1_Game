@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 //using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -35,6 +36,8 @@ public class PlayerHealth : MonoBehaviour
 
                             private GameManager _gameManager;
                             private PlayerAnimationHandler _playerAnim; 
+    [Header("Text")]
+    [SerializeField] private TextMeshProUGUI healthText;
 
     internal enum PlayerHealthMaxed
     {
@@ -59,14 +62,9 @@ public class PlayerHealth : MonoBehaviour
 
     internal void EmpowerHealth(int powerUp)
     {
-
-        maxHealth = maxHealth + powerUp;
-
-        //_healthBar._slider.maxValue = _maxHealth; 
-        
         currentHealth += powerUp;
-        _healthBar.HealthEmpower(powerUp);
-        
+        _healthBar.SetMaxHealth(powerUp, currentShield);
+
         //PlayerPrefs()
         //print(_maxHealth);
     }

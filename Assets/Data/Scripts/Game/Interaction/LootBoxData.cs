@@ -1,41 +1,42 @@
 using FMODUnity;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu (menuName = "Akarya/Interaction/Loot Box")]
 public class LootBoxData : ScriptableObject
 {
-    [FormerlySerializedAs("_loot")]
+
     [Header("Loot")]
         [SerializeField] 
             private GameObject                  loot;
-            public GameObject                   Loot => loot;
+            public GameObject                   Loot => loot; 
+            
+        [SerializeField] private DropType       dropType;
+            public DropType                     DropType => dropType;
+            
 
-        [FormerlySerializedAs("_openEffect")] [SerializeField] 
+ [SerializeField] 
             private GameObject                  openEffect; 
             public GameObject                   OpenEffect => openEffect;
 
-        [FormerlySerializedAs("_maxItems")] [SerializeField] 
+[SerializeField] 
             private int                         maxItems;
             public int                          MaxItems => maxItems;
 
-        [FormerlySerializedAs("_dropRadius")] [SerializeField]
+    [SerializeField]
             private float                       dropRadius; 
             public float                        DropRadius => dropRadius;
-
-        [FormerlySerializedAs("_giveLoot")]
+            
         [Tooltip("check box if loot instead of spawned should be given directly to player")]
         [SerializeField]
             private bool                        giveLoot;
             public bool                         GiveLoot => giveLoot;
 
-    [FormerlySerializedAs("_soundOpen")]
+            [SerializeField] private int empower; 
+            public int Empower => empower;
+            
     [Header("Sound")]
         [SerializeField] 
             private EventReference              soundOpen;
             public EventReference               SoundOpen => soundOpen;  
-
-
-
-    //[SerializeField]
+            
 }

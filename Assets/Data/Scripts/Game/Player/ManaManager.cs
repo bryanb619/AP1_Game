@@ -106,7 +106,7 @@ public class ManaManager : MonoBehaviour
         manaUi.SetMana(mana);
     }
 
-    internal void ManaIncrease(int add)
+    public void ManaIncrease(int add)
     {
         maxMana += add; 
         manaUi.SetNewMax(add);
