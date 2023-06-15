@@ -428,19 +428,14 @@ private float _stunnedTime;
                         PauseAi();
                         if (_canAttack) { SpecialAttack();}
                     }
-                    
-                    /*
-                    else if ((_playerTarget.transform.position - transform.position).magnitude < 
-                             _attackRange && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
+                    else
                     {
-                        if(_canAttack && _currentState == HandleState.None) 
-                        { 
-                            //ResumeAi();
-                            //GetDistance(9F);
-                  
-                        }
+                        ResumeAi();
+                        UpdatePath();
                     }
-            */
+                    
+                    
+                   
                     break;
                 }
                 
@@ -652,7 +647,8 @@ private float _stunnedTime;
         if(Time.time > _nextTeleport)
         {
             TeleportProcess(); 
-            _nextFire = Time.time + teleportRate;
+            
+            _nextTeleport = Time.time + teleportRate;
         }
     }
 
