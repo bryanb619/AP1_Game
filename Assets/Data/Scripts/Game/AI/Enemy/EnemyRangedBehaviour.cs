@@ -533,7 +533,7 @@ private float _stunnedTime;
                  {
                      if (_shooterScript.WUpgraded == true)
                      {
-                         StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
+                         //StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
                          StartCoroutine(HitFlash());
                      }
                      else
