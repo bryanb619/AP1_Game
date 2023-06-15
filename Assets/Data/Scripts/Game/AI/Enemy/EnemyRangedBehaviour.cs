@@ -222,6 +222,7 @@ private float _stunnedTime;
         
         // AI components
         agent                       = GetComponent<NavMeshAgent>(); 
+        agent.updateRotation        = false;
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
         _healthBar                  = GetComponentInChildren<AiHealth>();

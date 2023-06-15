@@ -228,6 +228,7 @@ private float _stunnedTime;
         
         // AI components
         agent                       = GetComponent<NavMeshAgent>(); 
+        agent.updateRotation        = false;
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
         _healthBar                   = GetComponentInChildren<AiHealth>();
@@ -646,9 +647,6 @@ private float _stunnedTime;
                 Debug.Log(debugAttack + "chance attack: " + closeAttack);
 #endif
      }
-
-     
-    
 
 
     private void CoolDoownPower()
