@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0991b72efd43cd34fa5df6de481be407, type: 3}
+  m_Name: Ai Ranged Boss
+  m_EditorClassIdentifier: 
+  enemyType: 1
+  minDist: 7
+  nProjectile: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
+  attackRate: 2
+  percentage: 0.402
+  rProjectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
+  sProjectile: {fileID: 6932023443711188527, guid: 62e48711e6083d245be419a3164fafb1, type: 3}
+  attackTimeOut: 2
+  accuracy: 0.9
+  shootSpread: 0.02
+  currentAbilityValue: 17
+  abilityIncreasePerFrame: 2
+  specialTimeOut: 2
+  teleportMinRange: 12
+  teleportMaxRange: 17
+  teleportTime: 0
+  teleportEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
+  hidableLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  minDistInCover: 12
+  coverMoveSpeed: 5
+  fleeDistance: 15
+  health: 150
+  healthRegen: 10
+  maxHealthRegen: 75
+  spawnChance: 0
+  spawnHealth: 1
+  healthItems: 2
+  healthDrop: {fileID: 2109320882222824309, guid: ce1ed49d0360da345b1c337a34f24bfd, type: 3}
+  spawnMana: 1
+  manaItems: 2
+  manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
+  dropRadius: 2
+  deathEffect: {fileID: 1280141305896002, guid: e473029e4c70ad543a6879b82a732f4f, type: 3}

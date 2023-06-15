@@ -56,7 +56,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         [FormerlySerializedAs("_agentAI")] [SerializeField]    private Agents                              agentAi;
 
-                            private AiHandler                           _handlerAi;
+                            private AIHandler                           _handlerAi;
                             private bool                                _deactivateAi;
 
                             [FormerlySerializedAs("_dizzyText")] public TMP_Text                             dizzyText;
@@ -1099,7 +1099,7 @@ public class EnemyBehaviour : MonoBehaviour
             healthSlider.value = _health;
 
             //float randomFloat = UnityEngine.Random.value;
-            /*
+            
             if (randomFloat <= 0.1f)
             {
                 //print("STARTED CHANCE");
@@ -1275,8 +1275,7 @@ public class EnemyBehaviour : MonoBehaviour
             stfsEffect = false;
         }
         
-
-        /*
+        
         _canMove = false;
 
         originalColor = GetComponent<Renderer>().material.color;
