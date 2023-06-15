@@ -22,8 +22,8 @@ public class ManaManager : MonoBehaviour
     
     [FormerlySerializedAs("manaUI")]
     [Header("References")]
-    [SerializeField] private ManaBar manaUi;
     [SerializeField] private Shooter shooter;
+                     private ManaBar manaUi;
 
     [Header("Cheats")]
     [SerializeField] private bool manaCheat;
@@ -31,6 +31,7 @@ public class ManaManager : MonoBehaviour
 
     private void Start()
     {
+        manaUi = FindObjectOfType<ManaBar>();
         _manaTimer = new WaitForSeconds(waitTime);
     }
 
