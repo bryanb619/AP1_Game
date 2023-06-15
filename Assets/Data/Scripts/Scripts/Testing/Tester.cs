@@ -141,6 +141,14 @@ public class Tester : MonoBehaviour
                     */
                     if(hitCollider.GetComponent<EnemyChaseBehaviour>() == true)
                         hitCollider.GetComponent<EnemyChaseBehaviour>().TakeDamage(damageAmount, WeaponType.Normal);
+                    
+                    if(hitCollider.GetComponent<EnemyRangedBehaviour>() == true)
+                        hitCollider.GetComponent<EnemyRangedBehaviour>().TakeDamage(damageAmount, WeaponType.Normal,0);
+                    
+                    if(hitCollider.GetComponent<RangedBossBehaviour>() == true)
+                        hitCollider.GetComponent<RangedBossBehaviour>().TakeDamage(damageAmount, WeaponType.Normal,0);
+                    
+                        
                 }
             }
         }

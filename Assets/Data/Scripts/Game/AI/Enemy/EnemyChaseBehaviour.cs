@@ -1592,22 +1592,19 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 SpawnDrop(_manaDrop);
             }
         }
-        
 
         if (_gemSpawnOnDeath)
         {
             Instantiate(_gemPrefab, dropPos.position, Quaternion.identity);
         }
 
-        Instantiate(_death, transform.position, Quaternion.identity);
+        Instantiate(_death, transform.position, _death.transform.rotation);
 
         _valuesTexts.GetKill();
 
-        _objectiveUiScript.IncreaseEnemyDefeatedCount();
-        
-        
+        //_objectiveUiScript.IncreaseEnemyDefeatedCount();
 
-        //Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 
     // Drop area

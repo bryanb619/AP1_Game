@@ -19,10 +19,10 @@ public class AiHealth : MonoBehaviour
     
     private Animator _aiAnimator;
 
-    private EnemyChaseBehaviour _chase; 
-    private EnemyRangedBehaviour _ranged;
+    [SerializeField] private EnemyChaseBehaviour chase; 
+    [SerializeField] private EnemyRangedBehaviour ranged;
     
-    private RangedBossBehaviour _rangedBoss;
+    [SerializeField] private RangedBossBehaviour rangedBoss;
     
     private enum AiType { Chase, Ranged, Boss}
     private AiType _aiType;
@@ -32,25 +32,43 @@ public class AiHealth : MonoBehaviour
     {
         _healthBar = GetComponentInChildren<Slider>();
         _aiAnimator = GetComponentInParent<Animator>();
-        
 
+
+        if (chase != null)
+        {
+            _aiType = AiType.Chase;
+        }
+
+        if (ranged!= null)
+        {
+            _aiType = AiType.Ranged;
+        }
+        
+        if (rangedBoss!= null)
+        {
+            _aiType = AiType.Boss;
+        }
+        
+/*
         if (TryGetComponent(out EnemyChaseBehaviour chaseBehaviour))
         {
-            _chase = chaseBehaviour;
+            
+            _chase = GetComponentInParent<EnemyChaseBehaviour>();
             _aiType = AiType.Chase;
         }
 
         if (TryGetComponent(out EnemyRangedBehaviour rangedBehaviour))
         {
-            _ranged = rangedBehaviour;
+            _ranged = GetComponentInParent<EnemyRangedBehaviour>();
             _aiType = AiType.Ranged;
         }
 
         if (TryGetComponent(out RangedBossBehaviour rangedBossBehaviour))
         {
-            _rangedBoss = rangedBossBehaviour;
+            _rangedBoss = GetComponentInParent<RangedBossBehaviour>(); 
             _aiType = AiType.Boss;
         }
+        */
     }
     
     #region AI Health
@@ -114,19 +132,19 @@ public class AiHealth : MonoBehaviour
         {
             case AiType.Chase:
             {
-                _chase.Die(); 
+                chase.Die(); 
                 break;
             }
 
             case AiType.Ranged:
             {
-               _ranged.Die();
+               ranged.Die();
                 break;
             }
                 
             case AiType.Boss:
             {
-                _rangedBoss.Die();
+                rangedBoss.Die();
                 break;
             }
                 
