@@ -1575,7 +1575,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
 
-    private void Die()
+    public void Die()
     {
         if(_spawnHealth)
         {

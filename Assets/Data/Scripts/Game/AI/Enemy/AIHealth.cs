@@ -18,11 +18,13 @@ public class AiHealth : MonoBehaviour
     [SerializeField] private float              yellowValue, redValue, greenValue; 
     
     private Animator _aiAnimator;
+
+    private EnemyChaseBehaviour _chase; 
+    private EnemyRangedBehaviour _ranged;
     
-    private EnemyChaseBehaviour _enemyChaseBehaviour;
-    private EnemyBehaviour _enemyBehaviour;
+    private RangedBossBehaviour _rangedBoss;
     
-    private enum AiType { Chase, Ranged }
+    private enum AiType { Chase, Ranged, Boss}
     private AiType _aiType;
     
 
@@ -30,26 +32,44 @@ public class AiHealth : MonoBehaviour
     {
         _healthBar = GetComponentInChildren<Slider>();
         _aiAnimator = GetComponentInParent<Animator>();
+        
 
         if (TryGetComponent(out EnemyChaseBehaviour chaseBehaviour))
         {
-            _enemyChaseBehaviour = chaseBehaviour;
-            //_aiType = AiType.Chase;
+            _chase = chaseBehaviour;
+            _aiType = AiType.Chase;
         }
 
-        if (TryGetComponent(out EnemyBehaviour rangedBehaviour))
+        if (TryGetComponent(out EnemyRangedBehaviour rangedBehaviour))
         {
-            _enemyBehaviour = rangedBehaviour;
+            _ranged = rangedBehaviour;
+            _aiType = AiType.Ranged;
         }
 
+        if (TryGetComponent(out RangedBossBehaviour rangedBossBehaviour))
+        {
+            _rangedBoss = rangedBossBehaviour;
+            _aiType = AiType.Boss;
+        }
     }
     
     #region AI Health
 
     public void HealthValueSet(float maxHealth)
     {
-        _healthBar.maxValue = maxHealth;
-        _healthBar.value = _healthBar.maxValue;
+
+        if (maxHealth >= 9999)
+        {
+            _healthBar.maxValue = 9999;
+            _healthBar.value = _healthBar.maxValue;   
+        }
+        else
+        {
+            _healthBar.maxValue = maxHealth;
+            _healthBar.value = _healthBar.maxValue;
+        }
+        
+        
     }
     public void HandleBar(int damage)
     {
@@ -84,21 +104,34 @@ public class AiHealth : MonoBehaviour
         {
             fill.color = Color.green;
         }
-        
     }
 
     private void KillAi()
     {
-        _aiAnimator.enabled = false;
+        //_aiAnimator.enabled = false;
 
-        if (_enemyChaseBehaviour)
+        switch (_aiType)
         {
-            _enemyChaseBehaviour.enabled = false;
-        }
+            case AiType.Chase:
+            {
+                _chase.Die(); 
+                break;
+            }
 
-        if (_enemyBehaviour)
-        {
-            _enemyBehaviour.enabled = false;
+            case AiType.Ranged:
+            {
+               _ranged.Die();
+                break;
+            }
+                
+            case AiType.Boss:
+            {
+                _rangedBoss.Die();
+                break;
+            }
+                
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 

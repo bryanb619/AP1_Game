@@ -5,15 +5,14 @@ using UnityEngine;
 using UnityEngine.AI;
 using LibGameAI.FSMs;
 using TMPro;
-using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
 using StateMachine = LibGameAI.FSMs.StateMachine;
 
-// AI Ranged Behaviour
-public class EnemyRangedBehaviour : MonoBehaviour
+
+public class RangedBossBehaviour : MonoBehaviour
 {
-    #region  Variables
+        #region  Variables
     // Systems
     [Header("AI Profile")]
     [SerializeField] private AiRangedData data;
@@ -92,7 +91,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
            
     // Health/Death --------------------------------------------------------------------------------------------------->
     
-                    private AiHealth                            _healthBar;    
+                    private AiHealth                            _aiHealth;    
                     // HEALTH
                     private float                               _health;
 
@@ -125,13 +124,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
 
 private float _stunnedTime;
-                        
-    
-    
+
     #endregion
-   
     
-    //----------------------------------------------------------------------------------------------------------------->
+     //----------------------------------------------------------------------------------------------------------------->
     
     private void Awake()
     {
@@ -218,13 +214,11 @@ private float _stunnedTime;
     private void GetAiComponents()
     {
         
-      
-        
         // AI components
         agent                       = GetComponent<NavMeshAgent>(); 
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
-        _healthBar                  = GetComponentInChildren<AiHealth>();
+        _aiHealth                   = GetComponentInChildren<AiHealth>();
         
         // mesh 
         _mesh                       = GetComponentInChildren<SkinnedMeshRenderer>();
@@ -304,7 +298,11 @@ private float _stunnedTime;
         
     }
     // Start is called before the first frame update
-    
+    private void Start()
+    {
+       
+    }
+
     private void StateSet()
     {
         // Create the states
@@ -325,11 +323,6 @@ private float _stunnedTime;
         
         // Create the state machine
         _fsm = new StateMachine(chaseState);
-    }
-    
-    private void Start()
-    {
-        _healthBar.HealthValueSet(_health);
     }
 
     // Update is called once per frame
@@ -369,12 +362,13 @@ private float _stunnedTime;
             }
             case GameState.Paused:
             {
-                Paused();
+                
+                InactiveAi(); 
                 break;
             }
             case GameState.Death:
             {
-                
+                InactiveAi(); 
                 break;
             }
 
@@ -413,17 +407,80 @@ private float _stunnedTime;
 
     private void Engage()
     {
-        if (!_canAttack) return;
-        Attack();
-        UpdateRotation();
+        if (_canAttack)
+        {
+            BossAttack();
+                    
+            UpdateRotation(); 
+        }            
+        
     }   
+    
+     private void BossAttack()
+     { 
+         switch(_canSpecialAttack)
+        {
+            case true:
+                {
+                    
+                    if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)  //
+                    {
+                        PauseAi();
+                        if (_canAttack) { SpecialAttack();}
+                    }
+                    
+                    /*
+                    else if ((_playerTarget.transform.position - transform.position).magnitude < 
+                             _attackRange && !_canSpecialAttack) //|| currentAbilityValue < ABILITY_MAX_VALUE)
+                    {
+                        if(_canAttack && _currentState == HandleState.None) 
+                        { 
+                            //ResumeAi();
+                            //GetDistance(9F);
+                  
+                        }
+                    }
+            */
+                    break;
+                }
+                
+            case false:
+                {
+                    
+                    if ((_playerTarget.transform.position 
+                         - transform.position).magnitude >= 15f)
+                    {
+                        if(_canAttack) 
+                        { 
+                            ResumeAi();
+                            UpdatePath();
+                        }
+                    }
+                    else if ((_playerTarget.transform.position 
+                              - transform.position).magnitude <= 9) //_attackRange && !_canSpecialAttack) 
+                    {
+                        GenerateRandomPos();
+                    }
+                    
+                    else if ((_playerTarget.transform.position - transform.position).magnitude >= 13) // valor mais alto 
+                    {
+                        //var position = _playerTarget.position;
+                        
+                        PauseAi();
+
+                        if(_canAttack && !_canSpecialAttack) { Attack(); }
+                    }
+                    
+                    CoolDoownPower();
+                    break; 
+                }
+        }
+     }
     
      private void Attack()
      {
          if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
          {
-             UpdatePath();
-
              if (Time.time > _nextFire)
              {
                  //float randomFloat = UnityEngine.Random.value;
@@ -450,8 +507,6 @@ private float _stunnedTime;
             
          }
      }
-
-     #region Agent Pathfinding & Rotation
      
      private void UpdatePath()
      {
@@ -464,6 +519,9 @@ private float _stunnedTime;
              // set destination
              agent.SetDestination(_playerTarget.position);
          }
+         
+       
+
      }
      
      private void UpdateRotation()
@@ -471,13 +529,13 @@ private float _stunnedTime;
          // get player direction
          var direction = _playerTarget.position - transform.position;
          //rotation 
-         var disaredRot = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
+         var rotation = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
 
          // apply rotation to AI 
-         transform.rotation = disaredRot;
+         transform.rotation = rotation;
      }
      
-     #endregion
+    
     
      private void NormalAttack()
     {
@@ -508,86 +566,227 @@ private float _stunnedTime;
                 Debug.Log(debugAttack + "Attack 2: " + closeAttack);
 #endif
      }
+
      
-     
+    private void SpecialAttack()
+    {
+        PauseAi();   
+        
+        _aiShoot.Shoot(_playerTarget, _specialProjectile);
+        
+        _currentAbilityValue = 0;
+        //abilitySlider.value = _currentAbilityValue;
+        //_canSpecialAttack = false;
+        
+        _animator.SetBool("isAttacking", false);
+       // StartCoroutine(SpecialAttackTimer());
+        
+#if UNITY_EDITOR                                                                              
+                                                                                              
+        const string debugAttack = "<size=12><color=purple>";                                 
+        const string closeAttack = "</color></size>";                                         
+        Debug.Log(debugAttack + "Special Attack: " + closeAttack);                            
+                                                                                              
+#endif                                                                                        
+    }
+
+
+    private void CoolDoownPower()
+    {
+
+        if (_currentAbilityValue >= AbilityMaxValue)
+        {
+            _canSpecialAttack = true;
+        }
+        else
+        {
+            _currentAbilityValue = Mathf.Clamp(_currentAbilityValue + (_abilityIncreasePerFrame * Time.deltaTime), 0.0f, AbilityMaxValue);   
+        }
+
+        //abilitySlider.value = _currentAbilityValue;
+        //print(currentAbilityValue);
+    }
+/*
+    private IEnumerator SpecialAttackTimer()
+    {
+        bool isruning = false; 
+
+        if(!isruning) 
+        {
+            isruning = true;
+            _canPeformAttack = false;
+            _canAttack = false;
+            _activeDizzy = true; 
+            yield return new WaitForSeconds(4f);
+            _activeDizzy = false;
+            _canAttack = true;
+            _canPeformAttack = true;
+            ResumeAgent();  
+            isruning = false;
+        }
+        
+    }
+    */
+
+/*
+
+    private IEnumerator AttackTimer()
+    {
+        bool isruning = false;
+
+        if (!isruning)
+        {
+            isruning = true;
+            _canPeformAttack = false;
+            yield return new WaitForSeconds(1f);
+            _canPeformAttack = true;
+            isruning = false;
+        }
+
+
+    }
+    */
+
+    private void GenerateRandomPos()
+    {
+        if(Time.time > _nextTeleport)
+        {
+            TeleportProcess(); 
+            _nextFire = Time.time + teleportRate;
+        }
+    }
+
+    private void TeleportProcess()
+    {
+
+#if UNITY_EDITOR
+        
+        print("running");
+#endif
+        
+        Vector3 randomDirection = Random.insideUnitSphere * Random.Range(_minRange, _maxRange);
+
+        randomDirection += _playerTarget.position;
+
+        NavMeshHit hit;
+
+        NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+
+        Vector3 teleportPos = hit.position;
+
+        StartCoroutine(Teleport(teleportPos));
+    }
+
+    private IEnumerator Teleport(Vector3 teleportPos)
+    {
+        
+        Instantiate(_teleportEffect, teleportPos, _teleportEffect.transform.rotation);
+        
+        
+        _canAttack = false;
+        yield return new WaitForSeconds(0.5f);
+        
+        agent.enabled = false;
+        transform.position = teleportPos;
+        yield return new WaitForSeconds(0.3f);
+        agent.enabled = true;
+        
+        yield return new WaitForSeconds(0.5f);
+        
+        _canAttack = true;
+    }
+    
+    
+
     #endregion
     
     #region Health
     public void TakeDamage(int damage, WeaponType type, int damageBoost)
     {
-         if (_health > 0)
-         {
-             switch (type)
-             {
-                 case WeaponType.Normal:
-                 {
-                     _health -= damage + damageBoost;
+        if (_health <= 0)
+        {
+            Die();
+        }
 
-                     //StartCoroutine(HitFlash());
+        else if (_health > 0)
+        {
+            switch (type)
+            {
+                case WeaponType.Normal:
+                    {
+                        _health -= damage + damageBoost;
 
-                     //damageEffectTime = 2f; 
-                     break;
-                 }
+                        //StartCoroutine(HitFlash());
 
-                 case WeaponType.Ice:
-                 {
-                     if (_shooterScript.WUpgraded == true)
-                     {
-                         //StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
-                         StartCoroutine(HitFlash());
-                     }
-                     else
-                     {
-                         _health -= damage + damageBoost;
-                         //Instantiate(targetEffect, transform.position, transform.rotation);
-                         StartCoroutine(HitFlash());
-                     }
+                        //damageEffectTime = 2f; 
+                        break;
+                    }
+
+                case WeaponType.Ice:
+                    {
+                        if (_shooterScript.WUpgraded == true)
+                        {
+                            //StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
+                            //StartCoroutine(HitFlash());
+                        }
+                        else
+                        {
+                            _health -= damage + damageBoost;
+                            //Instantiate(targetEffect, transform.position, transform.rotation);
+                            //StartCoroutine(HitFlash());
+                        }
                         
-                     break;
-                 }
+                        break;
+                    }
 
-                 case WeaponType.Fire:
-                 {
-                     _health -= damage + damageBoost;
+                case WeaponType.Fire:
+                    {
+                        _health -= damage + damageBoost;
 
-                     StartCoroutine(HitFlash());
+                        //StartCoroutine(HitFlash());
 
-                     //damageEffectTime = 2.3f;
+                        //damageEffectTime = 2.3f;
 
-                     break;
-                 }
+                        break;
+                    }
 
-                 case WeaponType.Thunder:
-                 {
-                     _health -= damage + damageBoost;
+                case WeaponType.Thunder:
+                    {
+                        _health -= damage + damageBoost;
 
-                     if (_shooterScript.RUpgraded == true)
-                         StartCoroutine(StopForSeconds(_stunnedTime));
-                     else
-                         StartCoroutine(HitFlash());
-                     break;
-                 }
+                        if (_shooterScript.RUpgraded == true)
+                            StartCoroutine(StopForSeconds(_stunnedTime));
+                        else
+                            StartCoroutine(HitFlash());
+                        break;
+                    }
 
-                 case WeaponType.Dash:
-                 {
-                     _health -= damage + damageBoost;
+                case WeaponType.Dash:
+                    {
+                        _health -= damage + damageBoost;
 
-                     StartCoroutine(HitFlash());
-                     break;
-                 }
-             }
+                        StartCoroutine(HitFlash());
+                        break;
+                    }
+            }
 
-             if (_spawnHealth || _spawnMana)
-             {
-                 DropSpawnCheck();
-             }
+            if (_spawnHealth || _spawnMana)
+            {
+                DropSpawnCheck();
+            }
             
-             //  CALCULATE HEALTH 
-             // ADD DEATH
+            _damageText.text = damage.ToString();
+            StartCoroutine(DamageTextDisappear());
+
+            //healthSlider.value = _health;
+            //_healthBar.HandleBar(damage);
             
-             _damageText.text = damage.ToString();
-             StartCoroutine(DamageTextDisappear());
-         }
+            if (_canAttack)
+            {
+                //_warn.CanAlertAi = true;
+                //SetAttack();
+            }
+        }
     }
     
     
@@ -692,36 +891,33 @@ private float _stunnedTime;
     }
 
     #region Death
-
     public void Die()
     {
-        if (_health<=0)
+        if(_spawnHealth)
         {
-            if(_spawnHealth)
+            for (var i = 0; i < _healthItems; i++)
             {
-                for (var i = 0; i < _healthItems; i++)
-                {
-                    SpawnDrop(_healthDrop);
-                }   
-            }
-
-            if(_spawnMana)
-            {
-                for (var i = 0; i < _manaItems; i++)
-                {
-                    SpawnDrop(_manaDrop);
-                }
-            }
-            
-                    
-            Instantiate(_deathEffect, transform.position, Quaternion.identity);
-
-            //_valuesTexts.GetKill();
-
-            _objectiveUiScript.IncreaseEnemyDefeatedCount();
-            
-            Destroy(gameObject);
+                SpawnDrop(_healthDrop);
+            }   
         }
+
+        if(_spawnMana)
+        {
+            for (var i = 0; i < _manaItems; i++)
+            {
+                SpawnDrop(_manaDrop);
+            }
+        }
+        
+        
+        Instantiate(_deathEffect, transform.position, Quaternion.identity);
+
+        //_valuesTexts.GetKill();
+
+        _objectiveUiScript.IncreaseEnemyDefeatedCount();
+        
+
+        Destroy(gameObject);
     }
     
     #endregion   
@@ -742,4 +938,6 @@ private float _stunnedTime;
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
+    
+    
 }
