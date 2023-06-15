@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using LibGameAI.FSMs;
 using TMPro;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
@@ -101,7 +102,7 @@ public class RangedBossBehaviour : MonoBehaviour
            
     // Health/Death --------------------------------------------------------------------------------------------------->
     
-                    private AiHealth                            _healthBar;    
+        [SerializeField]    private AiHealth                            _healthBar;    
                     // HEALTH
                     private float                               _health;
 
@@ -661,7 +662,7 @@ private float _stunnedTime;
         {
             if (_canIncreaseAbility)
             {
-                print(_currentAbilityValue);
+                //print(_currentAbilityValue);
                 _currentAbilityValue = Mathf.Clamp(_currentAbilityValue + (_abilityIncreasePerFrame * Time.deltaTime), 0.0f, AbilityMaxValue);   
             
                 abilitySlider.value = _currentAbilityValue;
