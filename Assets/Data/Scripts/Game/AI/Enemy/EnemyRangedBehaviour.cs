@@ -94,7 +94,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
     
                     private AiHealth                            _healthBar;    
                     // HEALTH
-                    public float                               health;
+                    private float                               _health;
 
                     // DEATH
                     private GameObject                         _deathEffect;
@@ -278,7 +278,7 @@ private float _stunnedTime;
         
         
         // Health/Death ----------------------------------------------------------------------------------------------->
-         health                    = data.Health;
+         _health                    = data.Health;
         _deathEffect                = data.DeathEffect;
         
         // projectiles ------------------------------------------------------------------------------------------------>
@@ -515,7 +515,6 @@ private float _stunnedTime;
     #region Health
     public void TakeDamage(int damage, WeaponType type, int damageBoost)
     {
-<<<<<<< HEAD
          if (_health > 0)
          {
              switch (type)
@@ -524,32 +523,17 @@ private float _stunnedTime;
                  {
                      _health -= damage + damageBoost;
 
-                     //StartCoroutine(HitFlash());
-=======
-        if (health <= 0)
-        {
-            Die();
-        }
-
-        else if (health > 0)
-        {
-            switch (type)
-            {
-                case WeaponType.Normal:
-                    {
-                        health -= damage + damageBoost;
->>>>>>> origin/main
+                     StartCoroutine(HitFlash());
 
                      //damageEffectTime = 2f; 
                      break;
                  }
 
-<<<<<<< HEAD
                  case WeaponType.Ice:
                  {
                      if (_shooterScript.WUpgraded == true)
                      {
-                         //StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
+                         StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
                          StartCoroutine(HitFlash());
                      }
                      else
@@ -558,38 +542,13 @@ private float _stunnedTime;
                          //Instantiate(targetEffect, transform.position, transform.rotation);
                          StartCoroutine(HitFlash());
                      }
-=======
-                        //damageEffectTime = 2f; 
-                        break;
-                    }
-
-                case WeaponType.Ice:
-                    {
-                        if (_shooterScript.WUpgraded == true)
-                        {
-                            //StartCoroutine(DamageOverTime(_damageOverTime, _durationOfDot));
-                            //StartCoroutine(HitFlash());
-                        }
-                        else
-                        {
-                            health -= damage + damageBoost;
-                            //Instantiate(targetEffect, transform.position, transform.rotation);
-                            //StartCoroutine(HitFlash());
-                        }
->>>>>>> origin/main
                         
                      break;
                  }
 
-<<<<<<< HEAD
                  case WeaponType.Fire:
                  {
                      _health -= damage + damageBoost;
-=======
-                case WeaponType.Fire:
-                    {
-                        health -= damage + damageBoost;
->>>>>>> origin/main
 
                      StartCoroutine(HitFlash());
 
@@ -598,15 +557,9 @@ private float _stunnedTime;
                      break;
                  }
 
-<<<<<<< HEAD
                  case WeaponType.Thunder:
                  {
                      _health -= damage + damageBoost;
-=======
-                case WeaponType.Thunder:
-                    {
-                        health -= damage + damageBoost;
->>>>>>> origin/main
 
                      if (_shooterScript.RUpgraded == true)
                          StartCoroutine(StopForSeconds(_stunnedTime));
@@ -615,15 +568,9 @@ private float _stunnedTime;
                      break;
                  }
 
-<<<<<<< HEAD
                  case WeaponType.Dash:
                  {
                      _health -= damage + damageBoost;
-=======
-                case WeaponType.Dash:
-                    {
-                        health -= damage + damageBoost;
->>>>>>> origin/main
 
                      StartCoroutine(HitFlash());
                      break;
@@ -678,7 +625,7 @@ private float _stunnedTime;
         float elapsedTime = 0f;
         while (elapsedTime < durationOfdamage)
         {
-            health -= damagePerSecond;
+            _health -= damagePerSecond;
             StartCoroutine(HitFlash());
             yield return new WaitForSeconds(damagePerSecond);
             elapsedTime += 2.5f;
