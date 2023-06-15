@@ -133,8 +133,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 73, y: 156.8}
-  m_SizeDelta: {x: 109.205, y: 49.303}
+  m_AnchoredPosition: {x: 73, y: 163.9}
+  m_SizeDelta: {x: 146.961, y: 50.769}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1214372816
 CanvasRenderer:
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 40/120
+  m_text: 9999/9999
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -173,9 +173,9 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
+    rgba: 4292664797
+  m_fontColor: {r: 0.8679245, g: 0.8663893, b: 0.8630117, a: 1}
+  m_enableVertexGradient: 1
   m_colorMode: 3
   m_fontColorGradient:
     topLeft: {r: 1, g: 1, b: 1, a: 1}
@@ -191,13 +191,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 27
+  m_fontSizeBase: 27
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -781,6 +781,7 @@ MonoBehaviour:
   criticalSlider: {fileID: 8061491773580078406}
   shieldSlider: {fileID: 774670935}
   criticalSliderVelocity: 0.02
+  healthText: {fileID: 1214372815}
   fill: {fileID: 1821193679184456122}
 --- !u!1 &4687415141191617786
 GameObject:

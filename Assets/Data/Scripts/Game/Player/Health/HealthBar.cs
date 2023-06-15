@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using TMPro;
 
 public class HealthBar : MonoBehaviour
 {
@@ -9,20 +11,29 @@ public class HealthBar : MonoBehaviour
     [SerializeField]
     private float criticalSliderVelocity;
     private float _time;
+    [Header("Text")]
+    [SerializeField] private TextMeshProUGUI healthText;
         
     //public Gradient _gradient;
 
     [FormerlySerializedAs("_fill")] public Image fill;
+
+    private void Start()
+    {
+        healthText.text = healthSlider.value + "/" + healthSlider.maxValue;
+    }
 
     private void Update()
     {
         SetCriticalHealth();
     }
 
-    internal void SetMaxHealth(int empower, int shield)
+    internal void SetMaxHealth( int max, int shield)
     {
-
-        healthSlider.maxValue += empower; 
+      
+        healthSlider.maxValue +=  max; 
+        
+        
         //criticalSlider.maxValue = health + shield;
         //shieldSlider.maxValue = health + shield;    
         //_fill.color = _gradient.Evaluate(1f);
@@ -32,6 +43,7 @@ public class HealthBar : MonoBehaviour
     {
         _time = 0f;
         healthSlider.value = health;
+        healthText.text = healthSlider.value + "/" + healthSlider.maxValue;
         //shieldSlider.value = health + shield;
         //_fill.color = _gradient.Evaluate(_slider.normalizedValue);
     }
@@ -46,9 +58,15 @@ public class HealthBar : MonoBehaviour
 
     }
 
-    public void HealthEmpower(int powerUp)
+    public void HealthEmpower(int currentHealth,int powerUp)
     {
         healthSlider.maxValue += powerUp; 
+        healthSlider.value = healthSlider.maxValue;    
+        
+        print(currentHealth +"/"+ healthSlider.maxValue);
+        
+        //healthText.text = healthSlider.maxValue.ToString(currentHealth +"/" + healthSlider.maxValue);
+        healthText.text = currentHealth+ "/" + healthSlider.maxValue;
     }
 
 
