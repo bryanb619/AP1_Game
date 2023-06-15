@@ -91,7 +91,7 @@ public class RangedBossBehaviour : MonoBehaviour
            
     // Health/Death --------------------------------------------------------------------------------------------------->
     
-                    private AiHealth                            _aiHealth;    
+                    private AiHealth                            _healthBar;    
                     // HEALTH
                     private float                               _health;
 
@@ -218,7 +218,7 @@ private float _stunnedTime;
         agent                       = GetComponent<NavMeshAgent>(); 
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
-        _aiHealth                   = GetComponentInChildren<AiHealth>();
+        _healthBar                   = GetComponentInChildren<AiHealth>();
         
         // mesh 
         _mesh                       = GetComponentInChildren<SkinnedMeshRenderer>();
@@ -300,7 +300,7 @@ private float _stunnedTime;
     // Start is called before the first frame update
     private void Start()
     {
-       
+        _healthBar.HealthValueSet(_health);
     }
 
     private void StateSet()
