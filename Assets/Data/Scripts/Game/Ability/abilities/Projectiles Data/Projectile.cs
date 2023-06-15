@@ -137,8 +137,8 @@ public class Projectile : MonoBehaviour
     #region Collision
     private void OnTriggerEnter(Collider hitInfo)
     {
-        //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyBehaviour>();
-        var chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
+        //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyRangedBehaviour>();
+        EnemyChaseBehaviour chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
 
         if (chaseEnemy == null) return;
         chaseEnemy.TakeDamage(_chaseDamage, _weaponType);

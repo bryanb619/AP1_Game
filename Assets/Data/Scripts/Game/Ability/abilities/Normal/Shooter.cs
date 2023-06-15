@@ -162,7 +162,6 @@ public class Shooter : MonoBehaviour
                     }
                     else
                     {
-                        _playerAnim.NormalAttack();
                         StartCoroutine(NormalAttackCooldown());
                         Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
                         break;
@@ -174,7 +173,6 @@ public class Shooter : MonoBehaviour
                     { 
                         if (_manaManager.ManaCheck(MagicType))
                         {
-                            _playerAnim.QAttack();
                             StartCoroutine(FireAttackCooldown());
                             Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
                         }
@@ -186,8 +184,6 @@ public class Shooter : MonoBehaviour
             case WeaponType.Ice: // input nº3 (W)
                 {
                     if(!IceCooldown)
-                        //Instantiate inside the TargetAttack function to avoid unnecessary code
-                        _playerAnim.WAttack();
                         TargetAttack();
                     
                     break;
@@ -266,7 +262,6 @@ public class Shooter : MonoBehaviour
                     Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
                     Instantiate(areaEffect, transform.position, Quaternion.identity);
                     targetedAttackAbilityHolder.AreaAttackCooldownUi();
-                    _playerAnim.RAttack();
                     StartCoroutine(ThunderAttackCooldown());
                 }
             }
