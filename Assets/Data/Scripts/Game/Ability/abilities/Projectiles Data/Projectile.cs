@@ -25,6 +25,7 @@ public class Projectile : MonoBehaviour
     private int                         _speed;
 
     private int                         _rangedDamage, _chaseDamage, _bossDamage;
+    private int                         _boostDamage; 
 
     private bool                        _impactEffet;
     private GameObject                  _impactObject;
@@ -139,11 +140,26 @@ public class Projectile : MonoBehaviour
     {
         //EnemyBehaviour enemy = hitInfo.GetComponent<EnemyRangedBehaviour>();
         EnemyChaseBehaviour chaseEnemy = hitInfo.GetComponent<EnemyChaseBehaviour>();
+        EnemyRangedBehaviour rangedEnemy = hitInfo.GetComponent<EnemyRangedBehaviour>();
+        RangedBossBehaviour rangedBoss = hitInfo.GetComponent<RangedBossBehaviour>();
 
-        if (chaseEnemy == null) return;
-        chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
-        DestroyBullet();
+        if (chaseEnemy != null)
+        {
+            chaseEnemy.TakeDamage(_chaseDamage, _weaponType);
+            DestroyBullet();
+        }
 
+        if (rangedEnemy != null)
+        {
+            rangedEnemy.TakeDamage(_rangedDamage, _weaponType, _boostDamage);
+            DestroyBullet();
+        }
+        if(rangedBoss != null)
+        {
+            rangedBoss.TakeDamage(_bossDamage, _weaponType,_boostDamage);
+            DestroyBullet();
+        }
+        
     }
     /*
     private void OnCollisionEnter(Collision collision)
