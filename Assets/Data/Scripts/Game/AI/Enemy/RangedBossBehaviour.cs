@@ -1082,6 +1082,11 @@ public class RangedBossBehaviour : MonoBehaviour
             
                 yield return new WaitForSeconds(spawnTime);
                 Instantiate(chaseAi, spawnPos,Quaternion.identity);
+
+
+#if UNITY_EDITOR
+                Debug.Log("Boss spawning chase"); 
+#endif
             }
         
         
@@ -1102,7 +1107,11 @@ public class RangedBossBehaviour : MonoBehaviour
             
                 yield return new WaitForSeconds(spawnTime);
                 Instantiate(rangedAi, spawnPos,Quaternion.identity);
-            
+
+#if UNITY_EDITOR
+                Debug.Log("Boss spawning ranged");
+#endif
+
             }
             _runningAiSpawn = false;
         }
