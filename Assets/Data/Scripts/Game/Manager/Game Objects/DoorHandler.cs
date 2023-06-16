@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class DoorHandler : MonoBehaviour
 {
@@ -12,20 +12,29 @@ public class DoorHandler : MonoBehaviour
     private float _speed = 1f;
 
     [SerializeField] private GameObject door, startPos;
-    [FormerlySerializedAs("Endpos")] [SerializeField] private GameObject endpos; 
+     [SerializeField] private GameObject endpos; 
+     
+     [SerializeField] private GameObject[] barrier;
+     
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        ConditionCheck();
-        StateCheck();
+        //ConditionCheck();
+        //StateCheck();
+    }
+    
+    
+    public void DisableBarrier(int index)
+    {
+        barrier[index].SetActive(false);
     }
 
     private void ConditionCheck()
