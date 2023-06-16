@@ -618,6 +618,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if (_currentState == HandleState.None)
         {
+            transform.rotation = Quaternion.identity;
             if (_agent.enabled)
             {
                 //stop agent

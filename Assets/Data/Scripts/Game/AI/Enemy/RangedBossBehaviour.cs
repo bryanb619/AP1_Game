@@ -224,6 +224,8 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         if (_currentState != HandleState.None) return;
         
+        transform.rotation = Quaternion.identity;
+        
         if (agent.enabled)
         {
             //stop agent
@@ -251,10 +253,10 @@ public class RangedBossBehaviour : MonoBehaviour
 
     private void GetAiComponents()
     {
-        
         // AI components
         agent                       = GetComponent<NavMeshAgent>(); 
         agent.updateRotation        = false;
+        agent.angularSpeed          = 0f;
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
         //_healthBar                   = GetComponentInChildren<AiHealth>();
