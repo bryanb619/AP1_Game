@@ -20,7 +20,7 @@ public class RangedBossBehaviour : MonoBehaviour
     
         // AI 
                             // AI states
-                            private enum Ai                             {Patrol, Attack}
+                            private enum Ai                             {Patrol, Attack, Cover}
                             [Header("AI State")]
     [SerializeField]        private Ai                                  stateAi;
                             // state machine 
@@ -79,49 +79,67 @@ public class RangedBossBehaviour : MonoBehaviour
     
         // Boss attack
     
-        [Header("Boss Events")]
-        [SerializeField]    private AiBossData                          bossData;
-        [SerializeField]    private int []                              healthEvents;
-        [SerializeField]    private int []                              chaseCount, rangedCount;
+    [Header("Boss Events")]
+    [SerializeField]   private AiBossData                          bossData;
+    [SerializeField]   private int []                              healthEvents;
+    [SerializeField]   private int []                              chaseCount, rangedCount;
         
         
     
     
-                    private const float                         AbilityMaxValue = 100f;
-                    private float                               _currentAbilityValue;
-                    private float                               _abilityIncreasePerFrame;
-                    private bool                                _canSpecialAttack;
+                        private const float                         AbilityMaxValue = 100f;
+                        private float                               _currentAbilityValue;
+                        private float                               _abilityIncreasePerFrame;
+                        private bool                                _canSpecialAttack;
                     
-                    private float                               _minRange, _maxRange;
-                    private GameObject                          _teleportEffect;
-                    private float                              _nextTeleport;
-                    private float                               _teleportRate;
+                        private float                               _minRange, _maxRange;
+                        private GameObject                          _teleportEffect;
+                        private float                              _nextTeleport;
+                        private float                               _teleportRate;
 
-                    private int                                 _areaAttackDamage; 
-                    private float                               _areaAttackRange; 
-                    private float                              _nextSpecialAttack;
-                    private float                               _specialAttackRate = 2f;
+                        private int                                 _areaAttackDamage; 
+                        private float                               _areaAttackRange; 
+                        private float                              _nextSpecialAttack;
+                        private float                               _specialAttackRate = 2f;
                     
-                    private bool                                _canIncreaseAbility;
+                        private bool                                _canIncreaseAbility;
 
-                    private float                               _cooldownTp;
-                    private float                               _tpMaxValue; 
-                    private float                              _tpIncreasePerFrame;
+                        private float                               _cooldownTp;
+                        private float                               _currentTpValue;
+                        private float                               _tpMaxValue; 
+                        private float                               _tpIncreasePerFrame;
+                        private float                               _neededTpValue;
+                        private bool                                _canCdIncrease;
+                        private bool                                _canSetNewDestination;
 
-                    
-                    
-    // projectiles
-                    private GameObject                          _projectile, _randomProjectile,
-                        _specialProjectile, _areaAttack;
+
+                    // projectiles
+                        private GameObject                          _projectile, _randomProjectile,
+                            _specialProjectile, _areaAttack;
     
+                    
+        // Cover // ------------------------------------------------------------------------------------------------------->
+                        private Collider[]                  _colliders = new Collider[10];
+
+                    //Lower is a better hiding spot
+                        private float                       _hideSensitivity = 0;
+                        private float                       _updateFrequency =  0.2f;
+    [SerializeField]    private float                       _minDistInCover;
+    [SerializeField]    private LayerMask                   _hidableLayers;
+    [SerializeField]    private SceneChecker                _lineOfSightChecker;
+                        private Coroutine                   _movementCoroutine;
            
     // Health/Death --------------------------------------------------------------------------------------------------->
     
-        [SerializeField]    private AiHealth                            _healthBar;    
-                    // HEALTH
-                    private float                               _health;
-                    // DEATH
-                    private GameObject                         _deathEffect;
+    // HEALTH
+    [SerializeField]    private AiHealth                            healthBar;    
+                        
+                        private float                               _health;
+                        private float                              _maxHealth;
+                        private float                              _healthIncreasePerFrame;
+                    
+                        // DEATH
+                        private GameObject                         _deathEffect;
                     
                     
     // Drops/Loot ----------------------------------------------------------------------------------------------------->
@@ -248,7 +266,7 @@ private float _stunnedTime;
         agent.updateRotation        = false;
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
-        _healthBar                   = GetComponentInChildren<AiHealth>();
+        //_healthBar                   = GetComponentInChildren<AiHealth>();
         
         // mesh 
         _mesh                       = GetComponentInChildren<SkinnedMeshRenderer>();
@@ -311,6 +329,8 @@ private float _stunnedTime;
         
         // Health/Death ----------------------------------------------------------------------------------------------->
          _health                    = data.Health;
+        _healthIncreasePerFrame     = data.HealthRegen;
+         _maxHealth                 = data. MaxHealthRegen;
         _deathEffect                = data.DeathEffect;
         
         // projectiles ------------------------------------------------------------------------------------------------>
@@ -328,6 +348,14 @@ private float _stunnedTime;
             
             _teleportEffect         = data.TeleportEffect;
             
+            _currentTpValue         = data.CurrentTp;
+            _tpMaxValue             = data.TpMaxValue;
+            _tpIncreasePerFrame     = data.TpIncreasePerFrame;
+            _cooldownTp             = data.CooldownTp;
+            
+            _canCdIncrease          = true;
+            _canSetNewDestination   = true;
+            
             
 #if UNITY_EDITOR
             Debug.Log("Boss");
@@ -336,21 +364,12 @@ private float _stunnedTime;
         }
         
     }
-    // Start is called before the first frame update
-    private void Start()
-    {
-     
-        _healthBar.HealthValueSet(_health);
-        abilitySlider.maxValue = 100; 
-        abilitySlider.value = _currentAbilityValue;
-    }
-
     private void StateSet()
     {
         // Create the states
         var patrolState   = new State("Patrol" ,null);
         var chaseState    = new State("Chase", Engage);
-        
+
         //  PATROL -> CHASE 
         patrolState.AddTransition(
             new Transition(
@@ -366,6 +385,16 @@ private float _stunnedTime;
         // Create the state machine
         _fsm = new StateMachine(chaseState);
     }
+    
+    // Start is called before the first frame update
+    private void Start()
+    {
+     
+        healthBar.HealthValueSet(_health);
+        abilitySlider.maxValue = 100; 
+        abilitySlider.value = _currentAbilityValue;
+    }
+
 
     // Update is called once per frame
     private void Update()
@@ -432,12 +461,6 @@ private float _stunnedTime;
     {
         Action actions = _fsm.Update();
         actions?.Invoke();
-
-        if ((_playerTarget.transform.position - transform.position).magnitude <= 2)
-        {
-            agent.enabled = false;
-            
-        }
     }
     
     private void Paused()
@@ -455,13 +478,23 @@ private float _stunnedTime;
 
     private void Engage()
     {
+        if ((_playerTarget.transform.position - transform.position).magnitude <= 1.5f)
+        {
+            agent.radius = 0.1f;
+            if ((_playerTarget.transform.position - transform.position).magnitude <= 1f)
+            {
+                agent.enabled = false;
+
+            }
+            
+        }
+        
         if (_canAttack)
         {
             BossAttack();
-            UpdateRotation(); 
-            
-        }            
-        
+            UpdateRotation();
+        }
+        CoolDownTp();
     }   
     
      private void BossAttack()
@@ -490,7 +523,6 @@ private float _stunnedTime;
                             SpecialAttack();
                             _nextSpecialAttack = Time.time + _specialAttackRate;
                         }
-
                         
                     }
                     
@@ -512,7 +544,32 @@ private float _stunnedTime;
                     else if ((_playerTarget.transform.position 
                               - transform.position).magnitude <= 9) //_attackRange && !_canSpecialAttack) 
                     {
-                        GenerateRandomPos();
+                        if(Time.time > _nextTeleport && _currentTpValue >= 3) 
+                        {
+                            GenerateRandomPos();
+                            _nextTeleport = Time.time + _teleportRate;
+                        }
+
+                        else
+                        {
+                            if ((_playerTarget.transform.position
+                                 - transform.position).magnitude <= 3)
+                            {
+                                if(_canAttack) 
+                                {
+                                    if (Time.time > _nextFire)
+                                    {
+                                        AreaAttack();
+                                        _nextFire = Time.time + _fireRate;
+                                    }
+                             
+                                }
+                            }
+                            
+                           
+                            
+                        }
+                        
                     }
                     
                     else if ((_playerTarget.transform.position - transform.position).magnitude >= 13) // valor mais alto 
@@ -525,6 +582,7 @@ private float _stunnedTime;
                     }
                     
                     CoolDoownPower();
+                     
                     break; 
                 }
         }
@@ -620,9 +678,6 @@ private float _stunnedTime;
              // set destination
              agent.SetDestination(_playerTarget.position);
          }
-         
-       
-
      }
      
      private void UpdateRotation()
@@ -690,6 +745,16 @@ private float _stunnedTime;
         //abilitySlider.value = _currentAbilityValue;
         //print(currentAbilityValue);
     }
+
+     private void CoolDownTp()
+     {
+         if (_canCdIncrease)
+         {
+             _currentTpValue = Mathf.Clamp(_currentAbilityValue + (_tpIncreasePerFrame * Time.deltaTime), 0.0f, _tpMaxValue); 
+         }
+         //print(_currentAbilityValue);
+          
+     }
 /*
     private IEnumerator SpecialAttackTimer()
     {
@@ -733,12 +798,8 @@ private float _stunnedTime;
 
     private void GenerateRandomPos()
     {
-        if(Time.time > _nextTeleport)
-        {
-            TeleportProcess(); 
-            
-            _nextTeleport = Time.time + _teleportRate;
-        }
+        _currentTpValue -= _cooldownTp;
+        TeleportProcess(); 
     }
 
     private void TeleportProcess()
@@ -765,6 +826,7 @@ private float _stunnedTime;
     private IEnumerator Teleport(Vector3 teleportPos)
     {
         
+        _canCdIncrease = false;
         Instantiate(_teleportEffect, teleportPos, _teleportEffect.transform.rotation);
         
         _canIncreaseAbility = false;
@@ -779,9 +841,13 @@ private float _stunnedTime;
         _canAttack = true;
         _canIncreaseAbility = true;
         
+        yield return new WaitForSeconds(2f);
+        _canCdIncrease = true;
+        
     }
     
     #endregion
+
     
     #region Health
     public void TakeDamage(int damage, WeaponType type, int damageBoost)
@@ -862,7 +928,7 @@ private float _stunnedTime;
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
-            _healthBar.HandleBar(damage);
+            healthBar.HandleBar(damage);
         }
     }
     
@@ -966,6 +1032,30 @@ private float _stunnedTime;
             SpawnDrop(_manaDrop);
         }
     }
+
+
+    private void Event(int enemyChase, int enemyRanged)
+    {
+        
+        // spawn AI
+        
+        Vector3 randomDirection = Random.insideUnitSphere * Random.Range(_minRange, _maxRange);
+
+        randomDirection += _playerTarget.position;
+
+        NavMeshHit hit;
+
+        NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+
+        Vector3 spawnPos = hit.position;
+        
+        // start spawn coroutine
+
+        
+        
+    }
+    
+
 
     #region Death
     public void Die()

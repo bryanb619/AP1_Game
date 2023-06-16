@@ -85,12 +85,23 @@ public class AiRangedData : ScriptableObject
     
     [SerializeField] private float      teleportTime;
     public float                        TeleportTime => teleportTime;
-    
+
     [SerializeField] private GameObject teleportEffect;
     public GameObject                   TeleportEffect => teleportEffect;
 
+    [SerializeField] private float      currentTp, cooldownTp, tpMaxValue, tpIncreasePerFrame; 
+    
+    public float                       CurrentTp => currentTp;
+    public float                       CooldownTp => cooldownTp;
+    public float                       TpMaxValue => tpMaxValue;
+    public float                       TpIncreasePerFrame => tpIncreasePerFrame;
+    
+    
     [SerializeField] private GameObject areaAttack; 
     public GameObject                   AreaAttack => areaAttack;
+    
+    
+    
 
     /*
     // COVER //
@@ -125,12 +136,12 @@ public class AiRangedData : ScriptableObject
     public int                          Health => health;
 
     [Tooltip("Heal rate, the higher the faster it will restore")]
-    [Range(0f, 30f)]
+    [Range(0f, 9999f)]
     [SerializeField] private float      healthRegen;
     public float                        HealthRegen => healthRegen;
 
     [Tooltip("Maximum health regeneration")]
-    [Range(0f, 150f)]
+    [Range(0f, 9999f)]
     [SerializeField] private float      maxHealthRegen;
     public float                        MaxHealthRegen => maxHealthRegen;
 

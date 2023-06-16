@@ -114,9 +114,10 @@ public class AiHealth : MonoBehaviour
         }
     }
     
-    public void IncrementHealth(float health)
+    public void IncrementHealth(float value)
     {
-        _healthBar.value += health;
+        _healthBar.value = value;
+        _healthPercentage = _healthBar.value / _healthBar.maxValue * 100f;
         
         if(_healthPercentage >= greenValue)
         {
