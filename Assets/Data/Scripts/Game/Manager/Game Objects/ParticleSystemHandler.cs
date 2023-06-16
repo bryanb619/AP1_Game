@@ -2,9 +2,14 @@ using UnityEngine;
 
 public class ParticleSystemHandler : MonoBehaviour
 {
-    private ParticleSystem[] _system;
+    private ParticleSystem[]    _system;
+    
+                                private float _time;    
+    [SerializeField]            private float destroyTime; 
 
-    private GameState _state; 
+    [SerializeField]            private bool getParticleInChild;  
+    
+                                private GameState _state; 
 
     
 
@@ -22,11 +27,13 @@ public class ParticleSystemHandler : MonoBehaviour
             case GameState.Paused:
                 {
                     _state = GameState.Paused;
+                    Pause();
                     break;
                 }
             case GameState.Gameplay:
                 {
                     _state = GameState.Gameplay;
+                    Resume();
                     break;
                 }
         }
@@ -36,41 +43,45 @@ public class ParticleSystemHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      
-        _system = GetComponentsInChildren<ParticleSystem>();
 
+        if (getParticleInChild)
+        {
+            _system = GetComponentsInChildren<ParticleSystem>();
+        }
 
         switch (_state)
         {
             case GameState.Paused:
                 {
                     _state = GameState.Paused;
+                    Pause();
                     break;
                 }
             case GameState.Gameplay:
                 {
                     _state = GameState.Gameplay;
+                    Resume();
                     break;
                 }
         }
     }
 
 
-    private void FixedUpdate()
+    private void Update()
     {
         switch (_state) 
         {
-            case GameState.Paused:
-                {
-                    Pause();
-                    break; 
-                }
-
-            case GameState.Gameplay:
-                {
-                    Resume();
-                    break;
-                }
+           case GameState.Gameplay:
+           {
+               destroyTime += Time.deltaTime;
+               
+               if (_time >= destroyTime)
+               {
+                   Destroy(gameObject);
+               }
+               break;
+            }
+           default:{break;}
         }
     }
 
@@ -81,7 +92,6 @@ public class ParticleSystemHandler : MonoBehaviour
         {
             p.Play();
         }
-        return; 
     }
 
     private void Pause()
@@ -90,7 +100,7 @@ public class ParticleSystemHandler : MonoBehaviour
         {
            p.Pause();
         }
-        return; 
+  
     }
 
 
