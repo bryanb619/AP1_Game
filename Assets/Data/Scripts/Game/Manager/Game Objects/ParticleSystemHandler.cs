@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class ParticleSystemHandler : MonoBehaviour
 {
     private ParticleSystem[]    _system;
+    private VisualEffect        _effect;
     
                                 private float _time;    
     [SerializeField]            private float destroyTime; 
