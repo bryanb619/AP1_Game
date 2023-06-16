@@ -80,7 +80,6 @@ public class RangedBossBehaviour : MonoBehaviour
         // Boss attack
     
         [Header("Boss Events")]
-        [SerializeField]   private AiBossData                          bossData;
         [SerializeField]   private int []                              healthEvents;
         [SerializeField]   private int []                              chaseCount, rangedCount;
         [SerializeField]   private float effectTime, spawnTime, minRange, maxRange;

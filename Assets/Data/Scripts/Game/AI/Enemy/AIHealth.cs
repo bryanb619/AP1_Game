@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,27 +46,32 @@ public class AIHealth : MonoBehaviour
         {
             _aiType = AiType.Boss;
         }
-        
-/*
-        if (TryGetComponent(out EnemyChaseBehaviour chaseBehaviour))
-        {
-            
-            _chase = GetComponentInParent<EnemyChaseBehaviour>();
-            _aiType = AiType.Chase;
-        }
 
-        if (TryGetComponent(out EnemyRangedBehaviour rangedBehaviour))
-        {
-            _ranged = GetComponentInParent<EnemyRangedBehaviour>();
-            _aiType = AiType.Ranged;
-        }
+#if UNITTY_EDITOR
 
-        if (TryGetComponent(out RangedBossBehaviour rangedBossBehaviour))
-        {
-            _rangedBoss = GetComponentInParent<RangedBossBehaviour>(); 
-            _aiType = AiType.Boss;
-        }
-        */
+            Debug.Log(_aiType); 
+#endif
+
+        /*
+                if (TryGetComponent(out EnemyChaseBehaviour chaseBehaviour))
+                {
+
+                    _chase = GetComponentInParent<EnemyChaseBehaviour>();
+                    _aiType = AiType.Chase;
+                }
+
+                if (TryGetComponent(out EnemyRangedBehaviour rangedBehaviour))
+                {
+                    _ranged = GetComponentInParent<EnemyRangedBehaviour>();
+                    _aiType = AiType.Ranged;
+                }
+
+                if (TryGetComponent(out RangedBossBehaviour rangedBossBehaviour))
+                {
+                    _rangedBoss = GetComponentInParent<RangedBossBehaviour>(); 
+                    _aiType = AiType.Boss;
+                }
+                */
     }
     
     #region AI Health
