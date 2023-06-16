@@ -3,7 +3,7 @@ using UnityEngine;
 using FMODUnity;
 
 
-public class CollSpawnAi : MonoBehaviour
+public class CollSpawnAI : MonoBehaviour
 {
     // Enemies --------------------------------------------------------------------------->
 
