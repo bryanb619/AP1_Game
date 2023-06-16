@@ -384,6 +384,8 @@ private float _stunnedTime;
     
     private void InactiveAi()
     {
+        transform.rotation = Quaternion.identity;
+        
         if (agent.enabled)
         {
             agent.isStopped = true;
