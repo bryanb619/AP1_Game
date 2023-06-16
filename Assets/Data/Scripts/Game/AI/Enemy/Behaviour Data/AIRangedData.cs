@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [CreateAssetMenu (menuName ="Akarya/AI/Ranged Data")]
-public class AiRangedData : ScriptableObject
+public class AIRangedData : ScriptableObject
 {
   
     [Header("AI Type")]
