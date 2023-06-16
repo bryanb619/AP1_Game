@@ -1061,51 +1061,51 @@ public class RangedBossBehaviour : MonoBehaviour
     
     private IEnumerator SpawnAi (int chaseCount, int rangedCount)
     {
-        
-        for (int i = 0; i <chaseCount; i++)
+        if (!_runningAiSpawn)
         {
-            Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
+            _runningAiSpawn = false;
+            for (int i = 0; i <chaseCount; i++)
+            {
+                Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
 
-            randomDirection += _playerTarget.position;
+                randomDirection += _playerTarget.position;
 
-            NavMeshHit hit;
+                NavMeshHit hit;
 
-            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+                NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
 
-            Vector3 spawnPos = hit.position;
+                Vector3 spawnPos = hit.position;
             
             
-            yield return new WaitForSeconds(effectTime);
-            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+                yield return new WaitForSeconds(effectTime);
+                Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
             
-            yield return new WaitForSeconds(spawnTime);
-            Instantiate(chaseAi, spawnPos,transform.rotation);
+                yield return new WaitForSeconds(spawnTime);
+                Instantiate(chaseAi, spawnPos,Quaternion.identity);
+            }
+        
+        
+            for (int i = 0; i < rangedCount; i++)
+            {
+                Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
+
+                randomDirection += _playerTarget.position;
+
+                NavMeshHit hit;
+
+                NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+
+                Vector3 spawnPos = hit.position;
+        
+                yield return new WaitForSeconds(effectTime);
+                Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            
+                yield return new WaitForSeconds(spawnTime);
+                Instantiate(rangedAi, spawnPos,Quaternion.identity);
+            
+            }
+            _runningAiSpawn = true;
         }
-        
-        
-        for (int i = 0; i < rangedCount; i++)
-        {
-            Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
-
-            randomDirection += _playerTarget.position;
-
-            NavMeshHit hit;
-
-            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
-
-            Vector3 spawnPos = hit.position;
-        
-            yield return new WaitForSeconds(effectTime);
-            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
-            
-            yield return new WaitForSeconds(spawnTime);
-            Instantiate(chaseAi, spawnPos,transform.rotation);
-        
-
-        }
-        
-
-     
     }
     
     
