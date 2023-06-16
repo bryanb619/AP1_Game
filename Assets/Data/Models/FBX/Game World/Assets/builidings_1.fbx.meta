@@ -3,7 +3,27 @@ guid: 23f3488d0ecefe14899ff5118eead7d1
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: arco_lambert2_BaseMap
+    second: {fileID: 2800000, guid: d4259b4b7b711a44ea895636c1b87389, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: arco_lambert3_BaseMap
+    second: {fileID: 2800000, guid: 5572eb9a9d74ec747b0fc26b8dde5f3e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: builidings_1_lambert1_BaseMap
+    second: {fileID: 2800000, guid: df842debe81fdda43bb12c67d2d9d7d5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: builidings_1_lambert4_BaseMap
+    second: {fileID: 2800000, guid: 220d38326775dd048971261683dfccbf, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -88,7 +108,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 100
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
