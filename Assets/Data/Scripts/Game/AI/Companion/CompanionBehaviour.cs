@@ -530,7 +530,7 @@ namespace Data.Scripts.Game.AI.Companion
         private void Combat()
         {
             StartCombat();
-            //Aim();
+            Aim();
             ObstacleCheck();
         }
 
