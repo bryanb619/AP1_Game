@@ -174,7 +174,7 @@ public class AbilityHolder : MonoBehaviour
         if (abilityNew)
         {
             // change name
-            abilityNew.Activate(gameObject);
+            //abilityNew.Activate(gameObject);
             _activeTime = abilityNew.activeTime;
         }
 
@@ -188,7 +188,7 @@ public class AbilityHolder : MonoBehaviour
         if (abilityNew)
         {
             // change name
-            abilityNew.Activate(gameObject);
+            //abilityNew.Activate(gameObject);
             _activeTime = abilityNew.activeTime;
         }
 
