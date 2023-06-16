@@ -124,7 +124,7 @@ public class RangedBossBehaviour : MonoBehaviour
     // Health/Death --------------------------------------------------------------------------------------------------->
     
     // HEALTH
-    [SerializeField]    private AiHealth                            healthBar;    
+    [SerializeField]    private AIHealth                            healthBar;    
                         
                         private float                               _health;
                         private float                              _maxHealth;

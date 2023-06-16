@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AiHealth : MonoBehaviour
+public class AIHealth : MonoBehaviour
 {
    
     

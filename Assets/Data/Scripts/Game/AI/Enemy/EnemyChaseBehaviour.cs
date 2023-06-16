@@ -52,7 +52,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         // AI controller for performance AI actions
                         //private AiController                _controller;
                         private AIHandler                   _hanlderAi;
-                        private AiHealth                    _healthBar;
+                        private AIHealth                    _healthBar;
 
                         // AI Mesh
     [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
@@ -341,7 +341,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         _warn                        = GetComponent<WarningSystemAi>();
         _hanlderAi                   = GetComponent<AIHandler>();
-        _healthBar                  = GetComponentInChildren<AiHealth>();
+        _healthBar                  = GetComponentInChildren<AIHealth>();
 
         _rb                          = GetComponent<Rigidbody>();
 
