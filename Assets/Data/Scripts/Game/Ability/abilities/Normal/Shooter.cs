@@ -105,24 +105,30 @@ public class Shooter : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Mouse0) && !NormalCooldown)
             {
-                _playerAnim.NormalAttack();
                 MagicType = WeaponType.Normal;
+                Shoot();
             }
             else if (Input.GetKeyDown(qKey) && !FireCooldown)    
             {
-                _playerAnim.QAttack();
-                MagicType = WeaponType.Fire;
+                RaycastHit hit;
+                if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                {
+                    transform.LookAt(new Vector3(hit.point.x, gameObject.transform.position.y, hit.point.z));
+                    MagicType = WeaponType.Fire;
+                    _playerAnim.QAttack();
+                }
+
             }
             else if (Input.GetKeyDown(wKey) && !IceCooldown)
             {
-                _playerAnim.QAttack();
                 MagicType = WeaponType.Ice;
+                _playerAnim.WAttack();
             }
             else if (Input.GetKeyDown(rKey) && !ThunderCooldown)
             {
                 //needs to be fixed
-                _playerAnim.RAttack();
                 MagicType = WeaponType.Thunder;
+                _playerAnim.RAttack();
             }
         }
     }
@@ -174,8 +180,8 @@ public class Shooter : MonoBehaviour
                 {
                     if (_manaManager.ManaCheck(MagicType))
                     {
-                        StartCoroutine(FireAttackCooldown());
                         Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
+                        StartCoroutine(FireAttackCooldown());
                     }
                     break;
                 }
