@@ -31,14 +31,15 @@ public class Shooter : MonoBehaviour
     private KeyCode qKey = KeyCode.Q, wKey = KeyCode.W, rKey = KeyCode.R;
     internal bool NormalCooldown, FireCooldown, IceCooldown, ThunderCooldown = false;
 
-    [Header("Script References")]
+    //Script References
+    private AbilityHolder targetedAttackAbilityHolder;
     private ManaManager _manaManager;
-    [FormerlySerializedAs("objectiveUI")] [SerializeField] private ObjectiveUi objectiveUi;
+    private ObjectiveUi objectiveUi;
     private ValuesTextsScript _valuesTexts;
-    [SerializeField] private AbilityHolder targetedAttackAbilityHolder;
     private PlayerAnimationHandler _playerAnim; 
     private PlayerMovement  _coroutineCaller;
     
+    [Header("Others")]
     private RaycastHit _hit;
     private Vector3 _enemyPosition;
     [SerializeField] private float maxDistanceToCrystal = 10f;
@@ -52,7 +53,9 @@ public class Shooter : MonoBehaviour
     }
     private void Start()
     {
-        _playerAnim                         = GetComponentInChildren<PlayerAnimationHandler>();
+        targetedAttackAbilityHolder          = GameObject.Find("Abilities UI").transform.GetChild(2).GetComponent<AbilityHolder>();
+        objectiveUi                          = FindObjectOfType<ObjectiveUi>();
+        _playerAnim                          = GetComponentInChildren<PlayerAnimationHandler>();
         _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
 
         MagicType = WeaponType.Fire;
@@ -169,34 +172,22 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
-                    if(!FireCooldown)
-                    { 
-                        if (_manaManager.ManaCheck(MagicType))
-                        {
-                            StartCoroutine(FireAttackCooldown());
-                            Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
-                        }
-                        break;
+                    if (_manaManager.ManaCheck(MagicType))
+                    {
+                        StartCoroutine(FireAttackCooldown());
+                        Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
                     }
-                    else
-                        break;
+                    break;
                 }
             case WeaponType.Ice: // input nº3 (W)
                 {
-                    if(!IceCooldown)
-                        TargetAttack();
-                    
+                    TargetAttack();
                     break;
                 }
             case WeaponType.Thunder: // input nº4 (R)
                 {
-                    if(!ThunderCooldown)
-                    {
-                            AreaAttack();
-                            break;
-                    }
-                    else
-                        break;
+                    AreaAttack();
+                    break;
                 }
 
             default:
@@ -208,18 +199,18 @@ public class Shooter : MonoBehaviour
     private void HoverHighlight()
     {
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 50f))
-            if (_hit.collider.CompareTag("Enemy"))
+            if (_hit.collider.GetComponent<AIHandler>())
             {
                 _hit.collider.gameObject.GetComponent<Outline>().enabled = true;
             }
                 
             else
             {
-                GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                AIHandler[] enemies = GameObject.FindObjectsOfType<AIHandler>();
 
-                foreach (GameObject enemy in enemies)
+                foreach (AIHandler enemy in enemies)
                 {
-                    enemy.GetComponent<Outline>().enabled = false;
+                    enemy.gameObject.GetComponent<Outline>().enabled = false;
                     
                 }
             }
@@ -230,13 +221,12 @@ public class Shooter : MonoBehaviour
     {
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 500))
         {
-            if (_hit.collider.CompareTag("Enemy"))
+            if (_hit.collider.GetComponent<AIHandler>())
             {
                     if (_manaManager.ManaCheck(MagicType))
                     {
-                        //Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
+                        Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
                         StartCoroutine(IceAttackCooldown());
-                        targetedAttackAbilityHolder.TargetedAttackCooldownUi();
                         Debug.Log("Enemy Hit with Ice");
                         return;
                     }
@@ -244,6 +234,7 @@ public class Shooter : MonoBehaviour
                     Debug.Log("Not enough mana");
             }
         }
+        targetedAttackAbilityHolder.TargetedAttackCooldownUi();
     }
 
     private void AreaAttack()
@@ -254,22 +245,19 @@ public class Shooter : MonoBehaviour
 
         for (int i = 0; i < numColliders; i++)
         {
-            if (hitColliders[i].CompareTag("Enemy"))
-            {
-                if (_manaManager.ManaCheck(MagicType))
+            if (hitColliders[i]  != null)
+                if (hitColliders[i].GetComponent<AIHandler>())
                 {
-                    // Deal damage to the enemy
-                    Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
-                    Instantiate(areaEffect, transform.position, Quaternion.identity);
-                    targetedAttackAbilityHolder.AreaAttackCooldownUi();
-                    StartCoroutine(ThunderAttackCooldown());
+                    if (_manaManager.ManaCheck(MagicType))
+                    {
+                        // Deal damage to the enemy
+                        Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
+                        Instantiate(areaEffect, transform.position, Quaternion.identity);
+                        targetedAttackAbilityHolder.AreaAttackCooldownUi();
+                    }
                 }
-            }
-            else
-            {
-                break;
-            }
         }
+        StartCoroutine(ThunderAttackCooldown());
     }
   
     internal void UpgradeChecker(int abilityNumber)

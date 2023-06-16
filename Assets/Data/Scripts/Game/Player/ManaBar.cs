@@ -19,4 +19,11 @@ public class ManaBar : MonoBehaviour
         slider.maxValue += add; 
         manaText.text = slider.value + "/" + slider.maxValue;
     }
+    
+    internal void SetMaxMana(int mana)
+    {
+        slider.maxValue = mana;
+        slider.value = mana;
+        manaText.text = slider.value + "/" + slider.maxValue;
+    }
 }

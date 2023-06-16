@@ -35,7 +35,6 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private void Start()
     {
-
         _gamePlay = true;
 
         canmove = false;

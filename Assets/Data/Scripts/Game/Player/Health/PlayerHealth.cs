@@ -65,7 +65,6 @@ public class PlayerHealth : MonoBehaviour
         print(currentHealth);
         //_healthBar.SetMaxHealth(powerUp, currentShield);
         _healthBar.HealthEmpower(currentHealth , powerUp);
-
         //PlayerPrefs()
         //print(_maxHealth);
     }

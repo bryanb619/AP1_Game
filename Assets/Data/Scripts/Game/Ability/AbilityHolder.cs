@@ -92,9 +92,8 @@ public class AbilityHolder : MonoBehaviour
                     {
                         if(abilityNew)
                         {
-                        // change name
-                        abilityNew.Activate(gameObject);
-                        _activeTime = abilityNew.activeTime;
+                            //abilityNew.Activate(gameObject);
+                            _activeTime = abilityNew.activeTime;
                         }
 
                         _state = AbilityState.Active;
