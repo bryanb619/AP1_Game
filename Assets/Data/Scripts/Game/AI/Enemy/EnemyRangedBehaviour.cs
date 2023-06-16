@@ -92,7 +92,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
            
     // Health/Death --------------------------------------------------------------------------------------------------->
     
-                    private AiHealth                            _healthBar;    
+                    private AIHealth                            _healthBar;    
                     // HEALTH
                     private float                               _health;
 
@@ -225,7 +225,7 @@ private float _stunnedTime;
         agent.updateRotation        = false;
         _aiShoot                    = GetComponentInChildren<AiShoot>();
         _aiHandler                  = GetComponent<AIHandler>();
-        _healthBar                  = GetComponentInChildren<AiHealth>();
+        _healthBar                  = GetComponentInChildren<AIHealth>();
         
         // mesh 
         _mesh                       = GetComponentInChildren<SkinnedMeshRenderer>();
