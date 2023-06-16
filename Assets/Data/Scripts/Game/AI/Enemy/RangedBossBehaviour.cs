@@ -83,7 +83,7 @@ public class RangedBossBehaviour : MonoBehaviour
         [SerializeField]   private AiBossData                          bossData;
         [SerializeField]   private int []                              healthEvents;
         [SerializeField]   private int []                              chaseCount, rangedCount;
-        [SerializeField]   private float effectTime, spawnTime;
+        [SerializeField]   private float effectTime, spawnTime, minRange, maxRange;
 
                             private bool _runningAiSpawn;
         [SerializeField]    private GameObject                          aiSpawnEffect, chaseAi, rangedAi;
@@ -1087,13 +1087,13 @@ public class RangedBossBehaviour : MonoBehaviour
         
             for (int i = 0; i < rangedCount; i++)
             {
-                Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
+                Vector3 randomDirection = Random.insideUnitSphere * Random.Range(minRange, maxRange);
 
                 randomDirection += _playerTarget.position;
 
                 NavMeshHit hit;
 
-                NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+                NavMesh.SamplePosition(randomDirection, out hit, maxRange, 1);
 
                 Vector3 spawnPos = hit.position;
         
