@@ -15,16 +15,16 @@ public class RangedBossBehaviour : MonoBehaviour
 {
         #region  Variables
     // Systems
-    [Header("AI Profile")]
-    [SerializeField]        private AiRangedData data;
+        [Header("AI Profile")]
+        [SerializeField]        private AiRangedData data;
     
         // AI 
                             // AI states
-                            private enum Ai                             {Patrol, Attack, Cover}
-                            [Header("AI State")]
-    [SerializeField]        private Ai                                  stateAi;
-                            // state machine 
-                            private StateMachine                        _fsm;
+                                private enum Ai                             {Patrol, Attack, Cover}
+                                [Header("AI State")]
+        [SerializeField]        private Ai                                  stateAi;
+                                // state machine 
+                                private StateMachine                        _fsm;
                             // nav mesh agent
                             public NavMeshAgent                         agent;
                             private float                               _pathUpdateDeadLine = 0.2f;
@@ -79,11 +79,14 @@ public class RangedBossBehaviour : MonoBehaviour
     
         // Boss attack
     
-    [Header("Boss Events")]
-    [SerializeField]   private AiBossData                          bossData;
-    [SerializeField]   private int []                              healthEvents;
-    [SerializeField]   private int []                              chaseCount, rangedCount;
-        
+        [Header("Boss Events")]
+        [SerializeField]   private AiBossData                          bossData;
+        [SerializeField]   private int []                              healthEvents;
+        [SerializeField]   private int []                              chaseCount, rangedCount;
+        [SerializeField]   private float effectTime, spawnTime;
+
+                            private bool _runningAiSpawn;
+        [SerializeField]    private GameObject                          aiSpawnEffect, chaseAi, rangedAi;
         
     
     
@@ -110,25 +113,14 @@ public class RangedBossBehaviour : MonoBehaviour
                         private float                               _tpIncreasePerFrame;
                         private float                               _neededTpValue;
                         private bool                                _canCdIncrease;
-                        private bool                                _canSetNewDestination;
+
+                        
 
 
                     // projectiles
                         private GameObject                          _projectile, _randomProjectile,
                             _specialProjectile, _areaAttack;
-    
-                    
-        // Cover // ------------------------------------------------------------------------------------------------------->
-                        private Collider[]                  _colliders = new Collider[10];
-
-                    //Lower is a better hiding spot
-                        private float                       _hideSensitivity = 0;
-                        private float                       _updateFrequency =  0.2f;
-    [SerializeField]    private float                       _minDistInCover;
-    [SerializeField]    private LayerMask                   _hidableLayers;
-    [SerializeField]    private SceneChecker                _lineOfSightChecker;
-                        private Coroutine                   _movementCoroutine;
-           
+                        
     // Health/Death --------------------------------------------------------------------------------------------------->
     
     // HEALTH
@@ -169,7 +161,7 @@ public class RangedBossBehaviour : MonoBehaviour
 
 
 
-private float _stunnedTime;
+            private float _stunnedTime = 0.5f;
 
     #endregion
     
@@ -354,9 +346,7 @@ private float _stunnedTime;
             _cooldownTp             = data.CooldownTp;
             
             _canCdIncrease          = true;
-            _canSetNewDestination   = true;
-            
-            
+
 #if UNITY_EDITOR
             Debug.Log("Boss");
 #endif
@@ -391,6 +381,7 @@ private float _stunnedTime;
     {
      
         healthBar.HealthValueSet(_health);
+        
         abilitySlider.maxValue = 100; 
         abilitySlider.value = _currentAbilityValue;
     }
@@ -400,6 +391,11 @@ private float _stunnedTime;
     private void Update()
     {
         UpdateAi();
+
+#if UNITY_EDITOR
+        EventTest(); 
+#endif
+        
     }
 
     #region AI Handling
@@ -468,6 +464,14 @@ private float _stunnedTime;
        
     }
     #endregion
+    
+    private void EventTest()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            CombatEvent(2,4);
+        }
+    }
     
     #region Actions
     
@@ -854,11 +858,6 @@ private float _stunnedTime;
     {
         if (_health > 0)
         {
-            if(_health <= 75)
-            {
-                _health = 0;
-            }
-            
             switch (type)
             {
                 case WeaponType.Normal:
@@ -919,16 +918,36 @@ private float _stunnedTime;
                     }
             }
             
-            if (_spawnHealth || _spawnMana)
-            {
-                DropSpawnCheck();
-            }
-            
             _damageText.text = damage.ToString();
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
             healthBar.HandleBar(damage);
+            
+            
+            if (_spawnHealth || _spawnMana)
+            {
+                DropSpawnCheck();
+            }
+            
+            if(_health <= healthEvents[0])
+            {
+                // load event
+                CombatEvent(chaseCount[0], rangedCount[0]);
+
+            }
+            
+            else if (_health <= healthEvents[1])
+            {
+                // load event
+                CombatEvent(chaseCount[1], rangedCount[1]);
+            }
+            
+            else if (_health <= healthEvents[2])
+            {
+                // load event
+                CombatEvent(chaseCount[2], rangedCount[2]);
+            }
         }
     }
     
@@ -1034,29 +1053,63 @@ private float _stunnedTime;
     }
 
 
-    private void Event(int enemyChase, int enemyRanged)
+    private void CombatEvent(int enemyChase, int enemyRanged)
     {
-        
         // spawn AI
-        
-        Vector3 randomDirection = Random.insideUnitSphere * Random.Range(_minRange, _maxRange);
-
-        randomDirection += _playerTarget.position;
-
-        NavMeshHit hit;
-
-        NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
-
-        Vector3 spawnPos = hit.position;
-        
-        // start spawn coroutine
-
-        
-        
+        StartCoroutine(SpawnAi(enemyChase, enemyRanged));
     }
     
+    private IEnumerator SpawnAi (int chaseCount, int rangedCount)
+    {
+        
+        for (int i = 0; i <chaseCount; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
 
+            randomDirection += _playerTarget.position;
 
+            NavMeshHit hit;
+
+            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+
+            Vector3 spawnPos = hit.position;
+            
+            
+            yield return new WaitForSeconds(effectTime);
+            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            
+            yield return new WaitForSeconds(spawnTime);
+            Instantiate(chaseAi, spawnPos,transform.rotation);
+        }
+        
+        
+        for (int i = 0; i < rangedCount; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
+
+            randomDirection += _playerTarget.position;
+
+            NavMeshHit hit;
+
+            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+
+            Vector3 spawnPos = hit.position;
+        
+            yield return new WaitForSeconds(effectTime);
+            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            
+            yield return new WaitForSeconds(spawnTime);
+            Instantiate(chaseAi, spawnPos,transform.rotation);
+        
+
+        }
+        
+
+     
+    }
+    
+    
+    
     #region Death
     public void Die()
     {
