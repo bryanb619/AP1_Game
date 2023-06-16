@@ -16,7 +16,7 @@ public class RangedBossBehaviour : MonoBehaviour
         #region  Variables
     // Systems
         [Header("AI Profile")]
-        [SerializeField]        private AiRangedData data;
+        [SerializeField]        private AIRangedData data;
     
         // AI 
                             // AI states
