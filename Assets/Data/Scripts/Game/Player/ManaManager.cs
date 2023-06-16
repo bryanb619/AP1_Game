@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 public class ManaManager : MonoBehaviour
 {
     [Header("Values")]
-    [SerializeField] public float maxMana = 100;
+    [SerializeField] public int maxMana = 100;
     [SerializeField] private float mana;
 
     [Header("Ability Mana Cost")]
@@ -20,10 +20,9 @@ public class ManaManager : MonoBehaviour
     [SerializeField] private float waitTime = 2f;
                      private WaitForSeconds _manaTimer;
     
-    [FormerlySerializedAs("manaUI")]
+    
     [Header("References")]
-    [SerializeField] private Shooter shooter;
-                     private ManaBar manaUi;
+    private ManaBar manaUi;
 
     [Header("Cheats")]
     [SerializeField] private bool manaCheat;
@@ -33,6 +32,7 @@ public class ManaManager : MonoBehaviour
     {
         manaUi = FindObjectOfType<ManaBar>();
         _manaTimer = new WaitForSeconds(waitTime);
+        manaUi.SetMaxMana(maxMana);
     }
 
     private void Update()

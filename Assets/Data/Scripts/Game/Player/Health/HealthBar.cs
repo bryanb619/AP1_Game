@@ -30,14 +30,11 @@ public class HealthBar : MonoBehaviour
 
     internal void SetMaxHealth( int max, int shield)
     {
-      
-        healthSlider.maxValue +=  max; 
-        
+        healthSlider.maxValue =  max;
         
         //criticalSlider.maxValue = health + shield;
         //shieldSlider.maxValue = health + shield;    
         //_fill.color = _gradient.Evaluate(1f);
-
     }
     internal void SetHealth(int health, int shield)
     {
@@ -49,11 +46,6 @@ public class HealthBar : MonoBehaviour
     }
 
     public void TakeDamageUi(int damage)
-    {
-
-    }
-
-    public void TakeHealthUi(int heal)
     {
 
     }
