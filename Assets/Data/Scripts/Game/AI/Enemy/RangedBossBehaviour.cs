@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using LibGameAI.FSMs;
 using TMPro;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
@@ -17,28 +16,30 @@ public class RangedBossBehaviour : MonoBehaviour
         #region  Variables
     // Systems
     [Header("AI Profile")]
-    [SerializeField] private AiRangedData data;
+    [SerializeField]        private AiRangedData data;
     
-    // AI 
-                        // AI states
-                        private enum Ai                             {Patrol, Attack}
-                        [Header("AI State")]
-    [SerializeField]    private Ai                                  stateAi;
-                        // state machine 
-                        private StateMachine                        _fsm;
-                        // nav mesh agent
-                        public NavMeshAgent                         agent;
-                        private float                               _pathUpdateDeadLine = 0.2f;
-                        // Ai Shoot
-                        private AiShoot                             _aiShoot;
-                        // performance handler
-                        private AIHandler                           _aiHandler;
+        // AI 
+                            // AI states
+                            private enum Ai                             {Patrol, Attack}
+                            [Header("AI State")]
+    [SerializeField]        private Ai                                  stateAi;
+                            // state machine 
+                            private StateMachine                        _fsm;
+                            // nav mesh agent
+                            public NavMeshAgent                         agent;
+                            private float                               _pathUpdateDeadLine = 0.2f;
+                            // Ai Shoot
+                            private AiShoot                             _aiShoot;
+                            // performance handler
+                            private AIHandler                           _aiHandler;
     
-                        private enum HandleState                    {Stoped, None}
-                        private HandleState                         _currentState;
+                            private enum HandleState                    {Stoped, None}
+                            private HandleState                         _currentState;
                         
-                        private EnemyType                           _enemyType;
-                         
+                            private EnemyType                           _enemyType;
+        [Header("Boss Events")]
+        [SerializeField]    private AiBossData                          bossData;
+        
        
                         
     // other components ----------------------------------------------------------------------------------------------->
@@ -105,6 +106,7 @@ public class RangedBossBehaviour : MonoBehaviour
         [SerializeField]    private AiHealth                            _healthBar;    
                     // HEALTH
                     private float                               _health;
+                    private float _healthPercentage;
 
                     // DEATH
                     private GameObject                         _deathEffect;
@@ -125,6 +127,8 @@ public class RangedBossBehaviour : MonoBehaviour
                         // Drop Radius
                         private float                               _dropRadius; 
     [SerializeField]    private Transform                           dropPos;
+    
+                            
                     
                     
     // UI ------------------------------------------------------------------------------------------------------------->
@@ -322,6 +326,7 @@ private float _stunnedTime;
     // Start is called before the first frame update
     private void Start()
     {
+     
         _healthBar.HealthValueSet(_health);
         abilitySlider.maxValue = 100; 
         abilitySlider.value = _currentAbilityValue;
@@ -412,7 +417,7 @@ private float _stunnedTime;
 
     private void Gameplay()
     {
-        var actions = _fsm.Update();
+        Action actions = _fsm.Update();
         actions?.Invoke();
 
         if ((_playerTarget.transform.position - transform.position).magnitude <= 2)
@@ -523,6 +528,7 @@ private float _stunnedTime;
         // _animator.SetBool("isAttacking", false);
          // StartCoroutine(SpecialAttackTimer());
          _canSpecialAttack = false;
+         
 #if UNITY_EDITOR                                                                              
                                                                                               
          const string debugAttack = "<size=14><color=purple>";                                 
@@ -556,7 +562,6 @@ private float _stunnedTime;
             // _animator.SetTrigger("Attack2");
             
          }
-
      }
     
      private void Attack()
@@ -650,8 +655,7 @@ private float _stunnedTime;
 #endif
      }
 
-
-    private void CoolDoownPower()
+     private void CoolDoownPower()
     {
         if (_currentAbilityValue >= AbilityMaxValue)
         {
@@ -771,6 +775,11 @@ private float _stunnedTime;
     {
         if (_health > 0)
         {
+            if(_health <= 75)
+            {
+                _health = 0;
+            }
+            
             switch (type)
             {
                 case WeaponType.Normal:
@@ -830,7 +839,7 @@ private float _stunnedTime;
                         break;
                     }
             }
-
+            
             if (_spawnHealth || _spawnMana)
             {
                 DropSpawnCheck();
