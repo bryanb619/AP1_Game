@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using LibGameAI.FSMs;
 using TMPro;
-using Unity.VisualScripting;
 using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
 using StateMachine = LibGameAI.FSMs.StateMachine;
@@ -37,6 +36,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                         private HandleState                         _currentState;
                         
                         private EnemyType                           _enemyType;
+                        
                          
        
                         

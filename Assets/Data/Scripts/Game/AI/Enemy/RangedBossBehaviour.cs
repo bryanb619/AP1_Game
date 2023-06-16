@@ -37,8 +37,10 @@ public class RangedBossBehaviour : MonoBehaviour
                             private HandleState                         _currentState;
                         
                             private EnemyType                           _enemyType;
-        [Header("Boss Events")]
-        [SerializeField]    private AiBossData                          bossData;
+                            
+  
+        
+        
         
        
                         
@@ -75,7 +77,14 @@ public class RangedBossBehaviour : MonoBehaviour
                     // random attack chance
                     private float                               _percentage;
     
-    // special attack
+        // Boss attack
+    
+        [Header("Boss Events")]
+        [SerializeField]    private AiBossData                          bossData;
+        [SerializeField]    private int []                              healthEvents;
+        [SerializeField]    private int []                              chaseCount, rangedCount;
+        
+        
     
     
                     private const float                         AbilityMaxValue = 100f;
@@ -94,6 +103,11 @@ public class RangedBossBehaviour : MonoBehaviour
                     private float                               _specialAttackRate = 2f;
                     
                     private bool                                _canIncreaseAbility;
+
+                    private float                               _cooldownTp;
+                    private float                               _tpMaxValue; 
+                    private float                              _tpIncreasePerFrame;
+
                     
                     
     // projectiles
@@ -106,8 +120,6 @@ public class RangedBossBehaviour : MonoBehaviour
         [SerializeField]    private AiHealth                            _healthBar;    
                     // HEALTH
                     private float                               _health;
-                    private float _healthPercentage;
-
                     // DEATH
                     private GameObject                         _deathEffect;
                     
@@ -315,7 +327,8 @@ private float _stunnedTime;
             _maxRange               = data.TeleportMaxRange;
             
             _teleportEffect         = data.TeleportEffect;
-
+            
+            
 #if UNITY_EDITOR
             Debug.Log("Boss");
 #endif
