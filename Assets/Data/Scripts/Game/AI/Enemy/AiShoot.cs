@@ -5,7 +5,7 @@ namespace Data.Scripts.Game.AI.Enemy
 {
     public class AiShoot : MonoBehaviour
     {
-        [SerializeField] private AiRangedData data;
+        [SerializeField] private AIRangedData data;
         
         [SerializeField] private Transform shootPosition;
         private float _accuracy;
