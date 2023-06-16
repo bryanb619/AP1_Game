@@ -1063,7 +1063,8 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         if (!_runningAiSpawn)
         {
-            _runningAiSpawn = false;
+            _runningAiSpawn = true;
+            
             for (int i = 0; i <chaseCount; i++)
             {
                 Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
@@ -1104,7 +1105,7 @@ public class RangedBossBehaviour : MonoBehaviour
                 Instantiate(rangedAi, spawnPos,Quaternion.identity);
             
             }
-            _runningAiSpawn = true;
+            _runningAiSpawn = false;
         }
     }
     
