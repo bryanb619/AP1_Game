@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEngine.Serialization;
+using System.Collections;
 
 public class ObjectiveUI : MonoBehaviour
 {
@@ -22,6 +21,7 @@ public class ObjectiveUI : MonoBehaviour
                         private int             cleansedCrystalAmount = 0;
 
                         private bool            enemiesSpawned = false;
+                        [SerializeField]private bool            isAnimationPlaying;
     
     
     
@@ -30,6 +30,7 @@ public class ObjectiveUI : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _doorHandler = FindObjectOfType<DoorHandler>();
+        isAnimationPlaying = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f;
         TextAnimation(0);
     }
 
@@ -59,16 +60,17 @@ public class ObjectiveUI : MonoBehaviour
     {
         AIHandler[] ai = FindObjectsOfType<AIHandler>();
 
-
         if (ai.Length > 0 && !enemiesSpawned)
         {
+            _totalEnemyCount = ai.Length;
             TextAnimation(1);
+            enemiesSpawned = true;
         }
 
-        if (ai.Length > 0)
+        if (ai.Length > 0 && enemiesSpawned)
         {
-            mainTextReference.text = (objectives[1] + "(" + _currentEnemyDefeated + " / " + _totalEnemyCount + ")");
-            enemiesSpawned = true;
+            //The commented part is not working as of right now due to not detecting the enemies in time, so it just puts it at 1 constantly
+            mainTextReference.text = (objectives[1] /* + "(" + _currentEnemyDefeated + " / " + _totalEnemyCount + ")" */);
         }
         else if (ai.Length == 0 && enemiesSpawned)
         {
@@ -77,8 +79,6 @@ public class ObjectiveUI : MonoBehaviour
         }
     }
     
-    
-   
     public void IncreaseEnemyDefeatedCount()
     {
         _currentEnemyDefeated += 1;
@@ -130,21 +130,30 @@ public class ObjectiveUI : MonoBehaviour
                 break;
             */
             case 1:
+                if(isAnimationPlaying)
+                    _animator.SetTrigger("Force Stop");
+                
                 newTextReference.text = (objectives[1] + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
+                isAnimationPlaying = true;
                 _animator.SetTrigger("New Objective");
                 break;
                 
             default:
+                if(isAnimationPlaying)
+                    _animator.SetTrigger("Force Stop");
+                
                 newTextReference.text = objectives[i];
+                isAnimationPlaying = true;
                 _animator.SetTrigger("New Objective");
                 break;
         }
-        lastAnimationIndex = i;
+        //lastAnimationIndex = i;
     }
 
     private void TextAnimationEnd()
     {
         mainTextReference.text = newTextReference.text;
+        isAnimationPlaying = false;
     }
     
     

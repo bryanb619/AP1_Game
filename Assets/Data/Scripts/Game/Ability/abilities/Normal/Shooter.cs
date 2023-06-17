@@ -160,41 +160,38 @@ public class Shooter : MonoBehaviour
         switch (MagicType)
         {
             case WeaponType.Normal: // input nº1
-                {
+            {
+                    RaycastHit _hit;
                     //Cleanse Crystal
                     AIHandler[] ai = FindObjectsOfType<AIHandler>();
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
                     {
-                        if (_hit.collider.GetComponent<CrystalOutline>().enabled == true && ai.Length == 0)
+                        if (_hit.collider.GetComponent<CrystalOutline>())
                         {
-                            float distance = Vector3.Distance(_hit.collider.gameObject.transform.position,
-                                gameObject.transform.position);
-
-                            if (distance < maxDistanceToCrystal)
+                            if (ai.Length == 0 && _hit.collider.GetComponent<CrystalOutline>().enabled == true)
                             {
+                                float distance = Vector3.Distance(_hit.collider.gameObject.transform.position,
+                                    gameObject.transform.position);
 
-                                _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
+                                if (distance < maxDistanceToCrystal)
+                                {
+
+                                    _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
                                     _hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
-                                _hit.collider.GetComponent<CrystalOutline>().enabled = false;
-                                objectiveUi.CleansedTheCrystals();
-                                _valuesTexts.GetCrystal();
+                                    _hit.collider.GetComponent<CrystalOutline>().enabled = false;
+                                    objectiveUi.CleansedTheCrystals();
+                                    _valuesTexts.GetCrystal();
 
-                                print("CLEANSED CRYSTAL");
-                                break;
-                            }
-                            else
-                            {
+                                    print("CLEANSED CRYSTAL");
+                                    break;
+                                }
                                 Debug.Log("Too far away from the crystal");
-                                break;
                             }
-
                         }
-
                         else
                         {
                             StartCoroutine(NormalAttackCooldown());
                             Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
-                            break;
                         }
                     }
                     break;
@@ -212,6 +209,7 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Thunder: // input nº4 (R)
                 {
+                    
                     AreaAttack();
                     break;
                 }
@@ -269,13 +267,10 @@ public class Shooter : MonoBehaviour
             if (hitColliders[i]  != null)
                 if (hitColliders[i].GetComponent<AIHandler>())
                 {
-                    if (_manaManager.ManaCheck(MagicType))
-                    {
-                        // Deal damage to the enemy
-                        Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
-                        Instantiate(areaEffect, transform.position, Quaternion.identity);
-                        targetedAttackAbilityHolder.AreaAttackCooldownUi();
-                    }
+                    // Deal damage to the enemy
+                    Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
+                    Instantiate(areaEffect, transform.position, Quaternion.identity);
+                    targetedAttackAbilityHolder.AreaAttackCooldownUi();
                 }
         }
         StartCoroutine(ThunderAttackCooldown());

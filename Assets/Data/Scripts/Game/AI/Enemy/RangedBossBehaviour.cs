@@ -158,7 +158,7 @@ public class RangedBossBehaviour : MonoBehaviour
         [SerializeField]    private Slider                      abilitySlider;
 
 
-
+            private ValuesTextsScript           _valuesTexts;
 
             private float _stunnedTime = 0.5f;
 
@@ -267,6 +267,9 @@ public class RangedBossBehaviour : MonoBehaviour
         
         // animator
         //_animator                   = GetComponentInChildren<Animator>();
+        
+        // UI 
+        _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
         
         // Player 
         _player                     = GameObject.Find("Player");
@@ -1145,7 +1148,7 @@ public class RangedBossBehaviour : MonoBehaviour
         
         Instantiate(_deathEffect, transform.position, Quaternion.identity);
 
-        //_valuesTexts.GetKill();
+        _valuesTexts.GetKill();
 
         _objectiveUiScript.IncreaseEnemyDefeatedCount();
         

@@ -122,14 +122,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     
     // UI ------------------------------------------------------------------------------------------------------------->
     
-
-
-
-
-
-private float _stunnedTime;
-                        
+                        private ValuesTextsScript           _valuesTexts;
     
+                        private float _stunnedTime;
     
     #endregion
    
@@ -236,6 +231,9 @@ private float _stunnedTime;
         
         // animator
         _animator                   = GetComponentInChildren<Animator>();
+        
+        // UI 
+        _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
         
         // Player 
         _player                     = GameObject.Find("Player");
@@ -736,7 +734,7 @@ private float _stunnedTime;
                     
             Instantiate(_deathEffect, transform.position, Quaternion.identity);
 
-            //_valuesTexts.GetKill();
+            _valuesTexts.GetKill();
 
             _objectiveUiScript.IncreaseEnemyDefeatedCount();
             
