@@ -166,9 +166,9 @@ public class Shooter : MonoBehaviour
                     AIHandler[] ai = FindObjectsOfType<AIHandler>();
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
                     {
-                        if (_hit.collider.GetComponent<CrystalOutline>())
+                        if (_hit.collider.GetComponent<CrystalSelect>())
                         {
-                            if (ai.Length == 0 && _hit.collider.GetComponent<CrystalOutline>().enabled == true)
+                            if (ai.Length == 0 && _hit.collider.GetComponent<CrystalSelect>().enabled == true)
                             {
                                 float distance = Vector3.Distance(_hit.collider.gameObject.transform.position,
                                     gameObject.transform.position);
@@ -178,7 +178,7 @@ public class Shooter : MonoBehaviour
 
                                     _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
                                     _hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
-                                    _hit.collider.GetComponent<CrystalOutline>().enabled = false;
+                                    _hit.collider.GetComponent<CrystalSelect>().enabled = false;
                                     objectiveUi.CleansedTheCrystals();
                                     _valuesTexts.GetCrystal();
 
@@ -186,6 +186,10 @@ public class Shooter : MonoBehaviour
                                     break;
                                 }
                                 Debug.Log("Too far away from the crystal");
+                            }
+                            else
+                            {
+                                Debug.Log("There are still enemies alive");
                             }
                         }
                         else

@@ -88,7 +88,7 @@ public class ObjectiveUI : MonoBehaviour
 
     public void CleansedTheCrystals()
     { 
-//        CrystalOutline[] ai = FindObjectsOfType<CrystalOutline>();
+//        CrystalSelect[] ai = FindObjectsOfType<CrystalOutline>();
         
         cleansedCrystalAmount++;
         
