@@ -45,6 +45,8 @@ public class Shooter : MonoBehaviour
     [SerializeField] private float maxDistanceToCrystal = 10f;
     private bool _gameplay;
     private bool rTelegraphIsOn = false;
+    private Vector3 currentFirePointPosition;
+    private Quaternion currentFirePointRotation;
 
     private void Awake()
     {
@@ -108,8 +110,11 @@ public class Shooter : MonoBehaviour
                 MagicType = WeaponType.Normal;
                 Shoot();
             }
-            else if (Input.GetKeyDown(qKey) && !FireCooldown)    
+            else if (Input.GetKeyDown(qKey) && !FireCooldown)
             {
+                currentFirePointPosition = _firePoint.position;
+                currentFirePointRotation = _firePoint.rotation;
+                
                 RaycastHit hit;
                 if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
                 {
@@ -180,7 +185,7 @@ public class Shooter : MonoBehaviour
                 {
                     if (_manaManager.ManaCheck(MagicType))
                     {
-                        Instantiate(_firePrefab, _firePoint.position, _firePoint.rotation);
+                        Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
                         StartCoroutine(FireAttackCooldown());
                     }
                     break;

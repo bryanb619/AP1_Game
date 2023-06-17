@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5096608663378189190
 Transform:
   m_ObjectHideFlags: 0
@@ -285,7 +285,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.69
+      scalar: 0.1
       minScalar: 0.01
       maxCurve:
         serializedVersion: 2
@@ -667,9 +667,9 @@ ParticleSystem:
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
     donutRadius: 0.2
-    m_Position: {x: 0, y: -0.14999999, z: 12.51545}
+    m_Position: {x: 0, y: -0.19999999, z: 12.448529}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 13.7, y: 28.1, z: 25.6309}
+    m_Scale: {x: 6, y: 30, z: 25.297058}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -1543,8 +1543,8 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.115
-      minScalar: -0.085
+      scalar: 0.120000005
+      minScalar: -0.08
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1596,8 +1596,8 @@ ParticleSystem:
     z:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.13
-      minScalar: -0.07
+      scalar: 0.120000005
+      minScalar: -0.08
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4855,9 +4855,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5096608664274316807}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 436.1, y: 6.1, z: 303}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.44976914, y: 0.87838, z: 0.55024326}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5096608663378189190}
@@ -4941,8 +4941,8 @@ MonoBehaviour:
   profileSync: 1
   useCustomBounds: 0
   bounds:
-    m_Center: {x: 436.1, y: 6.1, z: 315.64853}
-    m_Extent: {x: 3, y: 15, z: 12.648529}
+    m_Center: {x: 436.73938, y: 11.240737, z: 314.49316}
+    m_Extent: {x: 1.3493074, y: 13.1757, z: 6.959768}
   profile: {fileID: 0}
   customRange: 25.297058
   targetCamera: {fileID: 0}
@@ -4954,7 +4954,7 @@ MonoBehaviour:
   raymarchQuality: 8
   raymarchMinStep: 0.1
   raymarchMaxSteps: 200
-  jittering: 0.5
+  jittering: 2
   dithering: 1
   useBlueNoise: 0
   renderQueue: 3101
@@ -4968,31 +4968,31 @@ MonoBehaviour:
   autoToggleCheckInterval: 1
   useNoise: 1
   noiseTexture: {fileID: 11700000, guid: 5b3147e9423af4f2cb0f6911a7a9b205, type: 2}
-  noiseStrength: 0
+  noiseStrength: 1.24
   noiseScale: 5
   noiseFinalMultiplier: 1
   density: 1
   mediumAlbedo: {r: 1, g: 1, b: 1, a: 1}
-  brightness: 1
+  brightness: 1.5
   attenuationMode: 0
   attenCoefConstant: 1
   attenCoefLinear: 2
   attenCoefQuadratic: 1
-  rangeFallOff: 0
+  rangeFallOff: 0.5
   diffusionIntensity: 0.12
-  penumbra: 0.062
+  penumbra: 0.444
   tipRadius: 0
   cookieTexture: {fileID: 0}
   frustumAngle: 0
-  windDirection: {x: 0, y: 2, z: 0.01}
-  enableDustParticles: 0
-  dustBrightness: 0
+  windDirection: {x: 0, y: 0.01, z: 0.01}
+  enableDustParticles: 1
+  dustBrightness: 4
   dustMinSize: 0.01
-  dustMaxSize: 0.69
-  dustWindSpeed: 3
-  dustDistanceAttenuation: 21.25
-  dustAutoToggle: 0
-  dustDistanceDeactivation: 70
+  dustMaxSize: 0.1
+  dustWindSpeed: 2
+  dustDistanceAttenuation: 100
+  dustAutoToggle: 1
+  dustDistanceDeactivation: 100
   enableShadows: 0
   shadowIntensity: 0.7
   shadowResolution: 256
