@@ -201,7 +201,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
     
     private void PauseAi()
     {
-        if (_currentState != HandleState.None) return;
+        //if (_currentState != HandleState.None) return;
         
         if (agent.enabled)
         {
@@ -270,7 +270,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
         
         // combat 
         
-        _attackRange                = UnityEngine.Random.Range(6, 12);
+        _attackRange                = UnityEngine.Random.Range(10, 17);
         print("attack range: " + _attackRange);
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
@@ -433,8 +433,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void Engage()
     {
-        
-        
         if (!_canAttack)
         {
             _attackTime += Time.deltaTime;
@@ -465,7 +463,22 @@ public class EnemyRangedBehaviour : MonoBehaviour
     
      private void Attack()
      {
-         if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
+         if ((_playerTarget.transform.position - transform.position).magnitude <= _attackRange)
+         {
+             
+             PauseAi();
+             
+             if(_canAttack)
+             {
+                 if (Time.time > _nextFire)
+                 {
+                     NormalAttack();
+                     _nextFire = Time.time + _fireRate;
+                 }
+             }
+         }
+         
+         else //if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
          {
              UpdatePath();
 
@@ -487,36 +500,40 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  }
                  _nextFire = Time.time + _fireRate;
              }
-         }
-         
-         else if((_playerTarget.transform.position - transform.position).magnitude <= 2.5f)
-         {
-             if(Time.time > _nextAreaAttack)
+             
+             
+             if((_playerTarget.transform.position - transform.position).magnitude <= 2.5f)
              {
-                 AreaAttack();
-                 _nextAreaAttack = Time.time + _areaAttackRate;
+                 if(Time.time > _nextAreaAttack)
+                 {
+                     AreaAttack();
+                     _nextAreaAttack = Time.time + _areaAttackRate;
+                 }
              }
          }
-         
+         /*
          else
          {
              _animator.SetBool("isAttacking", false);
             
          }
+         */
      }
 
      #region Agent Pathfinding & Rotation
      
      private void UpdatePath()
      {
-         if (agent.enabled)
+         if (agent.enabled )
          {
-             if (!(Time.time >= _pathUpdateDeadLine)) return;
-        
-             // update time
-             _pathUpdateDeadLine = Time.time + 0; 
-             // set destination
-             agent.SetDestination(_playerTarget.position);
+             ResumeAi();
+             if (Time.time >= _pathUpdateDeadLine)
+             {
+                 // update time
+                 _pathUpdateDeadLine = Time.time + 0; 
+                 // set destination
+                 agent.SetDestination(_playerTarget.position);    
+             }
          }
      }
      

@@ -130,11 +130,14 @@ public class RangedBossBehaviour : MonoBehaviour
                         private float                              _healthIncreasePerFrame;
                     
                         // DEATH
-                        private GameObject                         _deathEffect;
+                        private GameObject                          _deathEffect;
+                        private bool                                _isDead;
                     
                     
     // Drops/Loot ----------------------------------------------------------------------------------------------------->
     
+    
+                        private bool                                _spawningGems; 
                         // Health
                         private GameObject                          _healthDrop;
                         private int                                 _healthItems;
@@ -1042,20 +1045,26 @@ public class RangedBossBehaviour : MonoBehaviour
 
     private void DropSpawnCheck()
     {
-        float randomFloat = UnityEngine.Random.value;
+        if (!_spawningGems)
+        {
+            _spawningGems = true;
+            float randomFloat = UnityEngine.Random.value;
 
-        if (!(randomFloat <= 0.08f)) return;
+            if (!(randomFloat <= 0.08f)) return;
         
-        float randomPercent = UnityEngine.Random.value;
+            float randomPercent = UnityEngine.Random.value;
 
-        if (randomPercent <= 0.6f && _spawnHealth)
-        {
-            SpawnDrop(_healthDrop);
+            if (randomPercent <= 0.6f && _spawnHealth)
+            {
+                SpawnDrop(_healthDrop);
+            }
+            else if (randomPercent >= 0.61 && _spawnMana)
+            {
+                SpawnDrop(_manaDrop);
+            }
+            _spawningGems = false;
         }
-        else if (randomPercent >= 0.61 && _spawnMana)
-        {
-            SpawnDrop(_manaDrop);
-        }
+        
     }
 
 
@@ -1095,8 +1104,6 @@ public class RangedBossBehaviour : MonoBehaviour
                 Debug.Log("Boss spawning chase"); 
 #endif
             }
-        
-        
             for (int i = 0; i < rangedCount; i++)
             {
                 Vector3 randomDirection = Random.insideUnitSphere * Random.Range(minRange, maxRange);
@@ -1129,31 +1136,36 @@ public class RangedBossBehaviour : MonoBehaviour
     #region Death
     public void Die()
     {
-        if(_spawnHealth)
+        if (!_isDead)
         {
-            for (var i = 0; i < _healthItems; i++)
+            _isDead = true;
+            
+            if(_spawnHealth)
             {
-                SpawnDrop(_healthDrop);
-            }   
-        }
-
-        if(_spawnMana)
-        {
-            for (var i = 0; i < _manaItems; i++)
-            {
-                SpawnDrop(_manaDrop);
+                for (var i = 0; i < _healthItems; i++)
+                {
+                    SpawnDrop(_healthDrop);
+                }   
             }
+
+            if(_spawnMana)
+            {
+                for (var i = 0; i < _manaItems; i++)
+                {
+                    SpawnDrop(_manaDrop);
+                }
+            }
+        
+        
+            Instantiate(_deathEffect, transform.position, Quaternion.identity);
+
+            _valuesTexts.GetKill();
+
+            _objectiveUiScript.IncreaseEnemyDefeatedCount();
+        
+
+            Destroy(gameObject);
         }
-        
-        
-        Instantiate(_deathEffect, transform.position, Quaternion.identity);
-
-        _valuesTexts.GetKill();
-
-        _objectiveUiScript.IncreaseEnemyDefeatedCount();
-        
-
-        Destroy(gameObject);
     }
     
     #endregion   
@@ -1168,7 +1180,6 @@ public class RangedBossBehaviour : MonoBehaviour
 
         Instantiate(drop, spawnPosition, Quaternion.identity);
     }
-    
     
     private void OnDestroy()
     {
