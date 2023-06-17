@@ -112,28 +112,35 @@ public class Shooter : MonoBehaviour
             }
             else if (Input.GetKeyDown(qKey) && !FireCooldown)
             {
-                currentFirePointPosition = _firePoint.position;
-                currentFirePointRotation = _firePoint.rotation;
-                
-                RaycastHit hit;
-                if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                MagicType = WeaponType.Fire;
+                if (_manaManager.ManaCheck(MagicType))
                 {
-                    transform.LookAt(new Vector3(hit.point.x, gameObject.transform.position.y, hit.point.z));
-                    MagicType = WeaponType.Fire;
-                    _playerAnim.QAttack();
-                }
+                    currentFirePointPosition = _firePoint.position;
+                    currentFirePointRotation = _firePoint.rotation;
 
+                    RaycastHit hit;
+                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                    {
+                        transform.LookAt(new Vector3(hit.point.x, gameObject.transform.position.y, hit.point.z));
+                        _playerAnim.QAttack();
+                    }
+                }
             }
             else if (Input.GetKeyDown(wKey) && !IceCooldown)
             {
                 MagicType = WeaponType.Ice;
-                _playerAnim.WAttack();
+                if (_manaManager.ManaCheck(MagicType))
+                {
+                    _playerAnim.WAttack();
+                }
             }
             else if (Input.GetKeyDown(rKey) && !ThunderCooldown)
             {
-                //needs to be fixed
                 MagicType = WeaponType.Thunder;
-                _playerAnim.RAttack();
+                if (_manaManager.ManaCheck(MagicType))
+                {
+                    _playerAnim.RAttack();
+                }
             }
         }
     }
@@ -183,11 +190,8 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
-                    if (_manaManager.ManaCheck(MagicType))
-                    {
-                        Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
-                        StartCoroutine(FireAttackCooldown());
-                    }
+                    Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
+                    StartCoroutine(FireAttackCooldown());
                     break;
                 }
             case WeaponType.Ice: // input nº3 (W)
@@ -234,15 +238,10 @@ public class Shooter : MonoBehaviour
         {
             if (_hit.collider.GetComponent<AIHandler>())
             {
-                    if (_manaManager.ManaCheck(MagicType))
-                    {
-                        Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
-                        StartCoroutine(IceAttackCooldown());
-                        Debug.Log("Enemy Hit with Ice");
-                        return;
-                    }
-                else
-                    Debug.Log("Not enough mana");
+                Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
+                StartCoroutine(IceAttackCooldown());
+                Debug.Log("Enemy Hit with Ice");
+                return;
             }
         }
         targetedAttackAbilityHolder.TargetedAttackCooldownUi();
