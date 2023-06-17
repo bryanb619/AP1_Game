@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4261007979827736593}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.998909, y: -0.50000006, z: 0.024765925}
+  m_LocalPosition: {x: -14.750022, y: 0, z: 0.056637123}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43,8 +43,8 @@ GameObject:
   - component: {fileID: 4261007979926422245}
   - component: {fileID: 4261007979926422244}
   - component: {fileID: 4261007979926422247}
-  - component: {fileID: 4261007979926422246}
   - component: {fileID: 4261007979926422242}
+  - component: {fileID: 374871797}
   m_Layer: 0
   m_Name: AI Spawn Controller
   m_TagString: Untagged
@@ -59,9 +59,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4261007979926422264}
-  m_LocalRotation: {x: -0, y: 0.00852536, z: -0, w: 0.9999637}
+  m_LocalRotation: {x: 0, y: 0.00852583, z: 0, w: 0.9999637}
   m_LocalPosition: {x: 410.40167, y: 2.415735, z: 315.9417}
-  m_LocalScale: {x: 1, y: 4.5, z: 37.519413}
+  m_LocalScale: {x: 1, y: 4.5, z: 75.038826}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4261007979827736606}
@@ -132,39 +132,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4261007979926422246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4261007979926422264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85c18c7c7d94e664e9f4da3d5d7d0fca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chase: {fileID: 1831208983068165615, guid: bd37bf34c82166e4cbc542a9ea1102a6, type: 3}
-  ranged: {fileID: 7207599054140134840, guid: 780304d9952a977488b0f20ccc3146e8, type: 3}
-  spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
-  chaseCount: 4
-  rangedCount: 0
-  dropRadius: 3
-  transformA: {fileID: 4261007979827736606}
-  transformB: {fileID: 4261007980578535143}
-  secondTransform: 0
-  useSound: 0
-  soundAiSpawn:
-    Guid:
-      Data1: -622328640
-      Data2: 1284824708
-      Data3: 284616345
-      Data4: -1006319745
-    Path: event:/Enemy/EnemySpawn/AISpawn
-  objectiveUiScript: {fileID: 0}
-  startWait: 0
-  waitTime: 0
-  spawnTime: 0.5
 --- !u!114 &4261007979926422242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +162,39 @@ MonoBehaviour:
   OverrideAttenuation: 0
   OverrideMinDistance: 1
   OverrideMaxDistance: 20
+--- !u!114 &374871797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4261007979926422264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c18c7c7d94e664e9f4da3d5d7d0fca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chase: {fileID: 1831208983068165615, guid: bd37bf34c82166e4cbc542a9ea1102a6, type: 3}
+  ranged: {fileID: 7207599054140134840, guid: b53c202e2e8553d4a9006025de8a9327, type: 3}
+  spawnEffect: {fileID: 100000, guid: 7b56cd9b663f23f429e131a54ec87db0, type: 3}
+  chaseCount: 2
+  rangedCount: 3
+  dropRadius: 5
+  transformA: {fileID: 4261007979827736606}
+  transformB: {fileID: 4261007980578535143}
+  secondTransform: 1
+  useSound: 1
+  soundAiSpawn:
+    Guid:
+      Data1: -622328640
+      Data2: 1284824708
+      Data3: 284616345
+      Data4: -1006319745
+    Path: event:/Enemy/EnemySpawn/AISpawn
+  objectiveUiScript: {fileID: 0}
+  startWait: 0
+  waitTime: 0.5
+  spawnTime: 0.5
 --- !u!1 &4261007980578535142
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +207,7 @@ GameObject:
   m_Layer: 0
   m_Name: Scundary SpawnPoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -219,7 +219,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4261007980578535142}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 52.589348, y: -0.33333337, z: 0.024044953}
+  m_LocalPosition: {x: -9.74995, y: -0.16666669, z: -0.03997913}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
