@@ -66,14 +66,24 @@ public class EnemyRangedBehaviour : MonoBehaviour
     
     // General combat variables
     
-                    private bool                                _canAttack;
-                    private float                               _attackRange;         
     
+                    private bool                                _canAttack;
+                    private float                               _attackRange;
+                    private float                               _attackTime; 
+                    private float                               _firstAttackTime;
+
                     private float                               _fireRate = 2f;
                     private float                               _nextFire;
 
                     // random attack chance
                     private float                               _percentage;
+                    
+                    // area attack 
+                    private float                               _areaAttackRange; 
+                    
+                    private float                               _nextAreaAttack;
+                    private float                               _areaAttackRate = 2f;
+                    
     
     // special attack
     
@@ -255,7 +265,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
             _randomPriority             = UnityEngine.Random.Range(81, 99);
             agent.avoidancePriority     = (int)_randomPriority;
         }
-            
+         
+        _firstAttackTime           = UnityEngine.Random.Range(0.5f, 2.5f);
       
         
         // combat 
@@ -430,9 +441,22 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void Engage()
     {
-        if (!_canAttack) return;
-        Attack();
+        if (!_canAttack)
+        {
+            _attackTime += Time.deltaTime;
+            if(_firstAttackTime >= _attackTime)
+            {
+                _canAttack = true;
+            }
+        }
+        
+        else if (_canAttack) 
+        {
+            Attack();
+        }
+     
         UpdateRotation();
+        
     }   
     
      private void Attack()
@@ -459,6 +483,11 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  }
                  _nextFire = Time.time + _fireRate;
              }
+         }
+         
+         else if((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
+         {
+             
          }
          
          else
@@ -513,7 +542,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
      }
         
      
-     private void RandomAttack()
+     private void RandomAttack() 
      {
          _aiShoot.Shoot(_playerTarget, _randomProjectile);
                 
@@ -527,7 +556,31 @@ public class EnemyRangedBehaviour : MonoBehaviour
      }
      
      
-    #endregion
+     private void AreaAttack()
+     {
+         var hitEnemies = Physics.OverlapSphere(transform.position, _areaAttackRange, playerLayer);
+
+         foreach (var col in hitEnemies)
+         {
+             PlayerHealth player = col.GetComponent<PlayerHealth>();
+
+             if (player == null) return;
+             
+             Instantiate(_areaAttack, transform.position, _areaAttack.transform.rotation);
+             player.TakeDamage(_areaAttackDamage);
+          
+             
+#if UNITY_EDITOR
+             const string debugColor = "<size=14><color=red>";
+             const string closeDebug = "</color></size>";
+             Debug.Log(debugColor + "Area Attack" + closeDebug);
+#endif
+             //_enemyAnimationHandler.RecievePlayerCollision(player);
+             // _animator.SetTrigger("Attack2");
+            
+         }
+     }
+     #endregion
     
     #region Health
     public void TakeDamage(int damage, WeaponType type, int damageBoost)

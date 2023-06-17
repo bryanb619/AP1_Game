@@ -153,7 +153,7 @@ public class AiChaseData : ScriptableObject
     // HEALTH -------------------------------------------------------------------->
     [Header("Health")]
         [Tooltip("Set AI Health")]
-        [Range(0, 1000)]
+        [Range(0, 9999)]
         [SerializeField] 
             private int                 health;
             public int                  Health => health;
