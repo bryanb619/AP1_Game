@@ -480,7 +480,12 @@ public class EnemyRangedBehaviour : MonoBehaviour
          
          else if((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
          {
-             
+             if(Time.time > _nextAreaAttack)
+             {
+                 AreaAttack();
+                 _nextAreaAttack = Time.time + _areaAttackRate;
+             }
+             AreaAttack(); 
          }
          
          else
