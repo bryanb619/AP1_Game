@@ -242,7 +242,7 @@ public class Drop : MonoBehaviour
                         string closeColor = "</color></size>";
 
                         Debug.Log(debugColor + "HP picked" + closeColor);
-                        player.Takehealth(Health);
+                        player.RegenerateHealth(Health);
 
                         break;
                     }

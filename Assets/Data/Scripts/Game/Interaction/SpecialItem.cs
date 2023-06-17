@@ -256,8 +256,8 @@ public class SpecialItem : MonoBehaviour
                         // increase health bar
                         player.EmpowerHealth(Health);
 
-                        // take health
-                        player.Takehealth(Health);
+                        // Heal health
+                        player.RegenerateHealth(Health);
 
                         break;
                     }
