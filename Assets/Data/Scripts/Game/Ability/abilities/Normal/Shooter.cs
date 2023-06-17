@@ -8,6 +8,7 @@ public class Shooter : MonoBehaviour
     private Transform _firePoint;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Material cleansedCrystal;
+    [SerializeField] private Color lightColor;
 
     private GameObject _firePrefab, _icePrefab, _thunderPrefab;
     internal WeaponType MagicType;
@@ -43,6 +44,7 @@ public class Shooter : MonoBehaviour
     private RaycastHit _hit;
     private Vector3 _enemyPosition;
     [SerializeField] private float maxDistanceToCrystal = 10f;
+    
     private bool _gameplay;
     private bool rTelegraphIsOn = false;
     private Vector3 currentFirePointPosition;
@@ -178,6 +180,8 @@ public class Shooter : MonoBehaviour
 
                                     _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
                                     _hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
+                                    // light color switch 
+                                    _hit.collider.GetComponentInChildren<Light>().color = lightColor;
                                     _hit.collider.GetComponent<CrystalSelect>().enabled = false;
                                     objectiveUi.CleansedTheCrystals();
                                     _valuesTexts.GetCrystal();

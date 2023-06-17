@@ -89,16 +89,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _destPoint;
     [SerializeField]    private Transform[]                 patrolPoints;
 
-    // Cover // ------------------------------------------------------------------------------------------------------->
-                        private Collider[]                  _colliders = new Collider[10];
-
-            //Lower is a better hiding spot
-                        private float                       _hideSensitivity = 0;
-                        private float                       _updateFrequency =  0.25f;
-                        private float                       _minDistInCover;
-                        private LayerMask                   _hidableLayers;
-                        private SceneChecker                _lineOfSightChecker;
-                        private Coroutine                   _movementCoroutine;
 
     // Combat // ------------------------------------------------------------------------------------------------------>
 
@@ -146,6 +136,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private bool                        _canSpecialAttack;
 
                         private int                         _randomPriority;
+                        private bool _spawningGems; 
+
+                        
 
     [SerializeField]    private Transform dropPos; 
                         
@@ -219,6 +212,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
     
                         private float                       _closeAttack;
                         private float                       _rate = 1f;
+
+                        private bool                        _isDead; 
                         
                         
                         
@@ -345,7 +340,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         _rb                          = GetComponent<Rigidbody>();
 
-        _lineOfSightChecker          = GetComponentInChildren<SceneChecker>();
+
         _animator                    = GetComponentInChildren<Animator>();
 
         _damageText                  = GetComponentInChildren<TextMeshProUGUI>();
@@ -463,7 +458,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     private void GetStates()
     {
-        // States --------------------------------------------------->
+        // States ----------------------------------------------------------------------------------------------------->
 
         #region States
 
@@ -482,9 +477,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
         var chaseState = new State("Chase",
             ChasePlayer);//,
      
-        var findCover = new State("Cover",
-            Cover);
-
         var gloryKillState = new State("Glory Kill",
             null);
 
@@ -521,22 +513,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
             (new Transition(
                 () => stateAi == Ai.Glorykill,
                 gloryKillState));
-
-        /*
-            // CHASE -> COVER
-            ChaseState.AddTransition(
-               new Transition(
-                   //InCoverState == true
-                   () => _stateAI == AI._COVER,
-                   //() => Debug.Log("CHASE -> COVER"),
-                   FindCover));
-
-            // COVER -> CHASE
-            FindCover.AddTransition(
-               new Transition(
-                   () => _stateAI == AI._ATTACK,
-                   ChaseState));
-        */
 
         #endregion
 
@@ -584,13 +560,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
            //MinimalCheck();
             
             AiSpeed();
+            
             var actions = _stateMachine.Update();
             actions?.Invoke();
             
-            if (stateAi != Ai.Attack)
-            {
-                StartFov();
-            }
+          
         }
         else if (_hanlderAi.activeAi != AIHandler.ActiveAi.Active) //|| _deactivateAI)
         {
@@ -642,151 +616,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         }
     }
     #endregion
-
-    #region FOV
-    private void StartFov()
-    {
-       // StartCoroutine(FovRoutine());
-    }
-
-    #region Field of view Routine
-
-    private IEnumerator FovRoutine()
-    {
-        var wait = new WaitForSeconds(0.5f);
-
-        while (true)
-        {
-            yield return wait;
-            FieldOfViewCheck();
-        }
-    }
-
-    private void FieldOfViewCheck()
-    {
-        
-        // collider check
-        Collider[] rangeChecks = Physics.OverlapSphere(fov.position, radius, targetMask);
-
-
-        if (rangeChecks.Length != 0)
-        {
-            var target = rangeChecks[0].transform;
-            var directionToTarget = (target.position - fov.position).normalized;
-
-            if (Vector3.Angle(fov.forward, directionToTarget) < angle / 2)
-            {
-                var distanceToTarget = Vector3.Distance(fov.position, target.position);
-
-                if (!Physics.Raycast(fov.position, directionToTarget, distanceToTarget, obstructionMask))
-                {
-                    if(_canAttack)
-                    {
-                        SetAttack(); 
-                        _canSeePlayer = true;
-                        print("I can see you");
-                    }
-                    
-                }
-
-                else
-                    _canSeePlayer = false;
-            }
-            else
-                _canSeePlayer = false;
-        }
-        else if (_canSeePlayer)
-            _canSeePlayer = false;
-    }
-    #endregion
-
-    #endregion
-
-    #region Distance Check
-    private void MinimalCheck()
-    {
-        /*
-        if (stateAi == Ai.Attack)
-        {
-            int enemymax                    = 15;
-            Collider[] aiColliders          = new Collider[enemymax];
-
-
-            int enemyColliders              = 
-                Physics.OverlapSphereNonAlloc(transform.position, 3f, aiColliders);
-            
-            
-            for (int i = 0; i < enemyColliders; ++i)
-            {
-                var chaseai = 
-                    aiColliders[i].GetComponent<EnemyChaseBehaviour>();
-
-                var player = 
-                    aiColliders[i].GetComponent <PlayerMovement>();
-
-                if (chaseai != null && chaseai.gameObject != gameObject)
-                {
-                    _agent.enabled = false;
-                    //print("OTHER AI FOUND");
-
-                    Vector3 direction = transform.position - chaseai.transform.position;
-                    _rb.AddForce(direction.normalized * 15f);
-
-                }
-                else if (player != null)
-                {
-                    if ((PlayerTarget.transform.position - transform.position).magnitude < 0.8f)
-                    {
-
-                        _agent.enabled = false;
-                        print("PLAYER FOUND");
-                        Vector3 direction = transform.position - player.transform.position;
-                        _rb.AddForce(direction.normalized * 8f);
-                    }
-                 
-                }
-                else
-                {
-                    _agent.enabled =true;
-                }
-            }
-        }
-        */
-
-        if (stateAi != Ai.Attack)
-        {
-            int playermaxcollider               = 10;
-            Collider[] playerHitColliders       = new Collider[playermaxcollider];
-
-            int playerColliders                 =
-                Physics.OverlapSphereNonAlloc(attackPoint.position, 10f, playerHitColliders, _playerMask);
-
-
-            for (int i = 0; i < playerColliders; ++i)
-            {
-                var player = playerHitColliders[i].GetComponent<PlayerMovement>();
-
-
-                if (player == null) return;
-
-#if  UNITY_EDITOR
-                print("player found");
-#endif
-                
-                stateAi = Ai.Attack;
-
-            }
-        }
-
-        /*
-        if ((playerTarget.transform.position - transform.position).magnitude < minDist && _canAttack)
-        {
-            SetAttack();
-
-        }
-        */
-    }
-
+    
     #endregion
     
     #region Speed
@@ -1288,139 +1118,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     */
     #endregion
-
-    #region Cover
-    private void Cover()
-    {
-        HandleGainSight(PlayerTarget);
-
-        //print(curSpeed); 
-        if (_curSpeed <= 0.5 && _health >= 16)
-        {
-            _health = Mathf.Clamp(_health + (_healthInCreasePerFrame * Time.deltaTime), 0.0f, _maxhealth);
-            //Debug.Log("Chase health: " + _health);
-
-            healthSlider.value = _health;
-
-
-            if ( _health >= 50 && _currentAbilityValue >= 65) { _canAttack = true; return;}
-
-            else {_canAttack = false; return;}
-
-        }
-        else if(_health < 15) { SetGloryKill();}
-
-        //else if(_canAttack){ SetAttack();}
-    }
-
-    private void HandleGainSight(Transform target)
-    {
-        //agent.radius = 1f;
-        if (_movementCoroutine != null)
-        {
-            StopCoroutine(_movementCoroutine);
-            return;
-        }
-        //playerTarget = Target;
-
-        _movementCoroutine = StartCoroutine(Hide(target));
-    }
-
-    #region COVER Coroutine
-
-    private IEnumerator Hide(Transform target)
-    {
-        WaitForSeconds wait = new WaitForSeconds(_updateFrequency);
-        while (true)
-        {
-            for (int i = 0; i < _colliders.Length; i++)
-            {
-                _colliders[i] = null;
-            }
-
-            int hits = Physics.OverlapSphereNonAlloc(_agent.transform.position, _lineOfSightChecker.collider.radius, _colliders, _hidableLayers);
-
-            int hitReduction = 0;
-            for (int i = 0; i < hits; i++)
-            {
-                if (Vector3.Distance(_colliders[i].transform.position, target.position) < _minDistInCover) //|| Colliders[i].bounds.size.y < MinObstacleHeight)
-                {
-                    _colliders[i] = null;
-                    hitReduction++;
-                }
-            }
-            hits -= hitReduction;
-
-            System.Array.Sort(_colliders, ColliderArraySortComparer);
-
-            for (int i = 0; i < hits; i++)
-            {
-                if (NavMesh.SamplePosition(_colliders[i].transform.position, out NavMeshHit hit, 2f, _agent.areaMask))
-                {
-                    if (!NavMesh.FindClosestEdge(hit.position, out hit, _agent.areaMask))
-                    {
-                        Debug.LogError($"Unable to find edge close to {hit.position}");
-                    }
-
-                    if (Vector3.Dot(hit.normal, (target.position - hit.position).normalized) < _hideSensitivity)
-                    {
-                        _agent.SetDestination(hit.position);
-                        break;
-                    }
-                    else
-                    {
-                        // Since the previous spot wasn't facing "away" enough from teh target, we'll try on the other side of the object
-                        if (NavMesh.SamplePosition(_colliders[i].transform.position - (target.position - hit.position).normalized * 2, out NavMeshHit hit2, 2f, _agent.areaMask))
-                        {
-                            if (!NavMesh.FindClosestEdge(hit2.position, out hit2, _agent.areaMask))
-                            {
-                                Debug.LogError($"Unable to find edge close to {hit2.position} (second attempt)");
-                            }
-
-                            if (Vector3.Dot(hit2.normal, (target.position - hit2.position).normalized) < _hideSensitivity)
-                            {
-                                _agent.SetDestination(hit2.position);
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"Unable to find NavMesh near object {_colliders[i].name} at {_colliders[i].transform.position}");
-                }
-            }
-            yield return wait;
-        }
-    }
-
-    public int ColliderArraySortComparer(Collider a, Collider b)
-    {
-        if (a == null && b != null)
-        {
-            return 1;
-        }
-        else if (a != null && b == null)
-        {
-            return -1;
-        }
-        else if (a == null && b == null)
-        {
-            return 0;
-        }
-        else
-        {
-            return Vector3.Distance(_agent.transform.position, a.transform.position).CompareTo(Vector3.Distance(_agent.transform.position, b.transform.position));
-        }
-    }
+    
     #endregion
-
-    #endregion
-
-    #endregion
-
-    #endregion
-
+    
     #region AI States Set
 
     private void SetPatrol()
@@ -1502,13 +1202,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region AI Health 
     public void TakeDamage(int damage, WeaponType type)
     {
-        
-        if (_health <= 0)
-        {
-            Die();
-        }
-
-        else if (_health > 0)
+        if (_health >= 0)
         {
             switch (type)
             {
@@ -1572,7 +1266,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
             if (_spawnHealth || _spawnMana && !_spawnOtherAi)
             {
-                DropSpawnCheck();
+                //DropSpawnCheck();
             }
             
             _damageText.text = damage.ToString();
@@ -1593,53 +1287,70 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     private void DropSpawnCheck()
     {
-        float randomFloat = UnityEngine.Random.value;
-
-        if (randomFloat <= 0.08f)
+        if (!_spawningGems)
         {
-            float randomPercent = UnityEngine.Random.value;
+            _spawningGems = true;
+            
+            float randomFloat = UnityEngine.Random.value;
 
-            if (randomPercent <= 0.6f && _spawnHealth)
+            if (randomFloat <= 0.08f)
             {
-                SpawnDrop(_healthDrop);
+                float randomPercent = UnityEngine.Random.value;
+
+                if (randomPercent <= 0.6f && _spawnHealth)
+                {
+                    SpawnDrop(_healthDrop);
+                }
+                else if (randomPercent >= 0.61 && _spawnMana)
+                {
+                    SpawnDrop(_manaDrop);
+                }
             }
-            else if (randomPercent >= 0.61 && _spawnMana)
-            {
-                SpawnDrop(_manaDrop);
-            }
+            
+            _spawningGems = false;
         }
+
+       
     }
 
     public void Die()
     {
-        if(_spawnHealth)
+        if(!_isDead)
         {
-            for (var i = 0; i < _healthItems; i++)
+            _isDead = true;
+            if(_spawnHealth)
             {
-                SpawnDrop(_healthDrop);
-            }   
-        }
-
-        if(_spawnMana)
-        {
-            for (var i = 0; i < _manaItems; i++)
-            {
-                SpawnDrop(_manaDrop);
+                for (var i = 0; i < _healthItems; i++)
+                {
+                    SpawnDrop(_healthDrop);
+                }   
             }
+
+            if(_spawnMana)
+            {
+                for (var i = 0; i < _manaItems; i++)
+                {
+                    SpawnDrop(_manaDrop);
+                }
+            }
+
+            if (_gemSpawnOnDeath)
+            {
+                Instantiate(_gemPrefab, dropPos.position, Quaternion.identity);
+            }
+
+            Instantiate(_death, transform.position, _death.transform.rotation);
+
+            _valuesTexts.GetKill();
+
+            //_objectiveUiScript.IncreaseEnemyDefeatedCount();
+
+            Destroy(this.gameObject);
+            
+   
         }
-
-        if (_gemSpawnOnDeath)
-        {
-            Instantiate(_gemPrefab, dropPos.position, Quaternion.identity);
-        }
-
-        Instantiate(_death, transform.position, _death.transform.rotation);
-
-        _valuesTexts.GetKill();
-
-        //_objectiveUiScript.IncreaseEnemyDefeatedCount();
-
-        Destroy(this.gameObject);
+        
+        
     }
 
     // Drop area
