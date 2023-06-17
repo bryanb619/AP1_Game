@@ -273,12 +273,14 @@ public class RangedBossBehaviour : MonoBehaviour
         _playerTarget               = _player.transform;
         _shooterScript              = _player.GetComponent<Shooter>();
         
+        _objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
         _damageText                = GetComponentInChildren<TextMeshProUGUI>();
     }
     
     private void ProfileSync()
     {
         
+        agent.avoidancePriority     = 50;
         
         // combat 
         _safeDistance               = data.MinDist;
@@ -347,7 +349,7 @@ public class RangedBossBehaviour : MonoBehaviour
             _cooldownTp             = data.CooldownTp;
             
             _canCdIncrease          = true;
-
+            
 #if UNITY_EDITOR
             Debug.Log("Boss");
 #endif
@@ -923,8 +925,6 @@ public class RangedBossBehaviour : MonoBehaviour
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
-            healthBar.HandleBar(damage);
-            
             
             if (_spawnHealth || _spawnMana)
             {
@@ -950,6 +950,8 @@ public class RangedBossBehaviour : MonoBehaviour
                 CombatEvent(chaseCount[2], rangedCount[2]);
             }
         }
+        
+        healthBar.HandleBar(damage);
     }
     
     

@@ -37,7 +37,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
                         
                         private EnemyType                           _enemyType;
                         
-      [SerializeField]   private TextMeshProUGUI                     damageText;
+      [SerializeField]  private TextMeshProUGUI                     damageText;
+                        private float                               _randomPriority;  
                         
                          
        
@@ -241,13 +242,23 @@ private float _stunnedTime;
         _playerTarget               = _player.transform;
         _shooterScript              = _player.GetComponent<Shooter>();
         
+        // objective UI
+        _objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
+        
 
         
     }
     
     private void ProfileSync()
     {
-        
+        if(_enemyType == EnemyType.Normal)
+        {
+            // random priority
+            _randomPriority             = UnityEngine.Random.Range(81, 99);
+            agent.avoidancePriority     = (int)_randomPriority;
+        }
+            
+      
         
         // combat 
         _attackRange                = data.MinDist;
@@ -523,7 +534,7 @@ private float _stunnedTime;
     #region Health
     public void TakeDamage(int damage, WeaponType type, int damageBoost)
     {
-         if (_health > 0)
+         if (_health >= 0)
          {
              switch (type)
              {
@@ -589,13 +600,14 @@ private float _stunnedTime;
              {
                  DropSpawnCheck();
              }
-            
-             //  CALCULATE HEALTH 
-             _healthBar.HandleBar(damage);
-            
+             
              damageText.text = damage.ToString();
+             
+             //  CALCULATE HEALTH 
              StartCoroutine(DamageTextDisappear());
          }
+         
+         _healthBar.HandleBar(damage);
     }
     
     
