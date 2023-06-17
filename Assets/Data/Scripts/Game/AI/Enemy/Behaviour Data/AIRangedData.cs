@@ -79,6 +79,9 @@ public class AIRangedData : ScriptableObject
     [SerializeField] private float      areaDamageRadius = 10;
     public float                        AreaDamageRadius => areaDamageRadius;
     
+    [SerializeField] private GameObject areaDamageEffect;
+    public GameObject                   AreaDamageEffect => areaDamageEffect;
+    
     [SerializeField] private float      teleportMinRange, teleportMaxRange;
     public float                        TeleportMinRange => teleportMinRange;
     public float                        TeleportMaxRange => teleportMaxRange;

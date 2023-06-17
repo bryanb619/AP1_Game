@@ -82,13 +82,13 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     private float                               _areaAttackRange; 
                     
                     private float                               _nextAreaAttack;
-                    private float                    _areaAttackRate = 2f;
+                    private float                    _areaAttackRate = 3f;
     [SerializeField] private LayerMask               playerLayer;
     [SerializeField] private Transform              _areaAttack;
-                    private int                     _areaAttackDamage; 
-                    
-    
-    // special attack
+                    private int                     _areaAttackDamage;
+                    private GameObject             _areaAttackEffect;
+
+                    // special attack
     
     
                     private const float                         AbilityMaxValue = 100f;
@@ -278,8 +278,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
         
+        
         _areaAttackRange            = data.AreaDamageRadius;
         _areaAttackDamage           = data.AreaDamageAttack;
+        _areaAttackEffect          = data.AreaDamageEffect;
         
         
 
@@ -478,14 +480,14 @@ public class EnemyRangedBehaviour : MonoBehaviour
              }
          }
          
-         else if((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
+         else if((_playerTarget.transform.position - transform.position).magnitude <= 2.5f)
          {
              if(Time.time > _nextAreaAttack)
              {
                  AreaAttack();
                  _nextAreaAttack = Time.time + _areaAttackRate;
              }
-             AreaAttack(); 
+             
          }
          
          else
@@ -564,7 +566,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
              if (player == null) return;
              
-             Instantiate(_areaAttack, transform.position, _areaAttack.transform.rotation);
+             Instantiate(_areaAttackEffect, transform.position, _areaAttack.transform.rotation);
              player.TakeDamage(_areaAttackDamage);
           
              
