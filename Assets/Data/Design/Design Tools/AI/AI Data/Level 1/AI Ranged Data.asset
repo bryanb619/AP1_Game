@@ -20,14 +20,14 @@ MonoBehaviour:
   rProjectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
   sProjectile: {fileID: 6932023443711188527, guid: 62e48711e6083d245be419a3164fafb1, type: 3}
   attackTimeOut: 2
-  accuracy: 0.8
+  accuracy: 0.7
   shootSpread: 0.1
   currentAbilityValue: 17
   abilityIncreasePerFrame: 2
   specialTimeOut: 2
   specialAttackRate: 3
-  areaDamageAttack: 30
-  areaDamageRadius: 10
+  areaDamageAttack: 10
+  areaDamageRadius: 6
   teleportMinRange: 0
   teleportMaxRange: 0
   teleportTime: 0
@@ -36,7 +36,7 @@ MonoBehaviour:
   cooldownTp: 0
   tpMaxValue: 0
   tpIncreasePerFrame: 0
-  areaAttack: {fileID: 0}
+  areaAttack: {fileID: 1845240806346120, guid: b395d5d6eb4b4b846acc021ee036b744, type: 3}
   health: 2264
   healthRegen: 10
   maxHealthRegen: 75

@@ -82,10 +82,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     private float                               _areaAttackRange; 
                     
                     private float                               _nextAreaAttack;
-                    private float                               _areaAttackRate = 2f;
-    [SerializeField] private LayerMask  playerLayer;
-    [SerializeField] private Transform _areaAttack;
-                    private int _areaAttackDamage; 
+                    private float                    _areaAttackRate = 2f;
+    [SerializeField] private LayerMask               playerLayer;
+    [SerializeField] private Transform              _areaAttack;
+                    private int                     _areaAttackDamage; 
                     
     
     // special attack
@@ -278,6 +278,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
         
+        _areaAttackRange            = data.AreaDamageRadius;
+        _areaAttackDamage           = data.AreaDamageAttack;
+        
+        
 
         // Special attack Ability
 
@@ -314,23 +318,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
         _projectile                 = data.NProjectile;
         _randomProjectile           = data.RProjectile;
-
         
-        // Boss 
-        if (_enemyType == EnemyType.Boss)
-        {
-            _specialProjectile      = data.SProjectile;
-            _minRange               = data.TeleportMinRange;
-            _maxRange               = data.TeleportMaxRange;
-            
-            _teleportEffect         = data.TeleportEffect;
-
-#if UNITY_EDITOR
-            Debug.Log("Boss");
-#endif
-            
-        }
         
+
     }
     // Start is called before the first frame update
     
