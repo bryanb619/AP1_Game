@@ -16,6 +16,7 @@ public class Dashing : MonoBehaviour
                      private PlayerHealth _playerHealth;
                      private PlayerMovement _playerMovement;
                      private NavMeshAgent _playerNavMesh;
+                     private PlayerAnimationHandler _playerAnimationHandler;
 
     [Header("Dashing")] 
     [SerializeField] private float dashForce;
@@ -32,6 +33,7 @@ public class Dashing : MonoBehaviour
     [SerializeField] public int shieldAmount = 50;
     private KeyCode eKey = KeyCode.E;
     private Animator _animator;
+    private bool cantUseE = false;
 
 
     private void Start()
@@ -42,16 +44,22 @@ public class Dashing : MonoBehaviour
         _playerMovement = GetComponent<PlayerMovement>();
         _playerNavMesh = GetComponent<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
+        _playerAnimationHandler = GetComponentInChildren<PlayerAnimationHandler>();
     }
 
     private void Update()
     {
-        DashInput();
+        cantUseE = _playerAnimationHandler.cantUseOtherAbilities;
+        
+        if(Input.GetKeyUp(eKey))
+            DashInput();
+        if (_dashCdTimer > 0)
+            _dashCdTimer -= Time.deltaTime;
     }
 
     private void DashInput()
     {
-        if (Input.GetKeyUp(eKey) && _dashCdTimer <= 0)
+        if (_dashCdTimer <= 0 && !cantUseE)
         {
             RaycastHit hit;
 
@@ -66,14 +74,12 @@ public class Dashing : MonoBehaviour
                 {
                     _playerHealth.GiveShield(shieldAmount);
                 }
+                _playerAnimationHandler.cantUseOtherAbilities = true;
                 _animator.SetTrigger("Dash");
             }
 
             
         }
-
-        if (_dashCdTimer > 0)
-            _dashCdTimer -= Time.deltaTime;
     }
 
     private void Dash(RaycastHit hit)

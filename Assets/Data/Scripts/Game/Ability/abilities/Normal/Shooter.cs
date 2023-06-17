@@ -198,18 +198,20 @@ public class Shooter : MonoBehaviour
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {
+                    _manaManager.FireAttack();
                     Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
                     StartCoroutine(FireAttackCooldown());
                     break;
                 }
             case WeaponType.Ice: // input nº3 (W)
                 {
+                    _manaManager.IceAttack();
                     TargetAttack();
                     break;
                 }
             case WeaponType.Thunder: // input nº4 (R)
                 {
-                    
+                    _manaManager.ThunderAttack();
                     AreaAttack();
                     break;
                 }

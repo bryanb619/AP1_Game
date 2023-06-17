@@ -21,6 +21,7 @@ public class AbilityHolder : MonoBehaviour
     private Shooter _shooter; 
 
     private WeaponType _weaponType; 
+    private PlayerAnimationHandler _playerAnimationHandler;
 
     // types of ability condition
     private enum AbilityState
@@ -50,6 +51,7 @@ public class AbilityHolder : MonoBehaviour
         _shooter = FindObjectOfType<Shooter>();
         PowerReady();
         _dashCooldownVariable = GameObject.FindGameObjectWithTag("Player").GetComponent<Dashing>();
+        _playerAnimationHandler = FindObjectOfType<PlayerAnimationHandler>().GetComponent<PlayerAnimationHandler>();
     }
 
     // Update is called once per frame
@@ -88,7 +90,7 @@ public class AbilityHolder : MonoBehaviour
             {
                 // ready state
                 case AbilityState.Ready:
-                    if (Input.GetKeyDown(key))
+                    if (Input.GetKeyDown(key) && !_playerAnimationHandler.cantUseOtherAbilities)
                     {
                         if(abilityNew)
                         {

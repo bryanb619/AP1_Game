@@ -27,6 +27,8 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private Shooter shooter;
     private PlayerMovement playerMovement;
+
+    public bool cantUseOtherAbilities = false;
     
     private void Awake()
     {
@@ -152,35 +154,53 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     public void QAttack()
     {
-        if (_playerAnimator.GetBool("qAbility") == false)
+        if (_playerAnimator.GetBool("qAbility") == false && !cantUseOtherAbilities)
+        {
             _playerAnimator.SetBool("qAbility", true);
-    }
-    public void WAttack()
-    {
-        if (_playerAnimator.GetBool("wAbility") == false)
-            _playerAnimator.SetBool("wAbility", true);  
-    }
+            cantUseOtherAbilities = true;
+        }
 
+    }
     public void QAttackStop()
     {
         _playerAnimator.SetBool("qAbility", false);
+        cantUseOtherAbilities = false;
+    }
+    
+    public void WAttack()
+    {
+        if (_playerAnimator.GetBool("wAbility") == false && !cantUseOtherAbilities)
+        {
+            _playerAnimator.SetBool("wAbility", true);
+            cantUseOtherAbilities = true;
+        }
+        
+    }
+    public void WAttackStop()
+    {
+        _playerAnimator.SetBool("wAbility", false);
+        cantUseOtherAbilities = false;
+    }
+
+    public void EAbilityStop()
+    {
+        cantUseOtherAbilities = false;
     }
 
     public void RAttack()
     {
-        if(_playerAnimator.GetBool("rAbility") == false)
+        if(_playerAnimator.GetBool("rAbility") == false && !cantUseOtherAbilities)
+        {
             _playerAnimator.SetBool("rAbility", true);
+            cantUseOtherAbilities = true;
+        }
     }
-    
     public void RAttackStop()
     {
         _playerAnimator.SetBool("rAbility", false);
+        cantUseOtherAbilities = false;
     }
 
-    public void WAttackStop()
-    {
-        _playerAnimator.SetBool("wAbility", false);
-    }
 
     public void NormalAttack()
     {

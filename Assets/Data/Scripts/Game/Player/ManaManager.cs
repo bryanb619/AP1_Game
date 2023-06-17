@@ -19,8 +19,12 @@ public class ManaManager : MonoBehaviour
     [SerializeField] private float manaRegenAmount = 10f;
     [SerializeField] private float waitTime = 2f;
                      private WaitForSeconds _manaTimer;
-    
-    
+
+                     private bool canUseFireAttack;
+                     private bool canUseIceAttack;
+                     private bool canUseThunderAttack;
+                     
+                     
     [Header("References")]
     private ManaBar manaUi;
 
@@ -60,7 +64,6 @@ public class ManaManager : MonoBehaviour
             case WeaponType.Fire:
                 if (mana >= fireAttackCost)
                 { 
-                    FireAttack();
                     return true;
                 }
                 else
@@ -69,7 +72,6 @@ public class ManaManager : MonoBehaviour
             case WeaponType.Ice:
                 if (mana >= iceAttackCost)
                 {
-                    IceAttack();
                     return true;
                 }
                 else
@@ -78,7 +80,6 @@ public class ManaManager : MonoBehaviour
             case WeaponType.Thunder:
                 if (mana >= thunderAttackCost)
                 { 
-                    ThunderAttack();
                     return true;
                 }
                 else
