@@ -3,7 +3,7 @@ using FMODUnity;
 using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Akarya/AI/Chase Data")]
-public class AiChaseData : ScriptableObject
+public class AIChaseData : ScriptableObject
 {
     #region Combat
     // Combat -------------------------------------------------------------------->

@@ -40,7 +40,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     [Header("AI Profile")]
 
     // AI profile data
-    [SerializeField]    private AiChaseData                 data;
+    [SerializeField]    private AIChaseData                 data;
       
     // Systems -------------------------------------------------------------------------------------------------------->
                         // FSM 
