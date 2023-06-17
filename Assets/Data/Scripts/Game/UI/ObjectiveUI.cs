@@ -1,37 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 
 public class ObjectiveUI : MonoBehaviour
 {
-    [SerializeField]private TextMeshProUGUI mainTextReference, newTextReference;
-    private Animator _animator;
-    private DoorHandler _doorHandler;
-    private bool _secondTextAnimationTriggered = false, _thirdTextAnimationTriggered = false, _passedThroughCollider = false;
-    [HideInInspector]public bool passedSecondObjective;
-    [SerializeField] private string firstObjective;
-    [SerializeField] private string secondObjective;
-    [SerializeField] private string thirdObjective;
-    [SerializeField] private string fourthObjective;
-    //[SerializeField] private float radius = 20f;
-    [FormerlySerializedAs("AILayer")] [SerializeField] private LayerMask aiLayer;
-    private int _totalEnemyCount = 0, _currentEnemyDefeated = 0;
+    [SerializeField]    private TextMeshProUGUI mainTextReference, newTextReference;
+                        private Animator        _animator;
+                        private int             lastAnimationIndex;
+                        private DoorHandler     _doorHandler;
+                        private bool            _secondTextAnimationTriggered = false, 
+                                                _thirdTextAnimationTriggered = false, 
+                                                _passedThroughCollider = false;
+    [SerializeField]    private string[]        objectives;
+    [SerializeField]    private LayerMask       aiLayer;
+                        private int             _totalEnemyCount = 0, 
+                                                _currentEnemyDefeated = 0;
 
-
-    [FormerlySerializedAs("Crystals")]
     [Header("Crystal")]
-    [SerializeField] private GameObject[] crystals;
+    [SerializeField]    private GameObject[]    crystals;
+                        private int             cleansedCrystalAmount = 0;
 
+                        private bool            enemiesSpawned = false;
+    
+    
+    
     // Start is called before the first frame update
     void Start()
     {
-        passedSecondObjective = false;
-        mainTextReference.text = "No objective currently";
         _animator = GetComponent<Animator>();
         _doorHandler = FindObjectOfType<DoorHandler>();
+        TextAnimation(0);
     }
 
     // Update is called once per frame
@@ -43,8 +42,9 @@ public class ObjectiveUI : MonoBehaviour
             _animator.SetTrigger("Show Objective");
         }
         
+        EnemiesAliveCheck();
 
-
+/*
         if(_passedThroughCollider)
         {
             if (passedSecondObjective == false)
@@ -52,38 +52,105 @@ public class ObjectiveUI : MonoBehaviour
             else if (passedSecondObjective == true)
                 CleansedTheCrystals();
         }
+  */
     }
 
-    public void PassedThroughCollider()
+    public void EnemiesAliveCheck()
     {
-        if(_passedThroughCollider == true)
+        AIHandler[] ai = FindObjectsOfType<AIHandler>();
+
+
+        if (ai.Length > 0 && !enemiesSpawned)
+        {
             TextAnimation(1);
-        
-        _passedThroughCollider = true;
-    }
+        }
 
-    public void RecieveEnemyCountInfo(int chaseCount, int rangedCount)
-    {
-        _totalEnemyCount = chaseCount + rangedCount;
+        if (ai.Length > 0)
+        {
+            mainTextReference.text = (objectives[1] + "(" + _currentEnemyDefeated + " / " + _totalEnemyCount + ")");
+            enemiesSpawned = true;
+        }
+        else if (ai.Length == 0 && enemiesSpawned)
+        {
+            TextAnimation(2);
+            enemiesSpawned = false;
+        }
     }
-
+    
+    
+   
     public void IncreaseEnemyDefeatedCount()
     {
         _currentEnemyDefeated += 1;
-        mainTextReference.text = (firstObjective + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
+        //mainTextReference.text = (firstObjective + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
     }
 
+
+    public void CleansedTheCrystals()
+    { 
+//        CrystalOutline[] ai = FindObjectsOfType<CrystalOutline>();
+        
+        cleansedCrystalAmount++;
+        
+        switch (cleansedCrystalAmount)
+        {
+            case 1:
+                _doorHandler.DisableBarrier(0);
+                break;
+            case 2:
+                _doorHandler.DisableBarrier(1);
+                break;
+            case 3:
+                _doorHandler.DisableBarrier(2);
+                break;
+            case 4:
+                _doorHandler.DisableBarrier(3);
+                break;
+            case 6:
+                _doorHandler.DisableBarrier(4);
+                
+                break;
+            case 8:
+                _doorHandler.DisableBarrier(5);
+                _doorHandler.state = DoorHandler.DoorState.Opening;
+                TextAnimation(4);
+                break;
+        }
+
+    }
+
+    private void TextAnimation(int i)
+    {
+        switch (i)
+        {
+            /*
+            case 0:
+                newTextReference.text = objectives[0];
+                _animator.SetTrigger("New Objective");
+                break;
+            */
+            case 1:
+                newTextReference.text = (objectives[1] + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
+                _animator.SetTrigger("New Objective");
+                break;
+                
+            default:
+                newTextReference.text = objectives[i];
+                _animator.SetTrigger("New Objective");
+                break;
+        }
+        lastAnimationIndex = i;
+    }
+
+    private void TextAnimationEnd()
+    {
+        mainTextReference.text = newTextReference.text;
+    }
+    
+    
+    //Old Code (here in case we need it)
     private void KillEnemiesCheck()
     {
-        //If needed for active and inactive checking through tags
-
-        /*GameObject[] allEnemies = Resources.FindObjectsOfTypeAll<GameObject>()
-            .Where(obj => obj.CompareTag("Enemy"))
-            .ToArray();
-
-        bool noEnemiesLeft = allEnemies.Length == 0;
-        */
-        //Debug.Log("Amount of enemies: " + currentEnemyDefeated);
         if (_totalEnemyCount == _currentEnemyDefeated)
         {
             TextAnimation(2);
@@ -97,49 +164,20 @@ public class ObjectiveUI : MonoBehaviour
 
     public void Passed()
     {
-        passedSecondObjective = true;
+       // passedSecondObjective = true;
+    }
+    
+    public void PassedThroughCollider()
+    {
+        if(_passedThroughCollider == true)
+            TextAnimation(1);
+        
+        _passedThroughCollider = true;
     }
 
-    private void CleansedTheCrystals()
+    public void RecieveEnemyCountInfo(int chaseCount, int rangedCount)
     {
-        _doorHandler.state = DoorHandler.DoorState.Opening;
-        //Reference the door opening script here
-        TextAnimation(3);
+        _totalEnemyCount = chaseCount + rangedCount;
     }
 
-    private void TextAnimation(int i)
-    {
-        if (i == 1)
-        {
-            newTextReference.text = (firstObjective + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
-            if(_passedThroughCollider == true)
-            {
-                _animator.SetTrigger("New Objective");
-                _secondTextAnimationTriggered = true;
-            }
-        }
-        else if (i == 2)
-        {
-            if (_secondTextAnimationTriggered == false)
-            {
-                newTextReference.text = secondObjective;
-                _animator.SetTrigger("New Objective");
-                _secondTextAnimationTriggered = true;
-            }
-        }
-        else if(i == 3)
-        {
-            newTextReference.text = thirdObjective;
-            if (_thirdTextAnimationTriggered == false)
-            {
-                _animator.SetTrigger("New Objective");
-                _thirdTextAnimationTriggered = true;
-            }
-        }
-    }
-
-    private void TextAnimationEnd()
-    {
-        mainTextReference.text = newTextReference.text;
-    }
 }

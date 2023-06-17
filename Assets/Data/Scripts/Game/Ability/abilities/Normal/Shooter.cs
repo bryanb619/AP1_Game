@@ -162,31 +162,42 @@ public class Shooter : MonoBehaviour
             case WeaponType.Normal: // input nº1
                 {
                     //Cleanse Crystal
-                    if (_hit.collider.name == "Crystal" && _hit.collider.GetComponent<Outline>().enabled == true)
+                    AIHandler[] ai = FindObjectsOfType<AIHandler>();
+                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
                     {
-                        float distance = Vector3.Distance(_hit.collider.gameObject.transform.position, 
-                                                          gameObject.transform.position);
-                        
-                        if (Input.GetKeyUp(KeyCode.Mouse0)&& distance < maxDistanceToCrystal)
+                        if (_hit.collider.GetComponent<CrystalOutline>().enabled == true && ai.Length == 0)
                         {
-                            
-                            _hit.collider.GetComponent<MeshRenderer>().material.Lerp(_hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
-                            _hit.collider.GetComponent<Outline>().enabled = false;
-                            objectiveUi.Passed();
-                            _valuesTexts.GetCrystal();
-                            
-                            print("CLEANED CRYSTAL");
+                            float distance = Vector3.Distance(_hit.collider.gameObject.transform.position,
+                                gameObject.transform.position);
+
+                            if (distance < maxDistanceToCrystal)
+                            {
+
+                                _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
+                                    _hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
+                                _hit.collider.GetComponent<CrystalOutline>().enabled = false;
+                                objectiveUi.CleansedTheCrystals();
+                                _valuesTexts.GetCrystal();
+
+                                print("CLEANSED CRYSTAL");
+                                break;
+                            }
+                            else
+                            {
+                                Debug.Log("Too far away from the crystal");
+                                break;
+                            }
+
+                        }
+
+                        else
+                        {
+                            StartCoroutine(NormalAttackCooldown());
+                            Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
                             break;
                         }
-                        else
-                            break;
                     }
-                    else
-                    {
-                        StartCoroutine(NormalAttackCooldown());
-                        Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
-                        break;
-                    }
+                    break;
                 }
             case WeaponType.Fire: // input nº2 (Q)
                 {

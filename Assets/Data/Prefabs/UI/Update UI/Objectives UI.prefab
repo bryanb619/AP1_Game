@@ -536,15 +536,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainTextReference: {fileID: 2508626532377099491}
   newTextReference: {fileID: 4875916377258075822}
-  passedSecondObjective: 0
-  firstObjective: Eliminate all enemies in the area
-  secondObjective: Cleanse the crystals
-  thirdObjective: Go through the door
-  fourthObjective: 
-  AILayer:
+  objectives:
+  - Explore the Area
+  - Defeat all the enemies
+  - Clear the crystal(s)
+  - Defeat the boss
+  - Go through the door to the next zone
+  aiLayer:
     serializedVersion: 2
     m_Bits: 128
-  Crystals:
+  crystals:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
 --- !u!95 &2508626531916880301
 Animator:

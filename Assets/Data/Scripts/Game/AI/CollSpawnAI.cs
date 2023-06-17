@@ -65,7 +65,7 @@ public class CollSpawnAI : MonoBehaviour
         
         objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
 
-        objectiveUiScript.RecieveEnemyCountInfo(chaseCount, rangedCount);
+        //objectiveUiScript.RecieveEnemyCountInfo(chaseCount, rangedCount);
     }
     
 
@@ -77,7 +77,7 @@ public class CollSpawnAI : MonoBehaviour
 
         if (player != null ) 
         {
-            objectiveUiScript.PassedThroughCollider();
+            //objectiveUiScript.PassedThroughCollider();
             
             StartCoroutine(SpawnAi());
         }
