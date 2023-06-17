@@ -14,7 +14,7 @@ public class AiController : MonoBehaviour
     // CHANGE TO DIFERENT SCRIPT
     //private List<Agents> AttakingAI = new List<Agents>(); 
 
-    [FormerlySerializedAs("_enemies")] [SerializeField] private List<GameObject> enemies = new List<GameObject>();
+    [SerializeField] private List<GameObject> enemies = new List<GameObject>();
 
 
     private void Start()

@@ -47,7 +47,7 @@ public class RangedBossBehaviour : MonoBehaviour
     // other components ----------------------------------------------------------------------------------------------->
     
                         // objectives UI 
-                        private ObjectiveUi                         _objectiveUiScript;
+                        private ObjectiveUI                         _objectiveUiScript;
     [SerializeField]    private Outline                             outlineDeactivation;
                         private Animator                            _animator;
                         private SkinnedMeshRenderer                 _mesh;

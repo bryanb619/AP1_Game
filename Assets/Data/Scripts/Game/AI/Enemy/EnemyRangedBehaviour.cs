@@ -37,13 +37,15 @@ public class EnemyRangedBehaviour : MonoBehaviour
                         
                         private EnemyType                           _enemyType;
                         
+      [SerializeField]   private TextMeshProUGUI                     damageText;
+                        
                          
        
                         
     // other components ----------------------------------------------------------------------------------------------->
     
                         // objectives UI 
-                        private ObjectiveUi                         _objectiveUiScript;
+                        private ObjectiveUI                         _objectiveUiScript;
     [SerializeField]    private Outline                             outlineDeactivation;
                         private Animator                            _animator;
                         private SkinnedMeshRenderer                 _mesh;
@@ -119,7 +121,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     
     // UI ------------------------------------------------------------------------------------------------------------->
     
-                        private TextMeshProUGUI             _damageText;
+
 
 
 
@@ -239,6 +241,8 @@ private float _stunnedTime;
         _playerTarget               = _player.transform;
         _shooterScript              = _player.GetComponent<Shooter>();
         
+
+        
     }
     
     private void ProfileSync()
@@ -280,6 +284,7 @@ private float _stunnedTime;
         
         // Health/Death ----------------------------------------------------------------------------------------------->
          _health                    = data.Health;
+         
         _deathEffect                = data.DeathEffect;
         
         // projectiles ------------------------------------------------------------------------------------------------>
@@ -588,7 +593,7 @@ private float _stunnedTime;
              //  CALCULATE HEALTH 
              _healthBar.HandleBar(damage);
             
-             _damageText.text = damage.ToString();
+             damageText.text = damage.ToString();
              StartCoroutine(DamageTextDisappear());
          }
     }
@@ -616,7 +621,7 @@ private float _stunnedTime;
     private IEnumerator DamageTextDisappear()
     {
         yield return new WaitForSeconds(2f);
-        _damageText.text = " ";
+        damageText.text = " ";
     }
     
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)

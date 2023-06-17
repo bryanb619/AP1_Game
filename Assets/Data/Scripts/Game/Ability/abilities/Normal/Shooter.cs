@@ -34,7 +34,7 @@ public class Shooter : MonoBehaviour
     //Script References
     private AbilityHolder targetedAttackAbilityHolder;
     private ManaManager _manaManager;
-    private ObjectiveUi objectiveUi;
+    private ObjectiveUI objectiveUi;
     private ValuesTextsScript _valuesTexts;
     private PlayerAnimationHandler _playerAnim; 
     private PlayerMovement  _coroutineCaller;
@@ -54,7 +54,7 @@ public class Shooter : MonoBehaviour
     private void Start()
     {
         targetedAttackAbilityHolder          = GameObject.Find("Abilities UI").transform.GetChild(2).GetComponent<AbilityHolder>();
-        objectiveUi                          = FindObjectOfType<ObjectiveUi>();
+        objectiveUi                          = FindObjectOfType<ObjectiveUI>();
         _playerAnim                          = GetComponentInChildren<PlayerAnimationHandler>();
         _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
 

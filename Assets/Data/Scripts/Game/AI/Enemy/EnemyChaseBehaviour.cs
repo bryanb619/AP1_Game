@@ -65,7 +65,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         public Transform                    PlayerTarget { get; private set; }
 
                         private Shooter                     _shooterScript;
-                        private ObjectiveUi                 _objectiveUiScript;
+                        private ObjectiveUI                 _objectiveUiScript;
 
                         private Rigidbody                   _rb;
                         
@@ -287,7 +287,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
-        _objectiveUiScript = FindObjectOfType<ObjectiveUi>();
+        _objectiveUiScript = FindObjectOfType<ObjectiveUI>();
 
         switch (_gameState)
         {

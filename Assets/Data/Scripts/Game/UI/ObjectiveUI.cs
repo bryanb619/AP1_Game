@@ -5,7 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Serialization;
 
-public class ObjectiveUi : MonoBehaviour
+public class ObjectiveUI : MonoBehaviour
 {
     [SerializeField]private TextMeshProUGUI mainTextReference, newTextReference;
     private Animator _animator;
