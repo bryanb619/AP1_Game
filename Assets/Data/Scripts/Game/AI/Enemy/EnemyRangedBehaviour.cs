@@ -228,9 +228,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void GetAiComponents()
     {
-        
-      
-        
         // AI components
         agent                       = GetComponent<NavMeshAgent>(); 
         agent.updateRotation        = false;
@@ -255,9 +252,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
         
         // objective UI
         _objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
-        
-
-        
     }
     
     private void ProfileSync()
@@ -436,6 +430,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void Engage()
     {
+        
+        
         if (!_canAttack)
         {
             _attackTime += Time.deltaTime;
@@ -448,9 +444,19 @@ public class EnemyRangedBehaviour : MonoBehaviour
         else if (_canAttack) 
         {
             Attack();
+            UpdateRotation();
         }
      
-        UpdateRotation();
+        
+        if ((_playerTarget.transform.position - transform.position).magnitude <= 2f)
+        {
+            agent.radius = 0.1f;
+
+            if ((_playerTarget.transform.position - transform.position).magnitude <= 0.51f)
+            {
+                agent.enabled = false;
+            }
+        }
         
     }   
     
