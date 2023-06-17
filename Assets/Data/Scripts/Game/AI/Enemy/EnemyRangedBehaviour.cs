@@ -83,6 +83,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     
                     private float                               _nextAreaAttack;
                     private float                               _areaAttackRate = 2f;
+    [SerializeField] private LayerMask  playerLayer;
+    [SerializeField] private Transform _areaAttack;
+                    private int _areaAttackDamage; 
                     
     
     // special attack
