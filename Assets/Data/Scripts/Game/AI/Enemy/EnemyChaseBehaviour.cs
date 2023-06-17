@@ -862,6 +862,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase enemy
     private void ChasePlayer()
     {
+        
+        UpdateRotation();
+        
         if (_canAttack) 
         {
             DistanceOnAttackCheck();
@@ -871,7 +874,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 UpdatePath();
             }
             
-            UpdateRotation();
+            
             
             switch (_canSpecialAttack)
             {
@@ -1001,8 +1004,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         {
                             
                             _agent.radius = 
-                                Mathf.Clamp(_agent.radius + (1 * Time.deltaTime), 0.0f, _randomRadiusValue); 
-                            print(_agent.radius);
+                                Mathf.Clamp(_agent.radius + (2 * Time.deltaTime), 0.0f, _randomRadiusValue); 
+                            //print(_agent.radius);
                             ResumeAgent();
                         }
                     }

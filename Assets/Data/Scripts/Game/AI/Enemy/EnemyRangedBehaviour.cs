@@ -269,6 +269,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
         // combat 
         
         _attackRange                = UnityEngine.Random.Range(6, 12);
+        print("attack range: " + _attackRange);
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
         
