@@ -26,7 +26,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                         private StateMachine                        _fsm;
                         // nav mesh agent
                         public NavMeshAgent                         agent;
-                        private float                               _pathUpdateDeadLine = 0.2f;
+                        private float                               _pathUpdateDeadLine = 0.5f;
                         // Ai Shoot
                         private AiShoot                             _aiShoot;
                         // performance handler
@@ -267,8 +267,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
       
         
         // combat 
-        _attackRange                = data.MinDist;
         
+        _attackRange                = UnityEngine.Random.Range(6, 12);
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
         
@@ -493,7 +493,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  AreaAttack();
                  _nextAreaAttack = Time.time + _areaAttackRate;
              }
-             
          }
          
          else

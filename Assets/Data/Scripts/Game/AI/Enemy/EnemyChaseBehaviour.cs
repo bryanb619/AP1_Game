@@ -53,7 +53,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         //private AiController                _controller;
                         private AIHandler                   _hanlderAi;
                         private AIHealth                    _healthBar;
-
+                        
                         // AI Mesh
     [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
                         private Color                       _color;
@@ -374,8 +374,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _randomRadiusValue          = UnityEngine.Random.Range(2, 3);
         
         _minAttackRange             = UnityEngine.Random.Range(5f, 5.5f);
-        print(_minAttackRange);
-
+        //print(_minAttackRange);
     }
     #endregion
 
@@ -985,6 +984,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             case true:
                 {
                     SetAttack();
+                    
                     if ((PlayerTarget.transform.position - transform.position).magnitude <= _minAttackRange)
                     {
                         PauseAgent();
@@ -999,7 +999,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     {
                         if (_agent.enabled)
                         {
-                            _agent.radius = _randomRadiusValue;
+                            
+                            _agent.radius = 
+                                Mathf.Clamp(_agent.radius + (1 * Time.deltaTime), 0.0f, _randomRadiusValue); 
+                            print(_agent.radius);
                             ResumeAgent();
                         }
                     }
