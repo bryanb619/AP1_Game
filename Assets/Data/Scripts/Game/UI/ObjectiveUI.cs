@@ -133,7 +133,7 @@ public class ObjectiveUI : MonoBehaviour
                 if(isAnimationPlaying)
                     _animator.SetTrigger("Force Stop");
                 
-                newTextReference.text = (objectives[1] + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")");
+                newTextReference.text = (objectives[1]/* + "(" + _currentEnemyDefeated + "/" + _totalEnemyCount + ")"*/);
                 isAnimationPlaying = true;
                 _animator.SetTrigger("New Objective");
                 break;
