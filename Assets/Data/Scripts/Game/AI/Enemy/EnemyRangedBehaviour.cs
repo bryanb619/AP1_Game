@@ -38,7 +38,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
                         private EnemyType                           _enemyType;
                         
       [SerializeField]  private TextMeshProUGUI                     damageText;
-                        private float                               _randomPriority;  
+                        private float                               _randomPriority;
+                        private bool _spawningGems; 
+                        private bool _isDead; 
                         
                          
        
@@ -752,20 +754,27 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void DropSpawnCheck()
     {
-        float randomFloat = UnityEngine.Random.value;
+        if (!_spawningGems)
+        {
+            _spawningGems = true;
+            
+            float randomFloat = UnityEngine.Random.value;
 
-        if (!(randomFloat <= 0.08f)) return;
+            if (!(randomFloat <= 0.08f)) return;
         
-        float randomPercent = UnityEngine.Random.value;
+            float randomPercent = UnityEngine.Random.value;
 
-        if (randomPercent <= 0.6f && _spawnHealth)
-        {
-            SpawnDrop(_healthDrop);
+            if (randomPercent <= 0.6f && _spawnHealth)
+            {
+                SpawnDrop(_healthDrop);
+            }
+            else if (randomPercent >= 0.61 && _spawnMana)
+            {
+                SpawnDrop(_manaDrop);
+            }
+            _spawningGems = false;
         }
-        else if (randomPercent >= 0.61 && _spawnMana)
-        {
-            SpawnDrop(_manaDrop);
-        }
+        
     }
 
     #region Death
@@ -774,30 +783,35 @@ public class EnemyRangedBehaviour : MonoBehaviour
     {
         if (_health<=0)
         {
-            if(_spawnHealth)
+            if (!_isDead)
             {
-                for (var i = 0; i < _healthItems; i++)
+                _isDead = true;
+                
+                if(_spawnHealth)
                 {
-                    SpawnDrop(_healthDrop);
-                }   
-            }
-
-            if(_spawnMana)
-            {
-                for (var i = 0; i < _manaItems; i++)
-                {
-                    SpawnDrop(_manaDrop);
+                    for (var i = 0; i < _healthItems; i++)
+                    {
+                        SpawnDrop(_healthDrop);
+                    }   
                 }
-            }
+
+                if(_spawnMana)
+                {
+                    for (var i = 0; i < _manaItems; i++)
+                    {
+                        SpawnDrop(_manaDrop);
+                    }
+                }
             
                     
-            Instantiate(_deathEffect, transform.position, Quaternion.identity);
+                Instantiate(_deathEffect, transform.position, Quaternion.identity);
 
-            _valuesTexts.GetKill();
+                _valuesTexts.GetKill();
 
-            _objectiveUiScript.IncreaseEnemyDefeatedCount();
+                _objectiveUiScript.IncreaseEnemyDefeatedCount();
             
-            Destroy(gameObject);
+                Destroy(gameObject);
+            }
         }
     }
     
