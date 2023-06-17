@@ -349,6 +349,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _animator                    = GetComponentInChildren<Animator>();
 
         _damageText                  = GetComponentInChildren<TextMeshProUGUI>();
+        _objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
 
         //_controller                  = GetComponentInParent<AiController>();
         
@@ -367,7 +368,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
         
         // random priority
-        _randomPriority             = UnityEngine.Random.Range(51, 99);
+        _randomPriority             = UnityEngine.Random.Range(52, 80);
         _agent.avoidancePriority    = _randomPriority;
         
         _randomRadiusValue          = UnityEngine.Random.Range(2, 3);
@@ -1572,7 +1573,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
-            _healthBar.HandleBar(damage);
+            
             
             if (_canAttack)
             {
@@ -1580,6 +1581,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 SetAttack();
             }
         }
+        
+        _healthBar.HandleBar(damage);
     }
 
     private void DropSpawnCheck()

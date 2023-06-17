@@ -142,7 +142,7 @@ public class AIHealth : MonoBehaviour
 
             case AiType.Ranged:
             {
-               ranged.Die();
+                ranged.Die();
                 break;
             }
                 

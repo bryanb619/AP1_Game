@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0991b72efd43cd34fa5df6de481be407, type: 3}
   m_Name: Ai Ranged Data
   m_EditorClassIdentifier: 
+  enemyType: 0
   minDist: 7
   nProjectile: {fileID: 6932023443711188527, guid: 658c3a7692ac4b14095ac27a88dd50ae, type: 3}
   attackRate: 2
@@ -19,30 +20,26 @@ MonoBehaviour:
   rProjectile: {fileID: 6932023443711188527, guid: 07a3ef2c25817b545a809518906339cb, type: 3}
   sProjectile: {fileID: 6932023443711188527, guid: 62e48711e6083d245be419a3164fafb1, type: 3}
   attackTimeOut: 2
+  accuracy: 0.8
+  shootSpread: 0.1
   currentAbilityValue: 17
   abilityIncreasePerFrame: 2
-  specialDamage: 32
-  sDamageEffect: {fileID: 1965343156803978, guid: aa8d6482d70a23445b4b2a928ed1b845, type: 3}
   specialTimeOut: 2
-  radius: 12
-  angle: 90
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 6144
-  obstructionMask:
-    serializedVersion: 2
-    m_Bits: 577
-  hidableLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  minDistInCover: 12
-  coverMoveSpeed: 5
-  fleeDistance: 15
+  specialAttackRate: 3
+  areaDamageAttack: 30
+  areaDamageRadius: 10
+  teleportMinRange: 0
+  teleportMaxRange: 0
+  teleportTime: 0
+  teleportEffect: {fileID: 0}
+  currentTp: 0
+  cooldownTp: 0
+  tpMaxValue: 0
+  tpIncreasePerFrame: 0
+  areaAttack: {fileID: 0}
   health: 150
   healthRegen: 10
   maxHealthRegen: 75
-  gemSpawnOnDeath: 1
-  gem: {fileID: 680847071157996187, guid: 4fb4ff9aac25fc04f835bce28811c5f1, type: 3}
   spawnChance: 0
   spawnHealth: 1
   healthItems: 2
@@ -51,3 +48,4 @@ MonoBehaviour:
   manaItems: 2
   manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
   dropRadius: 2
+  deathEffect: {fileID: 5985634496115995773, guid: 463cf9f7af4680240898f6aeba3fe3e6, type: 3}
