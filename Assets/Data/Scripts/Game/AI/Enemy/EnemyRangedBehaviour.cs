@@ -266,15 +266,12 @@ public class EnemyRangedBehaviour : MonoBehaviour
             agent.avoidancePriority     = (int)_randomPriority;
         }
          
-        _firstAttackTime           = UnityEngine.Random.Range(0.5f, 2.5f);
-        
-        
-      
+        _firstAttackTime                 = UnityEngine.Random.Range(0.5f, 2.5f);
         
         // combat 
         
         _attackRange                = UnityEngine.Random.Range(10, 17);
-        print("attack range: " + _attackRange);
+
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
         
