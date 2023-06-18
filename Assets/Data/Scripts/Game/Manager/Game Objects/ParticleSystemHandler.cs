@@ -75,7 +75,7 @@ public class ParticleSystemHandler : MonoBehaviour
         {
            case GameState.Gameplay:
            {
-               destroyTime += Time.deltaTime;
+               _time += Time.deltaTime;
                
                if (_time >= destroyTime)
                {
