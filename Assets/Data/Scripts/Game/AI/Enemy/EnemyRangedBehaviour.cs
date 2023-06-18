@@ -443,7 +443,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void Engage()
     {
-        if (_gameState == GameState.Gameplay)
+        if (_gameState == GameState.Gameplay && !_isDead)
         {
             UpdateRotation();
         
@@ -818,9 +818,11 @@ public class EnemyRangedBehaviour : MonoBehaviour
         {
             if (!_isDead)
             {
-                StartCoroutine(DissolveEnemyRanged());
                 
                 _isDead = true;
+                StartCoroutine(DissolveEnemyRanged());
+                
+                
                 
                 if(_spawnHealth)
                 {
