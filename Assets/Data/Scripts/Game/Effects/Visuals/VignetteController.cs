@@ -25,6 +25,7 @@ namespace Data.Scripts.Game.Effects.Visuals
 
         private void Update()
         {
+            /*
             if (Input.GetKeyDown(KeyCode.M))
             {
                 SetIntensity(0.5f);
@@ -33,6 +34,7 @@ namespace Data.Scripts.Game.Effects.Visuals
             {
                 ResetIntensity();
             }
+            */
         }
 
         public void SetIntensity(float intensity)
@@ -41,7 +43,7 @@ namespace Data.Scripts.Game.Effects.Visuals
             _vignette.color = new Color(_rColor, _gColor , _bColor , intensity);
         }
 
-        private void ResetIntensity()
+        public void ResetIntensity()
         {
             _vignette.color = new Color(_rColor, _gColor, _bColor, 0);
         }
