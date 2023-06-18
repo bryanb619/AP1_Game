@@ -16,15 +16,15 @@ public class RangedBossBehaviour : MonoBehaviour
         #region  Variables
     // Systems
         [Header("AI Profile")]
-        [SerializeField]        private AIRangedData data;
+        [SerializeField]    private AIRangedData data;
     
         // AI 
                             // AI states
-                                private enum Ai                             {Patrol, Attack, Cover}
-                                [Header("AI State")]
-        [SerializeField]        private Ai                                  stateAi;
-                                // state machine 
-                                private StateMachine                        _fsm;
+                            private enum Ai                             {Patrol, Attack, Cover}
+                            [Header("AI State")]
+        [SerializeField]    private Ai                                  stateAi;
+                            // state machine 
+                            private StateMachine                        _fsm;
                             // nav mesh agent
                             public NavMeshAgent                         agent;
                             private float                               _pathUpdateDeadLine = 0.2f;
@@ -37,14 +37,9 @@ public class RangedBossBehaviour : MonoBehaviour
                             private HandleState                         _currentState;
                         
                             private EnemyType                           _enemyType;
-                            
-  
-        
-        
-        
-       
-                        
-    // other components ----------------------------------------------------------------------------------------------->
+
+
+                            // other components ----------------------------------------------------------------------------------------------->
     
                         // objectives UI 
                         private ObjectiveUI                         _objectiveUiScript;
@@ -269,7 +264,7 @@ public class RangedBossBehaviour : MonoBehaviour
         _color                      = _mesh.material.color;
         
         // animator
-        //_animator                   = GetComponentInChildren<Animator>();
+        _animator                   = GetComponentInChildren<Animator>();
         
         // UI 
         _valuesTexts                = GameObject.Find("ValuesText").GetComponent<ValuesTextsScript>();
@@ -609,7 +604,7 @@ public class RangedBossBehaviour : MonoBehaviour
          //abilitySlider.value = _currentAbilityValue;
          //_canSpecialAttack = false;
         
-        // _animator.SetBool("isAttacking", false);
+         _animator.SetBool("isAttacking", false);
          // StartCoroutine(SpecialAttackTimer());
          _canSpecialAttack = false;
          
@@ -643,7 +638,7 @@ public class RangedBossBehaviour : MonoBehaviour
              Debug.Log(debugColor + "Area Attack" + closeDebug);
 #endif
              //_enemyAnimationHandler.RecievePlayerCollision(player);
-            // _animator.SetTrigger("Attack2");
+            _animator.SetTrigger("Attack2");
             
          }
      }
@@ -660,7 +655,7 @@ public class RangedBossBehaviour : MonoBehaviour
 
                  if(Random.value < _percentage && _canAttack)
                  {
-                     //_animator.SetBool("isAttacking", true);
+                     _animator.SetBool("isAttacking", true);
                      RandomAttack();
                  }
                  
@@ -675,7 +670,7 @@ public class RangedBossBehaviour : MonoBehaviour
   
          else
          {
-             //_animator.SetBool("isAttacking", false);
+             _animator.SetBool("isAttacking", false);
             
          }
      }
@@ -708,7 +703,7 @@ public class RangedBossBehaviour : MonoBehaviour
     
      private void NormalAttack()
     {
-             //_animator.SetBool("isAttacking", true);
+             _animator.SetBool("isAttacking", true);
              
              _aiShoot.Shoot(_playerTarget, _projectile); 
                     
