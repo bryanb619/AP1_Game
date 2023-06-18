@@ -562,7 +562,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         
         if (_gameState == GameState.Gameplay && _hanlderAi.activeAi == AIHandler.ActiveAi.Active) //|| !_deactivateAI)
         {
-            _agent.enabled = true;
+           // _agent.enabled = true;
            //MinimalCheck();
             
             AiSpeed();
@@ -698,7 +698,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase enemy
     private void ChasePlayer()
     {
-        
         UpdateRotation();
         
         if (_canAttack) 
@@ -709,9 +708,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             {
                 UpdatePath();
             }
-            
-            
-            
+
             switch (_canSpecialAttack)
             {
                 case false:
