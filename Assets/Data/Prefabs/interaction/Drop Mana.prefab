@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6342344941788914745}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 385.15778, y: 1.7130203, z: 317.16202}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.36456317, y: 0.36456317, z: 0.36456317}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: a1d42a369f6251f4cab3ab3c86687dab, type: 2}
-  m_prefab: {fileID: 0}
+  mPrefab: {fileID: 0}
   avoidanceForce: 5
   avoidanceDuration: 1.8
 --- !u!23 &6342344941788914693
@@ -115,7 +115,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.92
+  m_Radius: 1.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &6342344941788914695
 Rigidbody:
@@ -175,4 +175,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d472f28ddc121419aad5db8a98c21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _destroyTime: 25
+  destroyTime: 25

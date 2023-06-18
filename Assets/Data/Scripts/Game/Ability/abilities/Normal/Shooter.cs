@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Serialization;
 using UnityEngine.AI;
+using FMODUnity;
 
 
 public class Shooter : MonoBehaviour
@@ -11,6 +12,7 @@ public class Shooter : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Material cleansedCrystal;
     [SerializeField] private Color lightColor;
+    [SerializeField] private EventReference cleanCrystalSound;
 
     private GameObject _firePrefab, _icePrefab, _thunderPrefab;
     internal WeaponType MagicType;
@@ -187,6 +189,7 @@ public class Shooter : MonoBehaviour
                                     _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
                                     _hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
                                     // light color switch 
+                                    RuntimeManager.PlayOneShot(cleanCrystalSound, transform.position);
                                     _hit.collider.GetComponentInChildren<Light>().color = lightColor;
                                     _hit.collider.GetComponent<CrystalSelect>().enabled = false;
                                     objectiveUi.CleansedTheCrystals();
