@@ -24,7 +24,6 @@ namespace Data.Scripts.Game.AI.Companion
             Combat
         }
 
-        [FormerlySerializedAs("_stateAI")]
         [Header("State")] 
         public CompanionState stateAi;
         private StateMachine _stateMachine;
@@ -50,16 +49,13 @@ namespace Data.Scripts.Game.AI.Companion
 
         [SerializeField] private Transform floatPos;
 
-        [FormerlySerializedAs("_lowPos")] 
         [SerializeField] private Transform lowPos;
-        [FormerlySerializedAs("_highPos")] 
         [SerializeField] private Transform highPos;
 
         private Vector3 _targetPosition;
 
         private float _acceleration = 2000f;
 
-        [FormerlySerializedAs("_l_lTarget")]
         [Header("Positions")] 
         [SerializeField] private Transform //_l_rTarget, // low right
             lLTarget; // up right
@@ -81,10 +77,8 @@ namespace Data.Scripts.Game.AI.Companion
             LLPos,
             URPos
         }
-
-        [FormerlySerializedAs("_nextPos")] 
+        
         [SerializeField] private CompanionPos nextPos;
-        [FormerlySerializedAs("_currentPos")]
         [SerializeField] private CompanionPos currentPos;
 
         private bool _changePos;
@@ -111,20 +105,17 @@ namespace Data.Scripts.Game.AI.Companion
 
         private MeshRenderer _companionMesh;
 
-        [FormerlySerializedAs("AlphaLow")] 
+ 
         [Header("Material")]
         [SerializeField] private Material alphaLow;
         [SerializeField] private Material normal;
 
         // Combat ------------------------------------------------------------------------>
 
-        [FormerlySerializedAs("_walkMask")] 
+
         [Header("Masks")] 
         [SerializeField] private LayerMask walkMask;
-        [FormerlySerializedAs("_attackMask")]
         [SerializeField] private LayerMask attackMask;
-        [FormerlySerializedAs("_playerMask")]
-    
         [SerializeField] private LayerMask playerMask;
 
         [Header("Detection")] [SerializeField] private float detectionRadius;
@@ -134,7 +125,7 @@ namespace Data.Scripts.Game.AI.Companion
         private Vector3 _direction;
 
 
-        [FormerlySerializedAs("_playerDirection")] [SerializeField] bool playerDirection;
+        [SerializeField] bool playerDirection;
 
 
         // DEBUG ---------------------------------------------------------------------------------->

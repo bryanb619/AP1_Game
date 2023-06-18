@@ -55,6 +55,10 @@ public class CollSpawnAI : MonoBehaviour
     
     [Tooltip("spawn time out between each AI Spawn")]
     [SerializeField]    private float                   spawnTime;  
+    
+    [SerializeField] private bool                       _bossFight;
+    [SerializeField] private EventReference             bossSound;
+    [SerializeField] private GameObject                 ambienceSound; 
 
 
     // Start is called before the first frame update
@@ -83,6 +87,8 @@ public class CollSpawnAI : MonoBehaviour
             
             StartCoroutine(SpawnAi());
         }
+        
+      
     }
 
 
@@ -92,6 +98,13 @@ public class CollSpawnAI : MonoBehaviour
         {
             _running            = true;
             int i;
+            
+            if(_bossFight)
+            {
+                RuntimeManager.PlayOneShot(bossSound, transform.position);
+                ambienceSound.SetActive(false);
+                
+            }
 
             _collider.enabled   = false;
 
