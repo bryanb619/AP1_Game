@@ -1333,6 +1333,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             
             SetAiAfterAttack(false);
             StartCoroutine(DissolveEnemy());
+            stateAi = Ai.Patrol;
 
             if(_spawnHealth)
             {
