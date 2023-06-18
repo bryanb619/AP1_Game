@@ -1,14 +1,10 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using FMODUnity;
-using Random = UnityEngine.Random;
 
 
 public class CollSpawnAI : MonoBehaviour
 {
-    
-    private GameState _gameState;
     // Enemies --------------------------------------------------------------------------->
 
     [Header("AI")]
@@ -70,46 +66,10 @@ public class CollSpawnAI : MonoBehaviour
         _collider.isTrigger         = true;
         
         objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
-        
-        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         //objectiveUiScript.RecieveEnemyCountInfo(chaseCount, rangedCount);
     }
-    private void GameManager_OnGameStateChanged(GameState state)
-    {
-
-        switch (state)
-        {
-            case GameState.Gameplay:
-            {
-                _gameState = GameState.Gameplay;
-
-
-                break;
-            }
-            case GameState.Paused:
-            {
-                _gameState = GameState.Paused;
-
-
-                break;
-            }
-            
-            case GameState.Death:
-            {
-                _gameState = GameState.Death;
-                break;
-            }
-        }
-        //throw new NotImplementedException();
-    }
-
-
-    private void Update()
-    {
-        GameCondition(); 
-    }
-
+    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -128,90 +88,68 @@ public class CollSpawnAI : MonoBehaviour
 
     private IEnumerator SpawnAi()
     {
-        while (true)
+        if (! _running)
         {
-            if (GameCondition())
+            _running            = true;
+            int i;
+
+            _collider.enabled   = false;
+
+            
+
+            if( !useSound)
             {
-                if (! _running)
+                //PlaySound();
+            }
+            
+
+            for (i = 0; i < chaseCount; i++)
+            {
+                if(startWait) 
                 {
-                    _running            = true;
-                    int i;
-
-                    _collider.enabled   = false;
-            
-                    if( !useSound)
-                    {
-                        //PlaySound();
-                    }
-            
-
-                    for (i = 0; i < chaseCount; i++)
-                    {
-                        if(startWait) 
-                        {
-                            yield return new WaitForSeconds(waitTime);
-                        }
+                    yield return new WaitForSeconds(waitTime);
+                }
                 
-                        Vector3 spawnPosition = transformA.position +
+                Vector3 spawnPosition = transformA.position +
+                        new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
+                        Random.Range(-dropRadius, dropRadius));
+
+
+                Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
+                
+
+                yield return new WaitForSeconds(spawnTime);
+                Instantiate(chase, spawnPosition, transform.rotation);
+                
+            }
+
+            if (secondTransform)
+            {
+                for (i = 0; i < rangedCount; i++)
+                {
+                    if (startWait)
+                    {
+                        yield return new WaitForSeconds(waitTime);
+                    }
+
+                    Vector3 spawnPosition = transformB.position +
                                             new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
                                                 Random.Range(-dropRadius, dropRadius));
 
 
-                        Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
-                
+                    Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
 
-                        yield return new WaitForSeconds(spawnTime);
-                        Instantiate(chase, spawnPosition, transform.rotation);
-                
-                    }
-
-                    if (secondTransform)
-                    {
-                        for (i = 0; i < rangedCount; i++)
-                        {
-                            if (startWait)
-                            {
-                                yield return new WaitForSeconds(waitTime);
-                            }
-
-                            Vector3 spawnPosition = transformB.position +
-                                                new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
-                                                    Random.Range(-dropRadius, dropRadius));
-
-
-                            Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
-
-                            yield return new WaitForSeconds(spawnTime);
-                            Instantiate(ranged, spawnPosition, transform.rotation);
+                    yield return new WaitForSeconds(spawnTime);
+                    Instantiate(ranged, spawnPosition, transform.rotation);
                     
-                        }
-                    }
-            
-                    //Destroy(gameObject);
-                    Destroy(_collider);
-                    _running = false;
-            
                 }
             }
-            else
-            {
-                yield return null; 
-            }
+            
+            //Destroy(gameObject);
+            Destroy(_collider);
+            _running = false;
             
         }
-    }
-
-    private bool GameCondition()
-    {
-        if (_gameState == GameState.Gameplay)
-        {
-            return true;
-        }
-        else
-        {
-            return false; 
-        }
-        
     }
 
 
