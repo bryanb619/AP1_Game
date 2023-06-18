@@ -392,7 +392,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
             }
             case GameState.Death:
             {
-                
+                _gameState = GameState.Death;
+                stateAi = Ai.Patrol; 
+                Paused();
                 break;
             }
 

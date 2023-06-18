@@ -438,6 +438,8 @@ public class RangedBossBehaviour : MonoBehaviour
             }
             case GameState.Death:
             {
+                _gameState = GameState.Death;
+                stateAi = Ai.Patrol; 
                 InactiveAi(); 
                 break;
             }
@@ -461,11 +463,6 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         Action actions = _fsm.Update();
         actions?.Invoke();
-    }
-    
-    private void Paused()
-    {
-       
     }
     #endregion
     

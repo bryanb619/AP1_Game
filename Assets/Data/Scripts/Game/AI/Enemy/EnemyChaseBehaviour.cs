@@ -1531,6 +1531,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     PauseAgent();
                     break;
                 }
+            
+            case GameState.Death:
+                {
+                    _gameState = GameState.Death;
+                    stateAi = Ai.Patrol; 
+                    PauseAgent();
+                    break;
+                }
         }
         //throw new NotImplementedException();
     }
