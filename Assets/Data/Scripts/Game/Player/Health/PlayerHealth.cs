@@ -1,7 +1,9 @@
 using System.Collections;
+using Data.Scripts.Game.Effects.Visuals;
 using TMPro;
 //using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Serialization;
 
 //using UnityEngine.UI;
@@ -37,6 +39,8 @@ public class PlayerHealth : MonoBehaviour
                             private GameManager _gameManager;
                             private PlayerAnimationHandler _playerAnim; 
                             
+                            private VignetteController _vignetteController;
+                            
     internal enum PlayerHealthMaxed
     {
         Max,
@@ -46,6 +50,7 @@ public class PlayerHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _vignetteController                 = FindObjectOfType<VignetteController>();
         _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
         _healthBar                          = FindObjectOfType<HealthBar>();
         _gameManager                        = FindObjectOfType<GameManager>();
@@ -162,6 +167,7 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
+        
 
         switch (HealthSetAtMax)
         {
@@ -182,7 +188,14 @@ public class PlayerHealth : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        if(currentHealth < (maxHealth * 0.25))
+            _vignetteController.SetIntensity(1f);
+        else
+        {
+            _vignetteController.ResetIntensity();
+        }
+        
+        
         if (regenOn == true)
         {
             Invoke("Regen", regenTimer);

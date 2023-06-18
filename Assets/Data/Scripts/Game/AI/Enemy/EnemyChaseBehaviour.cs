@@ -263,11 +263,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
     // DEBUG ---------------------------------------------------------------------------------------------------------->
     [Header("Debug")]
-
     [SerializeField]    private bool                        showExtraGizmos;
-    
-    [Header("Debug")]
-
     [SerializeField]    private bool                        showLabelGizmos;
 
 
@@ -277,9 +273,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _enemyMask;
                         private int                         _playerMask;
 
-                        private int                         _randomRadiusValue; 
+                        private int                         _randomRadiusValue;
                         
     #endregion
+                        
 
     #region Awake 
     // Get references to enemies
@@ -704,39 +701,42 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private void ChasePlayer()
     {
         
-        
-        if (_canAttack) 
+        if(_gameState == GameState.Gameplay)
         {
-            DistanceOnAttackCheck();
+            if (_canAttack) 
+            {
+                DistanceOnAttackCheck();
             
-            if(_agent.enabled)
-            {
-                UpdatePath();
-            }
-
-            switch (_canSpecialAttack)
-            {
-                case false:
+                if(_agent.enabled)
                 {
-                    Attack(); // call attack and random attack
-
-                    if (_currentAbilityValue <= AbilityMaxValue)
-                    {
-                        Cooldown();
-                                
-                    }
-
-                    break;
+                    UpdatePath();
                 }
 
-                case true:
+                switch (_canSpecialAttack)
                 {
-                    // special attack
-                    HabilityAttack();
-                    break;
+                    case false:
+                    {
+                        Attack(); // call attack and random attack
+
+                        if (_currentAbilityValue <= AbilityMaxValue)
+                        {
+                            Cooldown();
+                                
+                        }
+
+                        break;
+                    }
+
+                    case true:
+                    {
+                        // special attack
+                        HabilityAttack();
+                        break;
+                    }
                 }
             }
         }
+       
         
     }
 
