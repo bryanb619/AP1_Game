@@ -100,6 +100,7 @@ public class AbilityHolder : MonoBehaviour
 
                         _state = AbilityState.Active;
                         PowerReady();
+                        ReadyFlash();
                     }
                     break;
 
@@ -187,12 +188,9 @@ public class AbilityHolder : MonoBehaviour
     
     internal void AreaAttackCooldownUi()
     {
-        if (abilityNew)
-        {
-            // change name
-            //abilityNew.Activate(gameObject);
-            _activeTime = abilityNew.activeTime;
-        }
+        // change name
+        //abilityNew.Activate(gameObject);
+        _activeTime = abilityNew.activeTime;
 
         _state = AbilityState.Active;
         PowerReady();

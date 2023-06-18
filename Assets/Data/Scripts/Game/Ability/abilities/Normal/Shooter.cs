@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Serialization;
+using UnityEngine.AI;
+
 
 public class Shooter : MonoBehaviour
 {
@@ -34,11 +36,13 @@ public class Shooter : MonoBehaviour
 
     //Script References
     private AbilityHolder targetedAttackAbilityHolder;
+    private AbilityHolder areaAttackAbilityHolder;
     private ManaManager _manaManager;
     private ObjectiveUI objectiveUi;
     private ValuesTextsScript _valuesTexts;
     private PlayerAnimationHandler _playerAnim; 
     private PlayerMovement  _coroutineCaller;
+    private NavMeshAgent _playerNavMesh;
     
     [Header("Others")]
     private RaycastHit _hit;
@@ -57,7 +61,9 @@ public class Shooter : MonoBehaviour
     }
     private void Start()
     {
+        _playerNavMesh = GetComponent<NavMeshAgent>();
         targetedAttackAbilityHolder          = GameObject.Find("Abilities UI").transform.GetChild(2).GetComponent<AbilityHolder>();
+        areaAttackAbilityHolder              = GameObject.Find("Abilities UI").transform.GetChild(4).GetComponent<AbilityHolder>(); 
         objectiveUi                          = FindObjectOfType<ObjectiveUI>();
         _playerAnim                          = GetComponentInChildren<PlayerAnimationHandler>();
         _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
@@ -104,15 +110,12 @@ public class Shooter : MonoBehaviour
     {
         if (_firePoint != null)
         {
-            //--------------------------------------
-            //When you release the key
-
-            if (Input.GetKeyDown(KeyCode.Mouse0) && !NormalCooldown)
+            if (Input.GetKeyDown(KeyCode.Mouse0) && !NormalCooldown && !_playerAnim.cantUseOtherAbilities)
             {
                 MagicType = WeaponType.Normal;
                 Shoot();
             }
-            else if (Input.GetKeyDown(qKey) && !FireCooldown)
+            else if (Input.GetKeyDown(qKey) && !FireCooldown && !_playerAnim.cantUseOtherAbilities)
             {
                 MagicType = WeaponType.Fire;
                 if (_manaManager.ManaCheck(MagicType))
@@ -124,11 +127,12 @@ public class Shooter : MonoBehaviour
                     if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100))
                     {
                         transform.LookAt(new Vector3(hit.point.x, gameObject.transform.position.y, hit.point.z));
+                        StartCoroutine(FireAttackCooldown());
                         _playerAnim.QAttack();
                     }
                 }
             }
-            else if (Input.GetKeyDown(wKey) && !IceCooldown)
+            else if (Input.GetKeyDown(wKey) && !IceCooldown && !_playerAnim.cantUseOtherAbilities)
             {
                 MagicType = WeaponType.Ice;
                 if (_manaManager.ManaCheck(MagicType))
@@ -136,12 +140,14 @@ public class Shooter : MonoBehaviour
                     _playerAnim.WAttack();
                 }
             }
-            else if (Input.GetKeyDown(rKey) && !ThunderCooldown)
+            else if (Input.GetKeyDown(rKey) && !ThunderCooldown && !_playerAnim.cantUseOtherAbilities)
             {
                 MagicType = WeaponType.Thunder;
                 if (_manaManager.ManaCheck(MagicType))
                 {
                     _playerAnim.RAttack();
+                    areaAttackAbilityHolder.AreaAttackCooldownUi();
+                    StartCoroutine(ThunderAttackCooldown());
                 }
             }
         }
@@ -208,7 +214,6 @@ public class Shooter : MonoBehaviour
                 {
                     _manaManager.FireAttack();
                     Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
-                    StartCoroutine(FireAttackCooldown());
                     break;
                 }
             case WeaponType.Ice: // input nº3 (W)
@@ -258,12 +263,12 @@ public class Shooter : MonoBehaviour
             if (_hit.collider.GetComponent<AIHandler>())
             {
                 Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
-                StartCoroutine(IceAttackCooldown());
                 Debug.Log("Enemy Hit with Ice");
                 return;
             }
         }
         targetedAttackAbilityHolder.TargetedAttackCooldownUi();
+        StartCoroutine(IceAttackCooldown());
     }
 
     private void AreaAttack()
@@ -280,10 +285,9 @@ public class Shooter : MonoBehaviour
                     // Deal damage to the enemy
                     Instantiate(_thunderPrefab, hitColliders[i].transform.position, _firePoint.rotation);
                     Instantiate(areaEffect, transform.position, Quaternion.identity);
-                    targetedAttackAbilityHolder.AreaAttackCooldownUi();
                 }
         }
-        StartCoroutine(ThunderAttackCooldown());
+        
     }
   
     internal void UpgradeChecker(int abilityNumber)
@@ -352,7 +356,7 @@ public class Shooter : MonoBehaviour
     IEnumerator ThunderAttackCooldown()
     {
         ThunderCooldown = true;
-        yield return new WaitForSecondsRealtime(thunderTimer.cooldownTime);
+        yield return new WaitForSeconds(thunderTimer.cooldownTime);
         ThunderCooldown = false;
     }
 

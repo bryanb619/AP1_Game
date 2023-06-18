@@ -18,19 +18,14 @@ public class AbilityUpgradesManager : MonoBehaviour
     // Start is called at the beginning
     void Awake()
     {
-        UpgradeText();
+        //UpgradeText();
         shooterScript = GameObject.FindWithTag("Player").GetComponent<Shooter>();
         dashingScript = GameObject.FindWithTag("Player").GetComponent<Dashing>();
 
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
+/*
     private void UpgradeText()
     {
         switch(upgrade)
@@ -51,10 +46,11 @@ public class AbilityUpgradesManager : MonoBehaviour
                 break;
         }
     }
+    */
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.GetComponent<PlayerMovement>())
         {
             switch (upgrade)
             {

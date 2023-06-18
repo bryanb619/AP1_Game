@@ -10,9 +10,10 @@ public class Thunder : Ability
         // ACTIVATE ANIMATION
 
         // INSTANTIATE
+        _shoot = FindObjectOfType<Shooter>();
+        
         if (_shoot != null)
         {
-            _shoot = FindObjectOfType<Shooter>();
             _shoot.Shoot();
         }
 
@@ -20,7 +21,7 @@ public class Thunder : Ability
 
     public override void BeginCooldown(GameObject parent)
     {
-        //shoot = FindObjectOfType<ShooterThunder>();
+        _shoot = FindObjectOfType<Shooter>();
       
     }
 

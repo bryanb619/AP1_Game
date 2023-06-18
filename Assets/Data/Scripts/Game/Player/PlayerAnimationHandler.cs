@@ -157,14 +157,12 @@ public class PlayerAnimationHandler : MonoBehaviour
         if (_playerAnimator.GetBool("qAbility") == false && !cantUseOtherAbilities)
         {
             _playerAnimator.SetBool("qAbility", true);
-            cantUseOtherAbilities = true;
         }
 
     }
     public void QAttackStop()
     {
         _playerAnimator.SetBool("qAbility", false);
-        cantUseOtherAbilities = false;
     }
     
     public void WAttack()
@@ -172,19 +170,12 @@ public class PlayerAnimationHandler : MonoBehaviour
         if (_playerAnimator.GetBool("wAbility") == false && !cantUseOtherAbilities)
         {
             _playerAnimator.SetBool("wAbility", true);
-            cantUseOtherAbilities = true;
         }
         
     }
     public void WAttackStop()
     {
         _playerAnimator.SetBool("wAbility", false);
-        cantUseOtherAbilities = false;
-    }
-
-    public void EAbilityStop()
-    {
-        cantUseOtherAbilities = false;
     }
 
     public void RAttack()
@@ -192,15 +183,22 @@ public class PlayerAnimationHandler : MonoBehaviour
         if(_playerAnimator.GetBool("rAbility") == false && !cantUseOtherAbilities)
         {
             _playerAnimator.SetBool("rAbility", true);
-            cantUseOtherAbilities = true;
         }
     }
     public void RAttackStop()
     {
         _playerAnimator.SetBool("rAbility", false);
-        cantUseOtherAbilities = false;
     }
 
+    public void DisableUsageOfOtherAbilities()
+    {
+        cantUseOtherAbilities = true;
+    }
+    
+    public void EnableUsageOfOtherAbilities()
+    {
+        cantUseOtherAbilities = false;
+    }
 
     public void NormalAttack()
     {
