@@ -303,7 +303,10 @@ public class RangedBossBehaviour : MonoBehaviour
 
         // Special attack Ability
 
-        _currentAbilityValue        = data.CurrentAbilityValue;
+        _currentAbilityValue            = data.CurrentAbilityValue;
+        abilitySlider.value             = _currentAbilityValue;
+        abilitySlider.maxValue          = abilitySlider.value; 
+        
         _abilityIncreasePerFrame    = data.AbilityIncreasePerFrame;
         
         _areaAttackDamage           = data.AreaDamageAttack;
