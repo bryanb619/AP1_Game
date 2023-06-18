@@ -528,7 +528,7 @@ public class RangedBossBehaviour : MonoBehaviour
         {
             case true:
                 {
-                    if ((_playerTarget.transform.position - transform.position).magnitude <= _areaAttackRange) 
+                    if ((_playerTarget.transform.position - transform.position).magnitude <= _safeDistance) 
                     {
                         PauseAi();
                         
@@ -541,7 +541,8 @@ public class RangedBossBehaviour : MonoBehaviour
                     
                     if ((_playerTarget.transform.position - transform.position).magnitude >= _safeDistance)  //
                     {
-                        PauseAi();
+                        //PauseAi();
+                        ResumeAi();
                         
                         if (Time.time > _nextSpecialAttack)
                         {

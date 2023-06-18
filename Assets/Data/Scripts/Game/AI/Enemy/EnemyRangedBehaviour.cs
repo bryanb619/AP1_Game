@@ -443,34 +443,38 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void Engage()
     {
-        
-        UpdateRotation();
-        
-        if (!_canAttack)
+        if (_gameState == GameState.Gameplay)
         {
-            _attackTime += Time.deltaTime;
-            if(_firstAttackTime >= _attackTime)
+            UpdateRotation();
+        
+            if (!_canAttack)
             {
-                _canAttack = true;
+                _attackTime += Time.deltaTime;
+                if(_firstAttackTime >= _attackTime)
+                {
+                    _canAttack = true;
+                }
             }
-        }
         
-        else if (_canAttack) 
-        {
-            Attack();
+            else if (_canAttack) 
+            {
+                Attack();
             
-        }
+            }
      
         
-        if ((_playerTarget.transform.position - transform.position).magnitude <= 2f)
-        {
-            agent.radius = 0.1f;
-
-            if ((_playerTarget.transform.position - transform.position).magnitude <= 0.51f)
+            if ((_playerTarget.transform.position - transform.position).magnitude <= 2f)
             {
-                agent.enabled = false;
+                agent.radius = 0.1f;
+
+                if ((_playerTarget.transform.position - transform.position).magnitude <= 0.51f)
+                {
+                    agent.enabled = false;
+                }
             }
         }
+
+       
     }   
     
      private void Attack()
