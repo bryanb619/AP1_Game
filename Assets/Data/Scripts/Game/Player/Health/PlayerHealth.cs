@@ -25,7 +25,6 @@ public class PlayerHealth : MonoBehaviour
 
 
     // --------------------------Health----------------------------------------
-    [FormerlySerializedAs("_currentHealth")]
     [Header ("Health")]
     [SerializeField]        internal int            currentHealth;
                             private HealthBar       _healthBar;
