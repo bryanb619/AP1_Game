@@ -3,10 +3,10 @@ using UnityEngine.Serialization;
 
 public class Puzzle1Manager : MonoBehaviour
 {
-    [FormerlySerializedAs("LeftTriggerAnim_IsPlaying")] public bool leftTriggerAnimIsPlaying = false;
-    [FormerlySerializedAs("RightTriggerAnim_IsPlaying")] public bool rightTriggerAnimIsPlaying = true;
+    public bool leftTriggerAnimIsPlaying = false;
+    public bool rightTriggerAnimIsPlaying = true;
 
-    [FormerlySerializedAs("button_1")] [SerializeField] private Animator button1;
+    [SerializeField] private Animator button1;
     private Animator _button2;
 
     private DoorHandler _door;

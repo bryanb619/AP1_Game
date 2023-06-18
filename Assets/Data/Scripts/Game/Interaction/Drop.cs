@@ -21,7 +21,7 @@ public class Drop : MonoBehaviour
                         public int Mana => _mana;
 
 
-    [FormerlySerializedAs("m_prefab")] [SerializeField]    private GameObject mPrefab;
+    [SerializeField]    private GameObject mPrefab;
                         private Rigidbody _rb;
 
                         // Game State //

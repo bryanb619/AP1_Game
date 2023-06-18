@@ -5,21 +5,21 @@ public class Interactive : MonoBehaviour
 {
     public enum InteractiveType { Pickable, InteractOnce, InteractMulti, Indirect, TextInteract, GemClean, SceneChange };
 
-    [FormerlySerializedAs("DEACTIVATE")] [SerializeField] private GameObject         deactivate;
-    [FormerlySerializedAs("ACTIVATE")] [SerializeField] private GameObject         activate;
+    [SerializeField] private GameObject         deactivate;
+    [SerializeField] private GameObject         activate;
     [SerializeField] internal int                levelChosen;
-    [FormerlySerializedAs("_isActive")] [SerializeField] private bool               isActive;
-    [FormerlySerializedAs("_type")] [SerializeField] private InteractiveType    type;
-    [FormerlySerializedAs("_icon")] [SerializeField] private Sprite             icon;
-    [FormerlySerializedAs("_requirementText")] [SerializeField] private string             requirementText;
-    [FormerlySerializedAs("_requirements")] [SerializeField] private Interactive[]      requirements;
-    [FormerlySerializedAs("_activationChain")] [SerializeField] private Interactive[]      activationChain;
-    [FormerlySerializedAs("_interactionTexts")] [SerializeField] private string[]           interactionTexts;
-    [FormerlySerializedAs("_interactionChain")] [SerializeField] private Interactive[]      interactionChain;
+    [SerializeField] private bool               isActive;
+    [SerializeField] private InteractiveType    type;
+    [SerializeField] private Sprite             icon;
+    [SerializeField] private string             requirementText;
+    [SerializeField] private Interactive[]      requirements;
+    [SerializeField] private Interactive[]      activationChain;
+    [SerializeField] private string[]           interactionTexts;
+    [SerializeField] private Interactive[]      interactionChain;
 
     [Range(10,30)][SerializeField] private float radius = 20f;
-    [FormerlySerializedAs("_canShowGizmo")] [SerializeField] private bool canShowGizmo = true;
-    [FormerlySerializedAs("AILayer")] [SerializeField] private LayerMask aiLayer; 
+    [SerializeField] private bool canShowGizmo = true;
+    [SerializeField] private LayerMask aiLayer; 
     private bool _canSearch;
     private bool _isGemClean; 
 

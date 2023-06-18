@@ -9,7 +9,6 @@ public class Dashing : MonoBehaviour
     [SerializeField] private Transform orientation;
     [SerializeField] private Camera mainCamera;
     
-    [FormerlySerializedAs("SeeThroughLayer")] 
     [SerializeField] private LayerMask seeThroughLayer;
                      private Rigidbody _rb;
                      private PlayerHealth _playerHealth;
