@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 using LibGameAI.FSMs;
 using FMODUnity;
 using TMPro;
@@ -56,7 +57,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         
                         // AI Mesh
     [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
+                        private Material[]                  skinnedMaterials;
+                        private float                       dissolveRate = 0.0125f;
+                        private float                       refreshRate = 0.025f;
                         private Color                       _color;
+    [SerializeField]    private VisualEffect                VFXGraph;
 
     // References to player //
                         private GameObject                  _playerObject;
@@ -301,8 +306,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
         GetComponents(); 
         GetProfile();
         AbilityCheck();
-        
-        
+
+        if (enemyMesh != null)
+            skinnedMaterials = enemyMesh.materials;
 
         _currentState = HandleState.None;
         _canAttack = true;
@@ -1317,6 +1323,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if(!_isDead)
         {
+            SetAiAfterAttack(false);
+            StartCoroutine(DissolveEnemy());
+            
             _isDead = true;
             if(_spawnHealth)
             {
@@ -1339,19 +1348,40 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 Instantiate(_gemPrefab, dropPos.position, Quaternion.identity);
             }
 
-            Instantiate(_death, transform.position, _death.transform.rotation);
-
-            _valuesTexts.GetKill();
-
             //_objectiveUiScript.IncreaseEnemyDefeatedCount();
 
-            Destroy(this.gameObject);
-            
-   
+
         }
         
         
     }
+
+    private IEnumerator DissolveEnemy()
+    {
+        if (VFXGraph != null)
+        {
+            VFXGraph.Play();
+        }
+        
+        if (skinnedMaterials.Length > 0)
+        {
+            float counter = 0;
+            
+            while(skinnedMaterials[0].GetFloat("_DissolveAmount") < 1)
+            {
+                counter += dissolveRate;
+                for (int i = 0; i < skinnedMaterials.Length; i++)
+                {
+                    skinnedMaterials[i].SetFloat("_DissolveAmount", counter);
+                }
+                yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        Instantiate(_death, transform.position, _death.transform.rotation);
+        _valuesTexts.GetKill();
+        Destroy(this.gameObject);
+    }
+         
 
     // Drop area
     private void SpawnDrop(GameObject drop)
