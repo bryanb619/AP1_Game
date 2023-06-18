@@ -820,9 +820,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // * Attack & Chance Attack -------------------------------->
     private void Attack()
     {
-        switch (_canPerformAttack)
+        if (!_isDead)
         {
-            case true:
+            switch (_canPerformAttack)
+            {
+                case true:
                 {
                     SetAttack();
                     
@@ -854,12 +856,14 @@ public class EnemyChaseBehaviour : MonoBehaviour
                     break;
                 }
 
-            case false:
+                case false:
                 {
                     StartCoroutine(AttackTimer());
                     break;
                 }
+            }
         }
+        
         
     }
     
@@ -1325,10 +1329,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
     {
         if(!_isDead)
         {
+            _isDead = true;
+            
             SetAiAfterAttack(false);
             StartCoroutine(DissolveEnemy());
-            
-            _isDead = true;
+
             if(_spawnHealth)
             {
                 for (var i = 0; i < _healthItems; i++)
