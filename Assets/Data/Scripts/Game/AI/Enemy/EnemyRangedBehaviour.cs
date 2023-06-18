@@ -3,6 +3,7 @@ using System.Collections;
 using Data.Scripts.Game.AI.Enemy;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.VFX;
 using LibGameAI.FSMs;
 using TMPro;
 using Random = UnityEngine.Random;
@@ -52,6 +53,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
     [SerializeField]    private Outline                             outlineDeactivation;
                         private Animator                            _animator;
                         private SkinnedMeshRenderer                 _mesh;
+                        private Material[]                          skinnedMaterials;
+                        private float                               dissolveRate = 0.0125f;
+                        private float                               refreshRate = 0.025f;
+    [SerializeField]    private VisualEffect                        VFXGraph;
                         private Color                               _color; 
                         
                         // Game State
@@ -102,6 +107,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     private GameObject                          _teleportEffect;
                     private float                              _nextTeleport;
                     private float                               teleportRate = 5f;
+                    private float                               _randomFire; 
                     
     
     // projectiles
@@ -155,9 +161,13 @@ public class EnemyRangedBehaviour : MonoBehaviour
         _currentState = HandleState.None;
         _canAttack = true;
         
+        
         GetAiComponents(); 
         ProfileSync();
         StateSet(); 
+        
+        if (_mesh != null)
+            skinnedMaterials = _mesh.materials;
 
     }
     
@@ -265,16 +275,16 @@ public class EnemyRangedBehaviour : MonoBehaviour
             agent.avoidancePriority     = (int)_randomPriority;
         }
          
-        _firstAttackTime           = UnityEngine.Random.Range(0.5f, 2.5f);
-      
+        _firstAttackTime                 = UnityEngine.Random.Range(0.5f, 2.5f);
         
         // combat 
         
         _attackRange                = UnityEngine.Random.Range(10, 17);
-        print("attack range: " + _attackRange);
+
         _fireRate                   = data.AttackRate;
         _percentage                 = data.Percentage; 
         
+        _randomFire                 = UnityEngine.Random.Range(1f, _fireRate);
         
         _areaAttackRange            = data.AreaDamageRadius;
         _areaAttackDamage           = data.AreaDamageAttack;
@@ -412,8 +422,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
         
     }
 
-
-
     private void Gameplay()
     {
         var actions = _fsm.Update();
@@ -435,6 +443,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
 
     private void Engage()
     {
+        
+        UpdateRotation();
+        
         if (!_canAttack)
         {
             _attackTime += Time.deltaTime;
@@ -447,7 +458,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
         else if (_canAttack) 
         {
             Attack();
-            UpdateRotation();
+            
         }
      
         
@@ -460,7 +471,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
                 agent.enabled = false;
             }
         }
-        
     }   
     
      private void Attack()
@@ -475,12 +485,22 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  if (Time.time > _nextFire)
                  {
                      NormalAttack();
-                     _nextFire = Time.time + _fireRate;
+                     _nextFire = Time.time + _randomFire;
+                 }
+             }
+             
+             if((_playerTarget.transform.position - transform.position).magnitude <= 2.5f)
+             {
+                 if(Time.time > _nextAreaAttack)
+                 {
+                     agent.enabled = false;
+                     AreaAttack();
+                     _nextAreaAttack = Time.time + _areaAttackRate;
                  }
              }
          }
          
-         else //if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
+         if ((_playerTarget.transform.position - transform.position).magnitude >= _attackRange)
          {
              UpdatePath();
 
@@ -500,17 +520,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  {
                      NormalAttack();
                  }
-                 _nextFire = Time.time + _fireRate;
-             }
-             
-             
-             if((_playerTarget.transform.position - transform.position).magnitude <= 2.5f)
-             {
-                 if(Time.time > _nextAreaAttack)
-                 {
-                     AreaAttack();
-                     _nextAreaAttack = Time.time + _areaAttackRate;
-                 }
+                 _nextFire = Time.time + _randomFire;
              }
          }
          /*
@@ -804,6 +814,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
         {
             if (!_isDead)
             {
+                StartCoroutine(DissolveEnemyRanged());
+                
                 _isDead = true;
                 
                 if(_spawnHealth)
@@ -822,20 +834,39 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     }
                 }
             
-                    
-                Instantiate(_deathEffect, transform.position, Quaternion.identity);
-
-                _valuesTexts.GetKill();
-
-                _objectiveUiScript.IncreaseEnemyDefeatedCount();
-            
-                Destroy(gameObject);
             }
         }
     }
     
     #endregion   
 
+    private IEnumerator DissolveEnemyRanged()
+    {
+        if (VFXGraph != null)
+        {
+            VFXGraph.Play();
+        }
+        
+        if (skinnedMaterials.Length > 0)
+        {
+            float counter = 0;
+            
+            while(skinnedMaterials[0].GetFloat("_DissolveAmount") < 1)
+            {
+                counter += dissolveRate;
+                for (int i = 0; i < skinnedMaterials.Length; i++)
+                {
+                    skinnedMaterials[i].SetFloat("_DissolveAmount", counter);
+                }
+                yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        Instantiate(_deathEffect, transform.position, Quaternion.identity);
+        _valuesTexts.GetKill();
+        _objectiveUiScript.IncreaseEnemyDefeatedCount();
+        Destroy(this.gameObject);
+    }
+    
     // Drop area
     private void SpawnDrop(GameObject drop)
     {

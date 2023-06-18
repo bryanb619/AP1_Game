@@ -566,6 +566,11 @@ public class EnemyChaseBehaviour : MonoBehaviour
            //MinimalCheck();
             
             AiSpeed();
+
+            if (stateAi == Ai.Attack)
+            {
+                UpdateRotation();
+            }
             
             var actions = _stateMachine.Update();
             actions?.Invoke();
@@ -698,7 +703,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // Chase enemy
     private void ChasePlayer()
     {
-        UpdateRotation();
+        
         
         if (_canAttack) 
         {

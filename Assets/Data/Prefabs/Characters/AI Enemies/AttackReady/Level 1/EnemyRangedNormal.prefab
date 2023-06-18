@@ -255,6 +255,7 @@ Transform:
   m_Children:
   - {fileID: 6316414670869688768}
   - {fileID: 4853303956996291297}
+  - {fileID: 8787962165619298189}
   m_Father: {fileID: 7207599054140134841}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1517,11 +1518,11 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7d435dc4afbd6c64bbd95fb45bf9ae40, type: 2}
-  - {fileID: 2100000, guid: 23af1d444b8741540a72d2f8d2e85679, type: 2}
-  - {fileID: 2100000, guid: f1995a869d5035e4e85083d501d22454, type: 2}
-  - {fileID: 2100000, guid: 7e83b2192a9de024d834b929decf32f0, type: 2}
-  - {fileID: 2100000, guid: 15e608e1cb4d89a4c91c0359239a1e13, type: 2}
+  - {fileID: 2100000, guid: 5a02601f4107f9a468603bc063ff1b6a, type: 2}
+  - {fileID: 2100000, guid: 769f7de44b4ed6440a4bbc9dd76b86e2, type: 2}
+  - {fileID: 2100000, guid: 2bddb020baaae3042b3f0ee3834dcc53, type: 2}
+  - {fileID: 2100000, guid: 56ed5ac500244364e8d70a05343aa581, type: 2}
+  - {fileID: 2100000, guid: 360fb72bc415a9d4091fedf11b12afc8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1874,6 +1875,161 @@ Transform:
   m_Father: {fileID: 5066240390761374588}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 29.529884, y: -3.1295896, z: 15.17759}
+--- !u!1 &5135560231717964772
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8787962165619298189}
+  - component: {fileID: 216767936358467045}
+  - component: {fileID: 8366414243527500676}
+  - component: {fileID: 3704770091007559996}
+  - component: {fileID: 588442549910469675}
+  m_Layer: 0
+  m_Name: EnemyDissolveVFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8787962165619298189
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135560231717964772}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -419.23312, y: -0.25, z: -322.4527}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2015426124746494292}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!2083052967 &216767936358467045
+VisualEffect:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135560231717964772}
+  m_Enabled: 1
+  m_Asset: {fileID: 8926484042661614526, guid: f2fff29cb800c9b4fab6ea118f344917, type: 3}
+  m_InitialEventName: OnPlay
+  m_InitialEventNameOverriden: 0
+  m_StartSeed: 0
+  m_ResetSeedOnPlay: 1
+  m_ResourceVersion: 1
+  m_PropertySheet:
+    m_Float:
+      m_Array: []
+    m_Vector2f:
+      m_Array: []
+    m_Vector3f:
+      m_Array:
+      - m_Value: {x: -0.00008580761, y: -0.00015997064, z: 0.004466351}
+        m_Name: Transform_angles
+        m_Overridden: 1
+      - m_Value: {x: 419.23312, y: 1.9199293, z: 322.4245}
+        m_Name: Transform_position
+        m_Overridden: 1
+      - m_Value: {x: 1, y: 1, z: 1}
+        m_Name: Transform_scale
+        m_Overridden: 1
+    m_Vector4f:
+      m_Array: []
+    m_Uint:
+      m_Array: []
+    m_Int:
+      m_Array: []
+    m_Matrix4x4f:
+      m_Array: []
+    m_AnimationCurve:
+      m_Array: []
+    m_Gradient:
+      m_Array: []
+    m_NamedObject:
+      m_Array:
+      - m_Value: {fileID: 4955824466518648613}
+        m_Name: SkinnedMeshRenderer
+        m_Overridden: 1
+    m_Bool:
+      m_Array: []
+--- !u!73398921 &8366414243527500676
+VFXRenderer:
+  serializedVersion: 1
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135560231717964772}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!114 &3704770091007559996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135560231717964772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdafc37f32b176349b1684c4455b98e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ExecuteInEditor: 1
+  m_Bindings:
+  - {fileID: 588442549910469675}
+  m_VisualEffect: {fileID: 216767936358467045}
+--- !u!114 &588442549910469675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5135560231717964772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fdfea1f838247c40921a07afedde962, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Property:
+    m_Name: Transform
+  Target: {fileID: 6316414670869688768}
 --- !u!1 &5157972030687958595
 GameObject:
   m_ObjectHideFlags: 0
@@ -2577,6 +2733,7 @@ MonoBehaviour:
   agent: {fileID: 7207599054140134843}
   damageText: {fileID: 4156783785090066896}
   outlineDeactivation: {fileID: 3580100482103403493}
+  VFXGraph: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 2048

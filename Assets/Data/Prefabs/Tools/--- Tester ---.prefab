@@ -133,7 +133,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4795243931530587337
 Transform:
   m_ObjectHideFlags: 0
@@ -141,14 +141,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4795243931530587336}
-  m_LocalRotation: {x: 0.07547913, y: 0.4980974, z: -0.043577895, w: 0.86272997}
-  m_LocalPosition: {x: -170.15002, y: -206.63823, z: 402.3}
+  m_LocalRotation: {x: 0.11014096, y: 0.44279426, z: -0.08787277, w: 0.88548326}
+  m_LocalPosition: {x: -171.51001, y: -210.96, z: 392.03998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4795243933324679640}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 10, y: 60, z: 0}
+  m_LocalEulerAnglesHint: {x: 15.835, y: 52.654, z: -3.461}
 --- !u!20 &4795243931530587188
 Camera:
   m_ObjectHideFlags: 0
@@ -242,6 +242,7 @@ MonoBehaviour:
   lookSensitivity: 1
   dampingCoefficient: 5
   focusOnEnable: 1
+  canMove: 0
 --- !u!1 &4795243932058726400
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,4 +326,5 @@ MonoBehaviour:
   gameTestLight: {fileID: 4795243931436588108}
   killCheat: 1
   damageRadius: 10
-  damageAmount: 30
+  damageAmount: 100
+  cam: {fileID: 4795243931530587336}
