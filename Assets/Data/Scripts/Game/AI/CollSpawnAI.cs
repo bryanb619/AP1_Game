@@ -42,6 +42,8 @@ public class CollSpawnAI : MonoBehaviour
     [SerializeField]    private EventReference          soundAiSpawn;
     
     [SerializeField] private ObjectiveUI                objectiveUiScript;
+    
+    private bool _running        = false;
 
     // Time -------------------------------------------------------------------------------->
     [Header("Spawn")]
@@ -86,11 +88,9 @@ public class CollSpawnAI : MonoBehaviour
 
     private IEnumerator SpawnAi()
     {
-        bool running        = false;
-
-        if (!running)
+        if (! _running)
         {
-            running             = true;
+            _running            = true;
             int i;
 
             _collider.enabled   = false;
@@ -147,7 +147,7 @@ public class CollSpawnAI : MonoBehaviour
             
             //Destroy(gameObject);
             Destroy(_collider);
-            running = false;
+            _running = false;
             
         }
     }
