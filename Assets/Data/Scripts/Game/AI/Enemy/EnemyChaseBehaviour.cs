@@ -273,7 +273,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _enemyMask;
                         private int                         _playerMask;
 
-                        private int                         _randomRadiusValue;
+                        private float                         _randomRadiusValue;
                         
     #endregion
                         
@@ -369,7 +369,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
         _randomPriority             = UnityEngine.Random.Range(52, 80);
         _agent.avoidancePriority    = _randomPriority;
         
-        _randomRadiusValue          = UnityEngine.Random.Range(2, 3);
+        _randomRadiusValue          = UnityEngine.Random.Range(2, 2.5f);
         
         _minAttackRange             = UnityEngine.Random.Range(5f, 5.5f);
         //print(_minAttackRange);
