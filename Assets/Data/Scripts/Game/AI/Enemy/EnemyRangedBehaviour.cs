@@ -821,7 +821,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                 
                 _isDead = true;
                 StartCoroutine(DissolveEnemyRanged());
-                
+                stateAi = Ai.Patrol;
                 
                 
                 if(_spawnHealth)
