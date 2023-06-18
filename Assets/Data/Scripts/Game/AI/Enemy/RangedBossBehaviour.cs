@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
 using StateMachine = LibGameAI.FSMs.StateMachine;
+using FMODUnity;
 
 #if  UNITY_EDITOR
 using UnityEditor;
@@ -162,6 +163,11 @@ public class RangedBossBehaviour : MonoBehaviour
                             
                             private float _stunnedTime = 0.5f;
                             
+                            
+        // Sound ------------------------------------------------------------------------------------------------------>
+        [SerializeField] private EventReference                 attackSound, areaAttackSound, specialAttackSound, 
+            teleportSound, deathSound;     
+        
 #if UNITY_EDITOR
         [SerializeField]    private bool showGizmos;
                             private bool _showIsActive; 
@@ -169,7 +175,7 @@ public class RangedBossBehaviour : MonoBehaviour
 
     #endregion
     
-     //----------------------------------------------------------------------------------------------------------------->
+     //---------------------------------------------------------------------------------------------------------------->
     
     private void Awake()
     {
@@ -1143,6 +1149,8 @@ public class RangedBossBehaviour : MonoBehaviour
         if (!_isDead)
         {
             _isDead = true;
+            RuntimeManager.PlayOneShot(deathSound,transform.position);
+            
             
             if(_spawnHealth)
             {
