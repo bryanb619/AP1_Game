@@ -765,6 +765,7 @@ MonoBehaviour:
   healthBar: {fileID: 5654202708912630160}
   dropPos: {fileID: 2522249875401141673}
   abilitySlider: {fileID: 2727053215894217272}
+  showGizmos: 1
 --- !u!114 &3580100482103403493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,7 +887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeAi: 0
-  skinnedMeshRenderer: {fileID: 3367202672825185958}
+  skinnedMeshRenderer: {fileID: 7033270038625036334}
 --- !u!195 &7207599054140134843
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2337,6 +2338,11 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!137 &7033270038625036334 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7024560700566606290, guid: 06c6a7bee10e53145a93cdb5ad8d197b, type: 3}
+  m_PrefabInstance: {fileID: 65145425502779900}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5748550534060353396
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2398,11 +2404,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5eb42fb58a8f10418c39b7a9ce6f428, type: 3}
---- !u!137 &3367202672825185958 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 7024560700566606290, guid: a5eb42fb58a8f10418c39b7a9ce6f428, type: 3}
-  m_PrefabInstance: {fileID: 5748550534060353396}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4830002371608287781 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a5eb42fb58a8f10418c39b7a9ce6f428, type: 3}

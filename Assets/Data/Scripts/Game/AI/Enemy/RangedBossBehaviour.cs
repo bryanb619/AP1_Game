@@ -1,3 +1,5 @@
+#region Libs
+
 using System;
 using System.Collections;
 using Data.Scripts.Game.AI.Enemy;
@@ -10,6 +12,10 @@ using Random = UnityEngine.Random;
 using State = LibGameAI.FSMs.State;
 using StateMachine = LibGameAI.FSMs.StateMachine;
 
+#if  UNITY_EDITOR
+using UnityEditor;
+#endif
+#endregion
 
 public class RangedBossBehaviour : MonoBehaviour
 {
@@ -38,39 +44,38 @@ public class RangedBossBehaviour : MonoBehaviour
                         
                             private EnemyType                           _enemyType;
 
-
-                            // other components ----------------------------------------------------------------------------------------------->
+        // other components ---------------------------------------------------------------------------------------->
     
                         // objectives UI 
-                        private ObjectiveUI                         _objectiveUiScript;
-    [SerializeField]    private Outline                             outlineDeactivation;
-                        private Animator                            _animator;
-                        private SkinnedMeshRenderer                 _mesh;
-                        private Color                               _color; 
-                        
-                        // Game State
-                        private GameState                           _gameState;
+                            private ObjectiveUI                         _objectiveUiScript;
+        [SerializeField]    private Outline                             outlineDeactivation;
+                            private Animator                            _animator;
+                            private SkinnedMeshRenderer                 _mesh;
+                            private Color                               _color; 
+                            
+                            // Game State
+                            private GameState                           _gameState;
                     
-    // Player Refs ---------------------------------------------------------------------------------------------------->
+        // Player Refs ------------------------------------------------------------------------------------------------>
     
-                        private GameObject                          _player;
-                        private Transform                          _playerTarget;
-                        private Shooter                             _shooterScript;
-    [SerializeField]    private LayerMask                          playerLayer;
+                            private GameObject                          _player;
+                            private Transform                           _playerTarget;
+                            private Shooter                             _shooterScript;
+        [SerializeField]    private LayerMask                           playerLayer;
    
     
-    // Combat --------------------------------------------------------------------------------------------------------->
+        // Combat ----------------------------------------------------------------------------------------------------->
     
-    // General combat variables
+        // General combat variables
     
-                    private bool                                _canAttack;
-                    private float                               _safeDistance;  
+                            private bool                                _canAttack;
+                            private float                               _safeDistance;  
     
-                    private float                               _fireRate = 2f;
-                    private float                               _nextFire;
+                            private float                               _fireRate = 2f;
+                            private float                               _nextFire;
 
-                    // random attack chance
-                    private float                               _percentage;
+                            // random attack chance
+                            private float                               _percentage;
     
         // Boss attack
     
@@ -84,81 +89,83 @@ public class RangedBossBehaviour : MonoBehaviour
         
     
     
-                        private const float                         AbilityMaxValue = 100f;
-                        private float                               _currentAbilityValue;
-                        private float                               _abilityIncreasePerFrame;
-                        private bool                                _canSpecialAttack;
+                            private const float                         AbilityMaxValue = 100f;
+                            private float                               _currentAbilityValue;
+                            private float                               _abilityIncreasePerFrame;
+                            private bool                                _canSpecialAttack;
                     
-                        private float                               _minRange, _maxRange;
-                        private GameObject                          _teleportEffect;
-                        private float                              _nextTeleport;
-                        private float                               _teleportRate;
+                            private float                               _minRange, _maxRange;
+                            private GameObject                          _teleportEffect;
+                            private float                              _nextTeleport;
+                            private float                               _teleportRate;
 
-                        private int                                 _areaAttackDamage; 
-                        private float                               _areaAttackRange; 
-                        private float                              _nextSpecialAttack;
-                        private float                               _specialAttackRate = 2f;
+                            private int                                 _areaAttackDamage; 
+                            private float                               _areaAttackRange; 
+                            private float                              _nextSpecialAttack;
+                            private float                               _specialAttackRate = 2f;
                     
-                        private bool                                _canIncreaseAbility;
+                            private bool                                _canIncreaseAbility;
 
-                        private float                               _cooldownTp;
-                        private float                               _currentTpValue;
-                        private float                               _tpMaxValue; 
-                        private float                               _tpIncreasePerFrame;
-                        private float                               _neededTpValue;
-                        private bool                                _canCdIncrease;
+                            private float                               _cooldownTp;
+                            private float                               _currentTpValue;
+                            private float                               _tpMaxValue; 
+                            private float                               _tpIncreasePerFrame;
+                            private float                               _neededTpValue;
+                            private bool                                _canCdIncrease;
+                        
+        [SerializeField]    private float                               firstAttack; 
 
                         
 
 
                     // projectiles
-                        private GameObject                          _projectile, _randomProjectile,
+                            private GameObject                          _projectile, _randomProjectile,
                             _specialProjectile, _areaAttack;
                         
-    // Health/Death --------------------------------------------------------------------------------------------------->
+        // Health/Death ----------------------------------------------------------------------------------------------->
     
-    // HEALTH
-    [SerializeField]    private AIHealth                            healthBar;    
+        // HEALTH
+        [SerializeField]    private AIHealth                            healthBar;    
                         
-                        private float                               _health;
-                        private float                              _maxHealth;
-                        private float                              _healthIncreasePerFrame;
+                            private float                               _health;
+                            private float                              _maxHealth;
+                            private float                              _healthIncreasePerFrame;
                     
-                        // DEATH
-                        private GameObject                          _deathEffect;
-                        private bool                                _isDead;
+                            // DEATH
+                            private GameObject                          _deathEffect;
+                            private bool                                _isDead;
                     
                     
-    // Drops/Loot ----------------------------------------------------------------------------------------------------->
-    
-    
-                        private bool                                _spawningGems; 
-                        // Health
-                        private GameObject                          _healthDrop;
-                        private int                                 _healthItems;
-                        private bool                                _spawnHealth;
-                    
-                        // Mana
-                        private GameObject                          _manaDrop;
-                        private int                                 _manaItems;
-                        private bool                                _spawnMana;
+        // Drops/Loot ------------------------------------------------------------------------------------------------->
 
-                        // Drop Radius
-                        private float                               _dropRadius; 
-    [SerializeField]    private Transform                           dropPos;
+                            private bool                                _spawningGems; 
+                            // Health
+                            private GameObject                          _healthDrop;
+                            private int                                 _healthItems;
+                            private bool                                _spawnHealth;
+                    
+                            // Mana
+                            private GameObject                          _manaDrop;
+                            private int                                 _manaItems;
+                            private bool                                _spawnMana;
+
+                            // Drop Radius
+                            private float                               _dropRadius; 
+        [SerializeField]    private Transform                           dropPos;
     
-                            
-                    
-                    
-    // UI ------------------------------------------------------------------------------------------------------------->
+    
+        // UI --------------------------------------------------------------------------------------------------------->
     
                             private TextMeshProUGUI             _damageText;
         [SerializeField]    private Slider                      abilitySlider;
-
-
-            private ValuesTextsScript           _valuesTexts;
-
-            private float _stunnedTime = 0.5f;
+                            private ValuesTextsScript           _valuesTexts;
+                            
+                            private float _stunnedTime = 0.5f;
+                            
+#if UNITY_EDITOR
+        [SerializeField]    private bool showGizmos;
+                            private bool _showIsActive; 
+#endif
 
     #endregion
     
@@ -168,16 +175,14 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
         
-        _enemyType                  = data.enemyType;
-        
-        _currentState = HandleState.None;
-        _canAttack = true;
-        _canIncreaseAbility = true; 
+        _enemyType                      = data.enemyType;
+        _currentState                   = HandleState.None;
+        _canAttack                      = true;
+        _canIncreaseAbility             = true;
         
         GetAiComponents(); 
         ProfileSync();
         StateSet(); 
-
     }
     
     private void GameManager_OnGameStateChanged(GameState state)
@@ -275,7 +280,7 @@ public class RangedBossBehaviour : MonoBehaviour
         _shooterScript              = _player.GetComponent<Shooter>();
         
         _objectiveUiScript          = FindObjectOfType<ObjectiveUI>();
-        _damageText                = GetComponentInChildren<TextMeshProUGUI>();
+        _damageText                 = GetComponentInChildren<TextMeshProUGUI>();
     }
     
     private void ProfileSync()
@@ -295,11 +300,10 @@ public class RangedBossBehaviour : MonoBehaviour
         _currentAbilityValue        = data.CurrentAbilityValue;
         _abilityIncreasePerFrame    = data.AbilityIncreasePerFrame;
         
-        _teleportRate              = data.TeleportTime;
         _areaAttackDamage           = data.AreaDamageAttack;
         _areaAttackRange            = data.AreaDamageRadius;
         
-        _areaAttack                = data.AreaAttack;
+        _areaAttack                 = data.AreaAttack;
         
         
         // Drops ------------------------------------------------------------------------------------------------------>
@@ -339,22 +343,21 @@ public class RangedBossBehaviour : MonoBehaviour
         if (_enemyType == EnemyType.Boss)
         {
             _specialProjectile      = data.SProjectile;
+            
             _minRange               = data.TeleportMinRange;
             _maxRange               = data.TeleportMaxRange;
-            
+            _teleportRate           = data.TeleportTime;
             _teleportEffect         = data.TeleportEffect;
-            
             _currentTpValue         = data.CurrentTp;
             _tpMaxValue             = data.TpMaxValue;
             _tpIncreasePerFrame     = data.TpIncreasePerFrame;
-            _cooldownTp             = data.CooldownTp;
             
+            _cooldownTp             = data.CooldownTp;
             _canCdIncrease          = true;
             
 #if UNITY_EDITOR
             Debug.Log("Boss");
 #endif
-            
         }
         
     }
@@ -383,11 +386,11 @@ public class RangedBossBehaviour : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-     
+        
         healthBar.HealthValueSet(_health);
         
-        abilitySlider.maxValue = 100; 
-        abilitySlider.value = _currentAbilityValue;
+        abilitySlider.maxValue  = 100; 
+        abilitySlider.value     = _currentAbilityValue;
     }
 
 
@@ -409,6 +412,15 @@ public class RangedBossBehaviour : MonoBehaviour
         {
             case AIHandler.ActiveAi.Active:
             {
+                
+#if UNITY_EDITOR
+                if (!_showIsActive)
+                {
+                    _showIsActive = true;
+                    print("active");
+                }
+#endif
+                
                 ActiveAi(); 
                 break;
             }
@@ -483,6 +495,8 @@ public class RangedBossBehaviour : MonoBehaviour
 
     private void Engage()
     {
+        
+        
         if ((_playerTarget.transform.position - transform.position).magnitude <= 1.5f)
         {
             agent.radius = 0.1f;
@@ -570,9 +584,6 @@ public class RangedBossBehaviour : MonoBehaviour
                              
                                 }
                             }
-                            
-                           
-                            
                         }
                         
                     }
@@ -598,13 +609,13 @@ public class RangedBossBehaviour : MonoBehaviour
          _aiShoot.Shoot(_playerTarget, _specialProjectile);
         
          _currentAbilityValue = 0;
+         abilitySlider.value = _currentAbilityValue;
          //abilitySlider.value = _currentAbilityValue;
-         //_canSpecialAttack = false;
+         _canSpecialAttack = false;
         
          _animator.SetBool("isAttacking", false);
          // StartCoroutine(SpecialAttackTimer());
-         _canSpecialAttack = false;
-         
+
 #if UNITY_EDITOR                                                                              
                                                                                               
          const string debugAttack = "<size=14><color=purple>";                                 
@@ -628,6 +639,7 @@ public class RangedBossBehaviour : MonoBehaviour
              player.TakeDamage(_areaAttackDamage);
              
              _currentAbilityValue = 0;
+             abilitySlider.value = _currentAbilityValue;
             _canSpecialAttack = false;
 #if UNITY_EDITOR
              const string debugColor = "<size=14><color=red>";
@@ -1177,6 +1189,86 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
+    
+    
+    #if UNITY_EDITOR
+    #region Editor Gizmos
+    private void OnDrawGizmos()
+    {
+        var red = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.red
+            }
+        };
+
+        var yellow = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.yellow
+            }
+        };
+
+        var blue = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.blue
+            }
+        };
+
+        var green = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.green
+            }
+        };
+
+        var cyan = new GUIStyle
+        {
+            normal =
+            {
+                textColor = Color.cyan
+            }
+        };
+
+        #region Gizmos code
+        
+        #region AI State Label 
+        if (showGizmos)
+        {
+            switch (stateAi)
+            {
+              
+                case Ai.Patrol:
+                    {
+                        Handles.Label(transform.position + Vector3.up * 2f, "Patrol" + "  Gameplay: " + _gameState, blue);
+                        break;
+                    }
+                case Ai.Attack:
+                    {
+                        Handles.Label(transform.position + Vector3.up * 2f, "Attack" + "  Gameplay: " + _gameState, red);
+                        break;
+                    }
+                default:
+                    {
+                        Handles.Label(transform.position + Vector3.up * 2f, "NO STATE FOUND" + "  Gameplay: " + _gameState);
+                        break;
+                    }
+            }
+        }
+        
+        #endregion
+
+        #endregion
+    }
+
+    #endregion
+#endif
+
     
     
 }
