@@ -3,6 +3,7 @@ using System.Collections;
 using Data.Scripts.Game.AI.Enemy;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.VFX;
 using LibGameAI.FSMs;
 using TMPro;
 using Random = UnityEngine.Random;
@@ -52,6 +53,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
     [SerializeField]    private Outline                             outlineDeactivation;
                         private Animator                            _animator;
                         private SkinnedMeshRenderer                 _mesh;
+                        private Material[]                          skinnedMaterials;
+                        private float                               dissolveRate = 0.0125f;
+                        private float                               refreshRate = 0.025f;
+    [SerializeField]    private VisualEffect                        VFXGraph;
                         private Color                               _color; 
                         
                         // Game State
@@ -155,9 +160,13 @@ public class EnemyRangedBehaviour : MonoBehaviour
         _currentState = HandleState.None;
         _canAttack = true;
         
+        
         GetAiComponents(); 
         ProfileSync();
         StateSet(); 
+        
+        if (_mesh != null)
+            skinnedMaterials = _mesh.materials;
 
     }
     
@@ -804,6 +813,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
         {
             if (!_isDead)
             {
+                StartCoroutine(DissolveEnemyRanged());
+                
                 _isDead = true;
                 
                 if(_spawnHealth)
@@ -822,20 +833,39 @@ public class EnemyRangedBehaviour : MonoBehaviour
                     }
                 }
             
-                    
-                Instantiate(_deathEffect, transform.position, Quaternion.identity);
-
-                _valuesTexts.GetKill();
-
-                _objectiveUiScript.IncreaseEnemyDefeatedCount();
-            
-                Destroy(gameObject);
             }
         }
     }
     
     #endregion   
 
+    private IEnumerator DissolveEnemyRanged()
+    {
+        if (VFXGraph != null)
+        {
+            VFXGraph.Play();
+        }
+        
+        if (skinnedMaterials.Length > 0)
+        {
+            float counter = 0;
+            
+            while(skinnedMaterials[0].GetFloat("_DissolveAmount") < 1)
+            {
+                counter += dissolveRate;
+                for (int i = 0; i < skinnedMaterials.Length; i++)
+                {
+                    skinnedMaterials[i].SetFloat("_DissolveAmount", counter);
+                }
+                yield return new WaitForSeconds(refreshRate);
+            }
+        }
+        Instantiate(_deathEffect, transform.position, Quaternion.identity);
+        _valuesTexts.GetKill();
+        _objectiveUiScript.IncreaseEnemyDefeatedCount();
+        Destroy(this.gameObject);
+    }
+    
     // Drop area
     private void SpawnDrop(GameObject drop)
     {
