@@ -15,7 +15,7 @@ public class AIRangedData : ScriptableObject
     [SerializeField] private float      minDist = 7f;
     public float                        MinDist => minDist;
 
-    [FormerlySerializedAs("n_projectile")] [SerializeField]
+    [SerializeField]
     private GameObject                  nProjectile;
     public GameObject                   NProjectile => nProjectile;
     
@@ -33,10 +33,10 @@ public class AIRangedData : ScriptableObject
     private float                       percentage;
     public float                        Percentage => percentage;
 
-    [FormerlySerializedAs("r_projectile")] [SerializeField]
+    [SerializeField]
     private GameObject                  rProjectile;
 
-    [FormerlySerializedAs("s_projectile")] [SerializeField]
+    [SerializeField]
     private GameObject                  sProjectile;
 
     public GameObject                   RProjectile => rProjectile;
@@ -163,31 +163,31 @@ public class AIRangedData : ScriptableObject
     [SerializeField] private float      spawnChance;
     public float                        SpawnChance => spawnChance;
 
-    [FormerlySerializedAs("_spawnHealth")] [SerializeField]
+    [SerializeField]
     private bool                        spawnHealth;
     public bool                       SpawnHealth => spawnHealth; 
     
-    [FormerlySerializedAs("_healthItems")] [SerializeField]
+    [SerializeField]
     private int                         healthItems;
     public int                        HealthItems => healthItems;   
 
-    [FormerlySerializedAs("_healthDrop")] [SerializeField]
+    [SerializeField]
     private GameObject                  healthDrop;
     public GameObject                 HealthDrop => healthDrop; 
     
-    [FormerlySerializedAs("_spawnMana")] [SerializeField]
+    [SerializeField]
     private bool                        spawnMana;
     public bool                       SpawnMana => spawnMana;
 
-    [FormerlySerializedAs("_manaItems")] [SerializeField]
+    [SerializeField]
     private int                         manaItems;
     public int                        ManaItems => manaItems;
 
-    [FormerlySerializedAs("_manaDrop")] [SerializeField]
+    [SerializeField]
     private GameObject                  manaDrop;
     public GameObject                 ManaDrop => manaDrop;
 
-    [FormerlySerializedAs("_dropRadius")] [SerializeField]
+    [SerializeField]
     private int                         dropRadius;
     internal int                        DropRadius => dropRadius; 
     

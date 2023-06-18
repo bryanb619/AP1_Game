@@ -17,7 +17,7 @@ public class Shooter : MonoBehaviour
     private GameObject _firePrefab, _icePrefab, _thunderPrefab;
     internal WeaponType MagicType;
 
-    [FormerlySerializedAs("_areaEffect")] [SerializeField] private GameObject areaEffect;
+    [SerializeField] private GameObject areaEffect;
 
     [Header("Default Ability Prefabs")]
     [SerializeField] private GameObject defaultFirePrefab;

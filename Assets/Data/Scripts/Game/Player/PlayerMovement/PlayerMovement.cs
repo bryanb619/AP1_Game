@@ -21,13 +21,11 @@ public class PlayerMovement : MonoBehaviour
                         internal NavMeshAgent           Agent;
 
     // Player Movement ------------------------------------------------>
-    [FormerlySerializedAs("_ignoreLayer")] 
     [SerializeField]    private LayerMask               ignoreLayer;
 
                         private float                   _maxAngle = 30f;
                         private float                   _playerSpeed = 5f;
     [SerializeField]    private float                   playerAcceleration = 2000f;
-    [FormerlySerializedAs("_turnSpeed")] 
     [SerializeField]    private float                   turnSpeed;
     //private bool _isMoving;
 
@@ -35,7 +33,6 @@ public class PlayerMovement : MonoBehaviour
                         private enum EffectState        { Clicked, Unclicked }
                         private EffectState             _cursorState;
 
-    [FormerlySerializedAs("_clickEffect")]
     [SerializeField]    private GameObject              clickEffect;
 
                         private float                   _height = 0;
@@ -46,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
                         private Vector3                 _direction;
 
     // Enemy detection ----------------------------------------------------->
-    [FormerlySerializedAs("_maxRange")] 
     [SerializeField]    private float                   maxRange;
 
 
@@ -60,7 +56,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]    private LayerMask               aiLayer;
 
 
-    [FormerlySerializedAs("CanMove")]
     [Header("Slope Handling")]
     [HideInInspector]   public bool                    canMove; 
                         private float                  _maxSlopeAngle;
@@ -93,7 +88,6 @@ public class PlayerMovement : MonoBehaviour
                         private MeshRenderer            playerMaterial;
     //[SerializeField] private Camera mainCamera; 
     [SerializeField]    private GameObject              effect;
-    [FormerlySerializedAs("SeeThroughLayer")] 
      [SerializeField]    private LayerMask               seeThroughLayer; 
     [SerializeField]    private GameObject              playerMesh;
 

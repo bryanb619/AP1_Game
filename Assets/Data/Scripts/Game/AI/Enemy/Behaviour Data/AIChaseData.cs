@@ -8,16 +8,13 @@ public class AIChaseData : ScriptableObject
     #region Combat
     // Combat -------------------------------------------------------------------->
     [Header("Combat")]
-    [FormerlySerializedAs("_attackDist")]
     [SerializeField]
             private float               attackDist = 2.5f;
             public float                AttackDist => attackDist;
 
-        [FormerlySerializedAs("_attackEffect")] [SerializeField] 
             private GameObject          attackEffect;
             public GameObject           AttackEffect => attackEffect;
 
-        [FormerlySerializedAs("_damageEffectTime")] [SerializeField]
             private float               damageEffectTime; 
             public float                DamageTime => damageEffectTime;
 
@@ -33,7 +30,6 @@ public class AIChaseData : ScriptableObject
             private float               attackRate = 2f;
             public float                AttackRate => attackRate;
 
-        [FormerlySerializedAs("a_damage")]
         [Tooltip("Attack damage")]
         [Range(0, 30)]
         [SerializeField]
@@ -55,14 +51,12 @@ public class AIChaseData : ScriptableObject
     //private float attackSpeed = 4F;
     //public float AttackSpeed => attackSpeed;
 
-        [FormerlySerializedAs("_attackTimer")]
         [Tooltip("Set this value so attacks are not duplicated")]
         [SerializeField]
             private float               attackTimer = 0.7f;
             public float                AttackTimer => attackTimer;
 
         // Chance attack //
-        [FormerlySerializedAs("_percentage")]
         [Header("Attack Nº2 / Chance Attack")]
         [Tooltip("Higher the number, more possible it is to use attack nº2")]
         [Range(0f, 1f)]
@@ -70,11 +64,11 @@ public class AIChaseData : ScriptableObject
             private float               percentage;
             public float                Percentage => percentage;
 
-        [FormerlySerializedAs("b_damage")] [SerializeField]
+        [SerializeField]
             private int                 bDamage;
             public int                  BDamage => bDamage;
 
-        [FormerlySerializedAs("s_attackEffect")] [SerializeField]
+        [SerializeField]
             private GameObject          sAttackEffect; 
             public GameObject           SAttackEffect => sAttackEffect; 
 
@@ -86,7 +80,6 @@ public class AIChaseData : ScriptableObject
             public GameObject           SpecialAttackEffect => specialAttackEffect;
 
 
-        [FormerlySerializedAs("s_damage")]
         [Tooltip("Special attack damage on hit")]
         [Range(0, 50)]
         [SerializeField]
@@ -188,19 +181,17 @@ public class AIChaseData : ScriptableObject
     // DAMAGE--------------------------------------------------------------------> 
 
     // Stunned //
-    [FormerlySerializedAs("_stunnedTime")]
     [Header("Stunned")]
         [SerializeField] 
             private float               stunnedTime;
             public float                StunnedTime => stunnedTime;     
-        [FormerlySerializedAs("_stunnedChance")] [SerializeField]
+        [SerializeField]
             private float               stunnedChance;
             public float                SunnedChance => stunnedChance;
 
 
     //  Death & Loot --------------------------------------------------------------------> 
 
-        [FormerlySerializedAs("_deathEffect")]
         [Header("Death")]
         [SerializeField] 
             private GameObject          deathEffect; 
@@ -224,32 +215,29 @@ public class AIChaseData : ScriptableObject
             private float               spawnChance;
             public float                SpawnChance => spawnChance;
 
-        [FormerlySerializedAs("_spawnHealth")]
         [Tooltip("if checked, AI will spawn health drops upon death")]
         [SerializeField]
             private bool                spawnHealth;
             public bool                 SpawnHealth => spawnHealth;    
 
-        [FormerlySerializedAs("_healthDrop")] [SerializeField] 
+        [SerializeField] 
             private GameObject          healthDrop;
             public GameObject           HealthDrop => healthDrop;
 
-        [FormerlySerializedAs("_healthUnits")]
         [Range(0, 10)]
         [SerializeField]
             private int                 healthUnits; 
             public int                  HealthUnits => healthUnits;
 
-        [FormerlySerializedAs("_spawnMana")] [SerializeField]
+        [SerializeField]
             private bool                spawnMana;
             internal bool               SpawnMana => spawnMana;
 
         // Mana // 
-        [FormerlySerializedAs("_manaDrop")] [SerializeField]
+        [SerializeField]
             private GameObject          manaDrop;
             public GameObject           ManaDrop => manaDrop;
 
-        [FormerlySerializedAs("_manaItems")]
         [Range(0, 10)]
         [SerializeField]
             private int                 manaItems;
@@ -259,18 +247,17 @@ public class AIChaseData : ScriptableObject
 
     #region Sounds 
     // Sound -------------------------------------------------------------------->
-    [FormerlySerializedAs("_grunt")]
     [Header("Sound")]
        
         [SerializeField]
             private EventReference      grunt;
             public EventReference       Grunt => grunt;  
 
-        [FormerlySerializedAs("_scream")] [SerializeField]
+        [SerializeField]
             private EventReference      scream;
             public EventReference       Scream => scream;
 
-        [FormerlySerializedAs("_etc")] [SerializeField]
+        [SerializeField]
             private EventReference      etc;
             public EventReference       Etc => etc;
 
