@@ -130,73 +130,75 @@ public class CollSpawnAI : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitUntil(GameCondition);
-            
-            if (! _running)
+            if (GameCondition())
             {
-                _running            = true;
-                int i;
-
-                _collider.enabled   = false;
-            
-                if( !useSound)
+                if (! _running)
                 {
-                    //PlaySound();
-                }
-            
+                    _running            = true;
+                    int i;
 
-                for (i = 0; i < chaseCount; i++)
-                {
-                    if(startWait) 
+                    _collider.enabled   = false;
+            
+                    if( !useSound)
                     {
-                        yield return new WaitForSeconds(waitTime);
+                        //PlaySound();
                     }
+            
+
+                    for (i = 0; i < chaseCount; i++)
+                    {
+                        if(startWait) 
+                        {
+                            yield return new WaitForSeconds(waitTime);
+                        }
                 
-                    Vector3 spawnPosition = transformA.position +
+                        Vector3 spawnPosition = transformA.position +
                                             new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
                                                 Random.Range(-dropRadius, dropRadius));
 
 
-                    Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
+                        Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
                 
 
-                    yield return new WaitForSeconds(spawnTime);
-                    Instantiate(chase, spawnPosition, transform.rotation);
+                        yield return new WaitForSeconds(spawnTime);
+                        Instantiate(chase, spawnPosition, transform.rotation);
                 
-                }
+                    }
 
-                if (secondTransform)
-                {
-                    for (i = 0; i < rangedCount; i++)
+                    if (secondTransform)
                     {
-                        if (startWait)
+                        for (i = 0; i < rangedCount; i++)
                         {
-                            yield return new WaitForSeconds(waitTime);
-                        }
+                            if (startWait)
+                            {
+                                yield return new WaitForSeconds(waitTime);
+                            }
 
-                        Vector3 spawnPosition = transformB.position +
+                            Vector3 spawnPosition = transformB.position +
                                                 new Vector3(Random.Range(-dropRadius, dropRadius), 0f,
                                                     Random.Range(-dropRadius, dropRadius));
 
 
-                        Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
+                            Instantiate(spawnEffect, spawnPosition, spawnEffect.transform.rotation);
 
-                        yield return new WaitForSeconds(spawnTime);
-                        Instantiate(ranged, spawnPosition, transform.rotation);
+                            yield return new WaitForSeconds(spawnTime);
+                            Instantiate(ranged, spawnPosition, transform.rotation);
                     
+                        }
                     }
+            
+                    //Destroy(gameObject);
+                    Destroy(_collider);
+                    _running = false;
+            
                 }
-            
-                //Destroy(gameObject);
-                Destroy(_collider);
-                _running = false;
-            
+            }
+            else
+            {
+                yield return null; 
             }
             
-            yield break;
         }
-        
-        
     }
 
     private bool GameCondition()
