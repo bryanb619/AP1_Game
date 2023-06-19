@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-public class EndGameUi : MonoBehaviour
+public class EndGameUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel1, panel2; 
 
