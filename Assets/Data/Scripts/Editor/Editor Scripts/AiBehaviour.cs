@@ -1,11 +1,16 @@
 using UnityEditor;
 
-namespace Data.Scripts.Editor.Editor_Scripts
+[CustomEditor(typeof(EnemyChaseBehaviour))]
+public class AiBehaviour : Editor
 {
-    [CustomEditor(typeof(EnemyChaseBehaviour))]
-    public class AiBehaviour : UnityEditor.Editor
+    public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
         
-    
+        var enemyChaseBehaviour = (EnemyChaseBehaviour)target;
+        
+       
     }
 }
+  
+
