@@ -1,8 +1,8 @@
     using System.Collections;
     using Data.Scripts.Game.AI.Companion;
     using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Serialization;
+    using UnityEngine.AI;
+
 
 
 public class PlayerMovement : MonoBehaviour
@@ -10,15 +10,25 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement"), SerializeField]
                         internal float                  walkSpeed;
     [SerializeField]    internal float                  dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
+    
+                        // Player input type -------------------------------------------------------------------------->
+                        private PlayerInputState _playerInputState;
 
     [Header("Keyboard/Joystick Movement")]
-    [SerializeField]    private float                   kSpeed = 6f;
-
-    [SerializeField]    private float                   rotationSpeed;
+    [SerializeField]    private float                   controllerSpeed = 5f; 
+    [SerializeField]    private float                   controllerTurnSpeed = 10f;
+    
+                        private Vector2                 _controllerInput;
+                        private float                   _angle; 
+                        private Quaternion              _targetRotation;
+                        private Transform               _camTransform;
+    
+    
     
     // Components ----------------------------------------------------->
                         private Camera                  _mainCamera;
                         internal NavMeshAgent           Agent;
+              
 
     // Player Movement ------------------------------------------------>
     [SerializeField]    private LayerMask               ignoreLayer;
@@ -88,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
                         private MeshRenderer            playerMaterial;
     //[SerializeField] private Camera mainCamera; 
     [SerializeField]    private GameObject              effect;
-     [SerializeField]    private LayerMask               seeThroughLayer; 
+    [SerializeField]    private LayerMask               seeThroughLayer; 
     [SerializeField]    private GameObject              playerMesh;
 
                         private SkinnedMeshRenderer[]   _skinnedMeshRenderers;
@@ -113,6 +123,13 @@ public class PlayerMovement : MonoBehaviour
                      
                         private bool                    _isMoving; 
                         public bool                     IsMoving => _isMoving;
+                        
+                        
+                        
+    //  Player controller WASD MOVEMENT ------------------------------------------------------------------------------->
+
+              
+    
                         
     
     private Vector3 lastPosition;
@@ -147,6 +164,7 @@ public class PlayerMovement : MonoBehaviour
         _rb.freezeRotation       = true;
 
         Agent                   = GetComponent<NavMeshAgent>();
+        Agent.updateRotation    = false;
 
         _companionMovement      = FindObjectOfType<CompanionBehaviour>();
         _restartMenu             = FindObjectOfType<RestartMenu>();
@@ -256,6 +274,7 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
         StateHandler();
         EnemiesAround();
+        Aim();
 
         if (_state == MovementState.Walking /*|| state == MovementState.crouching*/)
             _rb.drag = groundDrag;
@@ -272,78 +291,60 @@ public class PlayerMovement : MonoBehaviour
 
         
     }
+    
+    
+    #region Raycast aim mouse Update
 
-    private void KeyboardMove()
+    private void Aim()
     {
-        if (_playerInput == PlayerInput.Keyboard)
+        var (success, position) = GetMousePosition();
+        
+        if (!success) return;
+        
+        // Calculate the direction
+        var transform1 = transform;
+        var direction = position - transform1.position;
+
+        // You might want to delete this line.
+        // Ignore the height difference.
+        direction.y = 0;
+
+        // Make the transform look in the direction.
+        transform1.forward = direction;
+    }
+
+    private (bool success, Vector3 position) GetMousePosition()
+    {
+            
+        _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            
+        // subtrair altura das balas do chao pela altura da camara
+            
+        var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out var hitInfo, Mathf.Infinity, whatIsGround))
         {
-            if (_gamePlay)
-            {
-                float moveHoz = Input.GetAxisRaw("Horizontal");
-                float moveVer = Input.GetAxisRaw("Vertical");
-        
-                Vector3 movement = new Vector3(moveHoz, 0, moveVer);
-                
-                _rb.AddForce(movement * kSpeed);
-                
-                if (movement != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(movement);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-                }
-                
-                Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-                
-                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-                float rayDistance = 100f;
+            //companionAim.transform.position = hitInfo.point;
 
-                RaycastHit hit;
+            // add novo ponto com nova altura
+            Vector3 point = hitInfo.point;
 
-                // Perform the raycast
-                if (Physics.Raycast(ray, out hit, 50F, ~seeThroughLayer))
-                {
-                    // Print the name of the object hit by the ray
+            // somar na coordenada Y, novo valor
+            point.y += 2.5F;
 
-                    //Debug.Log(hit.transform.name);
-                  
-                    //transform.LookAt(hit.point);
-        
-                }
-                    
-                    
-                
-                /*
-                Vector3 position = 
-                    new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-                
-                _rb.velocity    = position * kSpeed;
-                */
-            }
+            //return (success: true, position: hitInfo.point);
+            //Instantiate(testGame, point, Quaternion.identity); 
+            return (success: true, position: point);
+        }
+
+        else
+        {
+            return (success: false, position: Vector3.zero);
         }
     }
-
-    private void KeyboardOnMove()
-    {
-        
-       
-        
-        
-        /*
-        
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        Vector3 movement = transform.forward * vertical + transform.right * horizontal;
-
-        transform.position += movement * kSpeed * Time.deltaTime;
-*/
-       
-        
-        
-        //float angle = Mathf.Atan2(Input.GetAxisRaw("Vertical"), Input.GetAxisRaw("Horizontal")) * Mathf.Rad2Deg;
-        //transform.rotation = Quaternion.AngleAxis(angle, Vector3.up);
-    }
-   
+    
+    #endregion
+    
     private float _desiredMoveSpeed, _lastDesiredMoveSpeed;
     private MovementState _lastState;
     private bool _keepMomentum;
@@ -418,11 +419,15 @@ public class PlayerMovement : MonoBehaviour
         {
             case true:
                 {
-                    MoveInput();
+                    
+                    MoveAiInput();
                     NewDirection();
-                    KeyboardOnMove();
                     break;
                 }
+                //KeyboardOnMove();
+                    
+                   // if (Math.Abs(input.x) < 1 Math.Abs(input.y) < 1) { return;}
+                    
             case false:
                 {
                     if (Agent.enabled)
@@ -437,8 +442,46 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    #region Player Movement Controller/Keyboard
+    
+    private void inputKC()
+    {
+
+        
+        
+        CalculateDirection();
+        KcRotate();
+        MoveKC();
+    
+    }
+
+
+    /// <summary>
+    /// Input from horizontal and vertical axis
+    /// </summary>
+    private void CalculateDirection()
+    {
+        
+    }
+
+    private void KcRotate()
+    {
+        
+    }
+    
+    private void MoveKC()
+    {
+      
+    }
+    
+
+
+
+    #endregion
+
     #region Player Movement AI
-    private void MoveInput()
+    private void MoveAiInput()
     {
        
         if (Input.GetMouseButtonDown(1))
@@ -634,7 +677,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision other) 
+    private void OnCollisionEnter(Collision other) 
     {
         if (other.gameObject.tag == "Enemy" && _state == MovementState.Dashing)
         {

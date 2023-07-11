@@ -86,6 +86,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         //  AI 
                         private float                       _pathUpdateDeadLine = 0.2f; // time to path update
                         
+                        
     // Patrol //
 
     [Header("Patrol")]
