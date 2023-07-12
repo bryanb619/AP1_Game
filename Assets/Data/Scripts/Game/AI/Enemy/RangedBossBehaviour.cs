@@ -88,8 +88,6 @@ public class RangedBossBehaviour : MonoBehaviour
                             private bool _runningAiSpawn;
         [SerializeField]    private GameObject                          aiSpawnEffect, chaseAi, rangedAi;
         
-    
-    
                             private const float                         AbilityMaxValue = 100f;
                             private float                               _currentAbilityValue;
                             private float                               _abilityIncreasePerFrame;
@@ -115,11 +113,8 @@ public class RangedBossBehaviour : MonoBehaviour
                             private bool                                _canCdIncrease;
                         
         [SerializeField]    private float                               firstAttack; 
-
-                        
-
-
-                    // projectiles
+        
+                            // projectiles
                             private GameObject                          _projectile, _randomProjectile,
                             _specialProjectile, _areaAttack;
                         
@@ -132,7 +127,7 @@ public class RangedBossBehaviour : MonoBehaviour
                             private float                              _maxHealth;
                             private float                              _healthIncreasePerFrame;
                     
-                            // DEATH
+                            // DEATH 
                             private GameObject                          _deathEffect;
                             private bool                                _isDead;
                     
@@ -179,7 +174,7 @@ public class RangedBossBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
+        GameManager.OnGameStateChanged  += GameManager_OnGameStateChanged;
         
         _enemyType                      = data.enemyType;
         _currentState                   = HandleState.None;
@@ -1102,11 +1097,10 @@ public class RangedBossBehaviour : MonoBehaviour
 
                 NavMeshHit hit;
 
-                NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
+                NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 6);
 
                 Vector3 spawnPos = hit.position;
-            
-            
+                
                 yield return new WaitForSeconds(effectTime);
                 Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
             
