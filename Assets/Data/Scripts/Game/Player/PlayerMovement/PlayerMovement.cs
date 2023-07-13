@@ -22,14 +22,11 @@ public class PlayerMovement : MonoBehaviour
                         private float                   _angle; 
                         private Quaternion              _targetRotation;
                         private Transform               _camTransform;
-    
-    
-    
+                        
     // Components ----------------------------------------------------->
                         private Camera                  _mainCamera;
                         internal NavMeshAgent           Agent;
-              
-
+                        
     // Player Movement ------------------------------------------------>
     [SerializeField]    private LayerMask               ignoreLayer;
 
@@ -40,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     //private bool _isMoving;
 
     // Click ------------------------------------------------------------>
-                        private enum EffectState        { Clicked, Unclicked }
+                        private enum EffectState        { Clicked, Unclicked}
                         private EffectState             _cursorState;
 
     [SerializeField]    private GameObject              clickEffect;
@@ -54,8 +51,7 @@ public class PlayerMovement : MonoBehaviour
 
     // Enemy detection ----------------------------------------------------->
     [SerializeField]    private float                   maxRange;
-
-
+    
     [Header("Ground Check"), SerializeField]
                         private float                   playerHeight;
     [SerializeField]    private LayerMask               whatIsGround;
@@ -127,10 +123,7 @@ public class PlayerMovement : MonoBehaviour
                         
                         
     //  Player controller WASD MOVEMENT ------------------------------------------------------------------------------->
-
-              
     
-                        
     
     private Vector3 lastPosition;
 
@@ -174,15 +167,12 @@ public class PlayerMovement : MonoBehaviour
         //elapsed = 0.0f;
 
         _currentDest             = transform.position;
-
-
-
+        
         Components();
         PlayerProfile();
     }
     private void GameManager_OnGameStateChanged(GameState state)
     {
-
         switch (state)
         {
             case GameState.Gameplay:
@@ -237,9 +227,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("mouse");
 #endif
     }
-
-
-
+    
     private void Start()
     {
         
@@ -249,7 +237,7 @@ public class PlayerMovement : MonoBehaviour
     private void Components()
     {
         Agent                   = GetComponent<NavMeshAgent>();
-        _mainCamera              = FindObjectOfType<Camera>();
+        _mainCamera             = FindObjectOfType<Camera>();
     }
 
     private void PlayerProfile()
@@ -281,15 +269,37 @@ public class PlayerMovement : MonoBehaviour
         else
             _rb.drag = 0;
     }
-
-
+    
     private void FixedUpdate()
     {
-        //KeyboardMove(); 
+
+        MainInputType(); 
         MovePlayer();
         PlayerSpeed();
+    }
 
-        
+    private void MainInputType()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            switch (Agent.enabled)
+            {
+                case true:
+                    {
+                        Agent.enabled = false;
+                        break;
+                    }
+                case false:
+                    {
+                        Agent.enabled = true;
+                        break;
+                    }
+            }
+        }
+
+        Vector3 position = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        _rb.velocity = position * (_playerSpeed * Time.deltaTime);
+
     }
     
     
@@ -382,9 +392,6 @@ public class PlayerMovement : MonoBehaviour
 
         _lastDesiredMoveSpeed = _desiredMoveSpeed;
         _lastState = _state;
-
-        
-
     }
 
     private float _speedChangeFactor;
@@ -706,16 +713,32 @@ public class PlayerMovement : MonoBehaviour
         //Collider[] aiHits = Physics.OverlapSphere(transform.position, 30f, aiLayer);
 
     }
-
+    
+    /// <summary>
+    /// Stop the player from moving
+    /// </summary>
     public void StopMovement()
     {
-        Agent.isStopped = true;
+        // TODO - temp solution to stop the player from moving ( correct way is to call the type of movement enabled)
+        
+        if (Agent.enabled)
+        {
+            Agent.isStopped = true;
+        }
+            
         this.enabled = false;
     }
 
+    /// <summary>
+    /// Restart the player movement
+    /// </summary>
     public void RestartMovement()
     {
-        Agent.isStopped = false;
+        if (Agent.enabled)
+        {
+            Agent.isStopped = false;
+        }
+       
         this.enabled = true;
     }
 
@@ -769,5 +792,4 @@ public class PlayerMovement : MonoBehaviour
         GameManager.OnGameStateChanged          -= GameManager_OnGameStateChanged;
         PlayerControl.OnPlayerInputChanged      -= PlayerController_OnPlayerInputChanged;
     }
-
 }

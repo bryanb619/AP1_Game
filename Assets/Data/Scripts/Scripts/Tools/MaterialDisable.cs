@@ -1,15 +1,20 @@
-#region Script used to deactivate collider meshes used for cover and other purposes  
-#endregion
 using UnityEngine;
 
 public class MaterialDisable : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
+    {
+        MaterialDisabler(); 
+    }  
+    
+    /// <summary>
+    /// Disables the mesh renderers of its children
+    /// </summary>
+    private void MaterialDisabler()
     {
         MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
 
         foreach (MeshRenderer currentRender in renderers)
-            currentRender.enabled = false;
-    }  
+            currentRender.enabled = false;;
+    }
 }
