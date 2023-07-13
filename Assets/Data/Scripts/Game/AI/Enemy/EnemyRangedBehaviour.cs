@@ -697,6 +697,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
              
              //  CALCULATE HEALTH 
              StartCoroutine(DamageTextDisappear());
+             StartCoroutine(StopForSeconds(0.3f));
          }
          
          _healthBar.HandleBar(damage);

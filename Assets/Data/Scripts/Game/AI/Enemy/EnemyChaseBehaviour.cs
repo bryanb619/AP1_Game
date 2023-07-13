@@ -220,6 +220,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private float                       _rate = 1f;
 
                         private bool                        _isDead; 
+                        private bool                        _stfsEffect = false;
                         
                         
                         
@@ -1286,6 +1287,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
+            StartCoroutine(StopForSeconds(0.3f));
+            
             
             
             if (_canAttack)
@@ -1358,10 +1361,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             }
 
             //_objectiveUiScript.IncreaseEnemyDefeatedCount();
-
-
         }
-        
         
     }
 
@@ -1446,39 +1446,29 @@ public class EnemyChaseBehaviour : MonoBehaviour
     private IEnumerator StopForSeconds(float value)
     {
         // Start bool at false to make sure coroutine is not being run more than once
-        bool stfsEffect = false;
 
-        switch(stfsEffect)
-        {
-            case false:
-                {
-                    stfsEffect = true;
+        if (_stfsEffect) yield break;
+        
+        _stfsEffect  = true;
+            
+#if UNITY_EDITOR
+            print("STARTED STFS COROUTINE SUCCESFULLY");
+#endif
+            
 
-                    print("STARTED STFS COROUTINE SUCCESFULLY");
+        _canAttack = false;
+        _currentState = HandleState.Stoped;
 
-                    _canAttack = false;
-                    _currentState = HandleState.Stoped;
+        HandleStateAi(true);
+            
+        yield return new WaitForSeconds(value);
+            
+        _currentState = HandleState.None;
 
-                    HandleStateAi(true);
+        HandleStateAi(false);
+        _canAttack = true;
 
-                    //originalColor = GetComponent<Renderer>().material.color;
-                    //GetComponent<Renderer>().material.color = new Color(0.6933962f, 0.9245283f, 0.871814f);
-
-                    yield return new WaitForSeconds(value);
-
-                    //GetComponent<Renderer>().material.color = originalColor;
-
-                    _currentState = HandleState.None;
-
-                    HandleStateAi(false);
-                    _canAttack = true;
-
-                    stfsEffect = false;
-
-                    break;
-                }
-            default: {break;}
-        }
+        _stfsEffect  = false;
     }
 
     // Damage over time
