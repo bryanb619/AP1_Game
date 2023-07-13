@@ -38,7 +38,9 @@ public class PlayerHealth : MonoBehaviour
                             private GameManager _gameManager;
                             private PlayerAnimationHandler _playerAnim; 
                             
-                            private VignetteController _vignetteController;
+    // --------------------------Vignette----------------------------------------
+    [SerializeField]        private Material _vignetteController;
+    [SerializeField]        private float _vignetteIntensity;
                             
     internal enum PlayerHealthMaxed
     {
@@ -49,7 +51,6 @@ public class PlayerHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _vignetteController                 = FindObjectOfType<VignetteController>();
         _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
         _healthBar                          = FindObjectOfType<HealthBar>();
         _gameManager                        = FindObjectOfType<GameManager>();
@@ -185,16 +186,37 @@ public class PlayerHealth : MonoBehaviour
         Cheats();
     }
 
+    private void VignetteChange(float fullscreenValue)
+    {
+        _vignetteIntensity = _vignetteController.GetFloat("_FullscreenIntensity");
+        _vignetteIntensity = Mathf.Round(_vignetteIntensity * 1000.0f) * 0.001f;
+        if(_vignetteIntensity == 0f || _vignetteIntensity == 0.1f || _vignetteIntensity == 0.2f || _vignetteIntensity == 0.3f)
+        {
+            float interpolatedValue = Mathf.Lerp(_vignetteIntensity, fullscreenValue,1f);
+            _vignetteController.SetFloat("FullScreenIntensity", interpolatedValue);
+        }
+    }
+
     private void FixedUpdate()
     {
-        if(currentHealth < (maxHealth * 0.25))
-            _vignetteController.SetIntensity(1f);
+        if (currentHealth <= (maxHealth * 0.3) && currentHealth > (maxHealth * 0.2))
+        {
+            VignetteChange(0.1f);
+        }
+    else if (currentHealth <= (maxHealth * 0.2) && currentHealth > (maxHealth * 0.1))
+        {
+            VignetteChange(0.2f);
+        }
+        else if (currentHealth <= (maxHealth * 0.1) && currentHealth > 0)
+        {
+            VignetteChange(0.3f);
+        }
         else
         {
-            _vignetteController.ResetIntensity();
+            VignetteChange(0f);
         }
-        
-        
+
+
         if (regenOn == true)
         {
             Invoke("Regen", regenTimer);
