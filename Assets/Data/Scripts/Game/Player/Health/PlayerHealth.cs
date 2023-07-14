@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Data;
 using Data.Scripts.Game.Effects.Visuals;
 using TMPro;
 //using System.Collections.Generic;
@@ -40,8 +41,9 @@ public class PlayerHealth : MonoBehaviour
                             
     // --------------------------Vignette----------------------------------------
     [SerializeField]        private Material _vignetteController;
-    [SerializeField]        private float _vignetteIntensity;
-                            
+                            private float intensity;
+                            private WaitForSeconds fadeWait;
+
     internal enum PlayerHealthMaxed
     {
         Max,
@@ -51,6 +53,7 @@ public class PlayerHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        fadeWait = new WaitForSeconds(0.1f);
         _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
         _healthBar                          = FindObjectOfType<HealthBar>();
         _gameManager                        = FindObjectOfType<GameManager>();
@@ -111,17 +114,6 @@ public class PlayerHealth : MonoBehaviour
         {
             _playerAnim.HitAnim();
         }
-    }
-
-    public void BigDamage(float damagePercentage)
-    {
-        
-        
-    }
-
-    private void CallForVignette()
-    {
-        
     }
 
     internal void RegenerateHealth(int health)
@@ -188,12 +180,43 @@ public class PlayerHealth : MonoBehaviour
 
     private void VignetteChange(float fullscreenValue)
     {
-        _vignetteIntensity = _vignetteController.GetFloat("_FullscreenIntensity");
+        StartCoroutine(FadeVignette(fullscreenValue));
+
+
+
+        /*
         _vignetteIntensity = Mathf.Round(_vignetteIntensity * 1000.0f) * 0.001f;
         if(_vignetteIntensity == 0f || _vignetteIntensity == 0.1f || _vignetteIntensity == 0.2f || _vignetteIntensity == 0.3f)
         {
             float interpolatedValue = Mathf.Lerp(_vignetteIntensity, fullscreenValue,1f);
-            _vignetteController.SetFloat("FullScreenIntensity", interpolatedValue);
+        }
+        */
+    }
+
+    IEnumerator FadeVignette(float fullscreenValue)
+    {
+        intensity = Mathf.Round(_vignetteController.GetFloat("_FullscreenIntensity") * 1000.0f) * 0.001f;
+        if (intensity == fullscreenValue)
+        {
+            yield break;
+        }
+        else if(intensity > fullscreenValue)
+        {
+            while (intensity > fullscreenValue)
+            {
+                intensity -= 0.001f;
+                _vignetteController.SetFloat("_FullscreenIntensity", intensity);
+                yield return fadeWait;
+            }
+        }
+        else if(intensity < fullscreenValue)
+        {
+            while (intensity < fullscreenValue)
+            {
+                intensity += 0.001f;
+                _vignetteController.SetFloat("_FullscreenIntensity", intensity);
+                yield return fadeWait;
+            }
         }
     }
 
