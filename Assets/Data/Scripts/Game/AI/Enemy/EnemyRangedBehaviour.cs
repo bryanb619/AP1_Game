@@ -756,9 +756,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
             case false:
             {
                 stfsEffect = true;
-
+#if UNITY_EDITOR
                 print("STARTED STFS COROUTINE SUCCESFULLY");
-
+#endif
+                
                 _canAttack = false;
                 _currentState = HandleState.Stoped;
 
@@ -874,7 +875,11 @@ public class EnemyRangedBehaviour : MonoBehaviour
         Destroy(this.gameObject);
     }
     
-    // Drop area
+
+    /// <summary>
+    ///  Object drop spawn
+    /// </summary>
+    /// <param name="drop"></param>
     private void SpawnDrop(GameObject drop)
     {
         var spawnPosition = dropPos.position +

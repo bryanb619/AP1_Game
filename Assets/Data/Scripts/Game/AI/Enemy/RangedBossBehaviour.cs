@@ -130,6 +130,10 @@ public class RangedBossBehaviour : MonoBehaviour
                             // DEATH 
                             private GameObject                          _deathEffect;
                             private bool                                _isDead;
+                            
+                            // others
+                            
+                            private bool                                _stfsEffect = false;
                     
                     
         // Drops/Loot ------------------------------------------------------------------------------------------------->
@@ -390,10 +394,12 @@ public class RangedBossBehaviour : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        
+        // set health at start
         healthBar.HealthValueSet(_health);
         
+        // set slider max value
         abilitySlider.maxValue  = 100; 
+        // set slider starting value value
         abilitySlider.value     = _currentAbilityValue;
     }
 
@@ -484,10 +490,13 @@ public class RangedBossBehaviour : MonoBehaviour
     
     private void EventTest()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.X))
         {
             CombatEvent(2,4);
         }
+#endif
+
     }
     
     #region Actions
@@ -869,9 +878,14 @@ public class RangedBossBehaviour : MonoBehaviour
     }
     
     #endregion
-
     
     #region Health
+    /// <summary>
+    /// Health damage system for AI 
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="type"></param>
+    /// <param name="damageBoost"></param>
     public void TakeDamage(int damage, WeaponType type, int damageBoost)
     {
         if (_health > 0)
@@ -988,13 +1002,22 @@ public class RangedBossBehaviour : MonoBehaviour
         }
 
     }
-    
+    /// <summary>
+    /// Damage text disappear, This will make the damage text disappear after a certain amount of time
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator DamageTextDisappear()
     {
         yield return new WaitForSeconds(2f);
         _damageText.text = " ";
     }
     
+    /// <summary>
+    ///  Damage over time effect, This will damage the AI for a certain amount of time
+    /// </summary>
+    /// <param name="damagePerSecond"></param>
+    /// <param name="durationOfdamage"></param>
+    /// <returns></returns>
     private IEnumerator DamageOverTime(float damagePerSecond, float durationOfdamage)
     {
 #if UNITY_EDITOR
@@ -1011,20 +1034,26 @@ public class RangedBossBehaviour : MonoBehaviour
         }
 
     }
-    
+    /// <summary>
+    ///  Stop for seconds effect, This will stop the AI from moving and attacking for a certain amount of time
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     private IEnumerator StopForSeconds(float value)
     {
         // Start bool at false to make sure coroutine is not being run more than once
-        bool stfsEffect = false;
+     
 
-        switch(stfsEffect)
+        switch(_stfsEffect)
         {
             case false:
             {
-                stfsEffect = true;
+                _stfsEffect = true;
 
-                print("STARTED STFS COROUTINE SUCCESFULLY");
-
+#if UNITY_EDITOR
+                Debug.Log("STARTED Stop for" + value + " COROUTINE");
+#endif
+                
                 _canAttack = false;
                 _currentState = HandleState.Stoped;
 
@@ -1042,7 +1071,7 @@ public class RangedBossBehaviour : MonoBehaviour
                 HandleStateAi(false);
                 _canAttack = true;
 
-                stfsEffect = false;
+                _stfsEffect = false;
 
                 break;
             }
@@ -1052,6 +1081,9 @@ public class RangedBossBehaviour : MonoBehaviour
     
     #endregion
 
+    /// <summary>
+    /// Drop spawn check to see if a drop should be spawned
+    /// </summary>
     private void DropSpawnCheck()
     {
         if (!_spawningGems)
@@ -1073,73 +1105,81 @@ public class RangedBossBehaviour : MonoBehaviour
             }
             _spawningGems = false;
         }
-        
     }
 
-
+/// <summary>
+/// Spawn enemies based on the health of the player and quantity of enemies is passed in inspector
+/// </summary>
+/// <param name="enemyChase"></param>
+/// <param name="enemyRanged"></param>
     private void CombatEvent(int enemyChase, int enemyRanged)
     {
         // spawn AI
         StartCoroutine(SpawnAi(enemyChase, enemyRanged));
     }
-    
-    private IEnumerator SpawnAi (int chaseCount, int rangedCount)
+
+/// <summary>
+/// Coroutine that spawns the enemies
+///  Spawn enemies based on the health of the player and quantity of enemies is passed in inspector
+/// </summary>
+/// <param name="chaseCount"></param>
+/// <param name="rangedCount"></param>
+/// <param name="chase"></param>
+/// <param name="ranged"></param>
+/// <returns></returns>
+private IEnumerator SpawnAi (int chase, int ranged)
     {
-        if (!_runningAiSpawn)
-        {
-            _runningAiSpawn = true;
-            
-            for (int i = 0; i <chaseCount; i++)
-            {
-                Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
-
-                randomDirection += _playerTarget.position;
-
-                NavMeshHit hit;
-
-                NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 6);
-
-                Vector3 spawnPos = hit.position;
-                
-                yield return new WaitForSeconds(effectTime);
-                Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
-            
-                yield return new WaitForSeconds(spawnTime);
-                Instantiate(chaseAi, spawnPos,Quaternion.identity);
-
-
-#if UNITY_EDITOR
-                Debug.Log("Boss spawning chase"); 
-#endif
-            }
-            for (int i = 0; i < rangedCount; i++)
-            {
-                Vector3 randomDirection = Random.insideUnitSphere * Random.Range(minRange, maxRange);
-
-                randomDirection += _playerTarget.position;
-
-                NavMeshHit hit;
-
-                NavMesh.SamplePosition(randomDirection, out hit, maxRange, 1);
-
-                Vector3 spawnPos = hit.position;
+        if (_runningAiSpawn) yield break;
         
-                yield return new WaitForSeconds(effectTime);
-                Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+        _runningAiSpawn = true;
             
-                yield return new WaitForSeconds(spawnTime);
-                Instantiate(rangedAi, spawnPos,Quaternion.identity);
+        for (int i = 0; i <chase; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * Random.Range(20, 40);
+
+            randomDirection += _playerTarget.position;
+
+            NavMeshHit hit;
+
+            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 6);
+
+            Vector3 spawnPos = hit.position;
+                
+            yield return new WaitForSeconds(effectTime);
+            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            
+            yield return new WaitForSeconds(spawnTime);
+            Instantiate(chaseAi, spawnPos,Quaternion.identity);
+            
+#if UNITY_EDITOR
+            Debug.Log("Boss spawning chase"); 
+#endif
+            
+        }
+        for (int i = 0; i < ranged; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * Random.Range(minRange, maxRange);
+
+            randomDirection += _playerTarget.position;
+
+            NavMeshHit hit;
+
+            NavMesh.SamplePosition(randomDirection, out hit, maxRange, 1);
+
+            Vector3 spawnPos = hit.position;
+        
+            yield return new WaitForSeconds(effectTime);
+            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            
+            yield return new WaitForSeconds(spawnTime);
+            Instantiate(rangedAi, spawnPos,Quaternion.identity);
 
 #if UNITY_EDITOR
-                Debug.Log("Boss spawning ranged");
+            Debug.Log("Boss spawning ranged");
 #endif
-
-            }
-            _runningAiSpawn = false;
         }
+        _runningAiSpawn = false;
     }
-    
-    
     
     #region Death
     public void Die()
@@ -1181,6 +1221,10 @@ public class RangedBossBehaviour : MonoBehaviour
     #endregion   
 
     // Drop area
+    /// <summary>
+    ///  Drops a health or mana drop
+    /// </summary>
+    /// <param name="drop"></param>
     private void SpawnDrop(GameObject drop)
     {
         var spawnPosition = dropPos.position +
@@ -1195,7 +1239,6 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
-    
     
     #if UNITY_EDITOR
     #region Editor Gizmos
@@ -1274,7 +1317,4 @@ public class RangedBossBehaviour : MonoBehaviour
 
     #endregion
 #endif
-
-    
-    
 }

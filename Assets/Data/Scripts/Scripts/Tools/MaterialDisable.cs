@@ -15,6 +15,8 @@ public class MaterialDisable : MonoBehaviour
         MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
 
         foreach (MeshRenderer currentRender in renderers)
-            currentRender.enabled = false;;
+        {
+            currentRender.enabled = false;
+        }
     }
 }
