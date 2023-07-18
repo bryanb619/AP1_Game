@@ -64,6 +64,7 @@ public class PlayerHealth : MonoBehaviour
         _healthBar.healthSlider.maxValue    = maxHealth;
         HealthSetAtMax                      = true;
         currentHealth                      = 100;
+        _vignetteController.SetFloat("_FullscreenIntensity", 0);
     }
 
     internal void EmpowerHealth(int powerUp)
@@ -159,8 +160,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
-        
-
         switch (HealthSetAtMax)
         {
             case true:
@@ -181,16 +180,6 @@ public class PlayerHealth : MonoBehaviour
     private void VignetteChange(float fullscreenValue)
     {
         StartCoroutine(FadeVignette(fullscreenValue));
-
-
-
-        /*
-        _vignetteIntensity = Mathf.Round(_vignetteIntensity * 1000.0f) * 0.001f;
-        if(_vignetteIntensity == 0f || _vignetteIntensity == 0.1f || _vignetteIntensity == 0.2f || _vignetteIntensity == 0.3f)
-        {
-            float interpolatedValue = Mathf.Lerp(_vignetteIntensity, fullscreenValue,1f);
-        }
-        */
     }
 
     IEnumerator FadeVignette(float fullscreenValue)
