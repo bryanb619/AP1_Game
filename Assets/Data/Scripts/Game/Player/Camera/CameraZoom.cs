@@ -66,8 +66,6 @@ public class CameraZoom : MonoBehaviour
     {
        //HandleZoom();
        HandleTransformZoom(); 
-
-        
        
        //transform.LookAt(target); 
    

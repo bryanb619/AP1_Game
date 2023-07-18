@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 
 public class Tester : MonoBehaviour
 {
+    
     [FormerlySerializedAs("TimeBoost")]
     [Header("Time Scale at 100 times")]
 

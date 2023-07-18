@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class GameUIElements: MonoBehaviour
 {
-    private Transform           _camTransform;
+    [SerializeField]    private bool                useAutoRotate; 
+                        private Transform           _camTransform;
     
     private void Awake()
     {
@@ -17,13 +18,14 @@ public class GameUIElements: MonoBehaviour
     /// </summary>
     private void LateUpdate()
     {
-        //transform.LookAt(_camTransform.position);
-
+        
+        if (!useAutoRotate) return;
+        
         Vector3 desiredTarget   = _camTransform.position - transform.position;
         Quaternion rotation     = Quaternion.LookRotation(desiredTarget);
 
         transform.rotation      = Quaternion.Euler(rotation.eulerAngles.x, 0, 0);
         
-        
+
     }
 }

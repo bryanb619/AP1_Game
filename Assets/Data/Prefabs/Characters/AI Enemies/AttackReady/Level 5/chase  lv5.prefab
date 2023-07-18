@@ -752,7 +752,7 @@ GameObject:
   - component: {fileID: 9018942400106031180}
   - component: {fileID: 2119139303832417122}
   m_Layer: 7
-  m_Name: chase   lv5
+  m_Name: chase  lv5
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -794,6 +794,7 @@ MonoBehaviour:
   stateAi: 2
   data: {fileID: 11400000, guid: d239ad784bb9fe546ae81459bc848d09, type: 2}
   enemyMesh: {fileID: 802509217797095890}
+  VFXGraph: {fileID: 0}
   patrolPoints: []
   attackPoint: {fileID: 3331569744526991545}
   dropPos: {fileID: 8461877541120505512}
@@ -2763,6 +2764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1491f9d1e59c954180af3f29800fb44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useAutoRotate: 1
 --- !u!1 &8475633409044211969
 GameObject:
   m_ObjectHideFlags: 0
