@@ -25,7 +25,7 @@ public class RangedBossBehaviour : MonoBehaviour
         [Header("AI Profile")]
         [SerializeField]    private AIRangedData data;
     
-        // AI 
+                            // AI 
                             // AI states
                             private enum Ai                             {Patrol, Attack, Cover}
                             [Header("AI State")]
@@ -134,8 +134,7 @@ public class RangedBossBehaviour : MonoBehaviour
                             // others
                             
                             private bool                                _stfsEffect = false;
-                    
-                    
+                            
         // Drops/Loot ------------------------------------------------------------------------------------------------->
 
                             private bool                                _spawningGems; 
