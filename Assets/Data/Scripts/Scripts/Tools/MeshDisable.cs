@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MaterialDisable : MonoBehaviour
+public class MeshDisable : MonoBehaviour
 {
     private void Awake()
     {
