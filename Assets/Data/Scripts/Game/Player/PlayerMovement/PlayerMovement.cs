@@ -224,7 +224,7 @@ public class PlayerMovement : MonoBehaviour
         Agent.enabled = true;
         
 #if UNITY_EDITOR
-        Debug.Log("mouse");
+        //Debug.Log("mouse");
 #endif
     }
     

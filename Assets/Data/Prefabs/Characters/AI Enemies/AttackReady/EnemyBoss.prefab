@@ -88,7 +88,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108640467258622327}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0000000012754}
   m_LocalScale: {x: 2.2021, y: 2.2021, z: 2.2021}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99,8 +99,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: -12}
-  m_SizeDelta: {x: 90.73, y: 13.9}
+  m_AnchoredPosition: {x: 1.429e-12, y: -4.8}
+  m_SizeDelta: {x: 117.45, y: 17.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2727053215894217272
 MonoBehaviour:
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 100
   m_OnValueChanged:
     m_PersistentCalls:
@@ -753,8 +753,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   healthEvents: a00f0000b80b0000d0070000
-  chaseCount: 010000000200000003000000
-  rangedCount: 020000000300000004000000
+  chaseCount: 010000000200000002000000
+  rangedCount: 020000000200000003000000
   effectTime: 0.5
   spawnTime: 1
   minRange: 15
@@ -943,7 +943,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2.55
-  m_BaseOffset: 1
+  m_BaseOffset: 0.17
   m_WalkableMask: 32
   m_ObstacleAvoidanceType: 4
 --- !u!136 &7207599054140134844
@@ -957,9 +957,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.55
-  m_Height: 3.11
+  m_Height: 2.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5969051, z: 0}
+  m_Center: {x: 0, y: 0.97, z: 0}
 --- !u!54 &374496529863674697
 Rigidbody:
   m_ObjectHideFlags: 0

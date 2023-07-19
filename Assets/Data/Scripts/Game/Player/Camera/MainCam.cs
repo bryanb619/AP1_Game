@@ -34,6 +34,7 @@ public class MainCam : MonoBehaviour
     #region Update
     private void Update()
     {
+        // detection of building
         UpdateRaycast();
     }
 

@@ -81,7 +81,6 @@ public class RangedBossBehaviour : MonoBehaviour
     private Shooter _shooterScript;
     [SerializeField] private LayerMask playerLayer;
 
-
     // Combat ----------------------------------------------------------------------------------------------------->
 
     // General combat variables
@@ -94,20 +93,23 @@ public class RangedBossBehaviour : MonoBehaviour
 
     // random attack chance
     private float _percentage;
-
     // Boss attack
 
     [Header("Boss Events")] [SerializeField]
     private int[] healthEvents;
 
-    [SerializeField] private int[] chaseCount, rangedCount;
+    [Header("Chase AI spawned")] 
+    [SerializeField] private int[] chaseCount; 
+    [Header("ranged AI spawned")] 
+    [SerializeField] private int[]   rangedCount;
+    
     [SerializeField] private float effectTime, spawnTime, minRange, maxRange;
 
     private bool _runningAiSpawn;
     [SerializeField] private GameObject aiSpawnEffect, chaseAi, rangedAi;
 
     private const float AbilityMaxValue = 100f;
-    private float _currentAbilityValue;
+    private float _currentAbilityValue = 100;
     private float _abilityIncreasePerFrame;
     private bool _canSpecialAttack;
 
@@ -277,8 +279,7 @@ public class RangedBossBehaviour : MonoBehaviour
             }
         }
     }
-
-
+    
     private void GetAiComponents()
     {
         // AI components
@@ -323,7 +324,7 @@ public class RangedBossBehaviour : MonoBehaviour
 
         _currentAbilityValue = data.CurrentAbilityValue;
         abilitySlider.value = _currentAbilityValue;
-        abilitySlider.maxValue = abilitySlider.value;
+        abilitySlider.maxValue = _currentAbilityValue;
 
         _abilityIncreasePerFrame = data.AbilityIncreasePerFrame;
 
@@ -350,7 +351,6 @@ public class RangedBossBehaviour : MonoBehaviour
 
         // Drop Radius
         _dropRadius = data.DropRadius;
-
 
         // Health/Death ----------------------------------------------------------------------------------------------->
         _health = data.Health;
@@ -492,6 +492,8 @@ public class RangedBossBehaviour : MonoBehaviour
 
     private void Gameplay()
     {
+        print(_currentAbilityValue);
+        
         var actions = _fsm.Update();
         actions?.Invoke();
     }
@@ -613,8 +615,9 @@ public class RangedBossBehaviour : MonoBehaviour
     {
         _aiShoot.Shoot(_playerTarget, _specialProjectile);
 
-        _currentAbilityValue = 0;
-        abilitySlider.value = _currentAbilityValue;
+        // _currentAbilityValue = 0;
+        _currentAbilityValue -= 10; 
+        //abilitySlider.value = _currentAbilityValue;
         //abilitySlider.value = _currentAbilityValue;
         _canSpecialAttack = false;
 
@@ -821,22 +824,17 @@ public class RangedBossBehaviour : MonoBehaviour
     {
 #if UNITY_EDITOR
 
-        print("teleport running");
+        Debug.Log("teleport running");
 #endif
-
-
-        // Get random position
+        
+        // Generate random position to TP 
         var randomDirection = Random.insideUnitSphere * Random.Range(_minRange, _maxRange);
-
         randomDirection += _playerTarget.position;
-
         NavMeshHit hit;
-
         NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
-
         var teleportPos = hit.position;
 
-
+        // TP to random position
         StartCoroutine(Teleport(teleportPos));
     }
 
@@ -847,10 +845,13 @@ public class RangedBossBehaviour : MonoBehaviour
 
         _canCdIncrease = false;
         _canIncreaseAbility = false;
+        
+        //  Disable animation attack
+        
         _canAttack = false;
 
 
-        // 
+
         // wait for spawn time done
         agent.enabled = false;
         yield return new WaitForSeconds(2f);
@@ -867,7 +868,6 @@ public class RangedBossBehaviour : MonoBehaviour
         _canIncreaseAbility = true;
         _canCdIncrease = true;
     }
-
     #endregion
 
     #region Health
@@ -965,7 +965,7 @@ public class RangedBossBehaviour : MonoBehaviour
         healthBar.HandleBar(damage);
     }
 
-
+    
     private IEnumerator HitFlash()
     {
         var isRunning = false;
@@ -983,7 +983,6 @@ public class RangedBossBehaviour : MonoBehaviour
             isRunning = false;
         }
     }
-
     /// <summary>
     /// Damage text disappear, This will make the damage text disappear after a certain amount of time
     /// </summary>
