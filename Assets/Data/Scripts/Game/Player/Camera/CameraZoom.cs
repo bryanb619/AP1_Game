@@ -1,7 +1,6 @@
 using UnityEngine;
 using Cinemachine; 
 
-
 public class CameraZoom : MonoBehaviour
 {
 /*
@@ -35,16 +34,18 @@ public class CameraZoom : MonoBehaviour
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
 
         _followOffset = cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset; 
+        CinemachineCollider collider = cam.GetComponentInChildren<CinemachineCollider>();
     }
 
     void Start()
     {
         //cam = GetComponent<CinemachineVirtualCamera>();
 
-       CinemachineCollider collider = cam.GetComponentInChildren<CinemachineCollider>();
-        if (collider != null)
+       
+       
+        if (GetComponent<Collider>() != null)
         {
-            collider.enabled = false;
+            GetComponent<Collider>().enabled = false;
         }
 
         switch(_state)
@@ -58,7 +59,6 @@ public class CameraZoom : MonoBehaviour
                     _state = GameState.Paused; break;
                 }
         }
-
     }
 
 
@@ -129,16 +129,12 @@ public class CameraZoom : MonoBehaviour
                 _followOffset = zoomdir * _followMax;
             }
 
-
-
+            
             cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset =
                 Vector3.Lerp(cam.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset,
                 _followOffset, Time.deltaTime * zoomSpeed);
         }
-        //Debug.Log(Input.mouseScrollDelta); 
 
-      
-    
     }
 
     private void GameManager_OnGameStateChanged(GameState state)
@@ -165,40 +161,4 @@ public class CameraZoom : MonoBehaviour
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
     }
-
 }
-
-    /*
-    private float ZoomAmount  = 0; //With Positive and negative values
-    private float minClamp = 5f; 
-
-    private float MaxToClamp  = 15f;
-    [SerializeField] private float ROTSpeed = 10;
-
-    public Transform parent; 
-
-    private Vector3 camPos; 
-
-    private void Start()
-    {
-        transform.SetParent(parent); 
-        camPos = new Vector3(0,7,-4); 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position = camPos; 
-
-
-        ZoomAmount += Input.GetAxis("MouseScrollWheel");
-        ZoomAmount = Mathf.Clamp(ZoomAmount, -MaxToClamp, MaxToClamp);
-
-        float translate = Mathf.Min(Mathf.Abs(Input.GetAxis("MouseScrollWheel")), MaxToClamp - Mathf.Abs(ZoomAmount));
-        translate = Mathf.Clamp(translate, minClamp, MaxToClamp);
-
-        this.transform.Translate(0, 0, translate * ROTSpeed * Mathf.Sign(Input.GetAxis("MouseScrollWheel")));
-    }
-
-    */
-

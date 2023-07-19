@@ -68,7 +68,7 @@ public class Tester : MonoBehaviour
         }
         else if (lightActive == false)
         {
-            DisabletestLight();
+            DisableTestLight();
         }
 
         if (Input.GetKeyDown(KeyCode.O))
@@ -92,12 +92,12 @@ public class Tester : MonoBehaviour
         }
     }
 
-    private void AiGameTest()
+    private static void AiGameTest()
     {
         Time.timeScale = 100;
     }
 
-    private void ResetTimeScale()
+    private static void ResetTimeScale()
     {
         Time.timeScale = 1;
     }
@@ -108,7 +108,7 @@ public class Tester : MonoBehaviour
         gameTestLight.SetActive(true);
     }
 
-    private void DisabletestLight()
+    private void DisableTestLight()
     {
         gameTestLight.SetActive(false);
     }
