@@ -296,9 +296,9 @@ public class PlayerMovement : MonoBehaviour
                     }
             }
         }
-
-        Vector3 position = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        _rb.velocity = position * (_playerSpeed * Time.deltaTime);
+//  for WASD Movement
+        //Vector3 position = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        //_rb.velocity = position * (_playerSpeed * Time.deltaTime);
 
     }
     
