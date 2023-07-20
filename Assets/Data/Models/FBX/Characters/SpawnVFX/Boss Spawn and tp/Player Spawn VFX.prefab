@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 6575793495003156087}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 525.87, y: 2.46, z: 318.27}
-  m_LocalScale: {x: 1.2, y: 2, z: 1.2}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -41,7 +41,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6575793495003156087}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 14850292ffc5f8042a18fbb2411cc07a, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: eb14a6e0b20263b4bae2a046d237e946, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -49,18 +49,27 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 0.78
+        m_Name: Fade
+        m_Overridden: 0
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array: []
     m_Vector4f:
       m_Array:
-      - m_Value: {x: 3.1056545, y: 7.4164233, z: 16.948, w: 1}
+      - m_Value: {x: 14.270159, y: 34.24838, z: 77.87429, w: 1}
         m_Name: Color
         m_Overridden: 1
       - m_Value: {x: 72.28236, y: 329.9425, z: 766.9961, w: 11.4}
         m_Name: Color cylinder
+        m_Overridden: 1
+      - m_Value: {x: 26.629059, y: 63.90974, z: 145.31857, w: 1}
+        m_Name: Color Cylinder
+        m_Overridden: 1
+      - m_Value: {x: 72.28236, y: 333.30197, z: 766.9961, w: 1}
+        m_Name: Color vortex
         m_Overridden: 1
     m_Uint:
       m_Array: []

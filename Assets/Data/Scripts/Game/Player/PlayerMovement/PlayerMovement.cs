@@ -262,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
         StateHandler();
         EnemiesAround();
-        Aim();
+        //Aim();
 
         if (_state == MovementState.Walking /*|| state == MovementState.crouching*/)
             _rb.drag = groundDrag;
