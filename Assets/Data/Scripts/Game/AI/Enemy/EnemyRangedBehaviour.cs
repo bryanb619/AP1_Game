@@ -473,8 +473,6 @@ public class EnemyRangedBehaviour : MonoBehaviour
                 }
             }
         }
-
-       
     }   
     
      private void Attack()
