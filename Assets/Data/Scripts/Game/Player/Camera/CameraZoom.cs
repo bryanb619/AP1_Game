@@ -139,7 +139,6 @@ public class CameraZoom : MonoBehaviour
 
     private void GameManager_OnGameStateChanged(GameState state)
     {
-
         switch (state)
         {
             case GameState.Gameplay:
