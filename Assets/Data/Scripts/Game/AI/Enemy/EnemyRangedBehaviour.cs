@@ -823,6 +823,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
             {
                 
                 _isDead = true;
+                
+                _animator.enabled = false;
+                
                 StartCoroutine(DissolveEnemyRanged());
                 stateAi = Ai.Patrol;
                 

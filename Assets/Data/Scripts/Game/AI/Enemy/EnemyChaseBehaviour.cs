@@ -1340,6 +1340,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
         {
             _isDead = true;
             
+            _animator.enabled = false;
+            
             SetAiAfterAttack(false);
             StartCoroutine(DissolveEnemy());
             stateAi = Ai.Patrol;
