@@ -492,7 +492,6 @@ public class RangedBossBehaviour : MonoBehaviour
 
     private void Gameplay()
     {
-        print(_currentAbilityValue);
         
         var actions = _fsm.Update();
         actions?.Invoke();
@@ -809,8 +808,6 @@ public class RangedBossBehaviour : MonoBehaviour
             _canPeformAttack = true;
             isruning = false;
         }
-
-
     }
     */
 
@@ -840,7 +837,7 @@ public class RangedBossBehaviour : MonoBehaviour
 
     private IEnumerator Teleport(Vector3 teleportPos)
     {
-        // Instantiate spawn effect
+        // Instantiate TP effect
         Instantiate(_teleportEffect, teleportPos, _teleportEffect.transform.rotation);
 
         _canCdIncrease = false;
@@ -849,21 +846,21 @@ public class RangedBossBehaviour : MonoBehaviour
         //  Disable animation attack
         
         _canAttack = false;
-
-
-
+        
         // wait for spawn time done
         agent.enabled = false;
         yield return new WaitForSeconds(2f);
 
+        // Instantiate spawn effect
+        Instantiate(_teleportEffect, teleportPos, _teleportEffect.transform.rotation);
+        yield return new WaitForSeconds(0.1f);
         // transform position =  spawn effect
         transform.position = teleportPos;
-
-        yield return new WaitForSeconds(0.01f);
-
+        
+        
+        
         // enable agent
         agent.enabled = true;
-
         _canAttack = true;
         _canIncreaseAbility = true;
         _canCdIncrease = true;
