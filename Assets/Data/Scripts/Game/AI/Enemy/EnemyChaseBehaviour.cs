@@ -671,6 +671,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region PATROL
     private void Patrol()
     {
+        _agent.velocity = Vector3.zero;
+        _agent.isStopped = true;
+        
+        /*
        if(_agent.enabled) 
        {
             if (!_agent.pathPending && _agent.remainingDistance < 0.5f && !_canSeePlayer)
@@ -679,6 +683,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 GotoNetPoint();
             }
        }
+       */
     }
 
     private void GotoNetPoint()

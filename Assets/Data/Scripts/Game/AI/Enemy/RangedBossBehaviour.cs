@@ -1117,12 +1117,12 @@ public class RangedBossBehaviour : MonoBehaviour
 
             NavMeshHit hit;
 
-            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 6);
+            NavMesh.SamplePosition(randomDirection, out hit, _maxRange, 1);
 
             var spawnPos = hit.position;
 
             yield return new WaitForSeconds(effectTime);
-            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            Instantiate(aiSpawnEffect, spawnPos, aiSpawnEffect.transform.rotation);
 
             yield return new WaitForSeconds(spawnTime);
             Instantiate(chaseAi, spawnPos, Quaternion.identity);
@@ -1145,7 +1145,7 @@ public class RangedBossBehaviour : MonoBehaviour
             var spawnPos = hit.position;
 
             yield return new WaitForSeconds(effectTime);
-            Instantiate(aiSpawnEffect, spawnPos, transform.rotation);
+            Instantiate(aiSpawnEffect, spawnPos, aiSpawnEffect.transform.rotation);
 
             yield return new WaitForSeconds(spawnTime);
             Instantiate(rangedAi, spawnPos, Quaternion.identity);

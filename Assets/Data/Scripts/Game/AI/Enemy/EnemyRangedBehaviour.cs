@@ -336,7 +336,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
     private void StateSet()
     {
         // Create the states
-        var patrolState   = new State("Patrol" ,null);
+        var patrolState   = new State("Patrol" ,Patrol);
         var chaseState    = new State("Chase", Engage);
         
         //  PATROL -> CHASE 
@@ -438,7 +438,10 @@ public class EnemyRangedBehaviour : MonoBehaviour
     
     private void Patrol()
     {
+        agent.velocity = Vector3.zero;
+        agent.isStopped = true;
         
+        transform.position = transform.position;
     }
 
     private void Engage()
