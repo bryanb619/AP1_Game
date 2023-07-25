@@ -72,11 +72,7 @@ namespace Data.Scripts.Game.AI.Companion
 
 
         //private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, _U_R_POS}
-        private enum CompanionPos
-        {
-            LLPos,
-            URPos
-        }
+        private enum CompanionPos { LLPos, URPos}
         
         [SerializeField] private CompanionPos nextPos;
         [SerializeField] private CompanionPos currentPos;
@@ -124,7 +120,6 @@ namespace Data.Scripts.Game.AI.Companion
 
         private Vector3 _direction;
 
-
         [SerializeField] bool playerDirection;
 
 
@@ -161,8 +156,7 @@ namespace Data.Scripts.Game.AI.Companion
             Companion.acceleration = _acceleration;
 
             _companionMesh = GetComponent<MeshRenderer>();
-
-            //_mainCamera = FindObjectOfType<Camera>();
+            
             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
 
             _point = FindObjectOfType<CompanionSpawn>();
@@ -182,6 +176,7 @@ namespace Data.Scripts.Game.AI.Companion
 
             //startingPosition = transform.position;
 
+            
             switch (_gameState)
             {
                 case GameState.Paused:
@@ -209,23 +204,19 @@ namespace Data.Scripts.Game.AI.Companion
         // Create the FSM
         private void Start()
         {
-        
-            //CompanionMesh = GetComponent<MeshRenderer>();
-            //_MiniMapCollor = FindObjectOfType<mini>();
-            //mainCamera = Camera.main;
-            //_playerIsMoving = false;
-
-
-            // states ------------------------------------------------------------->
-
+            
+            // states
+            
             var idleState = new State("Companion Idle", Idle);
 
             var followState = new State(("Companion Follow"), Follow);
 
             var combatState = new State("Companion combat", Combat);
         
-            // Add the transitions
-        
+            //  Transitions  ------------------------------------------------------------------------------------------>
+
+            // Idle --> Follow, Combat 
+            
             // Idle -> Follow
             idleState.AddTransition(
                 new Transition(
@@ -237,7 +228,10 @@ namespace Data.Scripts.Game.AI.Companion
                 new Transition(
                     () => stateAi == CompanionState.Combat,
                     combatState));
-
+            
+            //---------------------------------->
+            
+            // Follow --> Idle, Combat
 
             // Follow -> Idle
             followState.AddTransition(
@@ -251,6 +245,15 @@ namespace Data.Scripts.Game.AI.Companion
                     () => stateAi == CompanionState.Combat,
                     combatState));
 
+            //----------------------------------->
+            
+            // Combat --> Follow, Idle
+            
+            // Combat -> Follow
+            combatState.AddTransition(
+                new Transition(
+                    () => stateAi == CompanionState.Follow,
+                    followState));
 
             // Combat -> Idle 
             combatState.AddTransition(
@@ -258,14 +261,23 @@ namespace Data.Scripts.Game.AI.Companion
                     () => stateAi == CompanionState.Idle,
                     idleState));
 
-
-            // Combat -> Follow
-
-            combatState.AddTransition(
+            //----------------------------------->
+            
+            // Idle --> Follow, Combat
+            
+            // Idle -> Follow
+            idleState.AddTransition(
                 new Transition(
                     () => stateAi == CompanionState.Follow,
                     followState));
-
+            
+            // idle -> Combat
+            idleState.AddTransition(
+                new Transition(
+                    () => stateAi == CompanionState.Combat,
+                    combatState));
+            //---------------------------------->
+            
             // Create the state machine
             _stateMachine = new StateMachine(idleState);
         }

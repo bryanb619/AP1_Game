@@ -23,7 +23,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     // States --------------------------------------------------------------------------------------------------------->
 
                         // AI states
-                        private enum Ai                     {Guard, Patrol, Attack, Cover, Glorykill, None}
+                        private enum Ai                     {Guard, Patrol, Attack, Cover,Dead,None}
                         
 
     [SerializeField]    private Ai                          stateAi;
@@ -481,6 +481,10 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         var chaseState = new State("Chase",
             ChasePlayer);//,
+        
+        var deadState = new State("Dead",
+            DeactivateAI);
+        
      
         var gloryKillState = new State("Glory Kill",
             null);
@@ -504,20 +508,23 @@ public class EnemyChaseBehaviour : MonoBehaviour
                () => stateAi == Ai.Attack,
                chaseState));
 
-        // CHASE --------------------------------------------->
 
+        //  Combat  ------------------------------------------->
+        
+        
         // CHASE -> PATROL
         chaseState.AddTransition(
-           new Transition(
-               () => stateAi == Ai.Patrol, // SEEK SOLUTION
-               //() => Debug.Log("CHASE -> PATROL"),
-               patrolState));
-
-        //CHASE -> Glory Kill 
-        chaseState.AddTransition
-            (new Transition(
-                () => stateAi == Ai.Glorykill,
-                gloryKillState));
+            new Transition(
+                () => stateAi == Ai.Patrol, // SEEK SOLUTION
+                //() => Debug.Log("CHASE -> PATROL"),
+                patrolState));
+        
+        // CHASE -> DEAD
+        chaseState.AddTransition(
+            new Transition(
+                () => stateAi == Ai.Dead,
+                deadState));
+    
 
         #endregion
 
@@ -671,19 +678,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
     #region PATROL
     private void Patrol()
     {
-        _agent.velocity = Vector3.zero;
-        _agent.isStopped = true;
-        
-        /*
-       if(_agent.enabled) 
-       {
-            if (!_agent.pathPending && _agent.remainingDistance < 0.5f && !_canSeePlayer)
-            {
-                SetPatrol();
-                GotoNetPoint();
-            }
-       }
-       */
+       
     }
 
     private void GotoNetPoint()
@@ -1137,6 +1132,15 @@ public class EnemyChaseBehaviour : MonoBehaviour
     }
     */
     #endregion
+
+    private void DeactivateAI() { 
+        
+        _agent.enabled = false;
+        _animator.enabled = false;
+        
+        
+        
+    }
     
     #endregion
     
@@ -1206,16 +1210,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         return;
     }
-
-    private void SetGloryKill()
-    {
-        stateAi = Ai.Glorykill;
-        _agent.radius = 0.5f;
-        _useFov = false;
-        //StopCoroutine(FovRoutine());
-     
-    }
-
+    
     #endregion
 
     #region AI Health 
@@ -1344,7 +1339,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
             
             SetAiAfterAttack(false);
             StartCoroutine(DissolveEnemy());
-            stateAi = Ai.Patrol;
+            
+            stateAi = Ai.Dead;
 
             if(_spawnHealth)
             {
@@ -1702,11 +1698,13 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         Handles.Label(fov.transform.position + Vector3.up * 2f, "Cover" + "  Gameplay: " + _gameState, cyan);
                         break;
                     }
+/*
                 case Ai.Glorykill:
                     {
                         Handles.Label(fov.transform.position + Vector3.up * 2f, "Glory Kill" + "  Gameplay: " + _gameState);
                         break;
                     }
+*/
                 case Ai.None:
                     {
                         Handles.Label(fov.transform.position + Vector3.up * 2f, "NONE" + "  Gameplay: " + _gameState);

@@ -131,7 +131,8 @@ public class AIHealth : MonoBehaviour
     private void KillAi()
     {
         //_aiAnimator.enabled = false;
-
+        _healthBar.enabled = false;
+        
         switch (_aiType)
         {
             case AiType.Chase:
