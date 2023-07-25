@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Cinemachine; 
 
@@ -19,15 +20,18 @@ public class CameraZoom : MonoBehaviour
 
 */
 
-    private Vector3 _followOffset; 
+                        private Vector3                     _followOffset; 
 
-    private float _followMin = 8f; 
+    [Header("Zoom Settings")]
+    [Range(5,25)]
+    [SerializeField]    private float                       followMin = 15f; 
 
-    private float _followMax = 15f; 
+    [Range(10,35)]
+    [SerializeField]    private float                       followMax = 20f; 
 
-    [SerializeField] private CinemachineVirtualCamera cam;
+    [SerializeField]    private CinemachineVirtualCamera    cam;
 
-    private GameState _state;
+                        private GameState                   _state;
 
     private void Awake()
     {
@@ -39,10 +43,6 @@ public class CameraZoom : MonoBehaviour
 
     void Start()
     {
-        //cam = GetComponent<CinemachineVirtualCamera>();
-
-       
-       
         if (GetComponent<Collider>() != null)
         {
             GetComponent<Collider>().enabled = false;
@@ -58,47 +58,21 @@ public class CameraZoom : MonoBehaviour
                 {
                     _state = GameState.Paused; break;
                 }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
 
-    void Update()
+    private void Update()
     {
-       //HandleZoom();
-       HandleTransformZoom(); 
-       
-       //transform.LookAt(target); 
-   
+        HandleTransformZoom();
     }
 
 
-/// <summary>
-///  ZOOM Handle function
-/// </summary>
-    private void HandleZoom()
-    {
-        /*
-        float fiedOfViewIncreaseAmount = 5f; 
-
-        if(Input.mouseScrollDelta.y >0)
-        {
-            targetFOV -= fiedOfViewIncreaseAmount;
-
-        }
-        else if(Input.mouseScrollDelta.y <0)
-        {
-            targetFOV += fiedOfViewIncreaseAmount; 
-             
-        }
-        
-        targetFOV = Mathf.Clamp(targetFOV, zoomMin, zoomMax);
-
-        cvc.m_Lens.FieldOfView = targetFOV = Mathf.Lerp(cvc.m_Lens.FieldOfView, targetFOV,  zoomSpeed * Time.deltaTime);
-
-    */
-
-    }
-
+    /// <summary>
+    ///  ZOOM Handle function
+    /// </summary>
     private void HandleTransformZoom()
     {
         if(_state == GameState.Gameplay) 
@@ -118,15 +92,15 @@ public class CameraZoom : MonoBehaviour
                 _followOffset += zoomdir;
             }
 
-            if (_followOffset.magnitude < _followMin)
+            if (_followOffset.magnitude < followMin)
             {
 
-                _followOffset = zoomdir * _followMin;
+                _followOffset = zoomdir * followMin;
             }
 
-            if (_followOffset.magnitude > _followMax)
+            if (_followOffset.magnitude > followMax)
             {
-                _followOffset = zoomdir * _followMax;
+                _followOffset = zoomdir * followMax;
             }
 
             
