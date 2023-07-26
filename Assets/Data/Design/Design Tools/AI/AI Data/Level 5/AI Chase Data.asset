@@ -40,7 +40,7 @@ MonoBehaviour:
   health: 1449
   healthRegen: 2
   maxHealthRegen: 70
-  stunnedTime: 2
+  stunnedTime: 0.01
   stunnedChance: 0.05
   deathEffect: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
   gemSpawnOnDeath: 1
@@ -52,6 +52,7 @@ MonoBehaviour:
   spawnMana: 1
   manaDrop: {fileID: 6342344941788914745, guid: d735ca942f458114ab38e527de29c7df, type: 3}
   manaItems: 1
+  hitEffectTime: 0.1
   grunt:
     Guid:
       Data1: 0

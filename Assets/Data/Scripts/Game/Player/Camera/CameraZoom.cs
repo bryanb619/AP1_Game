@@ -24,7 +24,7 @@ public class CameraZoom : MonoBehaviour
 
     [Header("Zoom Settings")]
     [Range(5,25)]
-    [SerializeField]    private float                       followMin = 15f; 
+    [SerializeField]    private float                       followMin = 13f; 
 
     [Range(10,35)]
     [SerializeField]    private float                       followMax = 20f; 

@@ -242,6 +242,10 @@ public class AIChaseData : ScriptableObject
         [SerializeField]
             private int                 manaItems;
             internal int                ManaItems => manaItems;
+            
+            
+    [SerializeField]    private float  hitEffectTime = 0.1f;
+                        public float HitEffectTime => hitEffectTime;
 
     #endregion
 

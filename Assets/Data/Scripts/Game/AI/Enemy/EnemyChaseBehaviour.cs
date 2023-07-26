@@ -142,7 +142,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private bool                        _canSpecialAttack;
 
                         private int                         _randomPriority;
-                        private bool _spawningGems; 
+                        private bool                        _spawningGems;
+
+                        private float                       _hitEffectTime;
 
                         
 
@@ -221,7 +223,6 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
                         private bool                        _isDead; 
                         private bool                        _stfsEffect = false;
-                        
                         
                         
     //[SerializeField]    private GameObject                  enemyChase;
@@ -451,6 +452,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
 
         // Sound ------------------------------------------------------->
         _screamSound                    = data.Scream;
+        
+        _hitEffectTime                 = data.HitEffectTime;
     }
 
     #region  States Sync 
@@ -1266,6 +1269,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             StartCoroutine(StopForSeconds(_stunnedTime));
                         else
                             StartCoroutine(HitFlash());
+                        
                         break;
                     }
 
@@ -1274,6 +1278,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         _health -= damage + DamageBoost;
 
                         StartCoroutine(HitFlash());
+                        
                         break;
                     }
             }
@@ -1287,9 +1292,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
             StartCoroutine(DamageTextDisappear());
 
             //healthSlider.value = _health;
-            StartCoroutine(StopForSeconds(0.3f));
-            
-            
+            StartCoroutine(StopForSeconds(_hitEffectTime));
             
             if (_canAttack)
             {
@@ -1389,13 +1392,20 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 yield return new WaitForSeconds(refreshRate);
             }
         }
+        // instantiate death effect
         Instantiate(_death, transform.position, _death.transform.rotation);
+        
+        // get kill count
         _valuesTexts.GetKill();
+        
+        // destroy game object
         Destroy(this.gameObject);
     }
-         
-
-    // Drop area
+    
+    /// <summary>
+    /// Items to be dropped by enemy
+    /// </summary>
+    /// <param name="drop"></param>
     private void SpawnDrop(GameObject drop)
     {
 
@@ -1403,8 +1413,9 @@ public class EnemyChaseBehaviour : MonoBehaviour
                             new Vector3(UnityEngine.Random.Range(-_dropRadius, _dropRadius),
                                 0f,
                                 UnityEngine.Random.Range(-_dropRadius, _dropRadius));
+        
 
-        Instantiate(drop, spawnPosition, Quaternion.identity);
+        Instantiate(drop, spawnPosition, drop.transform.rotation);
     }
 
     #endregion
