@@ -14,10 +14,10 @@ public class PlayerControl : MonoBehaviour
 
     [SerializeField] private PlayerInput playerInput;
 
-    public static PlayerControl Instance;
-    private Shooter shooterScript;
-    private Dashing dashing;
-    [SerializeField]private AbilityHolder qAbility, wAbility, eAbility, rAbility;
+                        public static PlayerControl Instance;
+                        private Shooter shooterScript;
+                        private Dashing dashing;
+    [SerializeField]    private AbilityHolder qAbility, wAbility, eAbility, rAbility;
     public static event Action<PlayerInput> OnPlayerInputChanged;
 
 
@@ -43,7 +43,6 @@ public class PlayerControl : MonoBehaviour
         playerInput = PlayerInput.Mouse; 
         
         UpdatePlayerControl(playerInput);
-
     }
 
     public void UpdatePlayerInput()

@@ -452,13 +452,10 @@ public class PlayerMovement : MonoBehaviour
     
     private void inputKC()
     {
-
-        
         
         CalculateDirection();
         KcRotate();
         MoveKC();
-    
     }
 
 
@@ -559,7 +556,7 @@ public class PlayerMovement : MonoBehaviour
 
                 NavMeshHit navHit;
 
-                if (NavMesh.SamplePosition(destination, out navHit, maxRange, 1))
+                if (NavMesh.SamplePosition(destination, out navHit, maxRange, NavMesh.AllAreas))
                 {
 
                     if (angle > _maxAngle && Agent.remainingDistance >= 0.1f)
@@ -667,7 +664,6 @@ public class PlayerMovement : MonoBehaviour
         speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
         lastPosition = transform.position;
         
-
         if (speed >= 0.5f)
         {
            _isMoving = true;

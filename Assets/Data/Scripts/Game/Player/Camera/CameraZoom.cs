@@ -64,7 +64,7 @@ public class CameraZoom : MonoBehaviour
     }
 
 
-    private void Update()
+    private void LateUpdate()
     {
         HandleTransformZoom();
     }

@@ -15,23 +15,74 @@ public class OptionMenu : MonoBehaviour
     [SerializeField]    private TMP_Dropdown        resDropdown;
                         private Resolution[]        _resolutions;
 
-    [SerializeField]    private GameObject            warningBox; 
+    [SerializeField]    private GameObject          warningBox; 
                         
+    [SerializeField]    private TMP_Dropdown        qualityDropdown;
+                        //private string[]            _qualityOptions;
     
-    [SerializeField]    private Slider musicSlider;
-    //[SerializeField] private StudioEventEmitter[] eventEmitters;  
+    [SerializeField]    private Slider               musicSlider;
+  
 
-                        private MusicManager _musicManager;
+                        private MusicManager        _musicManager;
 
-                        private PlayerControl _playerControl;
+                        private PlayerControl       _playerControl;
 
     #endregion
 
     private void Awake()
     {
-        ResolutionSetup();
+        DataCheck();
+        
         _playerControl = FindObjectOfType<PlayerControl>();
     }
+    
+    #region DataCheck
+
+    private void DataCheck()
+    {
+        QualityCheck(); // Quality 
+        ResCheck(); // Resolution
+        VolumeCheck(); // Volume
+    }
+
+    #region Checks
+    private void ResCheck()
+    {
+        ResolutionSetup();
+    }
+    
+    private void QualityCheck()
+    {
+        if(!PlayerPrefs.HasKey("Quality"))
+        {
+            PlayerPrefs.SetInt("Quality", 3);
+            QualitySetup(PlayerPrefs.GetInt("Quality"));
+
+#if UNITY_EDITOR
+            Debug.Log("Set Current Quality: " + QualitySettings.GetQualityLevel());
+#endif
+        }
+        else
+        {
+            QualitySetup(PlayerPrefs.GetInt("Quality"));
+            
+#if UNITY_EDITOR
+            
+            Debug.Log("Current Quality: " + QualitySettings.GetQualityLevel());
+#endif
+            
+        }
+        
+    }
+
+    private void VolumeCheck()
+    {
+        
+    }
+    #endregion
+        
+
+    #endregion
 
     #region Start
     private void Start()
@@ -40,6 +91,8 @@ public class OptionMenu : MonoBehaviour
         //musicSlider.onValueChanged.AddListener(MusicVolume);
 
         //_musicManager = FindObjectOfType<MusicManager>(); 
+        
+       
 
     }
     #endregion
@@ -77,17 +130,24 @@ public class OptionMenu : MonoBehaviour
     }
 
     #endregion
-    public void SetVolume(float volume)
-    {
-        //audio.SetFloat("Master", volume);
-    }
 
     #region Quality
-    
+
+    private void QualitySetup(int qualityLevel)
+    {
+        QualitySettings.SetQualityLevel(qualityLevel);
+        qualityDropdown.RefreshShownValue();
+        
+#if UNITY_EDITOR
+        
+        Debug.Log("Current Quality: " + QualitySettings.GetQualityLevel());
+#endif
+    }
     public void Quality(int qualityIndex)
     {
         // Set Game graphical quality 
         QualitySettings.SetQualityLevel(qualityIndex);
+        PlayerPrefs.SetInt("Quality", qualityIndex);
         
           
 #if UNITY_EDITOR
@@ -95,10 +155,10 @@ public class OptionMenu : MonoBehaviour
 #endif
         
     }
+    
     #endregion 
     public void SetFullscreen(bool isFullscreen)
     {
-        
         Screen.fullScreen = isFullscreen;
         
 #if UNITY_EDITOR
@@ -107,9 +167,10 @@ public class OptionMenu : MonoBehaviour
         
     }
     
-    public void OpenWarningRes()
+   public void OpenWarningRes()
     {
         warningBox.SetActive(true);
+        
         
     #if UNITY_EDITOR
         print("run");
@@ -140,12 +201,29 @@ public class OptionMenu : MonoBehaviour
         
     }
     
-    private  void ChangeResolution(int index)
+    public  void ChangeResolution(int index)
     {
-        Resolution resolution = _resolutions[index];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Resolution resolution;
         
+        resolution = _resolutions[index];
+        
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
 
+    #endregion
+    
+    public void SetVolume(float volume)
+    {
+        //audio.SetFloat("Master", volume);
+    }
+
+
+    #region Controls
+
+    private void ControlSetCheck()
+    {
+        
+        
     }
 
     #endregion
@@ -215,6 +293,16 @@ public class OptionMenu : MonoBehaviour
     public void BackToMainMenu()
     {
         //SceneManager.LoadScene("MainMenu");
+    }
+    
+    public void ClearOptions()
+    {
+        PlayerPrefs.DeleteAll();
+
+#if UNITY_EDITOR
+        Debug.Log("Player Prefs Cleared");
+        
+#endif
     }
 
     #endregion

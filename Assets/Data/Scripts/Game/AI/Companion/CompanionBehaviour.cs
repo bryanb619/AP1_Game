@@ -99,7 +99,7 @@ namespace Data.Scripts.Game.AI.Companion
         // Materials ---------------------------------------------------------------------->
         private CompanionSpawn _point;
 
-        private MeshRenderer _companionMesh;
+        private MeshRenderer[] _companionMesh;
 
  
         [Header("Material")]
@@ -150,29 +150,29 @@ namespace Data.Scripts.Game.AI.Companion
 
             //_rb = GetComponent<Rigidbody>();
 
-            Companion.angularSpeed = 0;
-            Companion.updateRotation = false;
+            Companion.angularSpeed          = 0;
+            Companion.updateRotation        = false;
 
-            Companion.acceleration = _acceleration;
+            Companion.acceleration          = _acceleration;
 
-            _companionMesh = GetComponent<MeshRenderer>();
+            _companionMesh                  = GetComponentsInChildren<MeshRenderer>();
             
-            _mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
+            _mainCamera                     = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
 
-            _point = FindObjectOfType<CompanionSpawn>();
+            _point                          = FindObjectOfType<CompanionSpawn>();
 
-            _cursor = FindObjectOfType<CursorGame>();
+            _cursor                         = FindObjectOfType<CursorGame>();
 
-            _primeTarget = _point.transform;
+            _primeTarget                    = _point.transform;
+            
+            _player                         = FindObjectOfType<PlayerMovement>();
 
+            _targetPosition                 = transform.position;
 
-            _player = FindObjectOfType<PlayerMovement>();
-
-            _targetPosition = transform.position;
-
-            _attackPos = _primeTarget;
-            currentPos = CompanionPos.LLPos;
-            nextPos = CompanionPos.URPos;
+            _attackPos                      = _primeTarget;
+            
+            currentPos                      = CompanionPos.LLPos;
+            nextPos                         = CompanionPos.URPos;
 
             //startingPosition = transform.position;
 
@@ -486,7 +486,7 @@ namespace Data.Scripts.Game.AI.Companion
 
 
 
-            if ((pos.position - transform.position).magnitude <= 2f)
+            if ((pos.position - transform.position).magnitude <= 1.3f)
             {
                 Companion.speed = followSpeed;
             }
@@ -496,7 +496,7 @@ namespace Data.Scripts.Game.AI.Companion
                 case <= 0.8f:
                     SlowDown();
                     return;
-                case >= 5f:
+                case >= 3f:
                     StartCoroutine(CatchPlayer(pos));
                     return;
             }
@@ -752,13 +752,26 @@ namespace Data.Scripts.Game.AI.Companion
         private void Setlow()
         {
             // change to transparent material version
-            _companionMesh.material = alphaLow;
+            //_companionMesh.material = alphaLow;
+            //_companionMesh[0].material = alphaLow;
+            //_companionMesh[1].material = alphaLow;
+
+            for(int i = 0; i < _companionMesh.Length; i++)
+            {
+          
+                _companionMesh[i].material.SetFloat("_Alpha", 0.5f);
+            }
         }
 
         private void SetHigh()
         {
+            
+            for(int i = 0; i < _companionMesh.Length; i++)
+            {
+                _companionMesh[i].material.SetFloat("_Alpha", 1f);
+            }
             // change to normal material
-            _companionMesh.material = normal;
+            //_companionMesh.material = normal;
         }
         #endregion
 
