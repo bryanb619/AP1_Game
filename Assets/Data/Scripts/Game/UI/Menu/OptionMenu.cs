@@ -1,17 +1,11 @@
-using System;
 using System.Collections.Generic;
-using FMODUnity;
 using UnityEngine;
-
 using UnityEngine.UI;
 using TMPro;
 
-using TMPro;
 public class OptionMenu : MonoBehaviour
 {
     #region Variables
-    //[SerializeField] private Audio audio ;
-   
     [SerializeField]    private TMP_Dropdown        resDropdown;
                         private Resolution[]        _resolutions;
 
@@ -29,12 +23,17 @@ public class OptionMenu : MonoBehaviour
 
     #endregion
 
+#region Data Loading
+
     private void Awake()
     {
         DataCheck();
         
         _playerControl = FindObjectOfType<PlayerControl>();
     }
+
+#endregion
+  
     
     #region DataCheck
 
@@ -300,6 +299,7 @@ public class OptionMenu : MonoBehaviour
         PlayerPrefs.DeleteAll();
 
 #if UNITY_EDITOR
+
         Debug.Log("Player Prefs Cleared");
         
 #endif
@@ -313,8 +313,6 @@ public class OptionMenu : MonoBehaviour
     {
         print(newVolume);
         _musicManager.MusicVolume(newVolume);
-        
     }
-    
     #endregion
 }

@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
     //public class SFXSound : UnityEvent<float> {}
     //public static SFXSound OnSFXValueChange = new SFXSound();
     //[SerializeField] private Slider _ambientSlider;
+    
     #endregion
 
     #region Awake & Start

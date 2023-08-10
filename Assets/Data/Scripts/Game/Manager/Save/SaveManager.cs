@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour
@@ -16,6 +17,12 @@ public class SaveManager : MonoBehaviour
 
     #endregion
 
+
+    private void Awake()
+    {
+        
+    }
+
     #region Start
     private void Start()
     {
@@ -26,6 +33,24 @@ public class SaveManager : MonoBehaviour
          
     }
     #endregion
+
+    public void SaveDataCheck()
+    {
+        // Player Data
+        
+        // Player Position
+        
+        // Player Controls
+        
+        // Sound Volume
+        
+        // Graphic Quality
+        
+        // Graphic Resolution
+        
+        
+    }
+    
 
     #region Save & Load
 
@@ -58,6 +83,7 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     private void GetLoad()
     {
+        
         PlayerPrefs.GetFloat("x");
         PlayerPrefs.GetFloat("y");
         PlayerPrefs.GetFloat("z");

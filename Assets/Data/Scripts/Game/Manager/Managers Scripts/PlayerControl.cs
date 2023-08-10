@@ -18,6 +18,7 @@ public class PlayerControl : MonoBehaviour
                         private Shooter shooterScript;
                         private Dashing dashing;
     [SerializeField]    private AbilityHolder qAbility, wAbility, eAbility, rAbility;
+    
     public static event Action<PlayerInput> OnPlayerInputChanged;
 
 
