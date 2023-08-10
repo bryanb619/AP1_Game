@@ -3,33 +3,36 @@ using System.Collections;
 using UnityEngine.Serialization;
 using UnityEngine.AI;
 using FMODUnity;
+using UnityEngine.VFX;
 
 
 public class Shooter : MonoBehaviour
 {
-    [Header("References")]
-    private Transform _firePoint;
+    [Header("References")] private Transform _firePoint;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private Material cleansedCrystal;
     [SerializeField] private Color lightColor;
     [SerializeField] private EventReference cleanCrystalSound;
+    [SerializeField] private VisualEffect wVisualEffect;
 
     private GameObject _firePrefab, _icePrefab, _thunderPrefab;
     internal WeaponType MagicType;
 
     [SerializeField] private GameObject areaEffect;
 
-    [Header("Default Ability Prefabs")]
-    [SerializeField] private GameObject defaultFirePrefab;
+    [Header("Default Ability Prefabs")] [SerializeField]
+    private GameObject defaultFirePrefab;
+
     [SerializeField] private GameObject defaultIcePrefab, defaultThunderPrefab, normalPrefab;
 
-    [Header("Upgraded Ability Prefabs")]
-    [SerializeField] private GameObject upgradedFirePrefab;
-    [SerializeField] private GameObject upgradedIcePrefab, upgradedThunderPrefab;
-                     internal bool WUpgraded = false, RUpgraded = false;
+    [Header("Upgraded Ability Prefabs")] [SerializeField]
+    private GameObject upgradedFirePrefab;
 
-    [Header("Abilities options")]
-    [SerializeField] private float areaAttackRadius = 5f;
+    [SerializeField] private GameObject upgradedIcePrefab, upgradedThunderPrefab;
+    internal bool WUpgraded = false, RUpgraded = false;
+
+    [Header("Abilities options")] [SerializeField]
+    private float areaAttackRadius = 5f;
 
     [SerializeField] public Ability normalTimer, fireTimer, iceTimer, thunderTimer;
     [SerializeField] private GameObject rAbilityTelegraph;
@@ -42,15 +45,15 @@ public class Shooter : MonoBehaviour
     private ManaManager _manaManager;
     private ObjectiveUI objectiveUi;
     private ValuesTextsScript _valuesTexts;
-    private PlayerAnimationHandler _playerAnim; 
-    private PlayerMovement  _coroutineCaller;
+    private PlayerAnimationHandler _playerAnim;
+    private PlayerMovement _coroutineCaller;
     private NavMeshAgent _playerNavMesh;
-    
-    [Header("Others")]
-    private RaycastHit _hit;
+
+    [Header("Others")] private RaycastHit _hit;
     private Vector3 _enemyPosition;
     [SerializeField] private float maxDistanceToCrystal = 10f;
-    
+    private GameObject targetedEnemy;
+
     private bool _gameplay;
     private bool rTelegraphIsOn = false;
     private Vector3 currentFirePointPosition;
@@ -61,14 +64,16 @@ public class Shooter : MonoBehaviour
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
         _manaManager = GetComponent<ManaManager>();
     }
+
     private void Start()
     {
         _playerNavMesh = GetComponent<NavMeshAgent>();
-        targetedAttackAbilityHolder          = GameObject.Find("Abilities UI").transform.GetChild(2).GetComponent<AbilityHolder>();
-        areaAttackAbilityHolder              = GameObject.Find("Abilities UI").transform.GetChild(4).GetComponent<AbilityHolder>(); 
-        objectiveUi                          = FindObjectOfType<ObjectiveUI>();
-        _playerAnim                          = GetComponentInChildren<PlayerAnimationHandler>();
-        _coroutineCaller                     = FindObjectOfType<PlayerMovement>();
+        targetedAttackAbilityHolder =
+            GameObject.Find("Abilities UI").transform.GetChild(2).GetComponent<AbilityHolder>();
+        areaAttackAbilityHolder = GameObject.Find("Abilities UI").transform.GetChild(4).GetComponent<AbilityHolder>();
+        objectiveUi = FindObjectOfType<ObjectiveUI>();
+        _playerAnim = GetComponentInChildren<PlayerAnimationHandler>();
+        _coroutineCaller = FindObjectOfType<PlayerMovement>();
 
         MagicType = WeaponType.Fire;
 
@@ -86,15 +91,15 @@ public class Shooter : MonoBehaviour
         switch (state)
         {
             case GameState.Paused:
-                {
-                    _gameplay = false;
-                    break;
-                }
+            {
+                _gameplay = false;
+                break;
+            }
             case GameState.Gameplay:
-                {
-                    _gameplay = true;
-                    break;
-                }
+            {
+                _gameplay = true;
+                break;
+            }
         }
     }
 
@@ -158,7 +163,7 @@ public class Shooter : MonoBehaviour
     public void RAbilityTelegraphActivation()
     {
         rTelegraphIsOn = !rTelegraphIsOn;
-        
+
         if (rTelegraphIsOn)
             rAbilityTelegraph.SetActive(true);
         else
@@ -171,66 +176,67 @@ public class Shooter : MonoBehaviour
         {
             case WeaponType.Normal: // input nº1
             {
-                    RaycastHit _hit;
-                    //Cleanse Crystal
-                    AIHandler[] ai = FindObjectsOfType<AIHandler>();
-                    if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
+                RaycastHit _hit;
+                //Cleanse Crystal
+                AIHandler[] ai = FindObjectsOfType<AIHandler>();
+                if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out _hit, 100))
+                {
+                    if (_hit.collider.GetComponent<CrystalSelect>())
                     {
-                        if (_hit.collider.GetComponent<CrystalSelect>())
+                        if (ai.Length == 0 && _hit.collider.GetComponent<CrystalSelect>().enabled == true)
                         {
-                            if (ai.Length == 0 && _hit.collider.GetComponent<CrystalSelect>().enabled == true)
+                            float distance = Vector3.Distance(_hit.collider.gameObject.transform.position,
+                                gameObject.transform.position);
+
+                            if (distance < maxDistanceToCrystal)
                             {
-                                float distance = Vector3.Distance(_hit.collider.gameObject.transform.position,
-                                    gameObject.transform.position);
 
-                                if (distance < maxDistanceToCrystal)
-                                {
-
-                                    _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
+                                _hit.collider.GetComponent<MeshRenderer>().material.Lerp(
                                     _hit.collider.GetComponent<MeshRenderer>().material, cleansedCrystal, 1f);
-                                    // light color switch 
-                                    RuntimeManager.PlayOneShot(cleanCrystalSound, transform.position);
-                                    _hit.collider.GetComponentInChildren<Light>().color = lightColor;
-                                    _hit.collider.GetComponent<CrystalSelect>().enabled = false;
-                                    objectiveUi.CleansedTheCrystals();
-                                    _valuesTexts.GetCrystal();
+                                // light color switch 
+                                RuntimeManager.PlayOneShot(cleanCrystalSound, transform.position);
+                                _hit.collider.GetComponentInChildren<Light>().color = lightColor;
+                                _hit.collider.GetComponent<CrystalSelect>().enabled = false;
+                                objectiveUi.CleansedTheCrystals();
+                                _valuesTexts.GetCrystal();
 
-                                    print("CLEANSED CRYSTAL");
-                                    break;
-                                }
-                                Debug.Log("Too far away from the crystal");
+                                print("CLEANSED CRYSTAL");
+                                break;
                             }
-                            else
-                            {
-                                Debug.Log("There are still enemies alive");
-                            }
+
+                            Debug.Log("Too far away from the crystal");
                         }
                         else
                         {
-                            StartCoroutine(NormalAttackCooldown());
-                            Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
+                            Debug.Log("There are still enemies alive");
                         }
                     }
-                    break;
+                    else
+                    {
+                        StartCoroutine(NormalAttackCooldown());
+                        Instantiate(normalPrefab, _firePoint.position, _firePoint.rotation);
+                    }
                 }
+
+                break;
+            }
             case WeaponType.Fire: // input nº2 (Q)
-                {
-                    _manaManager.FireAttack();
-                    Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
-                    break;
-                }
+            {
+                _manaManager.FireAttack();
+                Instantiate(_firePrefab, currentFirePointPosition, currentFirePointRotation);
+                break;
+            }
             case WeaponType.Ice: // input nº3 (W)
-                {
-                    _manaManager.IceAttack();
-                    TargetAttack();
-                    break;
-                }
+            {
+                TargetAttack();
+                break;
+            }
             case WeaponType.Thunder: // input nº4 (R)
-                {
-                    _manaManager.ThunderAttack();
-                    AreaAttack();
-                    break;
-                }
+            {
+                _manaManager.ThunderAttack();
+                AreaAttack();
+                break;
+            }
 
             default:
                 break;
@@ -245,7 +251,7 @@ public class Shooter : MonoBehaviour
             {
                 _hit.collider.gameObject.GetComponent<Outline>().enabled = true;
             }
-                
+
             else
             {
                 AIHandler[] enemies = GameObject.FindObjectsOfType<AIHandler>();
@@ -253,7 +259,7 @@ public class Shooter : MonoBehaviour
                 foreach (AIHandler enemy in enemies)
                 {
                     enemy.gameObject.GetComponent<Outline>().enabled = false;
-                    
+
                 }
             }
 
@@ -265,13 +271,24 @@ public class Shooter : MonoBehaviour
         {
             if (_hit.collider.GetComponent<AIHandler>())
             {
-                Instantiate(_icePrefab, _hit.collider.transform.position, _firePoint.rotation);
+                targetedEnemy = _hit.collider.gameObject;
                 Debug.Log("Enemy Hit with Ice");
-                return;
+                targetedAttackAbilityHolder.TargetedAttackCooldownUi();
+                StartCoroutine(IceAttackCooldown());
+                _manaManager.IceAttack();
             }
         }
-        targetedAttackAbilityHolder.TargetedAttackCooldownUi();
-        StartCoroutine(IceAttackCooldown());
+
+    }
+
+    public void TargetAttackVFX()
+    {
+        Instantiate(wVisualEffect, targetedEnemy.transform.position, _firePoint.rotation);
+    }
+
+    public void TargetAttackShoot()
+    {
+        Instantiate(_icePrefab, targetedEnemy.transform.position, _firePoint.rotation);
     }
 
     private void AreaAttack()
