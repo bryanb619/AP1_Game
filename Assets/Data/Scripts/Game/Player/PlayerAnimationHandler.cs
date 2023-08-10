@@ -173,6 +173,17 @@ public class PlayerAnimationHandler : MonoBehaviour
         }
         
     }
+    
+    public void WAttackVFX()
+    {
+        shooter.TargetAttackVFX();
+    }
+
+    public void WAttackDamage()
+    {
+        shooter.TargetAttackShoot();
+    }
+
     public void WAttackStop()
     {
         _playerAnimator.SetBool("wAbility", false);
