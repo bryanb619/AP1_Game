@@ -7,6 +7,12 @@
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    #region Variables
+
+    
+
+ 
     [Header("Movement"), SerializeField]
                         internal float                  walkSpeed;
     [SerializeField]    internal float                  dashSpeed, dashSpeedChangeFactor, groundDrag, moveSpeed, maxSpeed;
@@ -132,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
         Walking,
         Dashing
     }
-
+    #endregion
     private void Awake()
     {
         GameManager.OnGameStateChanged      += GameManager_OnGameStateChanged;
@@ -173,9 +179,9 @@ public class PlayerMovement : MonoBehaviour
     }
     private void GameManager_OnGameStateChanged(GameState state)
     {
-        switch (state)
-        {
-            case GameState.Gameplay:
+        switch (state) {
+            
+            case GameState.Gameplay: 
                 {
                     _gamePlay = true;
                     break;
@@ -204,7 +210,6 @@ public class PlayerMovement : MonoBehaviour
                 HandleMouse(); 
                 break;
             }
-
         }
     }
 
@@ -227,13 +232,6 @@ public class PlayerMovement : MonoBehaviour
         //Debug.Log("mouse");
 #endif
     }
-    
-    private void Start()
-    {
-        
-    }
-
-
     private void Components()
     {
         Agent                   = GetComponent<NavMeshAgent>();
@@ -454,13 +452,10 @@ public class PlayerMovement : MonoBehaviour
     
     private void inputKC()
     {
-
-        
         
         CalculateDirection();
         KcRotate();
         MoveKC();
-    
     }
 
 
@@ -564,7 +559,7 @@ public class PlayerMovement : MonoBehaviour
                 if (NavMesh.SamplePosition(destination, out navHit, maxRange, NavMesh.AllAreas))
                 {
 
-                    if (angle > _maxAngle && Agent.remainingDistance >= 0.2f)
+                    if (angle > _maxAngle && Agent.remainingDistance >= 0.1f)
                     {
                         Agent.velocity = Vector3.zero;
 
@@ -669,7 +664,6 @@ public class PlayerMovement : MonoBehaviour
         speed = (transform.position - lastPosition).magnitude / Time.deltaTime;
         lastPosition = transform.position;
         
-
         if (speed >= 0.5f)
         {
            _isMoving = true;

@@ -5,9 +5,12 @@ public class PlayerMainMovement : MonoBehaviour
 
     private Rigidbody                           _rb;
 
-    [SerializeField] private float              speed; 
+    [SerializeField] private float              speed = 400f; 
     
     private GameState                          _gameState;
+    
+    private Camera                             _camera;
+    [SerializeField]    private LayerMask       walkMask;
     
     // Start is called before the first frame update
 
@@ -16,6 +19,7 @@ public class PlayerMainMovement : MonoBehaviour
         GameManager.OnGameStateChanged  += OnGameStateChanged; 
         
         _rb                             = GetComponent<Rigidbody>();
+        _camera                         = GetComponentInChildren<Camera>(); 
         //_rb.constraints               = RigidbodyConstraints.FreezeRotationX & RigidbodyConstraints.FreezeRotationZ;
 
     }
@@ -42,10 +46,12 @@ public class PlayerMainMovement : MonoBehaviour
     
     private void FixedUpdate()
     {
+        float horizontal    = Input.GetAxisRaw("Horizontal");
+        float vertical      = Input.GetAxisRaw("Vertical");
+        
+        Vector3 movement    = new Vector3(-horizontal, 0f, -vertical).normalized; // movement
 
-        
-       
-        
+        _rb.velocity = movement * (speed * Time.fixedDeltaTime);
     }
 
     // Update is called once per frame
@@ -53,10 +59,13 @@ public class PlayerMainMovement : MonoBehaviour
     {
         if (_gameState == GameState.Gameplay)
         {
+           
             
         }
+        
     }
-
+    
+    
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= OnGameStateChanged;

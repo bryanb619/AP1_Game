@@ -72,11 +72,7 @@ namespace Data.Scripts.Game.AI.Companion
 
 
         //private enum CompanionPos   {_L_L_POS, _L_R_POS, U_L_POS, _U_R_POS}
-        private enum CompanionPos
-        {
-            LLPos,
-            URPos
-        }
+        private enum CompanionPos { LLPos, URPos}
         
         [SerializeField] private CompanionPos nextPos;
         [SerializeField] private CompanionPos currentPos;
@@ -103,7 +99,7 @@ namespace Data.Scripts.Game.AI.Companion
         // Materials ---------------------------------------------------------------------->
         private CompanionSpawn _point;
 
-        private MeshRenderer _companionMesh;
+        private MeshRenderer[] _companionMesh;
 
  
         [Header("Material")]
@@ -123,7 +119,6 @@ namespace Data.Scripts.Game.AI.Companion
         private Camera _mainCamera;
 
         private Vector3 _direction;
-
 
         [SerializeField] bool playerDirection;
 
@@ -155,33 +150,33 @@ namespace Data.Scripts.Game.AI.Companion
 
             //_rb = GetComponent<Rigidbody>();
 
-            Companion.angularSpeed = 0;
-            Companion.updateRotation = false;
+            Companion.angularSpeed          = 0;
+            Companion.updateRotation        = false;
 
-            Companion.acceleration = _acceleration;
+            Companion.acceleration          = _acceleration;
 
-            _companionMesh = GetComponent<MeshRenderer>();
+            _companionMesh                  = GetComponentsInChildren<MeshRenderer>();
+            
+            _mainCamera                     = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
 
-            //_mainCamera = FindObjectOfType<Camera>();
-            _mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); 
+            _point                          = FindObjectOfType<CompanionSpawn>();
 
-            _point = FindObjectOfType<CompanionSpawn>();
+            _cursor                         = FindObjectOfType<CursorGame>();
 
-            _cursor = FindObjectOfType<CursorGame>();
+            _primeTarget                    = _point.transform;
+            
+            _player                         = FindObjectOfType<PlayerMovement>();
 
-            _primeTarget = _point.transform;
+            _targetPosition                 = transform.position;
 
-
-            _player = FindObjectOfType<PlayerMovement>();
-
-            _targetPosition = transform.position;
-
-            _attackPos = _primeTarget;
-            currentPos = CompanionPos.LLPos;
-            nextPos = CompanionPos.URPos;
+            _attackPos                      = _primeTarget;
+            
+            currentPos                      = CompanionPos.LLPos;
+            nextPos                         = CompanionPos.URPos;
 
             //startingPosition = transform.position;
 
+            
             switch (_gameState)
             {
                 case GameState.Paused:
@@ -209,23 +204,19 @@ namespace Data.Scripts.Game.AI.Companion
         // Create the FSM
         private void Start()
         {
-        
-            //CompanionMesh = GetComponent<MeshRenderer>();
-            //_MiniMapCollor = FindObjectOfType<mini>();
-            //mainCamera = Camera.main;
-            //_playerIsMoving = false;
-
-
-            // states ------------------------------------------------------------->
-
+            
+            // states
+            
             var idleState = new State("Companion Idle", Idle);
 
             var followState = new State(("Companion Follow"), Follow);
 
             var combatState = new State("Companion combat", Combat);
         
-            // Add the transitions
-        
+            //  Transitions  ------------------------------------------------------------------------------------------>
+
+            // Idle --> Follow, Combat 
+            
             // Idle -> Follow
             idleState.AddTransition(
                 new Transition(
@@ -237,7 +228,10 @@ namespace Data.Scripts.Game.AI.Companion
                 new Transition(
                     () => stateAi == CompanionState.Combat,
                     combatState));
-
+            
+            //---------------------------------->
+            
+            // Follow --> Idle, Combat
 
             // Follow -> Idle
             followState.AddTransition(
@@ -251,6 +245,15 @@ namespace Data.Scripts.Game.AI.Companion
                     () => stateAi == CompanionState.Combat,
                     combatState));
 
+            //----------------------------------->
+            
+            // Combat --> Follow, Idle
+            
+            // Combat -> Follow
+            combatState.AddTransition(
+                new Transition(
+                    () => stateAi == CompanionState.Follow,
+                    followState));
 
             // Combat -> Idle 
             combatState.AddTransition(
@@ -258,14 +261,23 @@ namespace Data.Scripts.Game.AI.Companion
                     () => stateAi == CompanionState.Idle,
                     idleState));
 
-
-            // Combat -> Follow
-
-            combatState.AddTransition(
+            //----------------------------------->
+            
+            // Idle --> Follow, Combat
+            
+            // Idle -> Follow
+            idleState.AddTransition(
                 new Transition(
                     () => stateAi == CompanionState.Follow,
                     followState));
-
+            
+            // idle -> Combat
+            idleState.AddTransition(
+                new Transition(
+                    () => stateAi == CompanionState.Combat,
+                    combatState));
+            //---------------------------------->
+            
             // Create the state machine
             _stateMachine = new StateMachine(idleState);
         }
@@ -474,7 +486,7 @@ namespace Data.Scripts.Game.AI.Companion
 
 
 
-            if ((pos.position - transform.position).magnitude <= 2f)
+            if ((pos.position - transform.position).magnitude <= 1.3f)
             {
                 Companion.speed = followSpeed;
             }
@@ -484,7 +496,7 @@ namespace Data.Scripts.Game.AI.Companion
                 case <= 0.8f:
                     SlowDown();
                     return;
-                case >= 5f:
+                case >= 3f:
                     StartCoroutine(CatchPlayer(pos));
                     return;
             }
@@ -740,13 +752,26 @@ namespace Data.Scripts.Game.AI.Companion
         private void Setlow()
         {
             // change to transparent material version
-            _companionMesh.material = alphaLow;
+            //_companionMesh.material = alphaLow;
+            //_companionMesh[0].material = alphaLow;
+            //_companionMesh[1].material = alphaLow;
+
+            for(int i = 0; i < _companionMesh.Length; i++)
+            {
+          
+                _companionMesh[i].material.SetFloat("_Alpha", 0.5f);
+            }
         }
 
         private void SetHigh()
         {
+            
+            for(int i = 0; i < _companionMesh.Length; i++)
+            {
+                _companionMesh[i].material.SetFloat("_Alpha", 1f);
+            }
             // change to normal material
-            _companionMesh.material = normal;
+            //_companionMesh.material = normal;
         }
         #endregion
 
