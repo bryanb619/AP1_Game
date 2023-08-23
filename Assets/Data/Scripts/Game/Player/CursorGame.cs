@@ -43,6 +43,8 @@ public class CursorGame : MonoBehaviour
     
     private void CastHandler()
     {
+        if (_mainCamera == null) return;
+        
         var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
         RaycastHit hit;
@@ -67,6 +69,7 @@ public class CursorGame : MonoBehaviour
         {
             
         }
+
     }
 
     private void UpdateCursor(CursorState newState)

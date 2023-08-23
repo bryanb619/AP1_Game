@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using FMODUnity;
 using UnityEngine.Serialization;
 
+
+
 public class GameManager : MonoBehaviour
 {
     #region Variables
@@ -21,6 +23,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]    private GameObject outOfFocus, pauseMenu;
 
+    
+    // Build Platform ----------------------------------------------------------------------------------------->
+
+    public BuildUnit platform;
+    
+    
+    
 
     // Scenes       ------------------------------------------------------------------------------------------->
 
@@ -46,6 +55,8 @@ public class GameManager : MonoBehaviour
 
                         // AUDIO STATE
                         private bool                            _audioState;
+                        
+                        
 
                  
 
@@ -68,13 +79,62 @@ public class GameManager : MonoBehaviour
         {
             Destroy(otherManagers[i].gameObject);
         }
+        
+        // Check game Build
+        
+        
+        switch (platform)
+        {
+            // IF CONSOLE
+            case BuildUnit.Console:
+            {
+                // Apply console settings  
+                
+                
+#if UNITY_EDITOR
+
+            // DEV ------------------------------------------------------------------------------------------>
+            const string debugColor = "<size=14><color=red>";
+            const string closeColor = "</color></size>";
+            //Debug.Log(debugColor + "Close attack" + closeColor);
+#endif
+                
+                break;
+            }
+            // ELSE IF PC
+            case BuildUnit.PC:
+            {
+                
+                // Apply console settings  
+                
+                
+#if UNITY_EDITOR
+
+            // DEV ------------------------------------------------------------------------------------------>
+            const string debugColor = "<size=14><color=red>";
+            const string closeColor = "</color></size>";
+            //Debug.Log(debugColor + "Close attack" + closeColor);
+#endif
+                
+                break;
+            }
+            
+            default:
+            {
+                Debug.LogError("No Build set");
+                break;
+            }
+            
+        }
+        
+         
 
     }
 
     private void Start()
     {
         UpdateGameState(GameState.Gameplay);
-        outOfFocus.SetActive(false);
+        //outOfFocus.SetActive(false);
         
     }
     #endregion
@@ -229,6 +289,31 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(startMenu);
     }
 
+
+    public void ApplyBuildPlatform(BuildUnit unit)
+    {
+        switch (unit)
+        {
+            case BuildUnit.Console:
+            {
+                
+#if UNITY_EDITOR
+                Debug.Log("Console");
+#endif
+                break;
+            }
+            case BuildUnit.PC:
+            {
+                
+#if UNITY_EDITOR
+                Debug.Log("PC");
+#endif
+                break;
+            }
+            
+        }
+    }
+
     #region FMOD Sounds
 
     /// <summary>
@@ -291,5 +376,24 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #endregion
+    #endregion
+    
+    #region Builds
+
+    private void ConsoleBuild()
+    {
+        // Disable NAVMESH 
+        
+    }
+
+    private void PCBuild()
+    {
+        // LOAD SET INPUT
+        
+        
+        // Apply input config
+        
+    }
+
     #endregion
 }
