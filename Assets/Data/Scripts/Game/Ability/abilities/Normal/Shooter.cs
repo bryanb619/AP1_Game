@@ -199,16 +199,23 @@ public class Shooter : MonoBehaviour
                                 _hit.collider.GetComponent<CrystalSelect>().enabled = false;
                                 objectiveUi.CleansedTheCrystals();
                                 _valuesTexts.GetCrystal();
-
+#if UNITY_EDITOR
                                 print("CLEANSED CRYSTAL");
+                                
+#endif
+                                
                                 break;
                             }
 
+#if UNITY_EDITOR
                             Debug.Log("Too far away from the crystal");
+#endif
                         }
                         else
                         {
+#if UNITY_EDITOR
                             Debug.Log("There are still enemies alive");
+#endif
                         }
                     }
                     else

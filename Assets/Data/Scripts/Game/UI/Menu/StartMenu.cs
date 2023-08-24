@@ -1,13 +1,15 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using FMODUnity;
+using UnityEngine.EventSystems;
 
 public class StartMenu : MonoBehaviour
 {
     [Header("Menus")]
     [SerializeField]    private GameObject menu, optionsMenu, startText;
     [SerializeField]    private string loadMenu;
+    
+    [SerializeField]    private GameObject startButton, optionsButton, exitButton;
     
     [Header("Sounds")]
     [SerializeField]    private EventReference hover, click, music;
@@ -17,16 +19,55 @@ public class StartMenu : MonoBehaviour
                         private string _closeColor = "</color></size>";
                         
                         private bool _run;
-
-
+    
     private void Awake()
     {
-        Screen.fullScreen = true;
-    }
+        
+        // DETECT Game control type like if console or PC Build
+        /*
+#if UNITY_EDITOR
+        
+        devPopUp.SetActive(true);
 
-    void Start()
+        switch (_buildUnit)
+        {
+            case BuildUnit.PC:
+            {
+                Debug.Log("PC Build");
+                
+                break;
+            }
+            case BuildUnit.Console:
+            {
+                
+                
+#if UNITY_EDITOR
+                Debug.Log("Console Build");
+#endif
+                
+                break;
+                
+            }
+            default:
+            {
+                
+#if UNITY_EDITOR
+                Debug.LogError(_debugColor + "Build Unit not set!" + _closeColor);
+#endif
+                
+                break;
+            }
+        }
+        
+#endif
+              */              
+    }
+    
+
+    private void Start()
     {
         // Cursor Lock state
+        
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         
@@ -39,26 +80,21 @@ public class StartMenu : MonoBehaviour
 
     private void Update()
     {
-        
         if (startText && !_run)
         {
-            if (Input.anyKeyDown )
-            {
-                _run = true; 
-                startText.SetActive(false);
+            if (!Input.anyKeyDown) return;
+            
+            _run = true; 
+            startText.SetActive(false);
+            EventSystem.current.SetSelectedGameObject(startButton);
+            
                 
-                menu.SetActive(true);
-
-               
-            } 
+            menu.SetActive(true);
         }
-        
     }
 
-
     #region Start Menu
-
- 
+    
     // Game Load Button
     public void LoadGame()
     {
@@ -106,6 +142,8 @@ public class StartMenu : MonoBehaviour
         optionsMenu.SetActive(false);
         menu.SetActive(true);
     }
+
+    
 
     #endregion
 

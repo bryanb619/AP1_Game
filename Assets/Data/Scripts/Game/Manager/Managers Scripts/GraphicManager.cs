@@ -15,7 +15,7 @@ public class GraphicManager : MonoBehaviour
     
     #region Resoltion
     
-    private void ResolutionSetup()
+    public void ResolutionSetup()
     {
         // get resolution
         _resolutions = Screen.resolutions; 
@@ -43,12 +43,30 @@ public class GraphicManager : MonoBehaviour
         resDropdown.value = currentResolutionIndex;
         resDropdown.RefreshShownValue();
     }
+    
+    
+    public void ChangeResolution()
+    {
+        
+        int resIndex = resDropdown.value;
+        Resolution resolution = _resolutions[resIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        
+        // save data
+        PlayerPrefs.SetInt("Resolution", resIndex);
+
+#if UNITY_EDITOR
+
+        Debug.Log("Resolution: " + resolution.width + " x " + resolution.height);
+        
+#endif
+    }
 
     #endregion
 
     #region Quality
 
-    private void QualitySetup(int qualityLevel)
+    public void SetQualityLevel(int qualityLevel)
     {
         QualitySettings.SetQualityLevel(qualityLevel);
         qualityDropdown.RefreshShownValue();
@@ -72,15 +90,6 @@ public class GraphicManager : MonoBehaviour
     }
     
     #endregion 
-    public void SetFullscreen(bool isFullscreen)
-    {
-        Screen.fullScreen = isFullscreen;
-        
-#if UNITY_EDITOR
-        Debug.Log("Fullscreen: " + isFullscreen);
-#endif
-        
-    }
     
    public void OpenWarningRes()
     {
@@ -116,14 +125,7 @@ public class GraphicManager : MonoBehaviour
         
     }
     
-    public  void ChangeResolution(int index)
-    {
-        Resolution resolution;
-        
-        resolution = _resolutions[index];
-        
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-    }
+   
 
     #endregion
     

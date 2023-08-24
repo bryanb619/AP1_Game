@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -6,6 +5,7 @@ using TMPro;
 public class OptionMenu : MonoBehaviour
 {
     #region Variables
+    
     [SerializeField]    private TMP_Dropdown        resDropdown;
                         private Resolution[]        _resolutions;
 
@@ -15,39 +15,84 @@ public class OptionMenu : MonoBehaviour
                         //private string[]            _qualityOptions;
     
     [SerializeField]    private Slider               musicSlider;
-  
-
+    
+    
+    // Managers
+    
+                        // Music Manager
                         private MusicManager        _musicManager;
-
-                        private PlayerControl       _playerControl;
-
+                        
+                        // Player control
+                        private PlayerControl           _playerControl;
+                        
+                        // Graphic Manager
+                        private GraphicManager         _graphicManager;
+    
     #endregion
 
-#region Data Loading
+    #region Data Loading
 
     private void Awake()
     {
-        DataCheck();
+        // Find scripts
+        GetManagers(); 
         
-        _playerControl = FindObjectOfType<PlayerControl>();
+        // Check Saved Data
+        DataCheck();
     }
 
-#endregion
-  
+    private void GetManagers()
+    {
+        // TODO - Find a better way to find scripts
+        _musicManager   = FindObjectOfType<MusicManager>();
+        _graphicManager = FindObjectOfType<GraphicManager>();
+        _playerControl  = FindObjectOfType<PlayerControl>();
+    }
+    
     
     #region DataCheck
 
     private void DataCheck()
     {
+        
         QualityCheck(); // Quality 
         ResCheck(); // Resolution
         VolumeCheck(); // Volume
     }
 
+
+    #endregion
+    
+    
     #region Checks
     private void ResCheck()
     {
-        ResolutionSetup();
+        if (!PlayerPrefs.HasKey("Resolution"))
+        {
+            PlayerPrefs.SetInt("Resolution", 20);
+            //resDropdown.value = PlayerPrefs.GetInt("Resolution");
+            _graphicManager.ResolutionSetup();
+
+#if UNITY_EDITOR
+            
+            Debug.Log("Set Current Resolution: " + resDropdown.value);
+#endif
+            
+        }
+        else
+        {
+            //ResolutionSetup();
+            
+            resDropdown.value = PlayerPrefs.GetInt("Resolution");
+            _graphicManager.ResolutionSetup();
+
+#if UNITY_EDITOR
+                
+                Debug.Log("No Saved data, Current Resolution is: 1920x1080");
+#endif
+            
+        }
+        
     }
     
     private void QualityCheck()
@@ -55,7 +100,6 @@ public class OptionMenu : MonoBehaviour
         if(!PlayerPrefs.HasKey("Quality"))
         {
             PlayerPrefs.SetInt("Quality", 3);
-            QualitySetup(PlayerPrefs.GetInt("Quality"));
 
 #if UNITY_EDITOR
             Debug.Log("Set Current Quality: " + QualitySettings.GetQualityLevel());
@@ -63,6 +107,7 @@ public class OptionMenu : MonoBehaviour
         }
         else
         {
+            // Set Game graphical quality
             QualitySetup(PlayerPrefs.GetInt("Quality"));
             
 #if UNITY_EDITOR
@@ -71,11 +116,11 @@ public class OptionMenu : MonoBehaviour
 #endif
             
         }
-        
     }
 
     private void VolumeCheck()
     {
+        
         
     }
     #endregion
@@ -89,134 +134,127 @@ public class OptionMenu : MonoBehaviour
         
         //musicSlider.onValueChanged.AddListener(MusicVolume);
 
-        //_musicManager = FindObjectOfType<MusicManager>(); 
-        
-       
+        //_musicManager = FindObjectOfType<MusicManager>();
 
     }
     #endregion
 
-    #region Resolution & Quality 
-
-    #region Resoltion 
-    private void ResolutionSetup()
+    #region UI 
+    
+    #region Buttons
+    
+    // Resolution Dropdown
+    public void ResDropDown()
     {
-        // get resolution
-        _resolutions = Screen.resolutions; 
-
-        // clear
-        resDropdown.ClearOptions(); 
-
-        // create list of resolution
-        List<string> resOptions = new List<string>();  
-
-        int currentResolutionIndex = 0; 
-
-        for (int x = 0; x < _resolutions.Length; x++)
-        {
-            string option = _resolutions[x].width + " x " + _resolutions[x].height;
-
-            resOptions.Add(option);
-
-            if (_resolutions[x].width == Screen.currentResolution.width && _resolutions[x].height == Screen.currentResolution.height)
-            {
-                currentResolutionIndex = x;
-            }
-        }
-        resDropdown.AddOptions(resOptions);
-        resDropdown.value = currentResolutionIndex;
-        resDropdown.RefreshShownValue();
+        
     }
-
-    #endregion
 
     #region Quality
-
-    private void QualitySetup(int qualityLevel)
+    
+    /// <summary>
+    /// Quality Dropdown
+    /// </summary>
+    /// <param name="qualityLevel"></param>
+    public void QualitySetup(int qualityLevel)
     {
-        QualitySettings.SetQualityLevel(qualityLevel);
+        // Refresh Dropdown show value
         qualityDropdown.RefreshShownValue();
         
-#if UNITY_EDITOR
+        // Set Game graphical quality
+        _graphicManager.SetQualityLevel(qualityLevel);
         
-        Debug.Log("Current Quality: " + QualitySettings.GetQualityLevel());
-#endif
+        // Save Quality
+        PlayerPrefs.SetInt("Quality", qualityLevel);
     }
-    public void Quality(int qualityIndex)
-    {
-        // Set Game graphical quality 
-        QualitySettings.SetQualityLevel(qualityIndex);
-        PlayerPrefs.SetInt("Quality", qualityIndex);
-        
-          
-#if UNITY_EDITOR
-        Debug.Log("Current Quality: " + QualitySettings.GetQualityLevel());
-#endif
-        
-    }
+
+    #endregion
+
+    #region Fullscreen
     
-    #endregion 
+    /// <summary>
+    /// Full Screen Toggle
+    /// </summary>
+    /// <param name="isFullscreen"></param>
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
         
 #if UNITY_EDITOR
-        Debug.Log("Fullscreen: " + isFullscreen);
+
+       // Debug.Log("Fullscreen: " + isFullscreen);
 #endif
         
-    }
-    
-   public void OpenWarningRes()
-    {
-        warningBox.SetActive(true);
-        
-        
-    #if UNITY_EDITOR
-        print("run");
-    #endif
-    }
-
-
-    public void SetNewRes(bool change)
-    {
-        if (change)
-        {
-            //warningBox.SetActive(true);
-            
-            int resIndex = resDropdown.value;
-            Resolution resolution = _resolutions[resIndex];
-            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-            warningBox.SetActive(false);
-            
-#if UNITY_EDITOR
-            Debug.Log("Resolution: " + resolution.width + " x " + resolution.height);
-#endif
-        }
-        
-        else
-        {
-            warningBox.SetActive(false);
-        }
-        
-    }
-    
-    public  void ChangeResolution(int index)
-    {
-        Resolution resolution;
-        
-        resolution = _resolutions[index];
-        
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
     #endregion
     
+    // Player Dropdown (MOVEMENT)
+
+    public void PlayerMovement(int movementIndex)
+    {
+        // Set Player Movement
+       // _playerControl.SetMovement(movementIndex);
+
+        // Save Player Movement
+        //PlayerPrefs.SetInt("Movement", movementIndex);
+        
+#if UNITY_EDITOR
+        Debug.Log("Player Movement: " + movementIndex);
+#endif
+    }
+
+    #region Clear Saved Options
+
+    public void ClearOptions()
+    {
+        PlayerPrefs.DeleteAll();
+
+#if UNITY_EDITOR
+
+        Debug.Log("Player Prefs Cleared");
+        
+#endif
+    }
+
+    #endregion
+    
+
+    public void BackToMainMenu()
+    {
+        //SceneManager.LoadScene("MainMenu");
+    }
+    // sound Slider
+    
     public void SetVolume(float volume)
     {
         //audio.SetFloat("Master", volume);
+        musicSlider.value = volume;
     }
+    
+    #endregion
+    
+    #region Sliders
 
-
+    private void MusicVolume(float newVolume)
+    {
+        print(newVolume);
+        _musicManager.MusicVolume(newVolume);
+    }
+    #endregion
+    
+    
+    #endregion
+    
+    private void OpenWarningRes()
+    {
+        warningBox.SetActive(true);
+        
+        
+#if UNITY_EDITOR
+        print("runing warning box");
+#endif
+    }
+    
     #region Controls
 
     private void ControlSetCheck()
@@ -224,9 +262,8 @@ public class OptionMenu : MonoBehaviour
         
         
     }
-
-    #endregion
-
+    
+    
     #region Player Input
 
     public void PlayerInputType(int newInputType)
@@ -250,7 +287,7 @@ public class OptionMenu : MonoBehaviour
             case 1:
             {
                 
- #if UNITY_EDITOR
+#if UNITY_EDITOR
                 Debug.Log("Keyboard");
 #endif
                 // set control to keyboard
@@ -281,38 +318,16 @@ public class OptionMenu : MonoBehaviour
                 _playerControl.UpdatePlayerControl(newControl);
                 break;
             }
-
         }
+        
         //newControl.playerInput = (PlayerInput) newInputType;
     }
     
     #endregion
 
-    #region Buttons
-    public void BackToMainMenu()
-    {
-        //SceneManager.LoadScene("MainMenu");
-    }
+    #endregion
+
     
-    public void ClearOptions()
-    {
-        PlayerPrefs.DeleteAll();
 
-#if UNITY_EDITOR
-
-        Debug.Log("Player Prefs Cleared");
-        
-#endif
-    }
-
-    #endregion
-
-    #region Sliders
-
-    private void MusicVolume(float newVolume)
-    {
-        print(newVolume);
-        _musicManager.MusicVolume(newVolume);
-    }
-    #endregion
+   
 }
