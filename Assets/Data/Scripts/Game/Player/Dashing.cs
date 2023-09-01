@@ -29,7 +29,7 @@ public class Dashing : MonoBehaviour
     [SerializeField] private bool disableGravity = true, resetVel = true;
     [SerializeField] private bool dashUpgraded;
     [SerializeField] public int shieldAmount = 50;
-    private KeyCode eKey = KeyCode.E;
+    [SerializeField] private KeyCode eKey = KeyCode.E;
     private Animator _animator;
     private bool cantUseE = false;
 

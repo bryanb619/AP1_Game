@@ -23,13 +23,6 @@ public class AbilityHolder : MonoBehaviour
     private WeaponType _weaponType; 
     private PlayerAnimationHandler _playerAnimationHandler;
 
-    // types of ability condition
-    private enum AbilityState
-    {
-        Ready,
-        Active,
-        Cooldown
-    }
 
     // Ability state
 
@@ -37,8 +30,16 @@ public class AbilityHolder : MonoBehaviour
 
     // key input
     [SerializeField]
-    private KeyCode key;
+    private KeyCode mouseSetKey, keyboardSetKey, consoleSetKey;
 
+    // types of ability condition
+    private enum AbilityState
+    {
+        Ready,
+        Active,
+        Cooldown
+    }
+    
     private void Awake()
     {
         GameManager.OnGameStateChanged += GameManager_OnGameStateChanged;
@@ -90,7 +91,9 @@ public class AbilityHolder : MonoBehaviour
             {
                 // ready state
                 case AbilityState.Ready:
-                    if (Input.GetKeyDown(key) && !_playerAnimationHandler.cantUseOtherAbilities)
+                    if    (Input.GetKeyDown(mouseSetKey) && !_playerAnimationHandler.cantUseOtherAbilities
+                        || Input.GetKeyDown(keyboardSetKey) && !_playerAnimationHandler.cantUseOtherAbilities
+                        || Input.GetKeyDown(consoleSetKey) && !_playerAnimationHandler.cantUseOtherAbilities)
                     {
                         if(abilityNew)
                         {
@@ -205,7 +208,7 @@ public class AbilityHolder : MonoBehaviour
 
     public void KeyChanger(KeyCode option)
     {
-        key = option;
+        //key = option;
     }
     
     private void OnDestroy()
