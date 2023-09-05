@@ -237,6 +237,16 @@ public class PlayerAnimationHandler : MonoBehaviour
         shooter.RAbilityTelegraphActivation();
     }
 
+    public void CastBasicAttack()
+    {
+        _playerAnimator.SetBool("BasicAttack", true);
+    }
+
+    public void ResetBasicAttackVariable()
+    {
+        _playerAnimator.SetBool("BasicAttack", false);
+    }
+
     private void OnDestroy()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
