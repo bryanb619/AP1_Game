@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.VFX;
 
 
 public class PlayerAnimationHandler : MonoBehaviour
@@ -14,6 +15,9 @@ public class PlayerAnimationHandler : MonoBehaviour
     private Animator _playerAnimator;
 
     private AnimatorStateInfo _stateInfo;
+    
+    [SerializeField]
+    private VisualEffect _swordVFX;  
 
     [FormerlySerializedAs("CANMOVE")] [HideInInspector] 
     public bool canmove;
@@ -245,6 +249,11 @@ public class PlayerAnimationHandler : MonoBehaviour
     public void ResetBasicAttackVariable()
     {
         _playerAnimator.SetBool("BasicAttack", false);
+    }
+
+    public void SwordAnimationVFX()
+    {
+        _swordVFX.Play();
     }
 
     private void OnDestroy()
