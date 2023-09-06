@@ -107,11 +107,12 @@ public class Shooter : MonoBehaviour
     {
         if (_gameplay)
         {
+/*
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 _playerAnim.CastBasicAttack();
             }
-
+*/
             ShootInput();
             HoverHighlight();
         }
