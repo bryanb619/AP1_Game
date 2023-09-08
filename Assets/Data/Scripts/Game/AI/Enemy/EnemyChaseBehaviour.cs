@@ -54,7 +54,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         //private AiController                _controller;
                         private AIHandler                   _hanlderAi;
                         private AIHealth                    _healthBar;
-                        
+
                         // AI Mesh
     [SerializeField]    private SkinnedMeshRenderer         enemyMesh;
                         private Material[]                  skinnedMaterials;
@@ -204,7 +204,8 @@ public class EnemyChaseBehaviour : MonoBehaviour
                         private int                         _damage;
                         internal int                        DamageBoost;
                         private float                       _damageEffectTime = 0.5f;
-
+    [SerializeField]    private VisualEffect                hitVFX;
+                        
                         // Stunned             
                         private float                       _stunnedTime;
                         //private float                     stunnedFrequency;
@@ -1288,6 +1289,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 //DropSpawnCheck();
             }
             
+            
             _damageText.text = damage.ToString();
             StartCoroutine(DamageTextDisappear());
 
@@ -1300,7 +1302,7 @@ public class EnemyChaseBehaviour : MonoBehaviour
                 SetAttack();
             }
         }
-        
+        hitVFX.Play();
         _healthBar.HandleBar(damage);
     }
 

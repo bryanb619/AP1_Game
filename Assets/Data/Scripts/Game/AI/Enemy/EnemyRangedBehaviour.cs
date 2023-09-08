@@ -118,8 +118,9 @@ public class EnemyRangedBehaviour : MonoBehaviour
     
                     private AIHealth                            _healthBar;    
                     // HEALTH
-                    private float                               _health;
-
+                    private float                               _health; 
+   [SerializeField] private VisualEffect                        hitVFX;
+                    
                     // DEATH
                     private GameObject                         _deathEffect;
                     
@@ -694,8 +695,8 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  DropSpawnCheck();
              }
              
+             hitVFX.Play();
              damageText.text = damage.ToString();
-             
              //  CALCULATE HEALTH 
              StartCoroutine(DamageTextDisappear());
              StartCoroutine(StopForSeconds(0.3f));
