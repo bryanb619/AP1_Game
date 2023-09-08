@@ -34,6 +34,9 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     public bool cantUseOtherAbilities = false;
     
+    [SerializeField] private GameObject _companion;
+    [SerializeField] private GameObject _sword;
+    
     private void Awake()
     {
         GameManager.OnGameStateChanged -= GameManager_OnGameStateChanged;
@@ -239,6 +242,23 @@ public class PlayerAnimationHandler : MonoBehaviour
     public void RCircle()
     {
         shooter.RAbilityTelegraphActivation();
+    }
+
+    public void ToggleSwordMode()
+    {
+        if (_playerAnimator.GetBool("SwordMode"))
+        {
+        _playerAnimator.SetBool("SwordMode", false);
+        _sword.SetActive(false);
+        _companion.SetActive(true);
+        }
+
+        else
+        {
+            _playerAnimator.SetBool("SwordMode", true);
+            _sword.SetActive(true);
+            _companion.SetActive(false);
+        }
     }
 
     public void CastBasicAttack()
