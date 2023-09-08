@@ -113,6 +113,9 @@ public class Shooter : MonoBehaviour
                 _playerAnim.CastBasicAttack();
             }
 */
+            if(Input.GetKeyDown(KeyCode.Keypad5))
+                _playerAnim.ToggleSwordMode();
+            
             ShootInput();
             HoverHighlight();
         }
