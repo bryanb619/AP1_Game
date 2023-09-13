@@ -695,7 +695,7 @@ public class EnemyRangedBehaviour : MonoBehaviour
                  DropSpawnCheck();
              }
              
-             hitVFX.Play();
+             //hitVFX.Play();
              damageText.text = damage.ToString();
              //  CALCULATE HEALTH 
              StartCoroutine(DamageTextDisappear());

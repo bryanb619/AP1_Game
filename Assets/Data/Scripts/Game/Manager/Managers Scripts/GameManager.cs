@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
     private void HandleGameplay()
     {
         // set cursor settings to play mode
-        Cursor.visible = true;
+        Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Confined;
 
         Time.timeScale = 1f;
@@ -213,7 +213,7 @@ public class GameManager : MonoBehaviour
     private void HandlePaused()
     {
         // set cursor to pause mode
-        Cursor.visible      = true;
+        Cursor.visible      = false;
         Cursor.lockState    = CursorLockMode.None;
 
         _audioState         = true;
